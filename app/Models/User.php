@@ -13,6 +13,15 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasUuids;
 
     /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'role' => 3,
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>

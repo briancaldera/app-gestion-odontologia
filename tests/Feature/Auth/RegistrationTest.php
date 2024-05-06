@@ -1,5 +1,13 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->seed();
+});
+
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');
 

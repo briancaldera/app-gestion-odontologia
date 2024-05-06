@@ -1,6 +1,13 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->seed();
+});
 
 test('confirm password screen can be rendered', function () {
     $user = User::factory()->create();

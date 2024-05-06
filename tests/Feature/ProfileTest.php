@@ -1,6 +1,13 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->seed();
+});
 
 test('profile page is displayed', function () {
     $user = User::factory()->create();
