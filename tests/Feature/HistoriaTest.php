@@ -31,3 +31,7 @@ test('user can save Historia', function () {
 
 
 })->skip('Todo');
+
+test('wrong Historia is rejected', function () {
+
+})->skip();
