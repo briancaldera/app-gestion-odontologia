@@ -16,8 +16,11 @@ class HistoriaFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = fake('es_VE');
         return [
-            //
+            'numero' => '',
+            'motivo_consulta' => $faker->text(),
+            'enfermedad_actual' => $faker->text()
         ];
     }
 }

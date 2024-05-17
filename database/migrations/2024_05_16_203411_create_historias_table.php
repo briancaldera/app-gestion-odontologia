@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('historias', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
+            $table->string('numero')->unique();
+            $table->text('motivo_consulta');
+            $table->text('enfermedad_actual');
             $table->timestamps();
         });
     }
