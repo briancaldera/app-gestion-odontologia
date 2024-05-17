@@ -10,19 +10,16 @@ beforeEach(function () {
     $this->seed();
 });
 
-const TABLE_NAME = 'historias';
-
 test('historia factory can be used', function () {
     $historia = Historia::factory()->create();
-
     expect($historia)->toBeInstanceOf(Historia::class);
 });
 
 test('historia can be created', function () {
     $historia = Historia::factory()->create();
 
-    $this->assertDatabaseCount(TABLE_NAME, 1);
-    $this->assertDatabaseHas(TABLE_NAME, $historia->attributesToArray());
+    $this->assertDatabaseCount('historias', 1);
+    $this->assertDatabaseHas('historias', $historia->attributesToArray());
 });
 
 test('student can open Historia form', function () {
