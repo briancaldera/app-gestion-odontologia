@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Paciente extends Model
 {
@@ -29,5 +30,15 @@ class Paciente extends Model
     public function antFamiliares(): HasOne
     {
         return $this->hasOne(AntFamiliares::class);
+    }
+
+    public function antPersonales(): HasOne
+    {
+        return $this->hasOne(AntPersonales::class);
+    }
+
+    public function trastornos(): HasOneThrough
+    {
+        return $this->hasOneThrough(Trastornos::class, AntPersonales::class);
     }
 }
