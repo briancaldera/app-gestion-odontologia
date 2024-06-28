@@ -16,8 +16,27 @@ class AntPersonalesFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = fake('es_VE');
+
+        $f = fn() => $faker->boolean(10);
+
+        $medicamentos = [
+            'hipertensivos' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'analgesicos' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'esteroides' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'antidepresivos' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'anticonceptivos' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'hipogicemiante' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'anticonvulsivos' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'sildenafil' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'acidoacetilicidico' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'anticoagulante' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'bifosfanato' => ['positivo' => $f(), 'dosis_diaria' => ''],
+            'otros' => '',
+        ];
+
         return [
-            //
+            'medicamentos' => json_encode($medicamentos)
         ];
     }
 }

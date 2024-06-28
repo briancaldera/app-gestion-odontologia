@@ -23,3 +23,10 @@ test('trastornos factory can be used', function () {
 
     expect($paciente->antPersonales->trastornos)->toBeInstanceOf(Trastornos::class);
 });
+
+test('medicamentos can be attached to antPersonales', function () {
+    $paciente = Paciente::factory()->has(AntPersonales::factory()->has(Trastornos::factory()))->create();
+    $medicamentos = $paciente->antPersonales->medicamentos;
+
+    expect($medicamentos)->toBeJson();
+});

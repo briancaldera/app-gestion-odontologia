@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('ant_personales', function (Blueprint $table) {
             $table->foreignUuid('paciente_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->jsonb('medicamentos');
         });
     }
 
