@@ -32,11 +32,20 @@ class AntPersonalesFactory extends Factory
             'acidoacetilicidico' => ['positivo' => $f(), 'dosis_diaria' => ''],
             'anticoagulante' => ['positivo' => $f(), 'dosis_diaria' => ''],
             'bifosfanato' => ['positivo' => $f(), 'dosis_diaria' => ''],
-            'otros' => '',
+            'otros' => ['positivo' => $f(), 'descripcion' => ''],
+        ];
+
+        $alergias = [
+            'antibioticos' => $f(),
+            'analgesicos' => $f(),
+            'anestesicos' => $f(),
+            'yodo' => $f(),
+            'otros' => ['positivo' => $f(), 'descripcion' => ''],
         ];
 
         return [
-            'medicamentos' => json_encode($medicamentos)
+            'medicamentos' => json_encode($medicamentos),
+            'alergias' => json_encode($alergias),
         ];
     }
 }

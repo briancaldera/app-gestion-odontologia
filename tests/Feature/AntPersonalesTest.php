@@ -30,3 +30,10 @@ test('medicamentos can be attached to antPersonales', function () {
 
     expect($medicamentos)->toBeJson();
 });
+
+test('alergias can be attached to antPersonales', function () {
+    $paciente = Paciente::factory()->has(AntPersonales::factory()->has(Trastornos::factory()))->create();
+    $alergias = $paciente->antPersonales->alergias;
+
+    expect($alergias)->toBeJson();
+});
