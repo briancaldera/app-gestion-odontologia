@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Historia extends Model
 {
     use HasFactory;
-    use HasUlids;
+    use HasUuids;
 
     protected $attributes = [
         'numero' => ''
@@ -19,4 +20,9 @@ class Historia extends Model
         'motivo_consulta',
         'enfermedad_actual'
     ];
+
+    public function historiaOdontologica(): HasOne
+    {
+        return $this->hasOne(HistoriaOdontologica::class);
+    }
 }

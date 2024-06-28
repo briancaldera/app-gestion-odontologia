@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('historias', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('numero')->unique();
-            $table->text('motivo_consulta');
-            $table->text('enfermedad_actual');
-            $table->timestamps();
+        Schema::create('historia_odontologicas', function (Blueprint $table) {
+            $table->foreignUuid('historia_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->text('ant_personales');
+            $table->jsonb('habitos');
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('historias');
+        Schema::dropIfExists('historia_odontologicas');
     }
 };
