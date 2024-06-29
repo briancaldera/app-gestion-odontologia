@@ -23,3 +23,11 @@ test('habitos is json', function () {
 
     expect($historiaOdontologica->habitos)->toBeJson();
 });
+
+test('plan tratamiento is an array', function () {
+    $historia = Historia::factory()->create();
+    $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
+    
+    expect($historiaOdontologica->plan_tratamiento)->toBeJson()
+        ->and(json_decode($historiaOdontologica->plan_tratamiento)->plan_tratamiento)->toBeArray();
+});

@@ -20,6 +20,19 @@ class HistoriaOdontologicaFactory extends Factory
         $randomBoolean = fn() => $faker->boolean(20);
         $randomText = fn() => $faker->text($faker->numberBetween(30, 200));
 
+        $randomTratamientos = function ($count = 1) use ($faker, $randomText) {
+            $tratamientos = [];
+
+            for ($i = 0; $i < $count; $i++)
+                $tratamientos[] =
+                    [
+                        'diente' => $faker->numberBetween(18, 48),
+                        'cavidad' => $faker->text(15),
+                        'tratamiento' => $randomText(),
+                    ];
+            return $tratamientos;
+        };
+
         $ant_personales = $randomText();
 
         $habitos = [
@@ -136,11 +149,24 @@ class HistoriaOdontologicaFactory extends Factory
             'pronostico' => $pronostico
         ];
 
+        $plan_tratamiento = [
+            'plan_tratamiento' => []
+        ];
+
+//        $tratamiento = [
+//            'diente' => $faker->numberBetween(18, 48),
+//            'cavidad' => $faker->text(15),
+//            'tratamiento' => $randomText(),
+//        ];
+
+        $plan_tratamiento['plan_tratamiento'] = $randomTratamientos($faker->numberBetween(1, 18));
+
         return [
             'ant_personales' => $ant_personales,
             'habitos' => json_encode($habitos),
             'examen_fisico' => json_encode($examen_fisico),
             'estudio_modelos' => json_encode($estudio_modelos),
+            'plan_tratamiento' => json_encode($plan_tratamiento),
         ];
     }
 }

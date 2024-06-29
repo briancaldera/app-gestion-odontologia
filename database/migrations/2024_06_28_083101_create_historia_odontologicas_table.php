@@ -17,6 +17,7 @@ return new class extends Migration
             $table->jsonb('habitos');
             $table->jsonb('examen_fisico');
             $table->jsonb('estudio_modelos');
+            $table->jsonb('plan_tratamiento');
         });
     }
 
