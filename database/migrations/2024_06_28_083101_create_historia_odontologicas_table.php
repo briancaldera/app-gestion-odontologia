@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignUuid('historia_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->text('ant_personales');
             $table->jsonb('habitos');
+            $table->jsonb('examen_fisico');
         });
     }
 
