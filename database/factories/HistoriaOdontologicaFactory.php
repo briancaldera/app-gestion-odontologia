@@ -178,6 +178,10 @@ class HistoriaOdontologicaFactory extends Factory
             'firma' => ($faker->boolean()) ? '' : 'aceptado',
         ];
 
+        $secuencia_tratamiento = [
+            'secuencia' => $randomModificacionTratamientos($numero_modificaciones_tratamientos),
+        ];
+
         return [
             'ant_personales' => $ant_personales,
             'habitos' => json_encode($habitos),
@@ -185,6 +189,7 @@ class HistoriaOdontologicaFactory extends Factory
             'estudio_modelos' => json_encode($estudio_modelos),
             'plan_tratamiento' => json_encode($plan_tratamiento),
             'modificaciones_plan_tratamiento' => json_encode($modificaciones_plan_tratamiento),
+            'secuencia_tratamiento' => json_encode($secuencia_tratamiento),
         ];
     }
 }

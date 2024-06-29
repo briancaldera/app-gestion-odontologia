@@ -39,3 +39,11 @@ test('modificaciones plan tratamiento is an array', function () {
     expect($historiaOdontologica->modificaciones_plan_tratamiento)->toBeJson()
         ->and(json_decode($historiaOdontologica->modificaciones_plan_tratamiento)->modificaciones)->toBeArray();
 });
+
+test('secuencia tratamiento is an array', function () {
+    $historia = Historia::factory()->create();
+    $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
+
+    expect($historiaOdontologica->secuencia_tratamiento)->toBeJson()
+        ->and(json_decode($historiaOdontologica->secuencia_tratamiento)->secuencia)->toBeArray();
+});

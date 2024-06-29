@@ -19,6 +19,7 @@ return new class extends Migration
             $table->jsonb('estudio_modelos');
             $table->jsonb('plan_tratamiento');
             $table->jsonb('modificaciones_plan_tratamiento');
+            $table->jsonb('secuencia_tratamiento');
         });
     }
 
