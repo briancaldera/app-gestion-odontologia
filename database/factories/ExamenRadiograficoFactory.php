@@ -23,8 +23,8 @@ class ExamenRadiograficoFactory extends Factory
             'nasomaxilar' => $randomText(),
             'atm' => $randomText(),
             'mandibular' => $randomText(),
-            'dento_alveolar_superior' => $randomText(),
-            'dento_alveolar_inferior' => $randomText(),
+            'dento_alveolar_sup' => $randomText(),
+            'dento_alveolar_inf' => $randomText(),
         ];
 
         $interpretacion_periapicales = $randomText();

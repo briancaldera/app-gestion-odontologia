@@ -17,24 +17,25 @@ class HistoriaOdontologicaFactory extends Factory
     public function definition(): array
     {
         $faker = fake('es_VE');
-        $f = fn() => $faker->boolean(20);
+        $randomBoolean = fn() => $faker->boolean(20);
+        $randomText = fn() => $faker->text($faker->numberBetween(30, 200));
 
-        $ant_personales = $faker->text();
+        $ant_personales = $randomText();
 
         $habitos = [
-            'fumar' => $f(),
-            'alcohol' => $f(),
-            'drogas' => $f(),
-            'onicofagia' => $f(),
-            'deglusion_atip' => $f(),
-            'bruxismo' => $f(),
-            'bruxomania' => $f(),
-            'queilofagia' => $f(),
-            'palillos' => $f(),
-            'respirador_bucal' => $f(),
-            'succion_digital' => $f(),
-            'otros' => $f(),
-            'descripcion' => $faker->text(),
+            'fumar' => $randomBoolean(),
+            'alcohol' => $randomBoolean(),
+            'drogas' => $randomBoolean(),
+            'onicofagia' => $randomBoolean(),
+            'deglusion_atip' => $randomBoolean(),
+            'bruxismo' => $randomBoolean(),
+            'bruxomania' => $randomBoolean(),
+            'queilofagia' => $randomBoolean(),
+            'palillos' => $randomBoolean(),
+            'respirador_bucal' => $randomBoolean(),
+            'succion_digital' => $randomBoolean(),
+            'otros' => $randomBoolean(),
+            'descripcion' => $randomText(),
         ];
 
         $signos_vitales = [
@@ -45,26 +46,26 @@ class HistoriaOdontologicaFactory extends Factory
         ];
 
         $examen_extraoral = [
-            'cabeza' => $faker->text(100),
-            'cara' => $faker->text(100),
-            'simetria_facial' => $faker->text(100),
-            'piel' => $faker->text(100),
-            'lesiones_extraorales' => $faker->text(100),
-            'palpacion_ganglios' => $faker->text(100),
-            'articulacion_temporomandibular' => $faker->text(100),
+            'cabeza' => $randomText(),
+            'cara' => $randomText(),
+            'simetria_facial' => $randomText(),
+            'piel' => $randomText(),
+            'lesiones_extraorales' => $randomText(),
+            'palpacion_ganglios' => $randomText(),
+            'articulacion_temporomandibular' => $randomText(),
         ];
 
         $examen_intraoral = [
-            'labios' => $faker->text(100),
-            'mejillas' => $faker->text(100),
-            'frenillos' => $faker->text(100),
-            'piso_boca' => $faker->text(100),
-            'lengua_tipo' => $faker->text(100),
-            'paladar_duro_blando' => $faker->text(100),
-            'encias' => $faker->text(100),
-            'dientes' => $faker->text(100),
-            'discromias' => $faker->text(100),
-            'maxilares' => $faker->text(100),
+            'labios' => $randomText(),
+            'mejillas' => $randomText(),
+            'frenillos' => $randomText(),
+            'piso_boca' => $randomText(),
+            'lengua_tipo' => $randomText(),
+            'paladar_duro_blando' => $randomText(),
+            'encias' => $randomText(),
+            'dientes' => $randomText(),
+            'discromias' => $randomText(),
+            'maxilares' => $randomText(),
         ];
 
         $examen_fisico = [
@@ -73,10 +74,73 @@ class HistoriaOdontologicaFactory extends Factory
             'examen_intraoral' => $examen_intraoral,
         ];
 
+
+        $maxilar_sup = [
+            'tipo_arco' => $randomText(),
+            'forma_arco' => $randomText(),
+            'simetria_arco' => $randomText(),
+            'paladar' => $randomText(),
+            'maloclusion' => $randomText(),
+            'dientes_ausentes' => $randomText(),
+            'facetas_desgaste' => $randomText(),
+            'diastemas' => $randomText(),
+            'anomalia' => $randomText(),
+        ];
+
+        $maxilar_inf = [
+            'tipo_arco' => $randomText(),
+            'forma_arco' => $randomText(),
+            'simetria_arco' => $randomText(),
+            'piso_boca' => $randomText(),
+            'maloclusion' => $randomText(),
+            'dientes_ausentes' => $randomText(),
+            'facetas_desgaste' => $randomText(),
+            'diastemas' => $randomText(),
+            'anomalia' => $randomText(),
+        ];
+
+        $modelos_oclusion = [
+            'linea_media' => $randomText(),
+            'sobresalte' => $randomText(),
+            'sobrepase' => $randomText(),
+            'relacion_canina' => $randomText(),
+            'relacion_molar' => $randomText(),
+            'mordida_anterior' => $randomText(),
+            'mordida_posterior' => $randomText(),
+            'curva_compensacion' => $randomText(),
+            'plano_oclusal' => $randomText(),
+        ];
+
+        $examenes_comp = $randomText();
+
+        $interconsultas = [
+            'cirugia' => $randomBoolean(),
+            'periodoncia' => $randomBoolean(),
+            'endodoncia' => $randomBoolean(),
+            'protesis' => $randomBoolean(),
+            'ortodoncia' => $randomBoolean(),
+            'descripcion' => $randomText(),
+        ];
+
+        $diagnostico = $randomText();
+
+        $pronostico = $randomText();
+
+        $estudio_modelos = [
+            'maxilar_sup' => $maxilar_sup,
+            'maxilar_inf' => $maxilar_inf,
+            'modelos_oclusion' => $modelos_oclusion,
+            'examenes_comp' => $examenes_comp,
+            'interconsultas' => $interconsultas,
+            'diagnostico' => $diagnostico,
+            'pronostico' => $pronostico
+        ];
+
         return [
             'ant_personales' => $ant_personales,
             'habitos' => json_encode($habitos),
             'examen_fisico' => json_encode($examen_fisico),
+            'estudio_modelos' => json_encode($estudio_modelos),
         ];
     }
 }
