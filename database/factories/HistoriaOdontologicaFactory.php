@@ -42,6 +42,7 @@ class HistoriaOdontologicaFactory extends Factory
                         'fecha' => $faker->dateTimeThisMonth('-1 day'),
                         'diente' => $faker->numberBetween(18, 48),
                         'tratamiento' => $randomText(),
+                        'nombre_docente' => $faker->name(),
                         'aprobacion_docente' => $faker->boolean(20),
                     ];
             return $modificacionesTratamientos;
@@ -172,7 +173,9 @@ class HistoriaOdontologicaFactory extends Factory
         $numero_modificaciones_tratamientos = $faker->numberBetween(0, $numero_tratamientos);
 
         $modificaciones_plan_tratamiento = [
-            'modificaciones' => $randomModificacionTratamientos($numero_modificaciones_tratamientos)
+            'modificaciones' => $randomModificacionTratamientos($numero_modificaciones_tratamientos),
+            'paciente' => $faker->name(),
+            'firma' => ($faker->boolean()) ? '' : 'aceptado',
         ];
 
         return [
