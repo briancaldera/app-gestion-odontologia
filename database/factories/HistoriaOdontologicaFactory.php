@@ -33,6 +33,20 @@ class HistoriaOdontologicaFactory extends Factory
             return $tratamientos;
         };
 
+        $randomModificacionTratamientos = function ($count = 1) use ($faker, $randomText) {
+            $modificacionesTratamientos = [];
+
+            for ($i = 0; $i < $count; $i++)
+                $modificacionesTratamientos[] =
+                    [
+                        'fecha' => $faker->dateTimeThisMonth('-1 day'),
+                        'diente' => $faker->numberBetween(18, 48),
+                        'tratamiento' => $randomText(),
+                        'aprobacion_docente' => $faker->boolean(20),
+                    ];
+            return $modificacionesTratamientos;
+        };
+
         $ant_personales = $randomText();
 
         $habitos = [
@@ -149,17 +163,17 @@ class HistoriaOdontologicaFactory extends Factory
             'pronostico' => $pronostico
         ];
 
+        $numero_tratamientos = $faker->numberBetween(1, 18);
+
         $plan_tratamiento = [
-            'plan_tratamiento' => []
+            'plan' => $randomTratamientos($numero_tratamientos),
         ];
 
-//        $tratamiento = [
-//            'diente' => $faker->numberBetween(18, 48),
-//            'cavidad' => $faker->text(15),
-//            'tratamiento' => $randomText(),
-//        ];
+        $numero_modificaciones_tratamientos = $faker->numberBetween(0, $numero_tratamientos);
 
-        $plan_tratamiento['plan_tratamiento'] = $randomTratamientos($faker->numberBetween(1, 18));
+        $modificaciones_plan_tratamiento = [
+            'modificaciones' => $randomModificacionTratamientos($numero_modificaciones_tratamientos)
+        ];
 
         return [
             'ant_personales' => $ant_personales,
@@ -167,6 +181,7 @@ class HistoriaOdontologicaFactory extends Factory
             'examen_fisico' => json_encode($examen_fisico),
             'estudio_modelos' => json_encode($estudio_modelos),
             'plan_tratamiento' => json_encode($plan_tratamiento),
+            'modificaciones_plan_tratamiento' => json_encode($modificaciones_plan_tratamiento),
         ];
     }
 }

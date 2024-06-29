@@ -27,7 +27,15 @@ test('habitos is json', function () {
 test('plan tratamiento is an array', function () {
     $historia = Historia::factory()->create();
     $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
-    
+
     expect($historiaOdontologica->plan_tratamiento)->toBeJson()
-        ->and(json_decode($historiaOdontologica->plan_tratamiento)->plan_tratamiento)->toBeArray();
+        ->and(json_decode($historiaOdontologica->plan_tratamiento)->plan)->toBeArray();
+});
+
+test('modificaciones plan tratamiento is an array', function () {
+    $historia = Historia::factory()->create();
+    $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
+
+    expect($historiaOdontologica->modificaciones_plan_tratamiento)->toBeJson()
+        ->and(json_decode($historiaOdontologica->modificaciones_plan_tratamiento)->modificaciones)->toBeArray();
 });
