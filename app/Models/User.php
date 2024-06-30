@@ -5,9 +5,13 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $role the role for the user
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasUuids;
@@ -53,5 +57,25 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role == 0;
+    }
+
+    public function isAdmision(): bool
+    {
+        return $this->role == 1;
+    }
+
+    public function isProfesor(): bool
+    {
+        return $this->role == 2;
+    }
+
+    public function isEstudiante(): bool
+    {
+        return $this->role == 3;
     }
 }

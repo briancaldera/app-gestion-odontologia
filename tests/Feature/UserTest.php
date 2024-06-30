@@ -53,3 +53,10 @@ test('has role', function () {
     assertArrayHasKey('role', $user);
     expect($user->role)->toBeNumeric()->toBeBetween(0, 3);
 });
+
+test('default role is estudiante', function () {
+    $user = User::factory()->create();
+
+    expect($user->role)->toBe(3);
+    expect($user->isEstudiante())->toBeTrue();
+});
