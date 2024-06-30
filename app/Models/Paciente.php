@@ -24,8 +24,13 @@ class Paciente extends Model
         'ocupacion',
         'direccion',
         'telefono',
-        'foto',
+        'foto_url',
     ];
+
+    public function historia(): HasOne
+    {
+        return $this->hasOne(Historia::class);
+    }
 
     public function antFamiliares(): HasOne
     {

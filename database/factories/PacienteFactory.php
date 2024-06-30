@@ -28,7 +28,7 @@ class PacienteFactory extends Factory
             'ocupacion' => $faker->jobTitle(),
             'direccion' => $faker->address(),
             'telefono' => $faker->phoneNumber(),
-            'foto' => $faker->imageUrl(),
+            'foto_url' => $faker->imageUrl(),
         ];
     }
 }
