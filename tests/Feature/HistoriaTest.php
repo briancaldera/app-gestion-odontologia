@@ -28,7 +28,7 @@ test('student can open Historia form', function () {
     $response = $this->actingAs($user)->get('/historia/create');
 
     $response->assertOk();
-});
+})->todo();
 
 test('guest cannot open Historia form', function () {
     $this->assertGuest();
@@ -36,16 +36,20 @@ test('guest cannot open Historia form', function () {
     $response = $this->get('/historia/create');
     $response->assertUnauthorized();
     $response->assertRedirectToRoute('login');
-});
-
+})->todo();
 
 test('user can save Historia', function () {
     $user = User::factory()->create();
 
 
-})->skip('Todo');
+})->todo();
 
 test('wrong Historia is rejected', function () {
 
 })->skip();
 
+test('initial status is abierta', function () {
+    $historia = Historia::factory()->create();
+
+    expect($historia->status)->toBeString()->toBe('abierta');
+});

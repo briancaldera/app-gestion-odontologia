@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('numero')->unique();
             $table->text('motivo_consulta');
             $table->text('enfermedad_actual');
+            $table->enum('status', ['abierta', 'entregada', 'cerrada']);
             $table->timestamps();
         });
     }
