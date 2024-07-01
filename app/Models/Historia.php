@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 /**
  * @property string $id the UUID
@@ -35,6 +36,21 @@ class Historia extends Model
     public function paciente(): BelongsTo
     {
         return $this->belongsTo(Paciente::class);
+    }
+
+    public function antFamiliares(): HasOne
+    {
+        return $this->hasOne(AntFamiliares::class);
+    }
+
+    public function antPersonales(): HasOne
+    {
+        return $this->hasOne(AntPersonales::class);
+    }
+
+    public function trastornos(): HasOne
+    {
+        return $this->hasOne(Trastornos::class);
     }
 
     public function historiaOdontologica(): HasOne

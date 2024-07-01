@@ -12,11 +12,11 @@ class Trastornos extends Model
 
     public $timestamps = false;
 
-    protected $primaryKey = 'paciente_id';
+    protected $primaryKey = 'historia_id';
     public $incrementing = false;
 
-    public function antPersonales(): BelongsTo
+    public function historia(): BelongsTo
     {
-        return $this->belongsTo(AntPersonales::class);
+        return $this->belongsTo(Historia::class);
     }
 }

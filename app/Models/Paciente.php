@@ -51,19 +51,4 @@ class Paciente extends Model
     {
         return $this->hasOne(Historia::class);
     }
-
-    public function antFamiliares(): HasOne
-    {
-        return $this->hasOne(AntFamiliares::class);
-    }
-
-    public function antPersonales(): HasOne
-    {
-        return $this->hasOne(AntPersonales::class);
-    }
-
-    public function trastornos(): HasOneThrough
-    {
-        return $this->hasOneThrough(Trastornos::class, AntPersonales::class);
-    }
 }

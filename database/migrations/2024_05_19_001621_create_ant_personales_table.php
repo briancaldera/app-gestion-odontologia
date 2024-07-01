@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ant_personales', function (Blueprint $table) {
-            $table->foreignUuid('paciente_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('historia_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->jsonb('medicamentos');
             $table->jsonb('alergias');
         });

@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('trastornos', function (Blueprint $table) {
-            $table->foreignUuid('paciente_id')->primary()->constrained('ant_personales', 'paciente_id')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('historia_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->jsonb('cardiovasculares');
             $table->jsonb('hematologicos');
             $table->jsonb('respiratorios');

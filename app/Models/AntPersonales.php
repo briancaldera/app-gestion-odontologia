@@ -13,16 +13,12 @@ class AntPersonales extends Model
 
     public $timestamps = false;
 
-    protected $primaryKey = 'paciente_id';
+    protected $primaryKey = 'historia_id';
     public $incrementing = false;
 
-    public function paciente(): BelongsTo
-    {
-        return $this->belongsTo(Paciente::class);
-    }
 
-    public function trastornos(): HasOne
+    public function historia(): BelongsTo
     {
-        return $this->hasOne(Trastornos::class, 'paciente_id');
+        return $this->belongsTo(Historia::class);
     }
 }
