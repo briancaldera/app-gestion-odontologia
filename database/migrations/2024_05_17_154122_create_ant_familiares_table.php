@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ant_familiares', function (Blueprint $table) {
-            $table->foreignUuid('paciente_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('historia_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->text('madre');
             $table->text('padre');
             $table->text('hermanos');

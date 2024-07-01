@@ -11,14 +11,14 @@ beforeEach(function () {
 });
 
 test('AntFamiliares factory can be used', function () {
-    $paciente = Paciente::factory()->hasAntFamiliares()->create();
+    $historia = \App\Models\Historia::factory()->forPaciente()->hasAntFamiliares()->create();
 
-    expect($paciente->antFamiliares)->toBeInstanceOf(AntFamiliares::class);
+    expect($historia->antFamiliares)->toBeInstanceOf(AntFamiliares::class);
 });
 
 test('AntFamiliares can be created', function () {
-    $paciente = Paciente::factory()->hasAntFamiliares()->create();
+    $historia = \App\Models\Historia::factory()->forPaciente()->hasAntFamiliares()->create();
 
     $this->assertDatabaseCount('ant_familiares', 1);
-    $this->assertDatabaseHas('ant_familiares', $paciente->antFamiliares->attributesToArray());
+    $this->assertDatabaseHas('ant_familiares', $historia->antFamiliares->attributesToArray());
 });

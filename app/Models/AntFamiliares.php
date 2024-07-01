@@ -12,7 +12,7 @@ class AntFamiliares extends Model
 
     public $timestamps = false;
 
-    protected $primaryKey = 'paciente_id';
+    protected $primaryKey = 'historia_id';
     public $incrementing = false;
 
     protected $fillable = [
@@ -31,8 +31,8 @@ class AntFamiliares extends Model
         'abuelos_paternos' => '',
     ];
 
-    public function paciente(): BelongsTo
+    public function historia(): BelongsTo
     {
-        return $this->belongsTo(Paciente::class);
+        return $this->belongsTo(Historia::class);
     }
 }
