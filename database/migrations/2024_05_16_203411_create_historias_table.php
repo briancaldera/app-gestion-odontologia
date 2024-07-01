@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('historias', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('paciente_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('numero')->unique();
             $table->text('motivo_consulta');
             $table->text('enfermedad_actual');

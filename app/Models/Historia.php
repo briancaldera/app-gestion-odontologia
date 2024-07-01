@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -22,6 +23,8 @@ class Historia extends Model
     protected $attributes = [
         'numero' => '',
         'status' => 'abierta',
+        'motivo_consulta' => '',
+        'enfermedad_actual' => '',
     ];
 
     protected $fillable = [
@@ -29,8 +32,15 @@ class Historia extends Model
         'enfermedad_actual'
     ];
 
+    public function paciente(): BelongsTo
+    {
+        return $this->belongsTo(Paciente::class);
+    }
+
     public function historiaOdontologica(): HasOne
     {
         return $this->hasOne(HistoriaOdontologica::class);
     }
+
+
 }

@@ -11,21 +11,21 @@ beforeEach(function () {
 });
 
 test('test we can use factory', function () {
-    $historia = Historia::factory()->create();
+    $historia = Historia::factory()->forPaciente()->create();
     $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
 
     expect($historiaOdontologica)->toBeInstanceOf(HistoriaOdontologica::class);
 });
 
 test('habitos is json', function () {
-    $historia = Historia::factory()->create();
+    $historia = Historia::factory()->forPaciente()->create();
     $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
 
     expect($historiaOdontologica->habitos)->toBeJson();
 });
 
 test('plan tratamiento is an array', function () {
-    $historia = Historia::factory()->create();
+    $historia = Historia::factory()->forPaciente()->create();
     $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
 
     expect($historiaOdontologica->plan_tratamiento)->toBeJson()
@@ -33,7 +33,7 @@ test('plan tratamiento is an array', function () {
 });
 
 test('modificaciones plan tratamiento is an array', function () {
-    $historia = Historia::factory()->create();
+    $historia = Historia::factory()->forPaciente()->create();
     $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
 
     expect($historiaOdontologica->modificaciones_plan_tratamiento)->toBeJson()
@@ -41,7 +41,7 @@ test('modificaciones plan tratamiento is an array', function () {
 });
 
 test('secuencia tratamiento is an array', function () {
-    $historia = Historia::factory()->create();
+    $historia = Historia::factory()->forPaciente()->create();
     $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
 
     expect($historiaOdontologica->secuencia_tratamiento)->toBeJson()

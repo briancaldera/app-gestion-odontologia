@@ -12,7 +12,7 @@ beforeEach(function () {
 });
 
 test('test we can use factory', function () {
-    $historia = Historia::factory()->create();
+    $historia = Historia::factory()->forPaciente()->create();
     $historiaOdontologica = HistoriaOdontologica::factory()->for($historia)->create();
     $examen_radiografico = ExamenRadiografico::factory()->for($historiaOdontologica)->create();
 

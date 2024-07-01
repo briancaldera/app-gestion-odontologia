@@ -11,12 +11,12 @@ beforeEach(function () {
 });
 
 test('historia factory can be used', function () {
-    $historia = Historia::factory()->create();
+    $historia = Historia::factory()->forPaciente()->create();
     expect($historia)->toBeInstanceOf(Historia::class);
 });
 
 test('historia can be created', function () {
-    $historia = Historia::factory()->create();
+    $historia = Historia::factory()->forPaciente()->create();
 
     $this->assertDatabaseCount('historias', 1);
     $this->assertDatabaseHas('historias', $historia->attributesToArray());
@@ -49,7 +49,7 @@ test('wrong Historia is rejected', function () {
 })->skip();
 
 test('initial status is abierta', function () {
-    $historia = Historia::factory()->create();
+    $historia = Historia::factory()->forPaciente()->create();
 
     expect($historia->status)->toBeString()->toBe('abierta');
 });
