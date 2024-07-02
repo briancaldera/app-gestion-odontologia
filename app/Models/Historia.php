@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 /**
  * @property string $id the UUID
+ * @property string $paciente_id the patient model related to the medical record
  * @property string $numero the id assigned by admision
  * @property string $motivo_consulta the reason for the consultation
  * @property string $enfermedad_actual current disease
