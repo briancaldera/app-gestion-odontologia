@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -51,8 +52,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Routes for estudiante
-    Route::middleware(['role:estudiante'])->name('estudiante.')->group(function () {
+    Route::middleware(['role:estudiante'])->group(function () {
 
+        Route::prefix('pacientes')->name('pacientes.')->group(function () {
+            Route::resource('', PacienteController::class);
+        });
 
 
 

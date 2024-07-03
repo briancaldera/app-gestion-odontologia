@@ -23,11 +23,11 @@ class PacienteFactory extends Factory
             'apellido' => $faker->lastName(),
             'edad' => $faker->numberBetween(18, 120),
             'sexo' => $faker->regexify('[MF]'),
-            'peso' => $faker->randomFloat(2, 50, 120),
-            'fecha_nacimiento' => $faker->dateTimeBetween('-120 years', $endDate = '-18 years'),
+            'peso' => number_format($faker->randomFloat(2, 50, 300), 2),
+            'fecha_nacimiento' => date_format($faker->dateTimeBetween('-120 years', $endDate = '-18 years'), 'Y-m-d'),
             'ocupacion' => $faker->jobTitle(),
             'direccion' => $faker->address(),
-            'telefono' => $faker->phoneNumber(),
+            'telefono' => $faker->regexify('^\d{4}-\d{7}$'),
             'foto_url' => $faker->imageUrl(),
         ];
     }

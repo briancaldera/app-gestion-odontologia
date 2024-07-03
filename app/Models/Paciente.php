@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Date;
  * @property string $ocupacion the occupation or job title.
  * @property string $direccion the residential address.
  * @property string $telefono the contact phone.
- * @property string $foto_url the url that points to the picture file.
+ * @property ?string $foto_url the url that points to the picture file.
  * @property Date $created_at the datetime when this model was created.
  * @property Date $updated_at the datetime when this model was last updated.
  */

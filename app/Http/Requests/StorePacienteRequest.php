@@ -24,7 +24,7 @@ class StorePacienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cedula' => ['required', 'string', 'alpha:ascii', 'between:4, 10','regex:/^[VE][\d]{3,9}$/', 'unique:App\Model\Paciente,cedula'],
+            'cedula' => ['required', 'string', 'alpha_num:ascii', 'between:4, 10','regex:/^[VE][\d]{3,9}$/', 'unique:App\Models\Paciente,cedula'],
             'nombre' => ['required', 'string', 'alpha', 'between:2, 50'],
             'apellido' => ['required', 'string', 'alpha', 'between:2, 50'],
             'edad' => ['required', 'numeric', 'integer', 'min:0', 'max:150'],

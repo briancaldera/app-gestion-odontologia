@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('ocupacion');
             $table->text('direccion');
             $table->string('telefono');
-            $table->string('foto_url');
+            $table->string('foto_url')->nullable();
             $table->timestamps();
         });
     }
