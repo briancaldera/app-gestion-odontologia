@@ -24,4 +24,40 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Routes for admin
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+
+
+
+
+    });
+
+    // Routes for admision
+    Route::middleware(['role:admision'])->prefix('admision')->name('admision.')->group(function () {
+
+
+
+
+    });
+
+    // Routes for profesor
+    Route::middleware(['role:profesor'])->prefix('profesor')->name('profesor.')->group(function () {
+
+
+
+
+    });
+
+    // Routes for estudiante
+    Route::middleware(['role:estudiante'])->name('estudiante.')->group(function () {
+
+
+
+
+    });
+
+});
+
 require __DIR__.'/auth.php';
