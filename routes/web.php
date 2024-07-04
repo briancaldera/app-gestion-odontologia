@@ -57,8 +57,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::resource('pacientes', PacienteController::class);
 
-        Route::prefix('historia')->name('historia.')->group(function () {
+        Route::prefix('historias')->name('historias.')->group(function () {
             Route::post('/{paciente}', [HistoriaController::class, 'store'])->name('store');
+            Route::patch('/{historia}', [HistoriaController::class, 'update'])->name('update');
         });
 
     });

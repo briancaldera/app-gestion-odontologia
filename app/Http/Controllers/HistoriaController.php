@@ -63,7 +63,9 @@ class HistoriaController extends Controller
      */
     public function update(UpdateHistoriaRequest $request, Historia $historia)
     {
-        //
+        $data = $request->validated();
+        $this->historiaService->updateHistoria($historia, $data);
+        return response()->noContent();
     }
 
     /**
