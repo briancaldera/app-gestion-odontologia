@@ -11,7 +11,8 @@ class StoreHistoriaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        // Will handle authorization through policy.
+        return true;
     }
 
     /**
@@ -22,7 +23,7 @@ class StoreHistoriaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+
         ];
     }
 }

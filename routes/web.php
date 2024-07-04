@@ -54,9 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Routes for estudiante
     Route::middleware(['role:estudiante'])->group(function () {
 
-        Route::prefix('pacientes')->name('pacientes.')->group(function () {
-            Route::resource('', PacienteController::class);
-        });
+        Route::resource('pacientes', PacienteController::class);
 
 
 

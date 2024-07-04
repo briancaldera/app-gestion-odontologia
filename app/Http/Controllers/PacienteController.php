@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePacienteRequest;
+use App\Http\Requests\UpdatePacienteRequest;
 use App\Models\Paciente;
 use App\Services\PacienteService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Inertia\Inertia;
 
 class PacienteController extends Controller
@@ -47,7 +49,7 @@ class PacienteController extends Controller
      */
     public function show(Paciente $paciente)
     {
-        //
+        return $paciente;
     }
 
     /**
@@ -61,9 +63,11 @@ class PacienteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Paciente $paciente)
+    public function update(UpdatePacienteRequest $request, Paciente $paciente): Response
     {
-        //
+        $data = $request->validated();
+        $this->pacienteService->updatePaciente($paciente, $data);
+        return response()->noContent();
     }
 
     /**

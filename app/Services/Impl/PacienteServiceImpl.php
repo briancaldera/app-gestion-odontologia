@@ -22,6 +22,17 @@ class PacienteServiceImpl implements PacienteService
         ]);
     }
 
+    public function updatePaciente(Paciente $paciente, $data): Paciente
+    {
+        if ($data['foto'] ?? false) {
+            $data['foto_url'] = $this->savePhotoToFilesystem($data['foto']);
+        }
+
+        $paciente->updateOrFail($data);
+
+        return $paciente;
+    }
+
     private function savePhotoToFilesystem(UploadedFile $file): string
     {
         $now = now();
