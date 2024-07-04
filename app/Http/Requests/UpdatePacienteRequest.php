@@ -23,8 +23,8 @@ class UpdatePacienteRequest extends FormRequest
     {
         return [
             'cedula' => ['sometimes', 'required', 'string', 'alpha_num:ascii', 'between:4, 10','regex:/^[VE][\d]{3,9}$/', 'unique:App\Models\Paciente,cedula'],
-            'nombre' => ['sometimes', 'required', 'string', 'alpha', 'between:2, 50'],
-            'apellido' => ['sometimes', 'required', 'string', 'alpha', 'between:2, 50'],
+            'nombre' => ['sometimes', 'required', 'string', 'between:2, 50'],
+            'apellido' => ['sometimes', 'required', 'string', 'between:2, 50'],
             'edad' => ['sometimes', 'required', 'numeric', 'integer', 'min:0', 'max:150'],
             'sexo' => ['sometimes', 'required', 'string', 'alpha:ascii', 'size:1', 'regex:/^[M|F]$/'],
             'peso' => ['sometimes', 'required', 'numeric', 'min:0', 'max:300','decimal:2'],

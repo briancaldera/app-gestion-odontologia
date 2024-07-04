@@ -54,4 +54,4 @@ test('paciente service can update paciente', function () {
     $this->assertDatabaseCount(Paciente::class, 1);
     $this->assertDatabaseHas(Paciente::class, ['cedula' => $updatedPaciente->cedula]);
     $this->assertDatabaseMissing(Paciente::class, ['cedula' => $paciente->cedula]);
-});
+})->repeat(10);
