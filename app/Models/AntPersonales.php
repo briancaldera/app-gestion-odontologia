@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property string $historia_id the medical record id
+ * @property array|Json $medicamentos the current medication
+ * @property array|Json $alergias the allergies
+ */
 class AntPersonales extends Model
 {
     use HasFactory;
@@ -16,6 +21,13 @@ class AntPersonales extends Model
     protected $primaryKey = 'historia_id';
     public $incrementing = false;
 
+    protected function casts(): array
+    {
+        return [
+            'medicamentos' => 'array',
+            'alergias' => 'array',
+        ];
+    }
 
     public function historia(): BelongsTo
     {
