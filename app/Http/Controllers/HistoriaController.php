@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreHistoriaRequest;
 use App\Http\Requests\UpdateHistoriaRequest;
 use App\Models\Historia;
+use App\Models\Paciente;
+use App\Services\HistoriaService;
 
 class HistoriaController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     */
+    public function __construct(
+        protected HistoriaService $historiaService,
+    ) {}
     /**
      * Display a listing of the resource.
      */
@@ -27,9 +35,11 @@ class HistoriaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreHistoriaRequest $request)
+    public function store(StoreHistoriaRequest $request, Paciente $paciente)
     {
-
+        $data = $request->validated();
+        $this->historiaService->addHistoria($paciente, $data);
+        return response(null, 201);
     }
 
     /**

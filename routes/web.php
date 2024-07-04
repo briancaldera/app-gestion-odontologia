@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -56,7 +57,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::resource('pacientes', PacienteController::class);
 
-
+        Route::prefix('historia')->name('historia.')->group(function () {
+            Route::post('/{paciente}', [HistoriaController::class, 'store'])->name('store');
+        });
 
     });
 

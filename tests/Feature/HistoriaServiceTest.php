@@ -1,6 +1,8 @@
 <?php
 
-use App\Services\HistoriaService;
+use App\Models\Historia;
+use App\Models\Paciente;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -10,11 +12,25 @@ beforeEach(function () {
 });
 
 test('test we can create patient', function () {
-    $historiaService = $this->spy(HistoriaService::class, fn() => \App\Services\HistoriaServiceImpl::class);
+    $user = User::factory()->create();
+    $this->actingAs($user);
 
-    $fakePaciente = \App\Models\Paciente::factory()->make();
+    $paciente = Paciente::factory()->create();
 
-    $paciente = $historiaService->addPaciente($fakePaciente->attributesToArray());
+    $historia = Historia::factory()->makeOne();
+    $historia->paciente_id = $paciente->id;
 
-    $this->assertDatabaseHas('pacientes', [$paciente]);
-})->todo();
+    $res = $this->withoutExceptionHandling()->postJson(
+        route('historia.store', ['paciente' => $paciente->id]),
+        $historia->attributesToArray(),
+    );
+
+    $res->assertCreated();
+    $this->assertDatabaseCount(Paciente::class, 1);
+    $this->assertDatabaseHas(Paciente::class, ['id' => $paciente->id]);
+    $this->assertDatabaseCount(Historia::class, 1);
+    $this->assertDatabaseHas(Historia::class, [
+        'paciente_id' => $paciente->id,
+        'motivo_consulta' => $historia->motivo_consulta,
+    ]);
+})->repeat(5);

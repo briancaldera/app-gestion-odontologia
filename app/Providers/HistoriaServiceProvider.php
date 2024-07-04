@@ -3,9 +3,8 @@
 namespace App\Providers;
 
 use App\Services\HistoriaService;
-use App\Services\HistoriaServiceImpl;
+use App\Services\Impl\HistoriaServiceImpl;
 use Illuminate\Support\ServiceProvider;
-use PHPUnit\TextUI\Application;
 
 class HistoriaServiceProvider extends ServiceProvider
 {

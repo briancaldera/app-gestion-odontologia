@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Historia;
+use App\Models\Paciente;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreHistoriaRequest extends FormRequest
@@ -23,7 +25,10 @@ class StoreHistoriaRequest extends FormRequest
     public function rules(): array
     {
         return [
-
+            'paciente_id' => ['required', 'string', 'uuid', 'exists:'.Paciente::class.',id', 'unique:'.Historia::class],
+            'numero' => ['sometimes', 'nullable', 'string'], //todo: define details about numero de solicitud with admision
+            'motivo_consulta' => ['required', 'string', 'max:255'],
+            'enfermedad_actual' => ['required', 'string', 'max:255'],
         ];
     }
 }
