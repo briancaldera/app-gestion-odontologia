@@ -7,7 +7,9 @@ use App\Http\Requests\StoreAntPersonalesRequest;
 use App\Http\Requests\StoreHistoriaOdontologicaRequest;
 use App\Http\Requests\StoreHistoriaRequest;
 use App\Http\Requests\StoreTrastornosRequest;
+use App\Http\Requests\UpdateAntFamiliaresRequest;
 use App\Http\Requests\UpdateHistoriaRequest;
+use App\Models\AntFamiliares;
 use App\Models\Historia;
 use App\Models\Paciente;
 use App\Services\HistoriaService;
@@ -51,6 +53,14 @@ class HistoriaController extends Controller
         $data = $request->validated();
         $this->historiaService->addAntFamiliares($historia, $data);
         return response(null, 201);
+    }
+
+    public function updateAntFamiliares(UpdateAntFamiliaresRequest $request)
+    {
+        $data = $request->validated();
+        $antFamiliares = AntFamiliares::findOrFail($data['historia_id']);
+        $this->historiaService->updateAntFamiliares($antFamiliares, $data);
+        return response()->noContent();
     }
 
     public function storeAntPersonales(StoreAntPersonalesRequest $request, Historia $historia)

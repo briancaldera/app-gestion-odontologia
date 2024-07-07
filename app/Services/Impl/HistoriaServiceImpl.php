@@ -10,6 +10,7 @@ use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
 use App\Models\Trastornos;
 use App\Services\HistoriaService;
+use Illuminate\Support\Arr;
 
 class HistoriaServiceImpl implements HistoriaService
 {
@@ -48,6 +49,12 @@ class HistoriaServiceImpl implements HistoriaService
     public function addAntFamiliares(Historia $historia, array $data): AntFamiliares
     {
         return $historia->antFamiliares()->create($data);
+    }
+
+    public function updateAntFamiliares(AntFamiliares $antFamiliares, array $data): AntFamiliares
+    {
+        $antFamiliares->updateOrFail($data);
+        return $antFamiliares;
     }
 
 

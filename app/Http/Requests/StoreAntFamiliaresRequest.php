@@ -25,11 +25,11 @@ class StoreAntFamiliaresRequest extends FormRequest
     {
         return [
             'historia_id' => ['required', 'uuid', 'exists:'.Historia::class.',id', 'unique:'.AntFamiliares::class],
-            'madre' => ['required', 'string', 'max:255'],
-            'padre' => ['required', 'string', 'max:255'],
-            'hermanos' => ['required', 'string', 'max:255'],
-            'abuelos_maternos' => ['required', 'string', 'max:255'],
-            'abuelos_paternos' => ['required', 'string', 'max:255'],
+            'madre' => ['nullable', 'string', 'max:255'],
+            'padre' => ['nullable', 'string', 'max:255'],
+            'hermanos' => ['nullable', 'string', 'max:255'],
+            'abuelos_maternos' => ['nullable', 'string', 'max:255'],
+            'abuelos_paternos' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

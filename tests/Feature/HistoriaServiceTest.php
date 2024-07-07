@@ -112,3 +112,54 @@ test('ENDPOINT: historias.storeAntFamiliares is storing Antecedentes Familiares'
 
     $res->assertCreated();
 });
+
+test('ENDPOINT: historias.storeAntFamiliares can save empty field in Antecedentes Familiares', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $historia = Historia::factory()->forPaciente()->create();
+
+    $this->assertDatabaseCount(Historia::class, 1);
+
+    $antFamiliares = AntFamiliares::factory()->makeOne([
+        'madre' => '',
+        'padre' => '',
+    ]);
+    $antFamiliares->historia_id = $historia->id;
+
+    $res = $this->withoutExceptionHandling()->postJson(
+        route('historias.storeAntFamiliares', ['historia' => $historia->id]),
+        $antFamiliares->attributesToArray());
+
+    $res->assertCreated();
+    $this->assertDatabaseCount(AntFamiliares::class, 1);
+    $this->assertDatabaseHas(AntFamiliares::class, [
+       'padre' => null,
+       'madre' => null,
+    ]);
+});
+
+test('ENDPOINT: historias.updateAntFamiliares can set empty a field in Antecedentes Familiares', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $historia = Historia::factory()->forPaciente()->hasAntFamiliares()->create();
+
+    $this->assertDatabaseCount(Historia::class, 1);
+    $this->assertDatabaseCount(AntFamiliares::class, 1);
+
+    $antFamiliares = AntFamiliares::factory()->makeOne();
+    $antFamiliares->historia_id = $historia->id;
+    // Setting empty the parent field
+    $antFamiliares->padre = '';
+
+    $res = $this->withoutExceptionHandling()->patchJson(
+        route('historias.updateAntFamiliares', ['historia' => $historia->id]),
+        [
+            'historia_id' => $historia->id,
+            'padre' => '',
+        ]);
+
+    $res->assertNoContent();
+    $this->assertDatabaseHas(AntFamiliares::class, ['padre' => null]);
+});

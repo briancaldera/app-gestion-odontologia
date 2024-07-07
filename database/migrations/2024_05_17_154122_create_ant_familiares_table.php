@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('ant_familiares', function (Blueprint $table) {
             $table->foreignUuid('historia_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->text('madre');
-            $table->text('padre');
-            $table->text('hermanos');
-            $table->text('abuelos_maternos');
-            $table->text('abuelos_paternos');
+            $table->text('madre')->nullable();
+            $table->text('padre')->nullable();
+            $table->text('hermanos')->nullable();
+            $table->text('abuelos_maternos')->nullable();
+            $table->text('abuelos_paternos')->nullable();
         });
     }
 

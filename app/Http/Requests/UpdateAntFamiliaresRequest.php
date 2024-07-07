@@ -24,12 +24,12 @@ class UpdateAntFamiliaresRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['sometimes', 'required', 'uuid', 'exists:'.Historia::class.',id', 'unique:'.AntFamiliares::class],
-            'madre' => ['sometimes', 'required', 'string', 'max:255'],
-            'padre' => ['sometimes', 'required', 'string', 'max:255'],
-            'hermanos' => ['sometimes', 'required', 'string', 'max:255'],
-            'abuelos_maternos' => ['sometimes', 'required', 'string', 'max:255'],
-            'abuelos_paternos' => ['sometimes', 'required', 'string', 'max:255'],
+            'historia_id' => ['required', 'uuid', 'exists:'.AntFamiliares::class],
+            'madre' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'padre' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'hermanos' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'abuelos_maternos' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'abuelos_paternos' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
 }
