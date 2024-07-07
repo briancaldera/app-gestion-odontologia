@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\AntFamiliares;
 use App\Models\Historia;
+use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -92,3 +94,21 @@ test('ENDPOINT: historias.update is updating partially', function () {
         'enfermedad_actual' => $historiaUpdated->enfermedad_actual,
     ]);
 })->repeat(3);
+
+test('ENDPOINT: historias.storeAntFamiliares is storing Antecedentes Familiares', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $historia = Historia::factory()->forPaciente()->create();
+
+    $this->assertDatabaseCount(Historia::class, 1);
+
+    $antFamiliares = AntFamiliares::factory()->makeOne();
+    $antFamiliares->historia_id = $historia->id;
+
+    $res = $this->withoutExceptionHandling()->postJson(
+        route('historias.storeAntFamiliares', ['historia' => $historia->id]),
+        $antFamiliares->attributesToArray());
+
+    $res->assertCreated();
+});

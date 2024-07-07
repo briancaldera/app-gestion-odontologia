@@ -47,12 +47,7 @@ class HistoriaServiceImpl implements HistoriaService
 
     public function addAntFamiliares(Historia $historia, array $data): AntFamiliares
     {
-        $antFamiliares = AntFamiliares::create([
-            'historia_id' => $historia->id,
-            ... $data,
-        ]);
-
-        return $antFamiliares;
+        return $historia->antFamiliares()->create($data);
     }
 
 

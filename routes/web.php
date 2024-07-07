@@ -62,7 +62,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/{historia}', [HistoriaController::class, 'update'])->name('update');
 
             Route::post('/{historia}/antfamiliares', [HistoriaController::class, 'storeAntFamiliares'])->name('storeAntFamiliares');
-            Route::patch('/{historia}/antfamiliares', [HistoriaController::class, ''])->name('updateAntFamiliares');
+//            Route::patch('/{historia}/antfamiliares', [HistoriaController::class, ''])->name('updateAntFamiliares');
+
+            Route::post('/{historia}/antpersonales', [HistoriaController::class, 'storeAntPersonales'])->name('storeAntPersonales');
+
+
+            Route::post('/{historia}/trastornos', [HistoriaController::class, 'storeTrastornos'])->name('storeTrastornos');
+
+
+            Route::post('/{historia}/odontologica', [HistoriaController::class, 'storeHistoriaOdontologica'])->name('storeHistoriaOdontologica');
+
+
         });
 
     });

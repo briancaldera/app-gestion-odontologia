@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAntFamiliaresRequest;
 use App\Http\Requests\StoreAntPersonalesRequest;
 use App\Http\Requests\StoreHistoriaOdontologicaRequest;
 use App\Http\Requests\StoreHistoriaRequest;
@@ -45,7 +46,7 @@ class HistoriaController extends Controller
         return response(null, 201);
     }
 
-    public function storeAntFamiliares(StoreAntPersonalesRequest $request, Historia $historia)
+    public function storeAntFamiliares(StoreAntFamiliaresRequest $request, Historia $historia)
     {
         $data = $request->validated();
         $this->historiaService->addAntFamiliares($historia, $data);
