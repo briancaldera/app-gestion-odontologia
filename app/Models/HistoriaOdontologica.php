@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property string $historia_id the medical record id
@@ -26,6 +27,15 @@ class HistoriaOdontologica extends Model
     protected $primaryKey = 'historia_id';
     public $incrementing = false;
 
+    protected $fillable = [
+        'habitos',
+        'examen_fisico',
+        'estudio_modelos',
+        'plan_tratamiento',
+        'modificaciones_plan_tratamiento',
+        'secuencia_tratamiento',
+    ];
+
     protected function casts()
     {
         return [
@@ -41,5 +51,10 @@ class HistoriaOdontologica extends Model
     public function historia(): BelongsTo
     {
         return $this->belongsTo(Historia::class);
+    }
+
+    public function examenRadiografico(): HasOne
+    {
+        return $this->hasOne(ExamenRadiografico::class);
     }
 }

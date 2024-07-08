@@ -29,6 +29,19 @@ class Trastornos extends Model
     protected $primaryKey = 'historia_id';
     public $incrementing = false;
 
+    protected $fillable = [
+        'cardiovasculares',
+        'hematologicos',
+        'respiratorios',
+        'endocrinos',
+        'gastrointestinales',
+        'neurologicos',
+        'oseos',
+        'ginecologicos',
+        'urologicos',
+        'infectocontagiosa',
+    ];
+
     protected function casts()
     {
         return [
