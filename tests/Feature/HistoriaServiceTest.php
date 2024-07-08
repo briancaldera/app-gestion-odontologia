@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AntFamiliares;
+use App\Models\AntPersonales;
 use App\Models\Historia;
 use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
@@ -162,4 +163,22 @@ test('ENDPOINT: historias.updateAntFamiliares can set empty a field in Anteceden
 
     $res->assertNoContent();
     $this->assertDatabaseHas(AntFamiliares::class, ['padre' => null]);
+});
+
+test('ENDPOINT: historias.storeAntPersonales is storing Antecedentes Personales', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $historia = Historia::factory()->forPaciente()->create();
+
+    $this->assertDatabaseCount(Historia::class, 1);
+
+    $antFamiliares = AntPersonales::factory()->makeOne();
+    $antFamiliares->historia_id = $historia->id;
+
+    $res = $this->withoutExceptionHandling()->postJson(
+        route('historias.storeAntPersonales', ['historia' => $historia->id]),
+        $antFamiliares->attributesToArray());
+
+    $res->assertCreated();
 });

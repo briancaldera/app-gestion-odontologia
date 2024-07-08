@@ -32,11 +32,11 @@ class AntFamiliares extends Model
     ];
 
     protected $attributes = [
-        'madre' => '',
-        'padre' => '',
-        'hermanos' => '',
-        'abuelos_maternos' => '',
-        'abuelos_paternos' => '',
+        'madre' => null,
+        'padre' => null,
+        'hermanos' => null,
+        'abuelos_maternos' => null,
+        'abuelos_paternos' => null,
     ];
 
     public function historia(): BelongsTo

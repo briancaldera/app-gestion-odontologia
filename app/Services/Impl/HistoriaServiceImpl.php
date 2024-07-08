@@ -60,12 +60,7 @@ class HistoriaServiceImpl implements HistoriaService
 
     public function addAntPersonales(Historia $historia, array $data): AntPersonales
     {
-        $antPersonales = AntPersonales::create([
-            'historia_id' => $historia->id,
-            ...$data,
-        ]);
-
-        return $antPersonales;
+        return $historia->antPersonales()->create($data);
     }
 
     public function addTrastornos(Historia $historia, array $data): Trastornos

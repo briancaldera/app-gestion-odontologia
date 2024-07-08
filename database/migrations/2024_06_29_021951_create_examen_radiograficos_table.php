@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('examen_radiograficos', function (Blueprint $table) {
             $table->foreignUuid('historia_id')->primary()->constrained('historia_odontologicas', 'historia_id')->cascadeOnUpdate()->cascadeOnDelete();
             $table->jsonb('interpretacion_panoramica');
-            $table->text('interpretacion_periapicales');
-            $table->text('interpretacion_coronales');
+            $table->text('interpretacion_periapicales')->nullable();
+            $table->text('interpretacion_coronales')->nullable();
         });
     }
 
