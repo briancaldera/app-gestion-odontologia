@@ -63,28 +63,43 @@ class HistoriaServiceImpl implements HistoriaService
         return $historia->antPersonales()->create($data);
     }
 
+    public function updateAntPersonales(AntPersonales $antPersonales, array $data): AntPersonales
+    {
+        $antPersonales->updateOrFail($data);
+        return $antPersonales;
+    }
+
     public function addTrastornos(Historia $historia, array $data): Trastornos
     {
-        return Trastornos::create([
-            'historia_id' => $historia->id,
-            ...$data,
-        ]);
+        return $historia->trastornos()->create($data);
+    }
+
+    public function updateTrastornos(Trastornos $trastornos, array $data): Trastornos
+    {
+        $trastornos->updateOrFail($data);
+        return $trastornos;
     }
 
     public function addHistoriaOdontologica(Historia $historia, array $data): HistoriaOdontologica
     {
-        return HistoriaOdontologica::create([
-            'historia_id' => $historia->id,
-            ...$data,
-        ]);
+        return $historia->historiaOdontologica()->create($data);
+    }
+
+    public function updateHistoriaOdontologica(HistoriaOdontologica $historiaOdon, array $data): HistoriaOdontologica
+    {
+        $historiaOdon->updateOrFail($data);
+        return $historiaOdon;
     }
 
     public function addExamenRadiografico(HistoriaOdontologica $historiaOdon, array $data): ExamenRadiografico
     {
-        return ExamenRadiografico::create([
-            'historia_id' => $historiaOdon->historia_id,
-            ...$data,
-        ]);
+        return $historiaOdon->examenRadiografico()->create($data);
+    }
+
+    public function updateExamenRadiografico(ExamenRadiografico $examenRadio, array $data): ExamenRadiografico
+    {
+        $examenRadio->updateOrFail($data);
+        return $examenRadio;
     }
 }
 

@@ -8,10 +8,16 @@ use App\Http\Requests\StoreHistoriaOdontologicaRequest;
 use App\Http\Requests\StoreHistoriaRequest;
 use App\Http\Requests\StoreTrastornosRequest;
 use App\Http\Requests\UpdateAntFamiliaresRequest;
+use App\Http\Requests\UpdateAntPersonalesRequest;
+use App\Http\Requests\UpdateHistoriaOdontologicaRequest;
 use App\Http\Requests\UpdateHistoriaRequest;
+use App\Http\Requests\UpdateTrastornosRequest;
 use App\Models\AntFamiliares;
+use App\Models\AntPersonales;
 use App\Models\Historia;
+use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
+use App\Models\Trastornos;
 use App\Services\HistoriaService;
 
 class HistoriaController extends Controller
@@ -70,6 +76,14 @@ class HistoriaController extends Controller
         return response(null, 201);
     }
 
+    public function updateAntPersonales(UpdateAntPersonalesRequest $request)
+    {
+        $data = $request->validated();
+        $antPersonales = AntPersonales::findOrFail($data['historia_id']);
+        $this->historiaService->updateAntPersonales($antPersonales, $data);
+        return response()->noContent();
+    }
+
     public function storeTrastornos(StoreTrastornosRequest $request, Historia $historia)
     {
         $data = $request->validated();
@@ -77,11 +91,27 @@ class HistoriaController extends Controller
         return response(null, 201);
     }
 
+    public function updateTrastornos(UpdateTrastornosRequest $request)
+    {
+        $data = $request->validated();
+        $trastornos = Trastornos::findOrFail($data['historia_id']);
+        $this->historiaService->updateTrastornos($trastornos, $data);
+        return response()->noContent();
+    }
+
     public function storeHistoriaOdontologica(StoreHistoriaOdontologicaRequest $request, Historia $historia)
     {
         $data = $request->validated();
         $this->historiaService->addHistoriaOdontologica($historia, $data);
         return response(null, 201);
+    }
+
+    public function updateHistoriaOdontologica(UpdateHistoriaOdontologicaRequest $request)
+    {
+        $data = $request->validated();
+        $historiaOdon = HistoriaOdontologica::findOrFail($data['historia_id']);
+        $this->historiaService->updateHistoriaOdontologica($historiaOdon, $data);
+        return response()->noContent();
     }
 
     /**

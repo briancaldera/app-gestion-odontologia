@@ -65,13 +65,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/{historia}/antfamiliares', [HistoriaController::class, 'updateAntFamiliares'])->name('updateAntFamiliares');
 
             Route::post('/{historia}/antpersonales', [HistoriaController::class, 'storeAntPersonales'])->name('storeAntPersonales');
-
+            Route::patch('/{historia}/antpersonales', [HistoriaController::class, 'updateAntPersonales'])->name('updateAntPersonales');
 
             Route::post('/{historia}/trastornos', [HistoriaController::class, 'storeTrastornos'])->name('storeTrastornos');
-
+            Route::patch('/{historia}/trastornos', [HistoriaController::class, 'updateTrastornos'])->name('updateTrastornos');
 
             Route::post('/{historia}/odontologica', [HistoriaController::class, 'storeHistoriaOdontologica'])->name('storeHistoriaOdontologica');
-
+            Route::patch('/{historia}/odontologica', [HistoriaController::class, 'updateHistoriaOdontologica'])->name('updateHistoriaOdontologica');
 
         });
 
