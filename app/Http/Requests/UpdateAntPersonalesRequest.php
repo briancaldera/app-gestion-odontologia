@@ -13,7 +13,7 @@ class UpdateAntPersonalesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,16 +24,16 @@ class UpdateAntPersonalesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['required', 'uuid', 'exists:'.Historia::class.',id', 'unique:'.AntPersonales::class],
-            'medicamentos' => ['required', 'json', 'required_array_keys:hipertensivos,analgesicos,esteroides,antidepresivos,anticonceptivos,hipogicemiante,anticonvulsivos,sildenafil,acidoacetilicidico,anticoagulante,bifosfanato,otros'],
-            'medicamentos.*.positivo' => ['required', 'boolean'],
-            'medicamentos.*.dosis' => ['sometimes', 'required', 'numeric', 'decimal:0,2'],
-            'medicamentos.*.descripcion' => ['sometimes', 'required', 'string', 'max:255'],
-            'alergias' => ['required', 'json', 'required_array_keys:antibioticos,analgesicos,anestesicos,yodo,otros'],
-            'alergias.otros' => ['required', 'required_array_keys:positivo,descripcion'],
-            'alergias.otros.positivo' => ['required', 'boolean'],
-            'alergias.otros.descripcion' => ['required', 'string', 'max:255'],
+            'historia_id' => ['required', 'uuid', 'exists:'.AntPersonales::class],
+            'medicamentos' => ['required', 'array', 'array:hipertensivos,analgesicos,esteroides,antidepresivos,anticonceptivos,hipogicemiante,anticonvulsivos,sildenafil,acidoacetilicidico,anticoagulante,bifosfanato,otros'],
+            'medicamentos.*.positivo' => ['boolean'],
+            'medicamentos.*.dosis' => ['nullable', 'numeric', 'decimal:0,2'],
+            'medicamentos.*.descripcion' => ['nullable', 'string', 'max:255'],
+            'alergias' => ['required', 'array', 'array:antibioticos,analgesicos,anestesicos,yodo,otros'],
             'alergias.*' => ['sometimes', 'boolean'],
+            'alergias.otros' => ['required', 'array:positivo,descripcion'],
+            'alergias.otros.positivo' => ['required', 'boolean'],
+            'alergias.otros.descripcion' => ['nullable', 'string', 'max:255'],
         ];
     }
 }
