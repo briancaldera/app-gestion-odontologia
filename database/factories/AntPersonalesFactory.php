@@ -44,8 +44,8 @@ class AntPersonalesFactory extends Factory
         ];
 
         return [
-            'medicamentos' => json_encode($medicamentos),
-            'alergias' => json_encode($alergias),
+            'medicamentos' => $medicamentos,
+            'alergias' => $alergias,
         ];
     }
 }
