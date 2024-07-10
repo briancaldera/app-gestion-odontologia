@@ -31,7 +31,7 @@ class ExamenRadiograficoFactory extends Factory
         $interpretacion_coronales = $randomText();
 
         return [
-            'interpretacion_panoramica' => json_encode($interpretacion_panoramica),
+            'interpretacion_panoramica' => $interpretacion_panoramica,
             'interpretacion_periapicales' => $interpretacion_periapicales,
             'interpretacion_coronales' => $interpretacion_coronales
         ];

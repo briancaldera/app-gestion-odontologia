@@ -18,5 +18,5 @@ test('test we can use factory', function () {
 
     expect($examen_radiografico)->toBeInstanceOf(ExamenRadiografico::class);
     expect($examen_radiografico->historiaOdontologica)->toBeInstanceOf(HistoriaOdontologica::class);
-    expect($examen_radiografico->interpretacion_panoramica)->toBeJson();
+    expect($examen_radiografico->interpretacion_panoramica)->toBeObject();
 });
