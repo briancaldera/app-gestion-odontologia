@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,12 +40,12 @@ class HistoriaOdontologica extends Model
     protected function casts()
     {
         return [
-            'habitos' => 'array',
-            'examen_fisico' => 'array',
-            'estudio_modelos' => 'array',
-            'plan_tratamiento' => 'array',
-            'modificaciones_plan_tratamiento' => 'array',
-            'secuencia_tratamiento' => 'array',
+            'habitos' => AsArrayObject::class,
+            'examen_fisico' => AsArrayObject::class,
+            'estudio_modelos' => AsArrayObject::class,
+            'plan_tratamiento' => AsArrayObject::class,
+            'modificaciones_plan_tratamiento' => AsArrayObject::class,
+            'secuencia_tratamiento' => AsArrayObject::class,
         ];
     }
 

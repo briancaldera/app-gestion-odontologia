@@ -184,12 +184,12 @@ class HistoriaOdontologicaFactory extends Factory
 
         return [
             'ant_personales' => $ant_personales,
-            'habitos' => json_encode($habitos),
-            'examen_fisico' => json_encode($examen_fisico),
-            'estudio_modelos' => json_encode($estudio_modelos),
-            'plan_tratamiento' => json_encode($plan_tratamiento),
-            'modificaciones_plan_tratamiento' => json_encode($modificaciones_plan_tratamiento),
-            'secuencia_tratamiento' => json_encode($secuencia_tratamiento),
+            'habitos' => $habitos,
+            'examen_fisico' => $examen_fisico,
+            'estudio_modelos' => $estudio_modelos,
+            'plan_tratamiento' => $plan_tratamiento,
+            'modificaciones_plan_tratamiento' => $modificaciones_plan_tratamiento,
+            'secuencia_tratamiento' => $secuencia_tratamiento,
         ];
     }
 }
