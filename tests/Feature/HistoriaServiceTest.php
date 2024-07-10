@@ -182,3 +182,26 @@ test('ENDPOINT: historias.storeAntPersonales is storing Antecedentes Personales'
 
     $res->assertCreated();
 });
+
+test('ENDPOINT: historias.updateAntPersonales is updating Antecedentes Personales', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $historia = Historia::factory()->forPaciente()->hasAntPersonales()->create();
+
+    $this->assertDatabaseCount(Historia::class, 1);
+
+    $antFamiliares = AntPersonales::factory()->makeOne();
+    $antFamiliares->medicamentos['otros']['descripcion'] = 'Otros medicamentos no prescritos';
+    expect($antFamiliares->medicamentos)->toBeObject();
+    $antFamiliares->historia_id = $historia->id;
+
+    $res = $this->withoutExceptionHandling()->patchJson(
+        route('historias.updateAntPersonales', ['historia' => $historia->id]),
+        $antFamiliares->attributesToArray());
+
+    $res->assertNoContent();
+    $this->assertDatabaseHas(AntPersonales::class, [
+       'medicamentos->otros->descripcion' => $antFamiliares->medicamentos['otros']['descripcion']
+    ]);
+});

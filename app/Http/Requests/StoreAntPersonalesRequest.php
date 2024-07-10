@@ -24,22 +24,22 @@ class StoreAntPersonalesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['required', 'uuid', 'exists:'.Historia::class.',id', 'unique:'.AntPersonales::class],
+            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id', 'unique:' . AntPersonales::class],
 
-            'medicamentos' => ['required', 'json'],
-            'medicamentos.*' => ['array:positivo,dosis'],
+            'medicamentos' => ['required', 'array', 'array:hipertensivos,analgesicos,esteroides,antidepresivos,anticonceptivos,hipogicemiante,anticonvulsivos,sildenafil,acidoacetilicidico,anticoagulante,bifosfanato,otros'],
+            'medicamentos.*' => ['array:positivo,dosis_diaria'],
             'medicamentos.*.positivo' => ['required', 'boolean'],
             'medicamentos.*.dosis' => ['nullable', 'numeric', 'decimal:0,2'],
 
             'medicamentos.otros' => ['array:positivo,descripcion'],
-            'medicamentos.otros.positivo' => ['sometimes', 'required', 'boolean'],
-            'medicamentos.otros.descripcion' => ['sometimes', 'required', 'string', 'max:255'],
+            'medicamentos.otros.positivo' => ['required', 'boolean'],
+            'medicamentos.otros.descripcion' => ['nullable', 'string', 'max:255'],
 
-            'alergias' => ['required', 'json'],
-            'alergias.otros' => ['array:positivo,descripcion'],
-            'alergias.otros.positivo' => ['boolean'],
-            'alergias.otros.descripcion' => ['string', 'max:255'],
-            'alergias.*' => ['required', 'boolean'],
+            'alergias' => ['required', 'array:antibioticos,analgesicos,anestesicos,yodo,otros'],
+            'alergias.*' => ['boolean'],
+            'alergias.otros' => ['required', 'array:positivo,descripcion'],
+            'alergias.otros.positivo' => ['required', 'boolean'],
+            'alergias.otros.descripcion' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

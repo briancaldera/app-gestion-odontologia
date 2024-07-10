@@ -28,12 +28,12 @@ test('medicamentos can be attached to antPersonales', function () {
     $historia = Historia::factory()->forPaciente()->hasAntPersonales()->create();
     $medicamentos = $historia->antPersonales->medicamentos;
 
-    expect($medicamentos)->toBeJson();
+    expect($medicamentos)->toBeObject();
 });
 
 test('alergias can be attached to antPersonales', function () {
     $historia = Historia::factory()->forPaciente()->hasAntPersonales()->create();
     $alergias = $historia->antPersonales->alergias;
 
-    expect($alergias)->toBeJson();
+    expect($alergias)->toBeObject();
 });
