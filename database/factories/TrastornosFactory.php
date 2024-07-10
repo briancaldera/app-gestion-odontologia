@@ -161,16 +161,16 @@ class TrastornosFactory extends Factory
         ];
 
         return [
-            'cardiovasculares' => json_encode($cardiovasculares),
-            'hematologicos' => json_encode($hematologicos),
-            'respiratorios' => json_encode($respiratorios),
-            'endocrinos' => json_encode($endocrinos),
-            'gastrointestinales' => json_encode($gastrointestinales),
-            'neurologicos' => json_encode($neurologicos),
-            'oseos' => json_encode($oseos),
-            'ginecologicos' => json_encode($ginecologicos),
-            'urologicos' => json_encode($urologicos),
-            'infectocontagiosa' => json_encode($infectocontagiosa),
+            'cardiovasculares' => $cardiovasculares,
+            'hematologicos' => $hematologicos,
+            'respiratorios' => $respiratorios,
+            'endocrinos' => $endocrinos,
+            'gastrointestinales' => $gastrointestinales,
+            'neurologicos' => $neurologicos,
+            'oseos' => $oseos,
+            'ginecologicos' => $ginecologicos,
+            'urologicos' => $urologicos,
+            'infectocontagiosa' => $infectocontagiosa,
         ];
     }
 }

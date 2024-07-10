@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,16 +46,16 @@ class Trastornos extends Model
     protected function casts()
     {
         return [
-            'cardiovasculares' => 'array',
-            'hematologicos' => 'array',
-            'respiratorios' => 'array',
-            'endocrinos' => 'array',
-            'gastrointestinales' => 'array',
-            'neurologicos' => 'array',
-            'oseos' => 'array',
-            'ginecologicos' => 'array',
-            'urologicos' => 'array',
-            'infectocontagiosa' => 'array',
+            'cardiovasculares' => AsArrayObject::class,
+            'hematologicos' => AsArrayObject::class,
+            'respiratorios' => AsArrayObject::class,
+            'endocrinos' => AsArrayObject::class,
+            'gastrointestinales' => AsArrayObject::class,
+            'neurologicos' => AsArrayObject::class,
+            'oseos' => AsArrayObject::class,
+            'ginecologicos' => AsArrayObject::class,
+            'urologicos' => AsArrayObject::class,
+            'infectocontagiosa' => AsArrayObject::class,
         ];
     }
 
