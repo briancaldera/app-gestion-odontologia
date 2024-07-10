@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,8 +30,8 @@ class AntPersonales extends Model
     protected function casts(): array
     {
         return [
-            'medicamentos' => 'array',
-            'alergias' => 'array',
+            'medicamentos' => AsArrayObject::class,
+            'alergias' => AsArrayObject::class,
         ];
     }
 
