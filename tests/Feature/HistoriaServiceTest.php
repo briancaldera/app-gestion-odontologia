@@ -5,6 +5,7 @@ use App\Models\AntPersonales;
 use App\Models\Historia;
 use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
+use App\Models\Trastornos;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -189,7 +190,7 @@ test('ENDPOINT: historias.updateAntPersonales is updating Antecedentes Personale
 
     $historia = Historia::factory()->forPaciente()->hasAntPersonales()->create();
 
-    $this->assertDatabaseCount(Historia::class, 1);
+    $this->assertDatabaseCount(AntPersonales::class, 1);
 
     $antFamiliares = AntPersonales::factory()->makeOne();
     $antFamiliares->medicamentos['otros']['descripcion'] = 'Otros medicamentos no prescritos';
@@ -206,4 +207,25 @@ test('ENDPOINT: historias.updateAntPersonales is updating Antecedentes Personale
     ]);
 });
 
+test('ENDPOINT: historias.storeTrastornos can store Trastornos', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
 
+    $historia = Historia::factory()->forPaciente()->create();
+
+    $this->assertDatabaseCount(Historia::class, 1);
+
+    $trastornos = Trastornos::factory()->makeOne();
+    $trastornos->historia_id = $historia->id;
+
+    $res = $this->withoutExceptionHandling()->postJson(
+        route('historias.storeTrastornos', ['historia' => $historia->id]),
+        $trastornos->attributesToArray());
+
+    $res->assertCreated();
+    $this->assertDatabaseCount(Trastornos::class, 1);
+    $this->assertModelExists($trastornos);
+    $this->assertDatabaseHas(Trastornos::class, [
+        'cardiovasculares->disnea' => $trastornos->cardiovasculares['disnea'],
+    ]);
+});
