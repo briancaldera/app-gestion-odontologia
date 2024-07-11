@@ -229,3 +229,27 @@ test('ENDPOINT: historias.storeTrastornos can store Trastornos', function () {
         'cardiovasculares->disnea' => $trastornos->cardiovasculares['disnea'],
     ]);
 });
+
+test('ENDPOINT: historias.updateTrastornos can update Trastornos', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $historia = Historia::factory()->forPaciente()->hasTrastornos()->create();
+
+    $this->assertDatabaseCount(Trastornos::class, 1);
+
+    $trastornosUpdated = Trastornos::factory()->makeOne();
+    $trastornosUpdated->cardiovasculares['otros'] = 'Aritmica cardíaca';
+    $trastornosUpdated->historia_id = $historia->id;
+
+    $res = $this->withoutExceptionHandling()->patchJson(
+        route('historias.updateTrastornos', ['historia' => $historia->id]),
+        $trastornosUpdated->attributesToArray());
+
+    $res->assertNoContent();
+    $this->assertDatabaseCount(Trastornos::class, 1);
+    $this->assertModelExists($trastornosUpdated);
+    $this->assertDatabaseHas(Trastornos::class, [
+        'cardiovasculares->otros' => $trastornosUpdated->cardiovasculares['otros'],
+    ]);
+});
