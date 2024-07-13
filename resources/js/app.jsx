@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter';
 import './bootstrap';
 import '../css/app.css';
 
