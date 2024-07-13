@@ -8,6 +8,7 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.jsx',
+        './stories/*.jsx',
     ],
 
     theme: {
@@ -17,7 +18,12 @@ export default {
             },
         },
     },
-    darkMode: 'selector',
+    darkMode: ['class', '[data-mode="dark"]'],
+    // important: true,
+    // to deactivate normalize
+    corePlugins: {
+        preflight: false,
+    },
 
     plugins: [forms],
 };
