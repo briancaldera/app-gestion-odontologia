@@ -1,7 +1,8 @@
 import '@fontsource-variable/inter';
 import {CssBaseline, ThemeProvider} from '@mui/joy';
-import {withThemeFromJSXProvider, withThemeByClassName, withThemeByDataAttribute } from '@storybook/addon-themes';
+import {withThemeFromJSXProvider, withThemeByClassName, withThemeByDataAttribute} from '@storybook/addon-themes';
 import '../resources/css/app.css';
+import StylesDecorator from "./styles-decorator.jsx";
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -14,6 +15,7 @@ const preview = {
         },
     },
     decorators: [
+        StylesDecorator,
         // withThemeFromJSXProvider ({
         //     // themes: {
         //     //     light: defaultTheme,
@@ -38,8 +40,6 @@ const preview = {
             attributeName: 'data-mode',
         }),
     ],
-
-
 };
 
 export default preview;
