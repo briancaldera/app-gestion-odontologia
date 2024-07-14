@@ -4,6 +4,6 @@ import {Button as MuiButton} from '@mui/joy'
 
 export const Button = ({label, ...props}) => {
     return (
-        <MuiButton className={'bg-amber-500 text-white'} {...props}>{label}</MuiButton>
+        <MuiButton variant={"solid"} className={'bg-indigo-600 hover:bg-indigo-500'} {...props}>{label}</MuiButton>
     )
 }
