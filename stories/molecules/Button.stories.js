@@ -24,3 +24,17 @@ export const Default = {
         label: 'Button',
     },
 };
+
+export const Disabled = {
+    args: {
+        label: 'Button',
+        disabled: true
+    }
+}
+
+export const Loading = {
+    args: {
+        label: 'Button',
+        loading: true
+    }
+}
