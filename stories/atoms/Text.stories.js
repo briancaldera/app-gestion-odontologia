@@ -11,7 +11,7 @@ export default {
     argTypes: {
         backgroundColor: { control: 'color' },
     },
-    args: { onClick: fn() },
+    args: { level: 'body-md', onClick: fn() },
 }
 
 export const Normal = {

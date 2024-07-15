@@ -1,14 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography as MuiTypography } from '@mui/joy'
+import Colors from "@/Components/atoms/Colors.jsx";
 
-const colors = {
-    "text-slate-500": 'rgb(100 116 139)',
-    "text-slate-700": 'rgb(51 65 85)',
-}
-
-export const Text = ({children, ...props}) => {
+export const Text = ({level, children, ...props}) => {
     return (
-            <MuiTypography className={"dark:text-white"} level={"body-md"} sx={{color: colors["text-slate-700"]}} {...props}>{children}</MuiTypography>
+            <MuiTypography className={"dark:text-slate-300"} level={level} sx={{color: Colors["text-slate-700"]}} {...props}>{children}</MuiTypography>
     )
 }
