@@ -37,6 +37,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource-variable/inter": "^5.0.19",
+    "@heroicons/react": "^2.1.5",
     "@mui/joy": "^5.0.0-beta.48"
   }
 }
