@@ -8,7 +8,7 @@ export default {
         backgroundColor: { control: 'color' },
     },
     args: {
-        children: <Text>Some random content</Text>,
+        children: <Text>The quick brown fox jumps over the lazy dog</Text>,
     },
 }
 
