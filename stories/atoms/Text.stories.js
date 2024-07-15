@@ -16,6 +16,6 @@ export default {
 
 export const Normal = {
     args: {
-        text: "The quick brown fox jumps over the lazy dog"
+        children: "The quick brown fox jumps over the lazy dog"
     }
 }

@@ -7,8 +7,8 @@ const colors = {
     "text-slate-700": 'rgb(51 65 85)',
 }
 
-export const Text = ({text, ...props}) => {
+export const Text = ({children, ...props}) => {
     return (
-            <MuiTypography className={"dark:text-white"} level={"body-md"} sx={{color: colors["text-slate-700"]}} {...props}>{text}</MuiTypography>
+            <MuiTypography className={"dark:text-white"} level={"body-md"} sx={{color: colors["text-slate-700"]}} {...props}>{children}</MuiTypography>
     )
 }
