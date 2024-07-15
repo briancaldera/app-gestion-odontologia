@@ -1,5 +1,4 @@
 import '@fontsource-variable/inter';
-import {CssBaseline, ThemeProvider} from '@mui/joy';
 import {withThemeFromJSXProvider, withThemeByClassName, withThemeByDataAttribute} from '@storybook/addon-themes';
 import '../resources/css/app.css';
 import StylesDecorator from "./styles-decorator.jsx";
@@ -31,14 +30,14 @@ const preview = {
             },
             defaultTheme: 'light',
         }),
-        withThemeByDataAttribute({
-            themes: {
-                light: 'light',
-                dark: 'dark',
-            },
-            defaultTheme: 'light',
-            attributeName: 'data-mode',
-        }),
+        // withThemeByDataAttribute({
+        //     themes: {
+        //         light: 'light',
+        //         dark: 'dark',
+        //     },
+        //     defaultTheme: 'light',
+        //     attributeName: 'data-mode',
+        // }),
     ],
 };
 

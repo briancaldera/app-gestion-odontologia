@@ -18,7 +18,7 @@ export default {
             },
         },
     },
-    darkMode: ['class', '[data-mode="dark"]'],
+    darkMode: 'selector',
     // important: true,
     // to deactivate normalize
     corePlugins: {
