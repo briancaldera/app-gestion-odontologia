@@ -1,5 +1,5 @@
-import { fn } from '@storybook/test'
 import {Text} from "@/Components/atoms/Text.jsx";
+import {ExampleText} from "../Utils.js";
 
 export default {
     title: 'atoms/Text/Text',
@@ -11,11 +11,29 @@ export default {
     argTypes: {
         backgroundColor: { control: 'color' },
     },
-    args: { level: 'body-md', onClick: fn() },
+    args: { children: ExampleText },
 }
 
-export const Normal = {
+export const lg = {
     args: {
-        children: "The quick brown fox jumps over the lazy dog"
+        level: "body-lg"
+    }
+}
+
+export const md = {
+    args: {
+        level: "body-md"
+    }
+}
+
+export const sm = {
+    args: {
+        level: "body-sm"
+    }
+}
+
+export const xs = {
+    args: {
+        level: "body-xs"
     }
 }
