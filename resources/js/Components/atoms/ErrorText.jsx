@@ -3,9 +3,9 @@ import Colors from "@/Components/atoms/Colors.jsx";
 
 export const ErrorText = ({ message, className = '', ...props }) => {
     return message ? (
-        <Typography level={"body-xs"} className={`dark:text-rose-600 ${className}`} sx={{color: Colors["text-rose-600"]}} {...props}>
+        <p className={`text-sm text-rose-600 dark:text-rose-500 ${className}`} {...props}>
             {message}
-        </Typography>
+        </p>
     ) : null;
 }
 
