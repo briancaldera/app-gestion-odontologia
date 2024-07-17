@@ -22,7 +22,7 @@ export default {
     // important: true,
     // to deactivate normalize
     corePlugins: {
-        preflight: false,
+        // preflight: false,
     },
 
     plugins: [forms],
