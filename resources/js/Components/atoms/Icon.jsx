@@ -1,10 +1,10 @@
 import React from 'react'
-import {AcademicCapIcon} from "@heroicons/react/24/outline/index.js";
+import {NoSymbolIcon} from "@heroicons/react/24/outline/index.js";
 
-export const Icon = ({children, ...props}) => {
+export const Icon = ({className = "", onClick = null, children, props}) => {
     return (
-        <span className={"text-slate-400 dark:text-white"} {...props}>
-            {children || <AcademicCapIcon className="size-6 text-slate-400"/>}
-        </span>
+        <div className={`flex justify-center items-center size-6 text-slate-400 dark:text-white ${className} ${onClick ? 'cursor-pointer' : ''}`} onClick={onClick} {...props}>
+            {children || <NoSymbolIcon className="text-slate-400 dark:text-white"/>}
+        </div>
     )
 }
