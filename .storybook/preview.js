@@ -2,6 +2,7 @@ import '@fontsource-variable/inter';
 import {withThemeFromJSXProvider, withThemeByClassName, withThemeByDataAttribute} from '@storybook/addon-themes';
 import '../resources/css/app.css';
 import StylesDecorator from "./styles-decorator.jsx";
+import ZiggyDecorator from "./ZiggyDecorator.jsx";
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -18,6 +19,7 @@ const preview = {
         backgroundColor: { control: 'color' },
     },
     decorators: [
+        ZiggyDecorator,
         StylesDecorator,
         // withThemeFromJSXProvider ({
         //     // themes: {
