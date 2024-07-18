@@ -33,7 +33,9 @@ const Navbar = ({user, className = "", props}) => {
 
                 <div className={"inline-flex gap-2"}>
                     <div className={"sm:hidden"}>
-                        <MobileMenuButton expanded={openMobile} onClick={() => {setOpenMobile(!openMobile)}}/>
+                        <MobileMenuButton expanded={openMobile} onClick={() => {
+                            setOpenMobile(!openMobile)
+                        }}/>
                     </div>
                     <AuthSection user={user}/>
                 </div>
@@ -104,16 +106,20 @@ const AuthSection = ({user}) => {
 
     const route = useRoute()
 
+    const [open, setOpen] = React.useState(false)
+
     const auth = (
-        <div className={"flex flex-0 items-center gap-2"}>
-            <Avatar/>
+        <div className={"relative flex flex-0 items-center gap-2"}>
+            <Avatar onClick={() => {setOpen(!open)}}/>
+            <ProfileDropdown show={open}/>
         </div>
     )
 
     const guest = (
         <div className={"hidden sm:inline-flex gap-2"}>
             <NavLink href={route("login")}>Iniciar sesión</NavLink>
-            <NavLink href={route("register")}>Registrarse<Icon className={"mx-1 size-3 text-slate-900"}><ArrowRightIcon/></Icon></NavLink>
+            <NavLink href={route("register")}>Registrarse<Icon
+                className={"mx-1 size-3 text-slate-900"}><ArrowRightIcon/></Icon></NavLink>
         </div>
     )
 
@@ -122,7 +128,9 @@ const AuthSection = ({user}) => {
 
 const MobileMenuButton = ({expanded, onClick}) => {
     return (
-        <button onClick={onClick} type={"button"} className={"relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"} aria-controls="mobile-menu" aria-expanded={expanded}>
+        <button onClick={onClick} type={"button"}
+                className={"relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"}
+                aria-controls="mobile-menu" aria-expanded={expanded}>
             <Icon className={`transition ${expanded ? '' : '-rotate-90'}`}>
                 <EllipsisHorizontalIcon/>
             </Icon>
@@ -137,10 +145,30 @@ const MobileMenu = ({show, user}) => {
     return show ? (
         <Surface className={"sm:hidden px-2.5 py-3"}>
             <ul className={"flex flex-col"}>
-                {user ? authLinks.map(link => <li><NavLink href={'#'}>{link.name}</NavLink></li>) : guestLinks.map(link => <li><NavLink href={'#'}>{link.name}</NavLink></li>)}
+                {user ? authLinks.map(link => <li><NavLink href={'#'}>{link.name}</NavLink>
+                </li>) : guestLinks.map(link => <li><NavLink href={'#'}>{link.name}</NavLink></li>)}
             </ul>
         </Surface>
     ) : null
+}
+
+const ProfileDropdown = ({show}) => {
+    const route = useRoute()
+
+    return (show ?
+        <div
+            className={"absolute top-10 right-0 z-100 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"}
+            role={"menu"} aria-orientation={"vertical"} aria-labelledby={"user-menu-button"} tabIndex={"-1"}>
+
+            <Link href={route("profile.edit")} className={"block px-4 py-2 text-sm text-gray-700"} role={"menuitem"}
+                  tabIndex={"-1"}
+                  id={"user-menu-item-0"}>Perfil</Link>
+            <hr className={"mx-2"}/>
+            <Link href={route("logout")} className={"block px-4 py-2 text-sm text-gray-700"} role={"menuitem"}
+                  tabIndex={"-1"}
+                  id={"user-menu-item-0"}>Cerrar Sesión</Link>
+        </div> : null
+    )
 }
 
 export default Navbar
