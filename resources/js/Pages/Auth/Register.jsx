@@ -5,8 +5,13 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
+import BaseLayout from "@/Layouts/BaseLayout.jsx";
+import {useRoute} from 'ziggy-js';
 
-export default function Register() {
+const Register = () => {
+
+    const route = useRoute()
+
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -27,8 +32,7 @@ export default function Register() {
     };
 
     return (
-        <GuestLayout>
-            <Head title="Register" />
+        <GuestLayout title={"Registrar"}>
 
             <form onSubmit={submit}>
                 <div>
@@ -115,3 +119,8 @@ export default function Register() {
         </GuestLayout>
     );
 }
+
+
+Register.layout = page => <BaseLayout children={page} />
+
+export default Register

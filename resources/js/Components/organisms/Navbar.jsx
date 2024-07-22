@@ -20,7 +20,7 @@ const Navbar = ({user, className = "", props}) => {
     const [openMobile, setOpenMobile] = React.useState(false)
 
     return (
-        <nav className={`w-screen bg-white dark:bg-slate-800 ${className}`} {...props}>
+        <div className={`w-screen bg-white dark:bg-slate-800 ${className}`} {...props}>
             <div className={"flex justify-between items-center h-16 px-2 lg:px-8"}>
                 {/*logo*/}
                 <div className={'size-8'}>
@@ -42,7 +42,7 @@ const Navbar = ({user, className = "", props}) => {
                 </div>
             </div>
             <MobileMenu show={openMobile} user={user}/>
-        </nav>
+        </div>
     )
 }
 
@@ -50,11 +50,11 @@ const NavLinks = ({user}) => {
 
     if (user) {
         return (<div className={"hidden sm:flex justify-even gap-6"}>
-            {authLinks.map(link => <NavLink>{link.name}</NavLink>)}
+            {authLinks.map((link, index) => <NavLink key={index}>{link.name}</NavLink>)}
         </div>)
     } else {
         return (<div className={"hidden sm:flex justify-even gap-6"}>
-            {guestLinks.map(link => <NavLink>{link.name}</NavLink>)}
+            {guestLinks.map((link, index) => <NavLink key={index}>{link.name}</NavLink>)}
         </div>)
     }
 }
@@ -69,8 +69,11 @@ const AuthSection = ({user}) => {
                 <Dropdown.Trigger>
                     <Avatar/>
                 </Dropdown.Trigger>
-                {/*<ProfileDropdown show={open}/>*/}
+
                 <Dropdown>
+
+                    <Dropdown.Option href={route("profile.edit")}>Perfil</Dropdown.Option>
+                    <hr/>
                     <Dropdown.Option href={route("logout")}>Cerrar Sesión</Dropdown.Option>
                 </Dropdown>
             </Dropdown.Container>
@@ -107,8 +110,8 @@ const MobileMenu = ({show, user}) => {
     return show ? (
         <Surface className={"sm:hidden px-2.5 py-3"}>
             <ul className={"flex flex-col"}>
-                {user ? authLinks.map(link => <li><NavLink href={'#'}>{link.name}</NavLink>
-                </li>) : guestLinks.map(link => <li><NavLink href={'#'}>{link.name}</NavLink></li>)}
+                {user ? authLinks.map((link, index) => <li key={index}><NavLink href={'#'}>{link.name}</NavLink>
+                </li>) : guestLinks.map((link, index) => <li key={index}><NavLink href={'#'}>{link.name}</NavLink></li>)}
             </ul>
         </Surface>
     ) : null
