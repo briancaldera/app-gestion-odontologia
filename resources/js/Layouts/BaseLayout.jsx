@@ -1,7 +1,5 @@
-import {StyledEngineProvider} from '@mui/joy/styles';
-import CssBaseline from "@mui/joy/CssBaseline";
-import {CssVarsProvider} from "@mui/joy/styles";
-import {SnackbarProvider, enqueueSnackbar} from 'notistack'
+import {CssVarsProvider, StyledEngineProvider} from '@mui/joy/styles';
+import {enqueueSnackbar, SnackbarProvider} from 'notistack'
 import {usePage} from '@inertiajs/react'
 import React from "react";
 
