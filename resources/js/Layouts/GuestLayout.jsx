@@ -1,25 +1,23 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import {Link} from '@inertiajs/react';
-import {CssVarsProvider} from '@mui/joy/styles';
-import CssBaseline from '@mui/joy/CssBaseline';
+import Surface from "@/Components/atoms/Surface.jsx";
 
-export default function Guest({children}) {
+const Guest = ({ children }) => {
     return (
-        <CssVarsProvider>
-            <CssBaseline/>
+        <main>
             <div
-                className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-                <div>
-                    <Link href="/">
-                        <ApplicationLogo className="w-20 h-20 fill-current text-gray-500"/>
-                    </Link>
-                </div>
-
-                <div
-                    className="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
+                className={
+                    "flex min-h-screen flex-col items-center pt-6 sm:justify-center sm:pt-0"
+                }
+            >
+                <Surface
+                    className={
+                        "mt-6 w-full overflow-hidden px-6 py-4 sm:max-w-md"
+                    }
+                >
                     {children}
-                </div>
+                </Surface>
             </div>
-        </CssVarsProvider>
+        </main>
     );
-}
+};
+
+export default Guest;
