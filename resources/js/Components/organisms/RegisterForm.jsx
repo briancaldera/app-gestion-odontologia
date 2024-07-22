@@ -6,12 +6,13 @@ import {Link, useForm} from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton.jsx";
 import {useRoute} from "ziggy-js"
 import {useEffect} from "react";
+import InputField from "@/Components/molecules/InputField.jsx";
 
 const RegisterForm = () => {
 
     const route = useRoute()
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const {data, setData, post, processing, errors, reset} = useForm({
         name: '',
         email: '',
         password: '',
@@ -30,87 +31,42 @@ const RegisterForm = () => {
         post(route('register'));
     };
 
+    const handleChange = (field) => {
+        return ({target: {value}}) => setData(field, value)
+    }
+
+
     return (
         <Surface className={"mt-6 w-full overflow-hidden px-6 py-4 sm:max-w-md"}>
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="name" value="Name"/>
+            <form onSubmit={submit} className={"space-y-4"}>
+                <InputField onChange={handleChange("name")} label={"Nombre"} id={'name'} name={"name"}
+                            autocomplete={"name"} value={data.name} error={errors.name} required={true} />
 
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                    />
+                <InputField onChange={handleChange("email")} label={"Correo Electrónico"} id={'email'}
+                            type={"email"} name={"email"} value={data.email} error={errors.email}
+                            autocomplete={"email"} required={true}/>
 
-                    <InputError message={errors.name} className="mt-2"/>
-                </div>
+                <InputField label={'Contraseña'} id={"password"} name={"password"} value={data.password}
+                            error={errors.password} type={"password"} autocomplete={'password'}
+                            onChange={handleChange("password")} required={true}/>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email"/>
 
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                    />
+                <InputField label={'Confirmar contraseña'} id={"password_confirmation"} name={"password_confirmation"}
+                            value={data.password_confirmation}
+                            error={errors.password_confirmation} type={"password"} autocomplete={'password'}
+                            onChange={handleChange("password_confirmation")} required={true} />
 
-                    <InputError message={errors.email} className="mt-2"/>
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password"/>
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2"/>
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password"/>
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password_confirmation', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password_confirmation} className="mt-2"/>
-                </div>
 
                 <div className="flex items-center justify-end mt-4">
                     <Link
                         href={route('login')}
                         className="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
                     >
-                        Already registered?
+                        Ya tiene un usuario?
                     </Link>
 
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
+                        Registrar
                     </PrimaryButton>
                 </div>
             </form>
