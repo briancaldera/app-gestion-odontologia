@@ -13,6 +13,19 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    public function create(): Response | RedirectResponse
+    {
+        if (!Auth::user()->profile) {
+            return Inertia::render('Auth/CreateProfile');
+        }
+        return to_route('dashboard');
+    }
+
+    public function store()
+    {
+
+    }
+
     /**
      * Display the user's profile form.
      */

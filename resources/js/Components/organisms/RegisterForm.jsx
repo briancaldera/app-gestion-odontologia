@@ -7,6 +7,8 @@ import PrimaryButton from "@/Components/PrimaryButton.jsx";
 import {useRoute} from "ziggy-js"
 import {useEffect} from "react";
 import InputField from "@/Components/molecules/InputField.jsx";
+import {Button} from "@/Components/molecules/Button.jsx";
+import NavLink from "@/Components/atoms/NavLink.jsx";
 
 const RegisterForm = () => {
 
@@ -57,17 +59,10 @@ const RegisterForm = () => {
                             onChange={handleChange("password_confirmation")} required={true} />
 
 
-                <div className="flex items-center justify-end mt-4">
-                    <Link
-                        href={route('login')}
-                        className="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                    >
-                        Ya tiene un usuario?
-                    </Link>
+                <div className="flex items-center justify-end mt-4 gap-x-4">
+                    <NavLink href={route('login')}>Ya tienes usuarios?</NavLink>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Registrar
-                    </PrimaryButton>
+                    <Button onClick={submit} label={"Registrar"} loading={processing}/>
                 </div>
             </form>
         </Surface>
