@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureUserHasProfile;
 use App\Http\Middleware\EnsureUserHasRole;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -19,7 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
         $middleware->alias([
-           'role' => EnsureUserHasRole::class
+           'role' => EnsureUserHasRole::class,
+            'profile' => EnsureUserHasProfile::class,
         ]);
 
         //
