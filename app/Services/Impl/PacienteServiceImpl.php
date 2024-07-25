@@ -36,6 +36,6 @@ class PacienteServiceImpl implements PacienteService
     private function savePhotoToFilesystem(UploadedFile $file): string
     {
         $now = now();
-        return $file->store(self::PACIENTE_PHOTO_DIR . $now->year . '/'. $now->month . '/');
+        return $file->store(self::PACIENTE_PHOTO_DIR . $now->year . '/'. $now->month);
     }
 }
