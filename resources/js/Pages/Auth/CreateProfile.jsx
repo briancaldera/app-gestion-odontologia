@@ -10,8 +10,14 @@ import {Option, Select} from "@mui/joy";
 import Label from "@/Components/atoms/Label.jsx";
 import ErrorText from "@/Components/atoms/ErrorText.jsx";
 import {Text} from "@/Components/atoms/Text.jsx";
+import {OutlinedButton} from "@/Components/molecules/OutlinedButton.jsx";
+import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.jsx";
+import Loader from "@/Components/atoms/Loader.jsx";
+import { useRoute } from "ziggy-js"
 
 const CreateProfile = () => {
+
+    const route = useRoute()
 
     const [page, setPage] = React.useState(0)
 
@@ -28,6 +34,13 @@ const CreateProfile = () => {
 
     const handleChange = field => ({target: {value}}) => {
         setData(field, value)
+    }
+
+    const handlePictureDrop = ([file]) => {
+        Object.assign(file, {
+            preview: URL.createObjectURL(file)
+        })
+        setData("picture", file)
     }
 
     const page_0 = (
@@ -95,20 +108,36 @@ const CreateProfile = () => {
             <form className={"grid grid-cols-1 sm:grid-cols-2 gap-8"}>
 
 
+                <div className={"col-span-1 sm:col-span-2 flex flex-col items-center justify-center gap-2 pt-4"}>
+                    <ProfilePicturePicker src={data.picture?.preview} onDrop={handlePictureDrop} className={"size-48"}/>
+                    <div className={"flex justify-end w-full my-2"}>
+                        { data.picture && (<OutlinedButton label={"Borrar"} onClick={() => setData("picture", null)}/>)}
+                    </div>
+                </div>
             </form>
 
-            <div className={"flex justify-end pt-2 gap-2"}>
-                <Button label={"Volver"} onClick={() => setPage(0)}/>
-                <Button label={"Siguiente"} />
+            <div className={"flex justify-end pt-2 gap-4"}>
+
+                <OutlinedButton label={"Atras"} onClick={() => setPage(0)}/>
+                {data.picture ? (<Button label={"Siguiente"} onClick={() => post(route("profile.store"))}/>) : (<OutlinedButton label={"Saltar"} onClick={() => post(route("profile.store"))}/>)}
             </div>
         </>
+    )
+
+    const loader = (
+        <div className={"size-96 flex justify-center items-center"}>
+            <Loader/>
+        </div>
     )
 
     return (
         <GuestLayout title={"Crear perfil"}>
             <div className={"px-4"}>
                 <Surface className={"px-6 py-6 space-y-2"}>
-                    {page === 0 ? page_0 : page_1}
+                    {
+                        processing ? loader : (page === 0 ? page_0 : page_1)
+                    }
+
                 </Surface>
             </div>
         </GuestLayout>
