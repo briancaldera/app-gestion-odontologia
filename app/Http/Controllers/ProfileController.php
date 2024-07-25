@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\StoreProfileRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,9 +11,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use League\Flysystem\WhitespacePathNormalizer;
+use Nette\Utils\Image;
 
 class ProfileController extends Controller
 {
+
+    const PROFILE_PICTURE_DIR = 'profiles/';
+
     public function create(): Response | RedirectResponse
     {
         if (!Auth::user()->profile) {
@@ -21,9 +27,27 @@ class ProfileController extends Controller
         return to_route('dashboard');
     }
 
-    public function store()
+    public function store(StoreProfileRequest $request): RedirectResponse
     {
+        abort_if(isset($request->user()->profile), 400, "El perfil ya ha sido creado.");
 
+        $data = $request->except(['picture']);
+
+        // if picture file present, process it
+        if ($request->hasFile('picture')) {
+            $profilePic = $request->file('picture');
+
+            // TODO: process image here...
+            $now = now();
+
+            $data["picture_url"] = $profilePic->storePublicly((new WhitespacePathNormalizer())->normalizePath(self::PROFILE_PICTURE_DIR . $now->year), 'public');
+        }
+
+        $request->user()->profile()->create($data);
+
+        message('Usuario creado exitosamente', \Type::Success);
+
+        return to_route('dashboard');
     }
 
     /**

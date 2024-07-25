@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,11 +24,32 @@ class Profile extends Model
 {
     use HasFactory;
 
+    protected function direccion(): Attribute
+    {
+        return Attribute::set(fn(?string $value) => is_null($value) ? '' : $value);
+    }
+
+    protected function telefono(): Attribute
+    {
+        return Attribute::set(fn(?string $value) => is_null($value) ? '' : $value);
+    }
+
     protected $primaryKey = 'user_id';
     public $incrementing = false;
 
+    protected $fillable = [
+        'nombres',
+        'apellidos',
+        'fecha_nacimiento',
+        'telefono',
+        'direccion',
+        'sexo',
+        'cedula',
+        'picture_url',
+    ];
+
     protected $attributes = [
-        'lapso' => ''
+        'lapso' => null,
     ];
 
     protected $casts = [

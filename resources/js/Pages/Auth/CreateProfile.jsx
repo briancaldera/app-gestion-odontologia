@@ -13,7 +13,7 @@ import {Text} from "@/Components/atoms/Text.jsx";
 import {OutlinedButton} from "@/Components/molecules/OutlinedButton.jsx";
 import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.jsx";
 import Loader from "@/Components/atoms/Loader.jsx";
-import { useRoute } from "ziggy-js"
+import {useRoute} from "ziggy-js"
 
 const CreateProfile = () => {
 
@@ -81,7 +81,7 @@ const CreateProfile = () => {
                     <div className={"sm:col-span-3"}>
 
                         <Label htmlFor={"sexo"} value={"Sexo"} className={"mb-2"}/>
-                        <Select id={"sexo"} onChange={(e, value) => {
+                        <Select value={data.sexo} id={"sexo"} onChange={(e, value) => {
                             setData("sexo", value)
                         }}>
                             <Option value={"F"}>Femenino</Option>
