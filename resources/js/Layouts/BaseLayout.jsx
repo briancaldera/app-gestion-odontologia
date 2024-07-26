@@ -8,7 +8,7 @@ const BaseLayout = ({children}) => {
 
     React.useEffect(() => {
         messages.forEach(message => enqueueSnackbar(message.content, {variant: message.type}))
-    }, [])
+    })
 
     return (
         <StyledEngineProvider injectFirst>
