@@ -5,6 +5,6 @@ import Colors from "@/Components/atoms/Colors.jsx";
 
 export const Text = ({level, children, ...props}) => {
     return (
-            <MuiTypography className={"dark:text-slate-300"} level={level} sx={{color: Colors["text-slate-700"]}} {...props}>{children}</MuiTypography>
+            <MuiTypography className={"dark:text-slate-300"} level={level} sx={{color: Colors["text-slate-700"], fontFamily: 'Inter Variable'}} {...props}>{children}</MuiTypography>
     )
 }
