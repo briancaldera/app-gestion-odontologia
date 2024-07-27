@@ -34,6 +34,11 @@ class Profile extends Model
         return Attribute::set(fn(?string $value) => is_null($value) ? '' : $value);
     }
 
+    protected function pictureUrl(): Attribute
+    {
+        return Attribute::get(fn(?string $value) => asset("storage/$value"));
+    }
+
     protected $primaryKey = 'user_id';
     public $incrementing = false;
 

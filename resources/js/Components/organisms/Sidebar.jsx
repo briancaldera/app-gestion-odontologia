@@ -1,7 +1,7 @@
-const Sidebar = () => {
+const Sidebar = ({children}) => {
     return (
         <div>
-
+            {children}
         </div>
     )
 }
