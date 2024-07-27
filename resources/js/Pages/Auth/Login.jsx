@@ -1,21 +1,35 @@
-import { useEffect } from 'react';
+import React, {useContext, useEffect} from 'react';
 import Checkbox from '@/Components/Checkbox';
 import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
-import BaseLayout from "@/Layouts/BaseLayout.jsx";
+import {Link, useForm} from '@inertiajs/react';
 import {useRoute} from 'ziggy-js'
+import Surface from "@/Components/atoms/Surface.jsx";
+import InputField from "@/Components/molecules/InputField.jsx";
+import {Text} from "@/Components/atoms/Text.jsx";
+import {Button} from "@/Components/molecules/Button.jsx";
+import Loader from "@/Components/atoms/Loader.jsx";
+import Logo from "@/Components/atoms/Logo.jsx";
+import Heading from "@/Components/atoms/Heading.jsx";
 
-const Login = ({ status, canResetPassword }) => {
+const LoginContext = React.createContext()
+
+const Login = ({status, canResetPassword}) => {
+
+    return (
+        <GuestLayout title={'Iniciar sesión'}>
+            <LoginContext.Provider value={{canResetPassword: canResetPassword}}>
+                {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+                <LoginForm/>
+            </LoginContext.Provider>
+        </GuestLayout>
+    );
+}
+
+const LoginForm = () => {
+
     const route = useRoute()
-    const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
-        remember: false,
-    });
+
+    const {canResetPassword} = useContext(LoginContext)
 
     useEffect(() => {
         return () => {
@@ -25,79 +39,82 @@ const Login = ({ status, canResetPassword }) => {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('login'));
     };
 
+    const {data, setData, post, processing, errors, reset} = useForm({
+        email: '',
+        password: '',
+        remember: false,
+    });
+
+    const handleChange = (field) => (({target: {value}}) => setData(field, value))
+
     return (
-        <GuestLayout title={'Iniciar sesión'}>
+        <Surface
+            className={"mt-6 w-full overflow-hidden px-6 py-6 sm:max-w-md flex flex-col justify-center items-center"}>
+            {processing ? (<Loader/>) : (<>
 
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+                    <div className={'size-28 mb-6'}>
+                        <Logo/>
+                    </div>
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="block mt-4">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) => setData('remember', e.target.checked)}
+                    <form className={'space-y-4'} onSubmit={submit}>
+                        <Heading level={'h4'}>Iniciar Sesión</Heading>
+                        <InputField
+                            label={'Correo Electrónico'}
+                            id={'email'}
+                            type={'email'}
+                            name={'email'}
+                            value={data.email}
+                            autocomplete={'email'}
+                            onChange={handleChange('email')}
+                            required={true}
+                            error={errors.email}
+                            isFocused={true}
                         />
-                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
-                    </label>
-                </div>
 
-                <div className="flex items-center justify-end mt-4">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
+                        <InputField
+                            label={'Contraseña'}
+                            id={'password'}
+                            type={'password'}
+                            name={'password'}
+                            value={data.password}
+                            autocomplete={'current-password'}
+                            onChange={handleChange('password')}
+                            required={true}
+                            error={errors.password}
+                        />
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
-    );
+                        <input type={'submit'} hidden={true}/>
+
+                        <label className="flex items-center">
+                            <Checkbox
+                                name="remember"
+                                checked={data.remember}
+                                onChange={(e) => setData('remember', e.target.checked)}
+                            />
+                            <Text level={'body-sm'} className="ms-2">Mantener sesión</Text>
+                        </label>
+
+                        <div className="flex items-center justify-end mt-4 gap-4">
+                            {canResetPassword && (
+                                <Link
+                                    href={route('password.request')}
+                                    className="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                                >
+                                    Olvidó su contraseña?
+                                </Link>
+                            )}
+
+                            <Button label={'Iniciar sesión'} disabled={processing}
+                                    onClick={submit}/>
+                        </div>
+                    </form>
+                </>
+            )}
+        </Surface>
+    )
 }
-
-Login.layout = page => <BaseLayout children={page}/>
 
 export default Login
