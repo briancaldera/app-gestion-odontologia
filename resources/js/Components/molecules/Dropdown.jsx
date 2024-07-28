@@ -54,6 +54,15 @@ const DropdownOption = ({href, children, className = "", ...props}) => {
     )
 }
 
+const DropdownStaticOption = ({children, className = "", ...props}) => {
+
+    return (
+        <div onClick={ e => e.stopPropagation()}
+              className={`block w-full px-4 py-2 text-start leading-5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 ${className}`}
+              role={"menuitem"} {...props}>{children}</div>
+    )
+}
+
 const DropdownTrigger = ({children}) => {
     const {open, setOpen, toggleOpen} = useContext(DropdownContext);
 
@@ -69,5 +78,6 @@ const DropdownTrigger = ({children}) => {
 Dropdown.Option = DropdownOption
 Dropdown.Trigger = DropdownTrigger
 Dropdown.Container = DropdownContainer
+Dropdown.StaticOption = DropdownStaticOption
 
 export default Dropdown
