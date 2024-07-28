@@ -3,10 +3,12 @@ import Avatar from "@/Components/atoms/Avatar.jsx";
 import {useRoute} from 'ziggy-js'
 import Dropdown from "@/Components/molecules/Dropdown.jsx";
 import React from "react";
+import Switch from "@/Components/atoms/Switch.jsx";
+import {SunIcon, MoonIcon} from "@heroicons/react/24/outline"
+import {AuthContext} from "@/Layouts/AuthLayout.jsx";
 
 const AuthNavbar = () => {
 
-    const route = useRoute()
     const {auth: {user}} = usePage().props
 
     return (
@@ -18,6 +20,9 @@ const AuthNavbar = () => {
 }
 
 const AuthSection = ({user}) => {
+
+    const {isDarkMode, toggleDarkMode} = React.useContext(AuthContext)
+
     const route = useRoute()
 
     const handleLogout = async () => {
@@ -37,6 +42,12 @@ const AuthSection = ({user}) => {
                 <Dropdown>
 
                     <Dropdown.Option href={route("profile.edit")}>Perfil</Dropdown.Option>
+                    <Dropdown.StaticOption>
+                        <div className={"flex justify-between items-center gap-4"}>
+                            Modo Oscuro
+                            <Switch checked={isDarkMode} onClick={() => toggleDarkMode(value => !value)}  iconOn={<MoonIcon/>} iconOff={<SunIcon/>}/>
+                        </div>
+                    </Dropdown.StaticOption>
                     <hr/>
                     <Dropdown.Option onClick={handleLogout}>Cerrar Sesión</Dropdown.Option>
                 </Dropdown>

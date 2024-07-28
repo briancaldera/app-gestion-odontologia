@@ -1,14 +1,33 @@
-import {Head, router, usePage} from "@inertiajs/react";
+import {Head, Link, router, usePage} from "@inertiajs/react";
 import React from "react";
 import AuthNavbar from "@/Components/organisms/AuthNavbar.jsx";
 import AuthSidebar from "@/Components/organisms/AuthSidebar.jsx"
 import Loader from "@/Components/atoms/Loader.jsx";
+import Logo from "@/Components/atoms/Logo.jsx";
+import {useRoute} from 'ziggy-js'
+
+const DARK_MODE_KEY = 'dark_mode'
+
+export const AuthContext = React.createContext()
 
 const AuthLayout = ({title, navbar, sidebar, children}) => {
 
+    const route = useRoute()
     const [loading, setLoading] = React.useState(false)
+    const [isDarkMode, toggleDarkMode] = React.useState(false)
 
     const {auth} = usePage().props
+
+    React.useEffect(() => {
+        let darkMode = window.localStorage.getItem(DARK_MODE_KEY)
+
+        if (darkMode === null) {
+            darkMode = 'false'
+            window.localStorage.setItem(DARK_MODE_KEY, darkMode)
+        }
+
+        toggleDarkMode('true' === darkMode)
+    }, [])
 
     React.useEffect(() => {
         let timeout = null
@@ -26,19 +45,38 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
         }
     }, []);
 
+    const handleToggleDarkMode = () => {
+        toggleDarkMode(value => {
+            window.localStorage.setItem(DARK_MODE_KEY, !value ? 'true' : 'false')
+            return !value
+        })
+    }
+
     return (
         <>
-            <Head title={title}/>
-            <nav className={'z-100 fixed inset-x-0 top-0 bg-white h-20'}>{navbar || <AuthNavbar auth={auth}/>}</nav>
-            <aside className={'z-90 bg-white fixed inset-y-0 left-0 w-full max-w-72 pt-20'}>
-                {sidebar || <AuthSidebar />}
-                <div className={'z-100 absolute bottom-0 left-0 p-4'} hidden={!loading}>
-                    <Loader />
-                </div>
-            </aside>
-            <main className={'pt-20 pl-72 min-h-screen'}>
-                {children}
-            </main>
+            <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 min-h-screen`}>
+                <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode}}>
+                    <Head title={title}/>
+                    <nav className={'z-100 fixed inset-x-0 top-0 bg-white h-20 ps-72'}>{navbar ||
+                        <AuthNavbar auth={auth}/>}</nav>
+                    <aside className={'z-90 bg-indigo-600 fixed inset-y-0 left-0 w-full max-w-72'}>
+                        <div className={'h-20 flex items-center'}>
+                            <div className={'overflow-hidden w-20 ps-6 '}>
+                                <Link href={route('dashboard')} className={'grayscale contrast-200 brightness-200'}>
+                                    <Logo/>
+                                </Link>
+                            </div>
+                        </div>
+                        {sidebar || <AuthSidebar/>}
+                        <div className={'z-100 absolute bottom-0 left-0 p-4'} hidden={!loading}>
+                            <Loader/>
+                        </div>
+                    </aside>
+                    <main className={'pt-20 pl-72 min-h-screen'}>
+                        {children}
+                    </main>
+                </AuthContext.Provider>
+            </div>
         </>
     )
 }
