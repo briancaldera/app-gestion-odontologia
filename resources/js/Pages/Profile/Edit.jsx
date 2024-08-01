@@ -5,6 +5,11 @@ import {Cog6ToothIcon, UserCircleIcon} from "@heroicons/react/24/outline"
 import {Icon} from "@/Components/atoms/Icon.jsx";
 import React from "react";
 import Surface from "@/Components/atoms/Surface.jsx";
+import InputField from "@/Components/molecules/InputField.jsx";
+import {useForm, usePage} from "@inertiajs/react";
+import {useRoute} from 'ziggy-js'
+import {Text} from "@/Components/atoms/Text.jsx";
+import Avatar from "@/Components/atoms/Avatar.jsx";
 
 
 export default function Edit({auth, mustVerifyEmail, status}) {
@@ -59,13 +64,75 @@ const Sidebar = ({
 
 const PerfilSection = () => {
 
+    const {auth} = usePage().props
+    const route = useRoute()
+
+    const profile = auth.user.profile
+
+    const {data, setData, errors, processing, patch,} = useForm({
+        nombres: profile.nombres,
+        apellidos: profile.apellidos,
+        fecha_nacimiento: profile.fecha_nacimiento,
+    })
+
+    const date = new Date(data.fecha_nacimiento)
+
+    const handleChange = (field) => (({target}) => setData(field, target.value))
+
+    const submit = (e) => {
+        e.preventDefault()
+
+        patch()
+    }
+
     return (
 
         <section>
 
             <Surface className={'mx-6 my-6'}>
                 <div className="py-12">
-                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+                        <Title level={'title-lg'}>Configuracion de perfil</Title>
+                        <hr className={'mt-2'}/>
+
+
+                            <div className={'grid grid-cols-3 py-4'}>
+                                <div className={'col-span-2 w-2/4'}>
+                                    <form onSubmit={submit}>
+                                        <InputField name={'nombres'} label={'Nombres'} id={'nombres'} required={'true'}
+                                                    value={data.nombres} onChange={handleChange('nombres')}
+                                                    error={errors.nombres}/>
+                                        <Text level={'body-xs'}>Su nombre real. Este nombre aparecerá publicamente en
+                                            las
+                                            historias.</Text>
+
+                                        <InputField name={'apellidos'} label={'Apellidos'} id={'apellidos'}
+                                                    required={'true'} value={data.apellidos}
+                                                    onChange={handleChange('apellidos')} error={errors.apellidos}/>
+                                        <Text level={'body-xs'}>Su apellido u apellidos. Este apellido aparecera junto a
+                                            su
+                                            nombre real.</Text>
+
+                                        <InputField type={'date'} name={'fecha_nacimiento'}
+                                                    label={'Fecha de nacimiento'}
+                                                    id={'fecha_nacimiento'} required={'true'}
+                                                    value={`${date.getUTCFullYear()}` + '-' + `${date.getUTCMonth() + 1}`.padStart(2, '0') + '-' + `${date.getUTCDate()}`.padStart(2, '0')}
+                                                    onChange={handleChange('fecha_nacimiento')}
+                                                    error={errors.fecha_nacimiento}/>
+                                        <Text level={'body-xs'}>Su fecha de nacimiento.</Text>
+
+                                    </form>
+                                </div>
+                                <div className={'aspect-square'}>
+                                    <Text level={'title-md mb-4'}>Foto de perfil</Text>
+                                    <div className={'w-full sm:w-1/2 aspect-square'}>
+                                        <Avatar picture={profile.picture_url} className={'size-full'}/>
+                                    </div>
+                                </div>
+
+                            </div>
+
 
 
                     </div>
