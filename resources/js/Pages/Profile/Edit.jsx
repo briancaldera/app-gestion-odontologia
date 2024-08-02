@@ -74,7 +74,7 @@ const PerfilSection = () => {
 
     const profile = auth.user.profile
 
-    const [openPictureModal, setOpenPictureModal] = React.useState(true)
+    const [openPictureModal, setOpenPictureModal] = React.useState(false)
 
     const {data, setData, errors, processing, patch,} = useForm({
         nombres: profile.nombres,
@@ -176,15 +176,15 @@ const ChangeProfilePicture = ({picture_url = null, ...props}) => {
 
     return (
         <div className={''}>
-            <form onSubmit={handleSubmit} className={'flex flex-col justify-center items-center'}>
-                <div className={'w-full'}>
-                    <div className={'w-full sm:w-1/2 aspect-square'}>
-                        <ProfilePicturePicker src={data.picture?.preview ?? data.picture ?? null} onDrop={onSelectPicture} className={'size-full'}/>
-
+            <form onSubmit={handleSubmit} className={'flex flex-col gap-4'}>
+                <div className={'w-full space-y-2'}>
+                    <div className={'w-48 sm:w-1/2 aspect-square mx-auto'}>
+                        <ProfilePicturePicker src={data.picture?.preview ?? data.picture ?? null} onDrop={onSelectPicture} className={'size-full relative z-90'}/>
                     </div>
                     <ErrorText message={errors.picture}/>
+                    <Text level={'body-sm text-center'}>Haz click para seleccionar una foto o arrastra la image hasta aquí</Text>
                 </div>
-                {isDirty && <Button label={'Cambiar foto'} loading={processing} onClick={handleSubmit}/>}
+                <Button label={'Cambiar foto'} loading={processing} onClick={handleSubmit} disabled={!isDirty}/>
             </form>
         </div>
     )
