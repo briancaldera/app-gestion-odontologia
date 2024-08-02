@@ -10,6 +10,11 @@ import {useForm, usePage} from "@inertiajs/react";
 import {useRoute} from 'ziggy-js'
 import {Text} from "@/Components/atoms/Text.jsx";
 import Avatar from "@/Components/atoms/Avatar.jsx";
+import Modal from "@/Components/organisms/Modal.jsx";
+import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.jsx";
+import {Button} from "@/Components/molecules/Button.jsx";
+import {OutlinedButton} from "@/Components/molecules/OutlinedButton.jsx";
+import ErrorText from "@/Components/atoms/ErrorText.jsx";
 
 
 export default function Edit({auth, mustVerifyEmail, status}) {
@@ -69,6 +74,8 @@ const PerfilSection = () => {
 
     const profile = auth.user.profile
 
+    const [openPictureModal, setOpenPictureModal] = React.useState(true)
+
     const {data, setData, errors, processing, patch,} = useForm({
         nombres: profile.nombres,
         apellidos: profile.apellidos,
@@ -97,48 +104,89 @@ const PerfilSection = () => {
                         <hr className={'mt-2'}/>
 
 
-                            <div className={'grid grid-cols-3 py-4'}>
-                                <div className={'col-span-2 w-2/4'}>
-                                    <form onSubmit={submit}>
-                                        <InputField name={'nombres'} label={'Nombres'} id={'nombres'} required={'true'}
-                                                    value={data.nombres} onChange={handleChange('nombres')}
-                                                    error={errors.nombres}/>
-                                        <Text level={'body-xs'}>Su nombre real. Este nombre aparecerá publicamente en
-                                            las
-                                            historias.</Text>
+                        <div className={'grid grid-cols-3 py-4'}>
+                            <div className={'col-span-2 w-2/4'}>
+                                <form onSubmit={submit}>
+                                    <InputField name={'nombres'} label={'Nombres'} id={'nombres'} required={true}
+                                                value={data.nombres} onChange={handleChange('nombres')}
+                                                error={errors.nombres}/>
+                                    <Text level={'body-xs'}>Su nombre real. Este nombre aparecerá publicamente en
+                                        las
+                                        historias.</Text>
 
-                                        <InputField name={'apellidos'} label={'Apellidos'} id={'apellidos'}
-                                                    required={'true'} value={data.apellidos}
-                                                    onChange={handleChange('apellidos')} error={errors.apellidos}/>
-                                        <Text level={'body-xs'}>Su apellido u apellidos. Este apellido aparecera junto a
-                                            su
-                                            nombre real.</Text>
+                                    <InputField name={'apellidos'} label={'Apellidos'} id={'apellidos'}
+                                                required={true} value={data.apellidos}
+                                                onChange={handleChange('apellidos')} error={errors.apellidos}/>
+                                    <Text level={'body-xs'}>Su apellido u apellidos. Este apellido aparecera junto a
+                                        su
+                                        nombre real.</Text>
 
-                                        <InputField type={'date'} name={'fecha_nacimiento'}
-                                                    label={'Fecha de nacimiento'}
-                                                    id={'fecha_nacimiento'} required={'true'}
-                                                    value={`${date.getUTCFullYear()}` + '-' + `${date.getUTCMonth() + 1}`.padStart(2, '0') + '-' + `${date.getUTCDate()}`.padStart(2, '0')}
-                                                    onChange={handleChange('fecha_nacimiento')}
-                                                    error={errors.fecha_nacimiento}/>
-                                        <Text level={'body-xs'}>Su fecha de nacimiento.</Text>
+                                    <InputField type={'date'} name={'fecha_nacimiento'}
+                                                label={'Fecha de nacimiento'}
+                                                id={'fecha_nacimiento'} required={true}
+                                                value={`${date.getUTCFullYear()}` + '-' + `${date.getUTCMonth() + 1}`.padStart(2, '0') + '-' + `${date.getUTCDate()}`.padStart(2, '0')}
+                                                onChange={handleChange('fecha_nacimiento')}
+                                                error={errors.fecha_nacimiento}/>
+                                    <Text level={'body-xs'}>Su fecha de nacimiento.</Text>
 
-                                    </form>
+                                </form>
+                            </div>
+                            <div className={'aspect-square'}>
+                                <Text level={'title-md mb-4'}>Foto de perfil</Text>
+                                <div className={'w-full sm:w-1/2 aspect-square'}>
+                                    <Avatar picture={profile.picture_url} className={'size-full'} onClick={() => {
+                                        setOpenPictureModal(true)
+                                    }}/>
                                 </div>
-                                <div className={'aspect-square'}>
-                                    <Text level={'title-md mb-4'}>Foto de perfil</Text>
-                                    <div className={'w-full sm:w-1/2 aspect-square'}>
-                                        <Avatar picture={profile.picture_url} className={'size-full'}/>
-                                    </div>
-                                </div>
-
                             </div>
 
+                        </div>
 
 
                     </div>
                 </div>
             </Surface>
+            <Modal ariaLabelledBy={'Imagen de perfil'} ariaDescribedBy={'Cambiar imagen de perfil'}
+                   open={openPictureModal} onClose={() => setOpenPictureModal(false)}>
+                <ChangeProfilePicture picture_url={profile.picture_url}/>
+            </Modal>
         </section>
+    )
+}
+
+const ChangeProfilePicture = ({picture_url = null, ...props}) => {
+
+    const route = useRoute()
+    const {data, setData, errors, post, processing, reset, isDirty} = useForm({
+        _method: 'patch',
+        picture: picture_url
+    })
+
+    const onSelectPicture = ([file]) => {
+        Object.assign(file, {
+            preview: URL.createObjectURL(file)
+        })
+        setData("picture", file)
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        post(route('profile.updatePicture'))
+    }
+
+    return (
+        <div className={''}>
+            <form onSubmit={handleSubmit} className={'flex flex-col justify-center items-center'}>
+                <div className={'w-full'}>
+                    <div className={'w-full sm:w-1/2 aspect-square'}>
+                        <ProfilePicturePicker src={data.picture?.preview ?? data.picture ?? null} onDrop={onSelectPicture} className={'size-full'}/>
+
+                    </div>
+                    <ErrorText message={errors.picture}/>
+                </div>
+                {isDirty && <Button label={'Cambiar foto'} loading={processing} onClick={handleSubmit}/>}
+            </form>
+        </div>
     )
 }
 

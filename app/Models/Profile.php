@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property string $user_id
@@ -36,7 +37,7 @@ class Profile extends Model
 
     protected function pictureUrl(): Attribute
     {
-        return Attribute::get(fn(?string $value) => asset("storage/$value"));
+        return Attribute::get(fn(?string $value) => is_null($value) ? $value : Storage::url($value));
     }
 
     protected $primaryKey = 'user_id';

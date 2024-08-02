@@ -9,10 +9,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use League\Flysystem\WhitespacePathNormalizer;
-use Nette\Utils\Image;
 
 class ProfileController extends Controller
 {
@@ -37,10 +38,7 @@ class ProfileController extends Controller
         if ($request->hasFile('picture')) {
             $profilePic = $request->file('picture');
 
-            // TODO: process image here...
-            $now = now();
-
-            $data["picture_url"] = $profilePic->storePublicly((new WhitespacePathNormalizer())->normalizePath(self::PROFILE_PICTURE_DIR . $now->year), 'public');
+            $data["picture_url"] = $this->storeProfilePicture($profilePic);
         }
 
         $request->user()->profile()->create($data);
@@ -77,6 +75,34 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit');
     }
 
+    public function updatePicture(Request $request): RedirectResponse {
+        $data = $request->validate([
+            'picture' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'between:2, 1024'],
+        ]);
+
+        $profile = $request->user()->profile;
+
+        $previousPicture = $profile->picture_url;
+
+        if (is_null($data['picture'])) {
+            $profile->picture_url = null;
+        } else {
+            $profilePic = $data['picture'];
+            $profile->picture_url = $this->storeProfilePicture($profilePic);
+        }
+
+        $profile->save();
+
+        if (!is_null($previousPicture)) {
+            $filePath = Str::of($previousPicture)->remove('/storage/');
+            Storage::disk('public')->delete($filePath);
+        }
+
+        message('Perfil actualizado exitosamente', \Type::Success);
+
+        return to_route('profile.edit');
+    }
+
     /**
      * Delete the user's account.
      */
@@ -96,5 +122,12 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    private function storeProfilePicture($file): string
+    {
+        // TODO: process image here...
+        $now = now();
+        return $file->storePublicly((new WhitespacePathNormalizer())->normalizePath(self::PROFILE_PICTURE_DIR . $now->year), 'public');
     }
 }
