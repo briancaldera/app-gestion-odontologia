@@ -1,8 +1,8 @@
 import {Select as MuiSelect, Option as MuiOption} from '@mui/joy'
 
-const Select = ({value, id, onChange = (value) => {}, children}) => {
+const Select = ({value, id, onChange = (_) => {}, disabled = false, required = false, children}) => {
     return (
-        <MuiSelect value={value} id={id} onChange={(e, value) => onChange(value)}>
+        <MuiSelect value={value} id={id} onChange={(e, value) => onChange(value)} disabled={disabled} required={required}>
             {children}
         </MuiSelect>
     )

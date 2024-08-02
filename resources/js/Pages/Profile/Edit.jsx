@@ -13,8 +13,9 @@ import Avatar from "@/Components/atoms/Avatar.jsx";
 import Modal from "@/Components/organisms/Modal.jsx";
 import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.jsx";
 import {Button} from "@/Components/molecules/Button.jsx";
-import {OutlinedButton} from "@/Components/molecules/OutlinedButton.jsx";
 import ErrorText from "@/Components/atoms/ErrorText.jsx";
+import Select from "@/Components/molecules/Select.jsx"
+import Label from "@/Components/atoms/Label.jsx";
 
 
 export default function Edit({auth, mustVerifyEmail, status}) {
@@ -72,14 +73,17 @@ const PerfilSection = () => {
     const {auth} = usePage().props
     const route = useRoute()
 
-    const profile = auth.user.profile
+    const profile = auth.profile
 
     const [openPictureModal, setOpenPictureModal] = React.useState(false)
 
-    const {data, setData, errors, processing, patch,} = useForm({
+    const {data, setData, errors, processing, patch, isDirty} = useForm({
         nombres: profile.nombres,
         apellidos: profile.apellidos,
         fecha_nacimiento: profile.fecha_nacimiento,
+        direccion: profile.direccion,
+        telefono: profile.telefono,
+        sexo: profile.sexo
     })
 
     const date = new Date(data.fecha_nacimiento)
@@ -88,14 +92,12 @@ const PerfilSection = () => {
 
     const submit = (e) => {
         e.preventDefault()
-
         patch()
     }
 
     return (
 
         <section>
-
             <Surface className={'mx-6 my-6'}>
                 <div className="py-12">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -106,20 +108,25 @@ const PerfilSection = () => {
 
                         <div className={'grid grid-cols-3 py-4'}>
                             <div className={'col-span-2 w-2/4'}>
-                                <form onSubmit={submit}>
-                                    <InputField name={'nombres'} label={'Nombres'} id={'nombres'} required={true}
-                                                value={data.nombres} onChange={handleChange('nombres')}
-                                                error={errors.nombres}/>
-                                    <Text level={'body-xs'}>Su nombre real. Este nombre aparecerá publicamente en
-                                        las
-                                        historias.</Text>
+                                <form onSubmit={submit} className={'space-y-4'}>
 
-                                    <InputField name={'apellidos'} label={'Apellidos'} id={'apellidos'}
-                                                required={true} value={data.apellidos}
-                                                onChange={handleChange('apellidos')} error={errors.apellidos}/>
-                                    <Text level={'body-xs'}>Su apellido u apellidos. Este apellido aparecera junto a
-                                        su
-                                        nombre real.</Text>
+                                    <div>
+                                        <InputField name={'nombres'} label={'Nombres'} id={'nombres'} required={true}
+                                                    value={data.nombres} onChange={handleChange('nombres')}
+                                                    error={errors.nombres}/>
+                                        <Text level={'body-xs'}>Su nombre real. Este nombre aparecerá publicamente en
+                                            las
+                                            historias.</Text>
+                                    </div>
+
+                                    <div>
+                                        <InputField name={'apellidos'} label={'Apellidos'} id={'apellidos'}
+                                                    required={true} value={data.apellidos}
+                                                    onChange={handleChange('apellidos')} error={errors.apellidos}/>
+                                        <Text level={'body-xs'}>Su apellido u apellidos. Este apellido aparecera junto a
+                                            su
+                                            nombre real.</Text>
+                                    </div>
 
                                     <InputField type={'date'} name={'fecha_nacimiento'}
                                                 label={'Fecha de nacimiento'}
@@ -127,9 +134,35 @@ const PerfilSection = () => {
                                                 value={`${date.getUTCFullYear()}` + '-' + `${date.getUTCMonth() + 1}`.padStart(2, '0') + '-' + `${date.getUTCDate()}`.padStart(2, '0')}
                                                 onChange={handleChange('fecha_nacimiento')}
                                                 error={errors.fecha_nacimiento}/>
-                                    <Text level={'body-xs'}>Su fecha de nacimiento.</Text>
 
+                                    <InputField name={'direccion'} label={'Dirección'} id={'direccion'}
+                                                required={true} value={data.direccion}
+                                                onChange={handleChange('direccion')} error={errors.direccion}/>
+
+                                    <InputField name={'telefono'} label={'Teléfono'} id={'telefono'}
+                                                required={true} value={data.telefono}
+                                                onChange={handleChange('telefono')} error={errors.telefono}/>
+
+
+                                    <div>
+
+                                        <Label htmlFor={'sexo'} value={'Sexo'}/>
+                                        <Select value={data.sexo} id={'sexo'}
+                                                onChange={(value) => setData('sexo', value)}>
+                                            <Select.Option value={'F'}>Femenino</Select.Option>
+                                            <Select.Option value={'M'}>Masculino</Select.Option>
+                                            <Select.Option value={'NI'}>No indicado</Select.Option>
+                                        </Select>
+                                    </div>
+
+                                    <InputField name={'cedula'} label={'Cédula'} id={'cedula'} value={profile.cedula}
+                                                disabled={true}/>
+
+                                    <div className={'flex gap-4 justify-end'}>
+                                        <Button label={'Actualizar perfil'} disabled={!isDirty} loading={processing} onClick={submit}/>
+                                    </div>
                                 </form>
+
                             </div>
                             <div className={'aspect-square'}>
                                 <Text level={'title-md mb-4'}>Foto de perfil</Text>
@@ -179,10 +212,12 @@ const ChangeProfilePicture = ({picture_url = null, ...props}) => {
             <form onSubmit={handleSubmit} className={'flex flex-col gap-4'}>
                 <div className={'w-full space-y-2'}>
                     <div className={'w-48 sm:w-1/2 aspect-square mx-auto'}>
-                        <ProfilePicturePicker src={data.picture?.preview ?? data.picture ?? null} onDrop={onSelectPicture} className={'size-full relative z-90'}/>
+                        <ProfilePicturePicker src={data.picture?.preview ?? data.picture ?? null}
+                                              onDrop={onSelectPicture} className={'size-full relative z-90'}/>
                     </div>
                     <ErrorText message={errors.picture}/>
-                    <Text level={'body-sm text-center'}>Haz click para seleccionar una foto o arrastra la image hasta aquí</Text>
+                    <Text level={'body-sm text-center'}>Haz click para seleccionar una foto o arrastra la image hasta
+                        aquí</Text>
                 </div>
                 <Button label={'Cambiar foto'} loading={processing} onClick={handleSubmit} disabled={!isDirty}/>
             </form>

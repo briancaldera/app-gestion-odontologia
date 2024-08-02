@@ -62,9 +62,10 @@ class Profile extends Model
         'fecha_nacimiento' => 'date'
     ];
 
-    protected $hidden = [
-        'cedula',
-        'direccion'
+    protected $visible = [
+        'nombres',
+        'apellidos',
+        'picture_url',
     ];
 
     public function user(): BelongsTo
