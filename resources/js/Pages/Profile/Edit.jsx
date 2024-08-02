@@ -92,7 +92,7 @@ const PerfilSection = () => {
 
     const submit = (e) => {
         e.preventDefault()
-        patch()
+        patch(route('profile.update'))
     }
 
     return (
@@ -205,6 +205,7 @@ const ChangeProfilePicture = ({picture_url = null, ...props}) => {
     const handleSubmit = (e) => {
         e.preventDefault()
         post(route('profile.updatePicture'))
+        // TODO: reload page to make form clean again
     }
 
     return (
