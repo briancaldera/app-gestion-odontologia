@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Historia;
+use App\Models\HistoriaStatus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -51,5 +52,5 @@ test('wrong Historia is rejected', function () {
 test('initial status is abierta', function () {
     $historia = Historia::factory()->forPaciente()->create();
 
-    expect($historia->status)->toBeString()->toBe('abierta');
+    expect($historia->status)->toBe(HistoriaStatus::ABIERTA);
 });

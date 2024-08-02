@@ -34,6 +34,13 @@ class Historia extends Model
         'enfermedad_actual'
     ];
 
+    protected function casts()
+    {
+        return [
+            'status' => HistoriaStatus::class
+        ];
+    }
+
     public function paciente(): BelongsTo
     {
         return $this->belongsTo(Paciente::class);
@@ -60,4 +67,11 @@ class Historia extends Model
     }
 
 
+}
+
+enum HistoriaStatus: string
+{
+    case ABIERTA = 'abierta';
+    case ENTREGADA = 'entregada';
+    case CERRADA = 'cerrada';
 }
