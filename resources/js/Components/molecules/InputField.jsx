@@ -24,7 +24,7 @@ const InputField = ({
     return (
         <div className={`flex flex-col ${className}`}>
             <Label value={label} htmlFor={id}/>
-            <div className={"relative mt-2 rounded-md shadow-sm"}>
+            <div className={"relative mt-1.5 rounded-md shadow-sm"}>
                 <TextInput type={type} onChange={onChange} value={value} id={id} name={name} placeholder={placeholder}
                            autoComplete={autocomplete} isFocused={isFocused} required={required} readOnly={readOnly}
                            disabled={disabled} {...props}/>
