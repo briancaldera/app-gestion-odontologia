@@ -18,7 +18,9 @@ import Select from "@/Components/molecules/Select.jsx"
 import Label from "@/Components/atoms/Label.jsx";
 
 
-export default function Edit({auth, mustVerifyEmail, status}) {
+const ProfileUpdateContext = React.createContext()
+
+export default function Edit({auth, mustVerifyEmail, status, profile}) {
 
     const [activeSection, setActiveSection] = React.useState(0)
 
@@ -34,9 +36,11 @@ export default function Edit({auth, mustVerifyEmail, status}) {
             sidebar={sidebar}
             title={'Perfil'}
         >
+            <ProfileUpdateContext.Provider value={{profile: profile}}>
 
             {sections[activeSection].component}
 
+            </ProfileUpdateContext.Provider>
         </AuthLayout>
     );
 }
@@ -70,10 +74,8 @@ const Sidebar = ({
 
 const PerfilSection = () => {
 
-    const {auth} = usePage().props
+    const {profile} = React.useContext(ProfileUpdateContext)
     const route = useRoute()
-
-    const profile = auth.profile
 
     const [openPictureModal, setOpenPictureModal] = React.useState(false)
 
