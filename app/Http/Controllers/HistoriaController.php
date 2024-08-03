@@ -19,6 +19,7 @@ use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
 use App\Models\Trastornos;
 use App\Services\HistoriaService;
+use Inertia\Inertia;
 
 class HistoriaController extends Controller
 {
@@ -41,7 +42,7 @@ class HistoriaController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Estudiante/Historia/Create');
     }
 
     /**

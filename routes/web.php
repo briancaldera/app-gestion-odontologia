@@ -4,6 +4,7 @@ use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -27,8 +28,20 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
 Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+    Route::get('/dashboard', function (Request $request) {
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+            return response(null, 404);
+        } elseif ($user->isAdmision()) {
+            return response(null, 404);
+        } elseif ($user->isProfesor()) {
+            return response(null, 404);
+        } elseif ($user->isEstudiante()) {
+            return Inertia::render('Estudiante/Dashboard');
+        } else {
+            return response(null, 403);
+        }
     })->name('dashboard');
 
     // Routes for admin
@@ -60,7 +73,15 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
         Route::resource('pacientes', PacienteController::class);
 
+        Route::get('/historias', function (){
+
+            return Inertia::render('Estudiante/Historia/Dashboard',[]);
+        })->name('historia');
+
         Route::prefix('historias')->name('historias.')->group(function () {
+
+            Route::get('/create', [HistoriaController::class, 'create'])->name('historia.create');
+
             Route::post('/{paciente}', [HistoriaController::class, 'store'])->name('store');
             Route::patch('/{historia}', [HistoriaController::class, 'update'])->name('update');
 
