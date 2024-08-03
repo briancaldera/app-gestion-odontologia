@@ -34,7 +34,7 @@ const Dropdown = ({children}) => {
             leaveTo="opacity-0 scale-95"
         >
             <div
-                className={"absolute top-10 right-0 z-100 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"}
+                className={"absolute top-10 right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"}
                 role={"menu"} aria-orientation={"horizontal"} onClick={() => {
                 setOpen(false)
             }}>
@@ -70,7 +70,7 @@ const DropdownTrigger = ({children}) => {
         <>
             <div className={"cursor-pointer"} onClick={toggleOpen}>{children}</div>
             {/*Backdrop*/}
-            {open && <div className="fixed inset-0 z-90" onClick={() => setOpen(false)}></div>}
+            {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)}></div>}
         </>
     );
 };
