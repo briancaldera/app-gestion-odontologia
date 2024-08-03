@@ -6,7 +6,7 @@ import {Icon} from "@/Components/atoms/Icon.jsx";
 import React from "react";
 import Surface from "@/Components/atoms/Surface.jsx";
 import InputField from "@/Components/molecules/InputField.jsx";
-import {useForm, usePage} from "@inertiajs/react";
+import {useForm} from "@inertiajs/react";
 import {useRoute} from 'ziggy-js'
 import {Text} from "@/Components/atoms/Text.jsx";
 import Avatar from "@/Components/atoms/Avatar.jsx";
@@ -38,7 +38,7 @@ export default function Edit({auth, mustVerifyEmail, status, profile}) {
         >
             <ProfileUpdateContext.Provider value={{profile: profile}}>
 
-            {sections[activeSection].component}
+                {sections[activeSection].component}
 
             </ProfileUpdateContext.Provider>
         </AuthLayout>
@@ -104,13 +104,13 @@ const PerfilSection = () => {
                 <div className="py-12">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-                        <Title level={'title-lg'}>Configuracion de perfil</Title>
+                        <Title level={'title-lg'} className={'text-gray-400'}>Configuracion de perfil</Title>
                         <hr className={'mt-2'}/>
 
 
                         <div className={'grid grid-cols-3 py-4'}>
                             <div className={'col-span-2 w-2/4'}>
-                                <form onSubmit={submit} className={'space-y-4'}>
+                                <form onSubmit={submit} className={'space-y-5'}>
 
                                     <div>
                                         <InputField name={'nombres'} label={'Nombres'} id={'nombres'} required={true}
@@ -161,7 +161,8 @@ const PerfilSection = () => {
                                                 disabled={true}/>
 
                                     <div className={'flex gap-4 justify-end'}>
-                                        <Button label={'Actualizar perfil'} disabled={!isDirty} loading={processing} onClick={submit}/>
+                                        <Button label={'Actualizar perfil'} disabled={!isDirty} loading={processing}
+                                                onClick={submit}/>
                                     </div>
                                 </form>
 
@@ -189,10 +190,10 @@ const PerfilSection = () => {
     )
 }
 
-const ChangeProfilePicture = ({picture_url = null, ...props}) => {
+const ChangeProfilePicture = ({picture_url = null}) => {
 
     const route = useRoute()
-    const {data, setData, errors, post, processing, reset, isDirty} = useForm({
+    const {data, setData, errors, post, processing, isDirty} = useForm({
         _method: 'patch',
         picture: picture_url
     })
@@ -234,10 +235,12 @@ const CuentaSection = () => {
         <section>
             <Surface className={'my-6 mx-6'}>
                 <div className={'py-12 px-8'}>
-                    <Title level={'title-lg'}>Configuracion de cuenta</Title>
+                    <Title level={'title-lg'} className={'text-gray-400'}>Configuracion de cuenta</Title>
                     <hr className={'mt-2'}/>
 
-                    <UpdatePasswordForm className="max-w-xl"/>
+                    <div className={'py-4'}>
+                        <UpdatePasswordForm className="max-w-xl"/>
+                    </div>
 
                 </div>
             </Surface>
