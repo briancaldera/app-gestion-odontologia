@@ -115,9 +115,5 @@
         "skipLibCheck": true,
         /* Skip type checking all .d.ts files. */
     },
-    "exclude": [
-        "node_modules",
-        "public",
-        "vendor",
-    ]
+    "include": ["resources/js/**/*"],
 }
