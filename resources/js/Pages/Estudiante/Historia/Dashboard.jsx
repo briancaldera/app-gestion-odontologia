@@ -5,12 +5,13 @@ import {DocumentTextIcon} from "@heroicons/react/24/outline/index.js";
 import React from "react";
 import { router } from '@inertiajs/react'
 import { useRoute } from 'ziggy-js'
+import HistoriaEditor from "@/Components/organisms/HistoriaEditor.tsx";
 
 const Dashboard = ({historias}) => {
 
     return (
         <AuthLayout title={'Historias'}>
-            <EmptySection/>
+            <HistoriaEditor />
         </AuthLayout>
     )
 }
