@@ -7,4 +7,11 @@ const HistoriaFormSchema = z.object({
     enfermedad_actual: z.string(),
 })
 
+export const Historia: z.infer<typeof HistoriaFormSchema> = {
+    enfermedad_actual: "",
+    motivo_consulta: "",
+    numero: null,
+    paciente_id: "",
+}
+
 export default HistoriaFormSchema

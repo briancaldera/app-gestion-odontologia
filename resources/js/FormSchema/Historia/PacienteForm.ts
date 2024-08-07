@@ -11,7 +11,8 @@ const PacienteFormSchema = z.object({
         })
         .min(4, 'Mínimo 4 caracteres')
         .max(10, 'Máximo 10 caracteres')
-        .regex(/^[VE][\d]{3,9}$/, 'La cédula no corresponde al formato correcto'),
+        .regex(/^[VE][\d]{3,9}$/, 'La cédula no corresponde al formato correcto')
+        .default('V1234'),
     nombre: z
         .string()
         .trim()
@@ -36,7 +37,8 @@ const PacienteFormSchema = z.object({
         .max(300),
     fecha_nacimiento: z
         .date()
-        .max(new Date(), {message: 'Fecha de nacimiento inválida'}),
+        .max(new Date(), {message: 'Fecha de nacimiento inválida'})
+        .nullable(),
     ocupacion: z
         .string()
         .min(0)
@@ -57,6 +59,21 @@ const PacienteFormSchema = z.object({
         .refine((file: File) => ACCEPTED_PICTURE_MIME.includes(file?.type), {message: 'Archivo inválido. Formatos permitidos: .jpg .jpeg .png'})
         .refine((file: File) => file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
         .refine((file: File) => file?.size >= MIN_PICTURE_SIZE, {message: 'Archivo muy pequeño'})
-}).required()
+        .nullable()
+})
+
+export const Paciente: z.infer<typeof PacienteFormSchema> = {
+    cedula: '',
+    nombre: '',
+    apellido: '',
+    edad: 0,
+    direccion: '',
+    peso: 0,
+    sexo: 'NI',
+    fecha_nacimiento: null,
+    ocupacion: '',
+    telefono: '',
+    foto: null
+}
 
 export default PacienteFormSchema

@@ -1,4 +1,4 @@
-import {z} from "zod";
+import {undefined, z} from "zod";
 
 const Habitos: readonly string[] = [
     'fumar',
@@ -15,25 +15,53 @@ const Habitos: readonly string[] = [
     'otros'
 ]
 
+const HabitoSchema = z.boolean()
+
 const MAX_TEXT_LENGTH: number = 10000
 
 const AntOdontologicosPersonalesObject = z.string().max(MAX_TEXT_LENGTH)
 
-const HabitosObject = z.object(
-    Object.assign({}, ...Habitos.map(habito => ({[habito]: z.boolean()})), {descripcion: z.string().max(MAX_TEXT_LENGTH)})
-)
+const HabitosObject = z.object({
+    fumar: HabitoSchema,
+    alcohol: HabitoSchema,
+    drogas: HabitoSchema,
+    onicofagia: HabitoSchema,
+    deglusion_atip: HabitoSchema,
+    bruxismo: HabitoSchema,
+    bruxomania: HabitoSchema,
+    queilofagia: HabitoSchema,
+    palillos: HabitoSchema,
+    respirador_bucal: HabitoSchema,
+    succion_digital: HabitoSchema,
+    otros: HabitoSchema,
+    descripcion: z.string().max(MAX_TEXT_LENGTH)
+})
 
 const SignosVitalesObject = z.object({
     tension_arterial: z.object({
         sistole: z.number().int().min(0),
         diastole: z.number().int().min(0),
-        pulso: z.number().int().min(0),
-        respiracion: z.number().int().min(0),
-        temperatura: z.number().min(0)
-    })
+    }),
+    pulso: z.number().int().min(0),
+    respiracion: z.number().int().min(0),
+    temperatura: z.number().min(0)
 })
 
-
+const HabitosSchema = z.object({
+    fumar: z.boolean(),
+    alcohol: z.boolean(),
+    drogas: z.boolean(),
+    onicofagia: z.boolean(),
+    deglusion_atip: z.boolean(),
+    bruxismo: z.boolean(),
+    bruxomania: z.boolean(),
+    queilofagia: z.boolean(),
+    palillos: z.boolean(),
+    respirador_bucal: z.boolean(),
+    succion_digital: z.boolean(),
+    otros: z.boolean(),
+    descripcion: z.string().max(MAX_TEXT_LENGTH),
+})
 
 const ExamenExtraoralObject = z.object({
     cabeza: z.string().max(MAX_TEXT_LENGTH),
@@ -154,5 +182,100 @@ const HistoriaOdontologicaFormSchema = z.object({
     modificaciones_plan_tratamiento: ModificacionesPlanTratamientoObject,
     secuencia_tratamiento: SecuenciaTratamientoObject
 })
+
+export const HistoriaOdontologica: z.infer<typeof HistoriaOdontologicaFormSchema> = {
+    ant_personales: "",
+    estudio_modelos: {
+        diagnostico: "",
+        examenes_comp: "",
+        interconsultas: {
+            cirugia: false, endodoncia: false, ortodoncia: false, periodoncia: false, protesis: false, descripcion: ""
+        },
+        maxilar_inf: {
+            anomalia: "",
+            diastemas: "",
+            dientes_ausentes: "",
+            facetas_desgaste: "",
+            forma_arco: "",
+            maloclusion: "",
+            piso_boca: "",
+            simetria_arco: "",
+            tipo_arco: ""
+        },
+        maxilar_sup: {
+            anomalia: "",
+            diastemas: "",
+            dientes_ausentes: "",
+            facetas_desgaste: "",
+            forma_arco: "",
+            maloclusion: "",
+            paladar: "",
+            simetria_arco: "",
+            tipo_arco: ""
+        },
+        modelos_oclusion: {
+            curva_compensacion: "",
+            linea_media: "",
+            mordida_anterior: "",
+            mordida_posterior: "",
+            plano_oclusal: "",
+            relacion_canina: "",
+            relacion_molar: "",
+            sobrepase: "",
+            sobresalte: ""
+        },
+        pronostico: ""
+    },
+    examen_fisico: {
+        examen_extraoral: {
+            articulacion_temporomandibular: "",
+            cabeza: "",
+            cara: "",
+            lesiones_extraorales: "",
+            palpacion_ganglios: "",
+            piel: "",
+            simetria_facial: ""
+        },
+        examen_intraoral: {
+            dientes: "",
+            discromias: "",
+            encias: "",
+            frenillos: "",
+            labios: "",
+            lengua_tipo: "",
+            maxilares: "",
+            mejillas: "",
+            paladar_duro_blando: "",
+            piso_boca: ""
+        },
+        signos_vitales: {
+            pulso: 0,
+            respiracion: 0,
+            temperatura: 0,
+            tension_arterial: {
+                diastole: 0,
+                sistole: 0
+            }
+        }
+    },
+    habitos: {
+        alcohol: false,
+        bruxismo: false,
+        bruxomania: false,
+        deglusion_atip: false,
+        descripcion: "",
+        drogas: false,
+        fumar: false,
+        onicofagia: false,
+        otros: false,
+        palillos: false,
+        queilofagia: false,
+        respirador_bucal: false,
+        succion_digital: false
+    },
+    modificaciones_plan_tratamiento: [],
+    plan_tratamiento: [],
+    secuencia_tratamiento: []
+}
 
 export default HistoriaOdontologicaFormSchema

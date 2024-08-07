@@ -2,7 +2,7 @@ import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessag
 import Input from "@/Components/atoms/Input";
 import React from "react";
 
-const Field = ({label, name, control, type = 'text', description = '', placeholder = null, disabled = false, ...props}) => {
+const Field = ({label, name, control, type = 'text', description = '', placeholder = undefined, disabled = false, ...props}) => {
     return (
         <FormField name={name} control={control} disabled={disabled} render={({field, fieldState, formState,}) => {
             return (
