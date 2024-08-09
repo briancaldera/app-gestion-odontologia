@@ -22,6 +22,7 @@ import Checkbox from "@/Components/atoms/Checkbox";
 import Input from "@/Components/atoms/Input";
 import Textarea from "@/Components/atoms/Textarea";
 import Label from "@/Components/atoms/Label";
+import {Text} from "@/Components/atoms/Text";
 
 
 const TabTriggerStyle = 'p-0 m-0'
@@ -81,6 +82,13 @@ const HistoriaEditor = ({errors = null}) => {
                             </Icon>
                         </Surface>
                     </TabsTrigger>
+                    <TabsTrigger value="antFamiliares" className={'p-0'}>
+                        <Surface>
+                            <Icon className={'size-8'}>
+                                <UserCircleIcon/>
+                            </Icon>
+                        </Surface>
+                    </TabsTrigger>
                 </TabsList>
                 <div className={'w-full h-full'}>
                     <HistoriaEditorContext.Provider value={{errors: errors}}>
@@ -89,6 +97,9 @@ const HistoriaEditor = ({errors = null}) => {
                         </TabsContent>
                         <TabsContent value="antPersonales" className={TabTriggerStyle}>
                             <AntecedentesMedicosPersonalesSection form={antPersonalesForm}/>
+                        </TabsContent>
+                        <TabsContent value="antFamiliares" className={TabTriggerStyle}>
+                            <AntecedentesMedicosFamiliaresSection form={antFamiliaresForm}/>
                         </TabsContent>
                     </HistoriaEditorContext.Provider>
                 </div>
@@ -165,18 +176,66 @@ const PacienteSection = ({form}) => {
     )
 }
 
-// const Historia = ({form}) => {
-//
-//     const {errors} = React.useContext(HistoriaEditorContext)
-//     const route = useRoute()
-//
-//     return (
-//         <Surface className={SectionStyle}>
-//             <Title level={'title-lg'}>Datos Personales</Title>
-//
-//         </Surface>
-//     )
-// }
+type AntecedentesMedicosFamiliaresSectionProps = {
+    form: ReturnType<typeof useForm<typeof z.infer<typeof AntFamiliaresFormSchema>>>
+}
+
+const AntecedentesMedicosFamiliaresSection = ({form}: AntecedentesMedicosFamiliaresSectionProps) => {
+    const {errors} = React.useContext(HistoriaEditorContext)
+    const route = useRoute()
+
+    const handleSubmit = (values: z.infer<typeof PacienteFormSchema>) => {
+        console.log(values)
+
+        // router.post(route(''), Object.create(values))
+    }
+
+    return (
+        <Surface className={SectionStyle}>
+
+            <Title level={'title-lg'}>Antecedentes Médicos Familiares</Title>
+
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
+
+                    <section>
+                        <header className={'mb-2 mt-5 space-y-1.5'}>
+                            <Title level={'title-md'}>Antecedentes Médicos Familiares</Title>
+                            <Text level={'body-sm'}>Describa el estado actual o causa de muerte de padres hermanos y
+                                abuelos.</Text>
+                        </header>
+
+
+                        <div
+                            className={'grid grid-cols-1 sm:grid-cols-2 gap-6 border rounded-2xl border-slate-300 p-3'}>
+                            {
+                                Object.keys(form.formState.defaultValues).filter(key => key !== 'historia_id').map(familiar => {
+
+                                    return (
+                                        <div key={familiar}>
+                                            <FormField render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel className={'capitalize'}
+                                                               htmlFor={field.name}>{familiar.replace('_', ' ')}</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea className={'h-36'} id={field.name} {...field}/>
+                                                    </FormControl>
+                                                    <FormMessage/>
+                                                </FormItem>
+                                            )} name={familiar} control={form.control}/>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+
+                    </section>
+
+                </form>
+            </Form>
+        </Surface>
+    )
+}
 
 type AntecedentesMedicosPersonalesSectionProps = {
     form: ReturnType<typeof useForm<typeof z.infer<typeof AntPersonalesFormSchema>>>
@@ -211,7 +270,9 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                             {
 
                                 Object.entries(form.formState.defaultValues.trastornos).filter(([key, _]) => key !== 'historia_id').map(([key, value]: [string, object]) => (
-                                    <div id={key} className={'grid grid-cols-2 gap-2 border rounded-lg p-6 content-start'} key={key}>
+                                    <div id={key}
+                                         className={'grid grid-cols-2 gap-2 border rounded-lg p-6 content-start'}
+                                         key={key}>
                                         <div className={'col-span-full capitalize'}>
                                             <Label htmlFor={key}>{key}</Label>
                                         </div>
@@ -225,10 +286,12 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                                                     <FormItem className={'flex flex-col'}>
                                                                         <div className={'flex items-center gap-2'}>
                                                                             <FormControl>
-                                                                                <Checkbox id={field.name} checked={field.value}
+                                                                                <Checkbox id={field.name}
+                                                                                          checked={field.value}
                                                                                           onCheckedChange={field.onChange}/>
                                                                             </FormControl>
-                                                                            <FormLabel htmlFor={field.name} className={'capitalize'}>{trastorno.replace('_', ' ')}</FormLabel>
+                                                                            <FormLabel htmlFor={field.name}
+                                                                                       className={'capitalize'}>{trastorno.replace('_', ' ')}</FormLabel>
                                                                         </div>
                                                                         <FormMessage/>
                                                                     </FormItem>
@@ -305,7 +368,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                                                   onCheckedChange={field.onChange}/>
                                                     </FormControl>
                                                     <FormLabel htmlFor={field.name}
-                                                        className={'capitalize'}>{medicamento}</FormLabel>
+                                                               className={'capitalize'}>{medicamento}</FormLabel>
                                                 </FormItem>
                                             } name={`medicamentos.${medicamento}.positivo`}
                                                        control={form.control}/>
@@ -317,7 +380,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                                     </FormControl>
                                                     <FormMessage/>
                                                     <FormLabel htmlFor={field.name}
-                                                        className={'font-light text-xs text-neutral-500 text-muted'}>mg</FormLabel>
+                                                               className={'font-light text-xs text-neutral-500 text-muted'}>mg</FormLabel>
                                                 </FormItem>
                                             } name={`medicamentos.${medicamento}.dosis`}
                                                        control={form.control}/>
