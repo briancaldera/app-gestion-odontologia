@@ -211,9 +211,9 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                             {
 
                                 Object.entries(form.formState.defaultValues.trastornos).filter(([key, _]) => key !== 'historia_id').map(([key, value]: [string, object]) => (
-                                    <div className={'grid grid-cols-2 gap-2 border rounded-lg p-6 content-start'} key={key}>
+                                    <div id={key} className={'grid grid-cols-2 gap-2 border rounded-lg p-6 content-start'} key={key}>
                                         <div className={'col-span-full capitalize'}>
-                                            <Label>{key}</Label>
+                                            <Label htmlFor={key}>{key}</Label>
                                         </div>
                                         {
                                             Object.keys(value).filter(trastorno => trastorno !== 'otros').map(trastorno => {
@@ -228,7 +228,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                                                                 <Checkbox id={field.name} checked={field.value}
                                                                                           onCheckedChange={field.onChange}/>
                                                                             </FormControl>
-                                                                            <FormLabel className={'capitalize'}>{trastorno.replace('_', ' ')}</FormLabel>
+                                                                            <FormLabel htmlFor={field.name} className={'capitalize'}>{trastorno.replace('_', ' ')}</FormLabel>
                                                                         </div>
                                                                         <FormMessage/>
                                                                     </FormItem>
@@ -261,7 +261,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                         <FormField render={({field}) => (
                                             <FormItem className={'flex gap-2 items-center'}>
                                                 <FormControl>
-                                                    <Checkbox checked={field.value}
+                                                    <Checkbox id={field.name} checked={field.value}
                                                               onCheckedChange={field.onChange}/>
                                                 </FormControl>
                                                 <Title level={'title-md'} className={'capitalize'}>{alergia}</Title>
@@ -275,9 +275,9 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                         <div className={'mt-4'}>
                             <FormField render={({field}) => (
                                 <FormItem>
-                                    <FormLabel className={'mb-1.5'}>Descripción</FormLabel>
+                                    <FormLabel htmlFor={field.name} className={'mb-1.5'}>Descripción</FormLabel>
                                     <FormControl>
-                                        <Textarea {...field}/>
+                                        <Textarea id={field.name} {...field}/>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
@@ -301,10 +301,10 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                             <FormField render={({field}) =>
                                                 <FormItem className={'flex gap-4 items-center'}>
                                                     <FormControl>
-                                                        <Checkbox checked={field.value}
+                                                        <Checkbox id={field.name} checked={field.value}
                                                                   onCheckedChange={field.onChange}/>
                                                     </FormControl>
-                                                    <FormLabel
+                                                    <FormLabel htmlFor={field.name}
                                                         className={'capitalize'}>{medicamento}</FormLabel>
                                                 </FormItem>
                                             } name={`medicamentos.${medicamento}.positivo`}
@@ -312,11 +312,11 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                             <FormField render={({field}) =>
                                                 <FormItem className={'flex items-top gap-1'}>
                                                     <FormControl>
-                                                        <Input {...field} type={'number'} step={'0.1'}
+                                                        <Input id={field.name} {...field} type={'number'} step={'0.1'}
                                                                className={'text-xl'}/>
                                                     </FormControl>
                                                     <FormMessage/>
-                                                    <FormLabel
+                                                    <FormLabel htmlFor={field.name}
                                                         className={'font-light text-xs text-neutral-500 text-muted'}>mg</FormLabel>
                                                 </FormItem>
                                             } name={`medicamentos.${medicamento}.dosis`}
