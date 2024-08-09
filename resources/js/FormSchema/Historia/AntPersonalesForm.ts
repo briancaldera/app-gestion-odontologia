@@ -1,4 +1,6 @@
 import {z} from 'zod'
+import TrastornosFormSchema, {Trastornos} from "./TrastornosForm";
+
 
 const medicamentoObject = z.object({
     positivo: z
@@ -24,6 +26,7 @@ const alergiaObject = z.boolean()
 
 const AntPersonalesFormSchema = z.object({
     historia_id: z.string(),
+    trastornos: TrastornosFormSchema,
     medicamentos: z.object({
         hipertensivos: medicamentoObject,
         analgesicos: medicamentoObject,
@@ -53,6 +56,7 @@ const AntPersonalesFormSchema = z.object({
 
 export const AntPersonalesForm: z.infer<typeof AntPersonalesFormSchema> = {
     historia_id: '',
+    trastornos: Trastornos,
     medicamentos: {
         hipertensivos: {
             positivo: false,

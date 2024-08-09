@@ -170,7 +170,7 @@ const TrastornosFormSchema = z.object({
     infectocontagiosa: tInfectocontagiosaObject,
 })
 
-export const TrastornosForm: z.infer<typeof TrastornosFormSchema> = {
+export const Trastornos: z.infer<typeof TrastornosFormSchema> = {
     historia_id: null,
     cardiovasculares: {
         angina_pecho: false,

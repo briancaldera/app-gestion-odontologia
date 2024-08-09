@@ -15,14 +15,18 @@ import DatePicker from "@/Components/molecules/DatePicker";
 import PacienteFormSchema, {Paciente} from "@/FormSchema/Historia/PacienteForm";
 import AntPersonalesFormSchema, {AntPersonalesForm} from "@/FormSchema/Historia/AntPersonalesForm";
 import AntFamiliaresFormSchema, {AntFamiliaresForm} from "@/FormSchema/Historia/AntFamiliaresForm";
-import TrastornosFormSchema, {TrastornosForm} from "@/FormSchema/Historia/TrastornosForm";
+import TrastornosFormSchema, {Trastornos} from "@/FormSchema/Historia/TrastornosForm";
 import HistoriaFormSchema, {Historia} from "@/FormSchema/Historia/HistoriaForm";
 import HistoriaOdontologicaFormSchema, {HistoriaOdontologica} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
 import Checkbox from "@/Components/atoms/Checkbox";
 import Input from "@/Components/atoms/Input";
+import Textarea from "@/Components/atoms/Textarea";
+import Label from "@/Components/atoms/Label";
 
 
 const TabTriggerStyle = 'p-0 m-0'
+
+const SectionStyle = 'w-full px-6 min-h-screen'
 
 const HistoriaEditorContext = React.createContext({errors: null})
 
@@ -50,14 +54,13 @@ const HistoriaEditor = ({errors = null}) => {
 
     const trastornosForm = useForm<z.infer<typeof TrastornosFormSchema>>({
         resolver: zodResolver(TrastornosFormSchema),
-        defaultValues: TrastornosForm,
+        defaultValues: Trastornos,
     })
 
     const historiaOdontologicaForm = useForm<z.infer<typeof HistoriaOdontologicaFormSchema>>({
         resolver: zodResolver(HistoriaOdontologicaFormSchema),
         defaultValues: HistoriaOdontologica
     })
-
 
     return (
         <div className={'w-full h-full px-6 py-6'}>
@@ -94,8 +97,6 @@ const HistoriaEditor = ({errors = null}) => {
         </div>
     )
 }
-
-const SectionStyle = 'w-full px-6 h-screen'
 
 const PacienteSection = ({form}) => {
 
@@ -191,8 +192,8 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
 
         // router.post(route(''), Object.create(values))
     }
-
     return (
+
         <Surface className={SectionStyle}>
 
             <Title level={'title-lg'}>Antecedentes Médicos Personales</Title>
@@ -200,7 +201,54 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
 
-                    <section>
+                    <section className={'my-6'}>
+                        <header>
+                            <Title level={'title-md'}>Trastornos</Title>
+                        </header>
+
+                        <div
+                            className={'grid grid-cols-1 sm:grid-cols-2 gap-6 border rounded-2xl border-slate-300 p-3'}>
+                            {
+
+                                Object.entries(form.formState.defaultValues.trastornos).filter(([key, _]) => key !== 'historia_id').map(([key, value]: [string, object]) => (
+                                    <div className={'grid grid-cols-2 gap-2 border rounded-lg p-6 content-start'} key={key}>
+                                        <div className={'col-span-full capitalize'}>
+                                            <Label>{key}</Label>
+                                        </div>
+                                        {
+                                            Object.keys(value).filter(trastorno => trastorno !== 'otros').map(trastorno => {
+                                                return (
+                                                    <div key={trastorno}>
+                                                        <FormField render={({field}) => {
+                                                            return (
+                                                                <div key={trastorno}>
+                                                                    <FormItem className={'flex flex-col'}>
+                                                                        <div className={'flex items-center gap-2'}>
+                                                                            <FormControl>
+                                                                                <Checkbox id={field.name} checked={field.value}
+                                                                                          onCheckedChange={field.onChange}/>
+                                                                            </FormControl>
+                                                                            <FormLabel className={'capitalize'}>{trastorno.replace('_', ' ')}</FormLabel>
+                                                                        </div>
+                                                                        <FormMessage/>
+                                                                    </FormItem>
+                                                                </div>
+                                                            )
+                                                        }} name={`trastornos.${key}.${trastorno}`}
+                                                                   control={form.control}/>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                ))
+                            }
+                        </div>
+
+
+                    </section>
+
+                    <section className={'my-6'}>
                         <header>
                             <Title level={'title-md'}>Alergias</Title>
                         </header>
@@ -213,31 +261,33 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                         <FormField render={({field}) => (
                                             <FormItem className={'flex gap-2 items-center'}>
                                                 <FormControl>
-                                                    <Checkbox checked={field.value} onCheckedChange={field.onChange}/>
+                                                    <Checkbox checked={field.value}
+                                                              onCheckedChange={field.onChange}/>
                                                 </FormControl>
                                                 <Title level={'title-md'} className={'capitalize'}>{alergia}</Title>
-                                                <FormMessage />
+                                                <FormMessage/>
                                             </FormItem>
                                         )} name={`alergias.${alergia}`} control={form.control}/>
                                     </div>
                                 ))
                             }
                         </div>
-                        <div>
+                        <div className={'mt-4'}>
                             <FormField render={({field}) => (
                                 <FormItem>
-                                    <Title level={'title-sm'}>Descripción</Title>
+                                    <FormLabel className={'mb-1.5'}>Descripción</FormLabel>
                                     <FormControl>
-
+                                        <Textarea {...field}/>
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             )} name={'alergias.descripcion'} control={form.control}/>
                         </div>
                     </section>
 
+                    <hr/>
 
-                    <section>
+                    <section className={'my-6'}>
                         <header>
                             <Title level={'title-md'}>Medicamentos que toma actualmente (mg y dosis diaria)</Title>
                         </header>
