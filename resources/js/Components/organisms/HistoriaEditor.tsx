@@ -5,7 +5,7 @@ import {Icon} from "@/Components/atoms/Icon";
 import {useForm} from "react-hook-form"
 import {z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Form} from "@/shadcn/ui/form"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import {useRoute} from "ziggy-js";
 import {Button} from "@/shadcn/ui/button"
 import React from "react";
@@ -15,9 +15,12 @@ import DatePicker from "@/Components/molecules/DatePicker";
 import PacienteFormSchema, {Paciente} from "@/FormSchema/Historia/PacienteForm";
 import AntPersonalesFormSchema, {AntPersonalesForm} from "@/FormSchema/Historia/AntPersonalesForm";
 import AntFamiliaresFormSchema, {AntFamiliaresForm} from "@/FormSchema/Historia/AntFamiliaresForm";
-import TrastornosFormSchema , {TrastornosForm} from "@/FormSchema/Historia/TrastornosForm";
-import HistoriaFormSchema , {Historia} from "@/FormSchema/Historia/HistoriaForm";
+import TrastornosFormSchema, {TrastornosForm} from "@/FormSchema/Historia/TrastornosForm";
+import HistoriaFormSchema, {Historia} from "@/FormSchema/Historia/HistoriaForm";
 import HistoriaOdontologicaFormSchema, {HistoriaOdontologica} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
+import Checkbox from "@/Components/atoms/Checkbox";
+import Input from "@/Components/atoms/Input";
+
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -82,7 +85,7 @@ const HistoriaEditor = ({errors = null}) => {
                             <PacienteSection form={pacienteForm}/>
                         </TabsContent>
                         <TabsContent value="antPersonales" className={TabTriggerStyle}>
-                            <AntecedentesMedicosPersonalesSection/>
+                            <AntecedentesMedicosPersonalesSection form={antPersonalesForm}/>
                         </TabsContent>
                     </HistoriaEditorContext.Provider>
                 </div>
@@ -146,7 +149,6 @@ const PacienteSection = ({form}) => {
                            placeholder={'Ejemplo: 0414-1234567'}/>
 
 
-
                     <Field control={form.control} name={'ocupacion'} label={'Ocupación'}/>
 
 
@@ -175,13 +177,111 @@ const PacienteSection = ({form}) => {
 //     )
 // }
 
-const AntecedentesMedicosPersonalesSection = ({form}) => {
+type AntecedentesMedicosPersonalesSectionProps = {
+    form: ReturnType<typeof useForm<typeof z.infer<typeof AntPersonalesFormSchema>>>
+}
+
+const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersonalesSectionProps) => {
 
     const {errors} = React.useContext(HistoriaEditorContext)
     const route = useRoute()
 
+    const handleSubmit = (values: z.infer<typeof PacienteFormSchema>) => {
+        console.log(values)
+
+        // router.post(route(''), Object.create(values))
+    }
+
     return (
         <Surface className={SectionStyle}>
+
+            <Title level={'title-lg'}>Antecedentes Médicos Personales</Title>
+
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
+
+                    <section>
+                        <header>
+                            <Title level={'title-md'}>Alergias</Title>
+                        </header>
+
+                        <div
+                            className={'grid sm:flex grid-cols-1 items-center gap-6 border rounded-2xl border-slate-300 p-3'}>
+                            {
+                                Object.keys(form.formState.defaultValues.alergias).filter(alergia => alergia !== 'descripcion').map(alergia => (
+                                    <div key={alergia}>
+                                        <FormField render={({field}) => (
+                                            <FormItem className={'flex gap-2 items-center'}>
+                                                <FormControl>
+                                                    <Checkbox checked={field.value} onCheckedChange={field.onChange}/>
+                                                </FormControl>
+                                                <Title level={'title-md'} className={'capitalize'}>{alergia}</Title>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )} name={`alergias.${alergia}`} control={form.control}/>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <div>
+                            <FormField render={({field}) => (
+                                <FormItem>
+                                    <Title level={'title-sm'}>Descripción</Title>
+                                    <FormControl>
+
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} name={'alergias.descripcion'} control={form.control}/>
+                        </div>
+                    </section>
+
+
+                    <section>
+                        <header>
+                            <Title level={'title-md'}>Medicamentos que toma actualmente (mg y dosis diaria)</Title>
+                        </header>
+
+                        <div
+                            className={'col-span-full grid grid-cols-1 gap-4 sm:grid-cols-3 border rounded-2xl border-slate-300 p-3'}>
+                            {
+                                Object.keys(form.formState.defaultValues.medicamentos).filter(medicamento => medicamento !== 'otros').map(medicamento => (
+                                    <div key={medicamento}>
+                                        <div className={'flex gap-4 items-center'}>
+                                            <FormField render={({field}) =>
+                                                <FormItem className={'flex gap-4 items-center'}>
+                                                    <FormControl>
+                                                        <Checkbox checked={field.value}
+                                                                  onCheckedChange={field.onChange}/>
+                                                    </FormControl>
+                                                    <FormLabel
+                                                        className={'capitalize'}>{medicamento}</FormLabel>
+                                                </FormItem>
+                                            } name={`medicamentos.${medicamento}.positivo`}
+                                                       control={form.control}/>
+                                            <FormField render={({field}) =>
+                                                <FormItem className={'flex items-top gap-1'}>
+                                                    <FormControl>
+                                                        <Input {...field} type={'number'} step={'0.1'}
+                                                               className={'text-xl'}/>
+                                                    </FormControl>
+                                                    <FormMessage/>
+                                                    <FormLabel
+                                                        className={'font-light text-xs text-neutral-500 text-muted'}>mg</FormLabel>
+                                                </FormItem>
+                                            } name={`medicamentos.${medicamento}.dosis`}
+                                                       control={form.control}/>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </section>
+
+                    <Button type={"submit"}>Guardar</Button>
+
+                </form>
+            </Form>
         </Surface>
     )
 }

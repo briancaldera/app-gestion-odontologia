@@ -1,9 +1,9 @@
-import {Input as ShadcnInput, InputProps} from '@/shadcn/ui/input'
+import {Input as ShadcnInput} from '@/shadcn/ui/input'
 import {forwardRef} from "react";
 
-const Input = forwardRef(({...props} : InputProps, ref) => {
+const Input = forwardRef(({value, ...props}, ref) => {
     return (
-        <ShadcnInput {...props}/>
+        <ShadcnInput value={value ?? ''} {...props}/>
     )
 })
 

@@ -1,17 +1,26 @@
 import {z} from 'zod'
-import {fa} from "@faker-js/faker";
 
 const medicamentoObject = z.object({
     positivo: z
-        .boolean()
-        .nullable(),
+        .boolean(),
     dosis: z
+        .coerce
         .number()
-        .positive()
+        .nonnegative()
+        .transform(value => (value === 0) ? null : value)
         .nullable()
 })
+//     .transform(schema => {
+//     if (!schema.positivo) {
+//         schema.dosis = null
+//     }
+//     return schema
+// })
+    .refine(({positivo, dosis}) => {
+    return !(!positivo && dosis !== null);
+}, {message: 'El campo dosis no puede contener valor si no aplica'})
 
-const alergiaObject = z.boolean().nullable()
+const alergiaObject = z.boolean()
 
 const AntPersonalesFormSchema = z.object({
     historia_id: z.string(),
@@ -46,47 +55,47 @@ export const AntPersonalesForm: z.infer<typeof AntPersonalesFormSchema> = {
     historia_id: '',
     medicamentos: {
         hipertensivos: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         analgesicos: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         esteroides: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         antidepresivos: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         anticonceptivos: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         hipogicemiante: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         anticonvulsivos: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         sildenafil: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         acidoacetilicidico: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         anticoagulante: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         bifosfanato: {
-            positivo: null,
+            positivo: false,
             dosis: null,
         },
         otros: {
@@ -95,11 +104,11 @@ export const AntPersonalesForm: z.infer<typeof AntPersonalesFormSchema> = {
         }
     },
     alergias: {
-        antibioticos: null,
-        analgesicos: null,
-        anestesicos: null,
-        yodo: null,
-        otros: null,
+        antibioticos: false,
+        analgesicos: false,
+        anestesicos: false,
+        yodo: false,
+        otros: false,
         descripcion: '',
     },
 }

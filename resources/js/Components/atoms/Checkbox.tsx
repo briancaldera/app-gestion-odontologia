@@ -1,10 +1,8 @@
 import {Checkbox as ShadcnCheckbox} from "@/shadcn/ui/checkbox";
 import React from "react";
 
-const Checkbox = ({...props}) => {
-    return (
-        <ShadcnCheckbox {...props} />
-    )
-}
+const Checkbox = React.forwardRef(({...props}, ref) => {
+    return <ShadcnCheckbox {...props}/>
+})
 
 export default Checkbox
