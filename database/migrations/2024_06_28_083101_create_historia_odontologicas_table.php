@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('historia_odontologicas', function (Blueprint $table) {
             $table->foreignUuid('historia_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->text('ant_personales')->nullable();
+            $table->jsonb('portador');
             $table->jsonb('habitos');
             $table->jsonb('examen_fisico');
             $table->jsonb('estudio_modelos');

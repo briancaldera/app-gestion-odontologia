@@ -1,4 +1,4 @@
-import {undefined, z} from "zod";
+import {z} from "zod";
 
 const Habitos: readonly string[] = [
     'fumar',
@@ -20,6 +20,11 @@ const HabitoSchema = z.boolean()
 const MAX_TEXT_LENGTH: number = 10000
 
 const AntOdontologicosPersonalesObject = z.string().max(MAX_TEXT_LENGTH)
+
+const PortadorSchema = z.object({
+    ortodoncia: z.boolean(),
+    protesis: z.boolean(),
+})
 
 const HabitosObject = z.object({
     fumar: HabitoSchema,
@@ -45,22 +50,6 @@ const SignosVitalesObject = z.object({
     pulso: z.number().int().min(0),
     respiracion: z.number().int().min(0),
     temperatura: z.number().min(0)
-})
-
-const HabitosSchema = z.object({
-    fumar: z.boolean(),
-    alcohol: z.boolean(),
-    drogas: z.boolean(),
-    onicofagia: z.boolean(),
-    deglusion_atip: z.boolean(),
-    bruxismo: z.boolean(),
-    bruxomania: z.boolean(),
-    queilofagia: z.boolean(),
-    palillos: z.boolean(),
-    respirador_bucal: z.boolean(),
-    succion_digital: z.boolean(),
-    otros: z.boolean(),
-    descripcion: z.string().max(MAX_TEXT_LENGTH),
 })
 
 const ExamenExtraoralObject = z.object({
@@ -175,6 +164,7 @@ const SecuenciaTratamientoObject = z.array(ModificacionesPlanTratamiento)
 
 const HistoriaOdontologicaFormSchema = z.object({
     ant_personales: AntOdontologicosPersonalesObject,
+    portador: PortadorSchema,
     habitos: HabitosObject,
     examen_fisico: ExamenFisicoObject,
     estudio_modelos: EstudioModelosObject,
@@ -185,6 +175,10 @@ const HistoriaOdontologicaFormSchema = z.object({
 
 export const HistoriaOdontologica: z.infer<typeof HistoriaOdontologicaFormSchema> = {
     ant_personales: "",
+    portador: {
+        ortodoncia: false,
+        protesis: false,
+    },
     estudio_modelos: {
         diagnostico: "",
         examenes_comp: "",

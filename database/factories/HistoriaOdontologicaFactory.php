@@ -19,7 +19,6 @@ class HistoriaOdontologicaFactory extends Factory
         $faker = fake('es_VE');
         $randomBoolean = fn() => $faker->boolean(20);
         $randomText = fn() => $faker->text($faker->numberBetween(30, 200));
-
         $randomTratamientos = function ($count = 1) use ($faker, $randomText) {
             $tratamientos = [];
 
@@ -49,6 +48,11 @@ class HistoriaOdontologicaFactory extends Factory
         };
 
         $ant_personales = $randomText();
+
+        $portador = [
+            'ortodoncia' => $faker->boolean(),
+            'protesis' => $faker->boolean(),
+        ];
 
         $habitos = [
             'fumar' => $randomBoolean(),
@@ -184,6 +188,7 @@ class HistoriaOdontologicaFactory extends Factory
 
         return [
             'ant_personales' => $ant_personales,
+            'portador' =>$portador,
             'habitos' => $habitos,
             'examen_fisico' => $examen_fisico,
             'estudio_modelos' => $estudio_modelos,

@@ -26,6 +26,10 @@ class UpdateHistoriaOdontologicaRequest extends FormRequest
         return [
             'historia_id' => ['sometimes', 'required', 'uuid', 'exists:' . Historia::class . ',id', 'unique:' . HistoriaOdontologica::class],
             'ant_personales' => ['sometimes', 'present', 'string', 'max:255'],
+
+            'portador' => ['required', 'array:ortodoncia,protesis'],
+            'portador.*' => ['required', 'boolean'],
+
             'habitos' => ['sometimes', 'required', 'json', 'array'],
             'habitos.*' => ['sometimes', 'boolean'],
             'habitos.descripcion' => ['sometimes', 'string'],

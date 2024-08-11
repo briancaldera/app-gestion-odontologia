@@ -30,6 +30,7 @@ class HistoriaOdontologica extends Model
 
     protected $fillable = [
         'habitos',
+        'portador',
         'examen_fisico',
         'estudio_modelos',
         'plan_tratamiento',
@@ -41,6 +42,7 @@ class HistoriaOdontologica extends Model
     {
         return [
             'habitos' => AsArrayObject::class,
+            'portador' => AsArrayObject::class,
             'examen_fisico' => AsArrayObject::class,
             'estudio_modelos' => AsArrayObject::class,
             'plan_tratamiento' => AsArrayObject::class,
