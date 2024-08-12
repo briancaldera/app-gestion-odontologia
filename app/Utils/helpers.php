@@ -1,5 +1,7 @@
 <?php
 
+use League\Flysystem\WhitespacePathNormalizer;
+
 if (!function_exists('message')) {
 
     /*
@@ -28,5 +30,20 @@ if (!function_exists('message')) {
         ];
 
         session()->push('messages', $message);
+    }
+}
+
+if (!function_exists('normalize_path')) {
+
+
+    /**
+     * Normalize a path using the WhitespacePathNormalizer
+     * @param string $path the path to normalize
+     * @return string the normalized path
+     */
+    function normalize_path(string $path): string
+    {
+        $normalizer = new WhitespacePathNormalizer();
+        return $normalizer->normalizePath($path);
     }
 }

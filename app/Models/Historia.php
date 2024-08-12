@@ -22,6 +22,8 @@ class Historia extends Model
     use HasFactory;
     use HasUuids;
 
+    const HISTORIA_DIR = 'historias/';
+
     protected $attributes = [
         'numero' => '',
         'status' => 'abierta',

@@ -27,6 +27,8 @@ class ExamenRadiografico extends Model
     {
         return [
             'interpretacion_panoramica' => AsArrayObject::class,
+            'interpretacion_periapicales' => AsArrayObject::class,
+            'interpretacion_coronales' => AsArrayObject::class,
         ];
     }
 

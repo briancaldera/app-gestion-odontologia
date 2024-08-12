@@ -19,6 +19,7 @@ use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
 use App\Models\Trastornos;
 use App\Services\HistoriaService;
+use App\Services\RadiografiaService;
 use Inertia\Inertia;
 
 class HistoriaController extends Controller
@@ -28,6 +29,7 @@ class HistoriaController extends Controller
      */
     public function __construct(
         protected HistoriaService $historiaService,
+        protected RadiografiaService $radiografiaService,
     ) {}
     /**
      * Display a listing of the resource.
@@ -114,6 +116,8 @@ class HistoriaController extends Controller
         $this->historiaService->updateHistoriaOdontologica($historiaOdon, $data);
         return response()->noContent();
     }
+
+
 
     /**
      * Display the specified resource.

@@ -19,16 +19,21 @@ class ExamenRadiograficoFactory extends Factory
         $faker = fake('es_VE');
         $randomText = fn() => $faker->text($faker->numberBetween(30, 200));
 
-        $interpretacion_panoramica = [
-            'nasomaxilar' => $randomText(),
-            'atm' => $randomText(),
-            'mandibular' => $randomText(),
-            'dento_alveolar_sup' => $randomText(),
-            'dento_alveolar_inf' => $randomText(),
+        $radiografia = fn () => [
+            'radiografias_url' => [],
+            'descripcion' => $randomText,
         ];
 
-        $interpretacion_periapicales = $randomText();
-        $interpretacion_coronales = $randomText();
+        $interpretacion_panoramica = [
+            'nasomaxilar' => $radiografia(),
+            'atm' => $radiografia(),
+            'mandibular' => $radiografia(),
+            'dento_alveolar_sup' => $radiografia(),
+            'dento_alveolar_inf' => $radiografia(),
+        ];
+
+        $interpretacion_periapicales = $radiografia();
+        $interpretacion_coronales = $radiografia();
 
         return [
             'interpretacion_panoramica' => $interpretacion_panoramica,
