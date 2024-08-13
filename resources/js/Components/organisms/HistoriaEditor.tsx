@@ -17,6 +17,7 @@ import AntPersonalesFormSchema, {AntPersonalesForm} from "@/FormSchema/Historia/
 import AntFamiliaresFormSchema, {AntFamiliaresForm} from "@/FormSchema/Historia/AntFamiliaresForm";
 import HistoriaFormSchema, {Historia} from "@/FormSchema/Historia/HistoriaForm";
 import HistoriaOdontologicaFormSchema, {HistoriaOdontologica} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
+import ExamenRadiograficoSchema, {ExamenRadiografico} from '@/FormSchema/Historia/ExamenRadiograficoForm'
 import Checkbox from "@/Components/atoms/Checkbox";
 import Input from "@/Components/atoms/Input";
 import Textarea from "@/Components/atoms/Textarea";
@@ -57,6 +58,11 @@ const HistoriaEditor = ({errors = null}) => {
     const historiaOdontologicaForm = useForm<z.infer<typeof HistoriaOdontologicaFormSchema>>({
         resolver: zodResolver(HistoriaOdontologicaFormSchema),
         defaultValues: HistoriaOdontologica
+    })
+
+    const examenRadiograficoForm = useForm<z.infer<typeof ExamenRadiograficoSchema>>({
+        resolver: zodResolver(ExamenRadiograficoSchema),
+        defaultValues: ExamenRadiografico,
     })
 
     return (
@@ -115,7 +121,7 @@ const HistoriaEditor = ({errors = null}) => {
                             <HistoriaOdontologicaSection form={historiaOdontologicaForm}/>
                         </TabsContent>
                         <TabsContent value="examenRadiografico" className={TabTriggerStyle}>
-                            <ExamenRadiograficoSection form={historiaOdontologicaForm}/>
+                            <ExamenRadiograficoSection form={examenRadiograficoForm}/>
                         </TabsContent>
                     </HistoriaEditorContext.Provider>
                 </div>
@@ -702,10 +708,19 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
     );
 }
 
-const ExamenRadiograficoSection = ({form}) => {
+type ExamenRadiograficoSectionProps = {
+    form: ReturnType<typeof useForm<typeof z.infer<typeof ExamenRadiograficoSchema>>>
+}
 
-    const handleSubmit = (values) => {
+const ExamenRadiograficoSection = ({form}: ExamenRadiograficoSectionProps) => {
+
+    const {errors} = React.useContext(HistoriaEditorContext)
+    const route = useRoute()
+
+    const handleSubmit = (values: z.infer<typeof ExamenRadiograficoSchema>) => {
         console.log(values)
+
+        // router.post(route(''), Object.create(values))
     }
 
     return (
@@ -722,6 +737,8 @@ const ExamenRadiograficoSection = ({form}) => {
                         </header>
 
                         <div>
+
+                            
                         </div>
                     </section>
                 </form>

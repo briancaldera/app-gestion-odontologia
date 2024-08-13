@@ -31,6 +31,25 @@ const ExamenRadiograficoSchema = z
         interpretacion_radiografica_coronales: RadiografiaSchema,
     })
 
+export const ExamenRadiografico: z.infer<typeof ExamenRadiograficoSchema> = {
+    historia_id: "",
+    interpretacion_panoramica: {
+        ATM: {descripcion: "", radiografias: []},
+        dento_alveolar_inf: {descripcion: "", radiografias: []},
+        dento_alveolar_sup: {descripcion: "", radiografias: []},
+        mandibular: {descripcion: "", radiografias: []},
+        nasomaxilar: {descripcion: "", radiografias: []}
+    },
+    interpretacion_radiografica_coronales: {
+        descripcion: "", radiografias: []
+    },
+    interpretacion_radiografica_periapicales: {
+        descripcion: "", radiografias: []
+    }
+}
+
+export default ExamenRadiograficoSchema
+
 
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\ExamenRadiografico;
 use App\Models\Historia;
+use App\Models\HistoriaOdontologica;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreExamenRadiografico extends FormRequest
@@ -24,7 +25,7 @@ class StoreExamenRadiografico extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id', 'unique:' . ExamenRadiografico::class],
+            'historia_id' => ['required', 'uuid', 'exists:' . HistoriaOdontologica::class . ',historia_id', 'unique:' . ExamenRadiografico::class],
 
             'interpretacion_panoramica' => ['required', 'array:nasomaxilar,ATM,mandibular,dento_alveolar_sup,dento_alveolar_inf'],
             'interpretacion_panoramica.*' => ['required', 'array:radiografias,descripcion'],
