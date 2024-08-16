@@ -2,7 +2,7 @@ import Surface from '@/Components/atoms/Surface'
 import {UserCircleIcon} from '@heroicons/react/24/outline'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon";
-import {useForm} from "react-hook-form"
+import {useForm, UseFormReturn} from "react-hook-form"
 import {z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
@@ -23,8 +23,10 @@ import Input from "@/Components/atoms/Input";
 import Textarea from "@/Components/atoms/Textarea";
 import Label from "@/Components/atoms/Label";
 import {Text} from "@/Components/atoms/Text";
-import {HeartPulse, Hospital, Users, Bone} from "lucide-react"
+import {Bone, HeartPulse, Hospital, Users} from "lucide-react"
 import Tooltip from "@/Components/atoms/Tooltip"
+import DragAndDrop from "@/Components/molecules/DragAndDrop";
+import AnalisisSlot from "@/Components/organisms/AnalisisSlot";
 
 
 const TabTriggerStyle = 'p-0 m-0'
@@ -662,16 +664,18 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
                             <div>
                                 {
                                     Object.keys(form.formState.defaultValues.examen_fisico.examen_extraoral).map(char => (
-                                        <FormField render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel htmlFor={field.name}
-                                                           className={'capitalize'}>{char.replaceAll('_', ' ')}</FormLabel>
-                                                <FormControl>
-                                                    <Textarea id={field.name} {...field}/>
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )} name={`examen_fisico.examen_extraoral.${char}`} control={form.control}/>
+                                        <div key={char}>
+                                            <FormField render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel htmlFor={field.name}
+                                                               className={'capitalize'}>{char.replaceAll('_', ' ')}</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea id={field.name} {...field}/>
+                                                    </FormControl>
+                                                    <FormMessage/>
+                                                </FormItem>
+                                            )} name={`examen_fisico.examen_extraoral.${char}`} control={form.control}/>
+                                        </div>
                                     ))
                                 }
                             </div>
@@ -709,7 +713,7 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
 }
 
 type ExamenRadiograficoSectionProps = {
-    form: ReturnType<typeof useForm<typeof z.infer<typeof ExamenRadiograficoSchema>>>
+    form: UseFormReturn<z.infer<typeof ExamenRadiograficoSchema>>
 }
 
 const ExamenRadiograficoSection = ({form}: ExamenRadiograficoSectionProps) => {
@@ -736,9 +740,69 @@ const ExamenRadiograficoSection = ({form}: ExamenRadiograficoSectionProps) => {
                             <Title level={'title-md'}>Interpretación panorámica</Title>
                         </header>
 
+                        <div className={'grid grid-rows-5 grid-cols-3 gap-4'}>
+                            {
+                                Object.keys(form.formState.defaultValues?.interpretacion_panoramica).map(char => (
+                                    <div key={char}>
+                                        <FormField render={({field}) => {
+                                            return (<FormItem>
+                                                    <div className={'capitalize font-semibold'}>
+                                                        {char.replaceAll('_', ' ')}
+                                                    </div>
+                                                    <div className={'border border-gray-400 rounded-lg'}>
+                                                        <FormControl>
+                                                        <AnalisisSlot title={char.replaceAll('_', ' ')}
+                                                                      descripcion={field.value.descripcion}
+                                                                      radiografias={field.value.radiografias}
+                                                                      onSubmitAnalisis={(values) => {
+                                                                          // field.onChange(values) // This doesn't work. Please do NOT use
+                                                                          form.setValue(`interpretacion_panoramica.${char}.radiografias`, values.radiografias, {
+                                                                              shouldDirty: true,
+                                                                              shouldTouch: true,
+                                                                              shouldValidate: true
+                                                                          })
+                                                                          form.setValue(`interpretacion_panoramica.${char}.descripcion`, values.descripcion, {
+                                                                              shouldDirty: true,
+                                                                              shouldTouch: true,
+                                                                              shouldValidate: true
+                                                                          })
+                                                                      }}/>
+                                                        </FormControl>
+                                                    </div>
+                                                    {/*<FormMessage hidden={true}/>*/}
+                                                </FormItem>
+                                            )
+                                        }} name={`interpretacion_panoramica.${char}`} control={form.control}/>
+
+
+                                    </div>
+                                ))
+                            }
+
+
+                        </div>
+                    </section>
+
+                    <section className={'my-6'}>
+                        <header className={'mb-1.5 mt-5 space-y-1'}>
+                            <Title level={'title-md'}>Interpretación radiográfica periapicales</Title>
+                            <Text level={'body-md'}>(Corona, Raíz, Hueso y Espacio Ligamento Periodontal)</Text>
+                        </header>
+
+                        <div>
+                            <DragAndDrop/>
+                        </div>
+                    </section>
+
+                    <section className={'my-6'}>
+                        <header className={'mb-1.5 mt-5 space-y-1'}>
+                            <Title level={'title-md'}>Interpretación radiográfica coronales</Title>
+                            <Text level={'body-md'}>(Corona, Cresta Alveolar, Espacio de la camara pulpar)</Text>
+                        </header>
+
                         <div>
 
-                            
+
                         </div>
                     </section>
                 </form>
