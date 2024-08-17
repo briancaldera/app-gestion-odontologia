@@ -16,18 +16,47 @@ import PacienteFormSchema, {Paciente} from "@/FormSchema/Historia/PacienteForm";
 import AntPersonalesFormSchema, {AntPersonalesForm} from "@/FormSchema/Historia/AntPersonalesForm";
 import AntFamiliaresFormSchema, {AntFamiliaresForm} from "@/FormSchema/Historia/AntFamiliaresForm";
 import HistoriaFormSchema, {Historia} from "@/FormSchema/Historia/HistoriaForm";
-import HistoriaOdontologicaFormSchema, {HistoriaOdontologica} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
+import HistoriaOdontologicaFormSchema, {HistoriaOdontologica, TratamientoObject, Tratamiento, CAVIDAD_CLASES} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
 import ExamenRadiograficoSchema, {ExamenRadiografico} from '@/FormSchema/Historia/ExamenRadiograficoForm'
 import Checkbox from "@/Components/atoms/Checkbox";
 import Input from "@/Components/atoms/Input";
 import Textarea from "@/Components/atoms/Textarea";
 import Label from "@/Components/atoms/Label";
 import {Text} from "@/Components/atoms/Text";
-import {Bone, HeartPulse, Hospital, Users} from "lucide-react"
+import {Bone, HeartPulse, Hospital, SquarePlus, Users, MoreHorizontal, Trash2} from "lucide-react"
 import Tooltip from "@/Components/atoms/Tooltip"
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import AnalisisSlot from "@/Components/organisms/AnalisisSlot";
-
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/shadcn/ui/popover"
+import Heading from "@/Components/atoms/Heading";
+import {OutlinedButton} from "@/Components/molecules/OutlinedButton";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/shadcn/ui/select"
+import {
+    ColumnDef,
+    flexRender,
+    getCoreRowModel, Row, RowData,
+    useReactTable,
+} from "@tanstack/react-table"
+import {DataTable} from "@/Components/molecules/DataTable"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/shadcn/ui/dropdown-menu"
+import ModificacionesPlanTratamientoSection from '@/Components/organisms/historia/ModificacionesPlanTratamientoSection'
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -107,6 +136,20 @@ const HistoriaEditor = ({errors = null}) => {
                             </Icon>
                         </Surface>
                     </TabsTrigger>
+                    <TabsTrigger value="planTratamiento" className={'p-0'}>
+                        <Surface>
+                            <Icon className={'size-8'}>
+                                <Bone/>
+                            </Icon>
+                        </Surface>
+                    </TabsTrigger>
+                    <TabsTrigger value="modificacionesPlanTratamiento" className={'p-0'}>
+                        <Surface>
+                            <Icon className={'size-8'}>
+                                <Bone/>
+                            </Icon>
+                        </Surface>
+                    </TabsTrigger>
                 </TabsList>
                 <div className={'w-full h-full'}>
                     <HistoriaEditorContext.Provider value={{errors: errors}}>
@@ -124,6 +167,12 @@ const HistoriaEditor = ({errors = null}) => {
                         </TabsContent>
                         <TabsContent value="examenRadiografico" className={TabTriggerStyle}>
                             <ExamenRadiograficoSection form={examenRadiograficoForm}/>
+                        </TabsContent>
+                        <TabsContent value="planTratamiento" className={TabTriggerStyle}>
+                            <PlanTratamientoSection form={historiaOdontologicaForm}/>
+                        </TabsContent>
+                        <TabsContent value="modificacionesPlanTratamiento" className={TabTriggerStyle}>
+                            <ModificacionesPlanTratamientoSection form={historiaOdontologicaForm}/>
                         </TabsContent>
                     </HistoriaEditorContext.Provider>
                 </div>
@@ -424,7 +473,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
 }
 
 type HistoriaOdontologicaSectionProps = {
-    form: ReturnType<typeof useForm<typeof z.infer<typeof HistoriaOdontologicaFormSchema>>>
+    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaFormSchema>>
 }
 
 const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) => {
@@ -689,7 +738,7 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
                             <div>
                                 {
                                     Object.keys(form.formState.defaultValues.examen_fisico.examen_intraoral).map(char => (
-                                        <FormField render={({field}) => (
+                                        <FormField key={char} render={({field}) => (
                                             <FormItem>
                                                 <FormLabel htmlFor={field.name}
                                                            className={'capitalize'}>{char.replaceAll('_', ' ')}</FormLabel>
@@ -751,22 +800,22 @@ const ExamenRadiograficoSection = ({form}: ExamenRadiograficoSectionProps) => {
                                                     </div>
                                                     <div className={'border border-gray-400 rounded-lg'}>
                                                         <FormControl>
-                                                        <AnalisisSlot title={char.replaceAll('_', ' ')}
-                                                                      descripcion={field.value.descripcion}
-                                                                      radiografias={field.value.radiografias}
-                                                                      onSubmitAnalisis={(values) => {
-                                                                          // field.onChange(values) // This doesn't work. Please do NOT use
-                                                                          form.setValue(`interpretacion_panoramica.${char}.radiografias`, values.radiografias, {
-                                                                              shouldDirty: true,
-                                                                              shouldTouch: true,
-                                                                              shouldValidate: true
-                                                                          })
-                                                                          form.setValue(`interpretacion_panoramica.${char}.descripcion`, values.descripcion, {
-                                                                              shouldDirty: true,
-                                                                              shouldTouch: true,
-                                                                              shouldValidate: true
-                                                                          })
-                                                                      }}/>
+                                                            <AnalisisSlot title={char.replaceAll('_', ' ')}
+                                                                          descripcion={field.value.descripcion}
+                                                                          radiografias={field.value.radiografias}
+                                                                          onSubmitAnalisis={(values) => {
+                                                                              // field.onChange(values) // This doesn't work. Please do NOT use
+                                                                              form.setValue(`interpretacion_panoramica.${char}.radiografias`, values.radiografias, {
+                                                                                  shouldDirty: true,
+                                                                                  shouldTouch: true,
+                                                                                  shouldValidate: true
+                                                                              })
+                                                                              form.setValue(`interpretacion_panoramica.${char}.descripcion`, values.descripcion, {
+                                                                                  shouldDirty: true,
+                                                                                  shouldTouch: true,
+                                                                                  shouldValidate: true
+                                                                              })
+                                                                          }}/>
                                                         </FormControl>
                                                     </div>
                                                     {/*<FormMessage hidden={true}/>*/}
@@ -807,6 +856,178 @@ const ExamenRadiograficoSection = ({form}: ExamenRadiograficoSectionProps) => {
                     </section>
                 </form>
             </Form>
+        </Surface>
+    )
+}
+
+const PlanTratamientoTableContext = React.createContext({onDeleteTratamiento: (index: number) => {console.log('nose')}})
+
+const columns: ColumnDef<z.infer<typeof TratamientoObject>>[] = [
+    {
+        accessorKey: "diente",
+        header: "Diente",
+    },
+    {
+        accessorKey: "cavidad",
+        header: "Tipo de cavidad",
+    },
+    {
+        accessorKey: "tratamiento",
+        header: "Tratamiento",
+    },
+    {
+        id: 'actions',
+        cell: ({row}) => <TratamientoMenu row={row}/>
+    }
+]
+
+const TratamientoMenu = ({row}: {row: Row<z.infer<typeof TratamientoObject>>}) => {
+    const context = React.useContext(PlanTratamientoTableContext)
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Abrir menú de tratamiento</span>
+                    <MoreHorizontal className="size-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                <DropdownMenuItem
+                    onClick={() => {}}
+                >
+                    Copy payment ID
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>View customer</DropdownMenuItem>
+                <DropdownMenuItem className={'text-rose-600'} onClick={() => context.onDeleteTratamiento(row.index)}><Trash2 className={'size-4 me-1'}/>Eliminar tratamiento</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
+
+const PlanTratamientoSection = ({form}: HistoriaOdontologicaSectionProps) => {
+
+    const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
+
+    const tratamientoForm = useForm<z.infer<typeof TratamientoObject>>({
+        resolver: zodResolver(TratamientoObject),
+        defaultValues: Tratamiento
+    })
+
+    const onAddTratamiento = (values: z.infer<typeof TratamientoObject>) => {
+        const oldData = form.getValues().plan_tratamiento
+        form.setValue('plan_tratamiento', [...oldData, values], {
+            shouldDirty: true, shouldTouch: true, shouldValidate: true
+        })
+        tratamientoForm.reset()
+        setOpenAddTratamientoPopover(false)
+    }
+
+    const onDeleteTratamiento = (index) => {
+        const newData = form.getValues().plan_tratamiento
+        newData.splice(index, 1)
+        form.setValue('plan_tratamiento', [...newData], {
+            shouldDirty: true, shouldTouch: true, shouldValidate: true
+        })
+    }
+
+    return (
+        <Surface className={SectionStyle}>
+            <Title level={'title-lg'}>Plan de Tratamiento</Title>
+
+            <section className={'my-6 relative'}>
+                <header>
+                    <Title level={'title-md'}>Plan de Tratamiento</Title>
+                </header>
+
+                {/*actions*/}
+                <div className={'sticky flex justify-end right-0 top-0'}>
+
+                    <Popover open={openAddTratamientoPopover} onOpenChange={setOpenAddTratamientoPopover}>
+                        <PopoverTrigger type={'button'} className={'border rounded-full size-12 flex items-center justify-center shadow'}>
+                            <Icon className={'flex-none'}>
+                                <SquarePlus/>
+                            </Icon>
+                        </PopoverTrigger>
+                        <PopoverContent align={'end'}>
+                            <section className={'grid grid-cols-2'}>
+                                <header className={'col-span-full'}>
+                                    <Heading level={'h6'}>Agregar plan</Heading>
+                                </header>
+
+                                <Form {...tratamientoForm} className={'col-span-full'}>
+                                    <form onSubmit={tratamientoForm.handleSubmit(onAddTratamiento)} className={'grid grid-cols-2 col-span-full gap-5'}>
+
+                                        <FormField render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>Diente</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field}/>
+                                                </FormControl>
+                                                <FormMessage className={'text-xs'}/>
+                                            </FormItem>
+                                        )} name={'diente'} control={tratamientoForm.control} />
+
+                                        <FormField render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>Cavidad</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Selecciona un tipo de cavidad"/>
+                                                        </SelectTrigger>
+                                                    </FormControl>
+
+                                                    <SelectContent>
+                                                        {CAVIDAD_CLASES.map((clase: string) => (<SelectItem key={clase}
+                                                                                                            value={clase}>Clase {clase}</SelectItem>))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage className={'text-xs'}/>
+                                            </FormItem>
+                                        )} name={'cavidad'} control={tratamientoForm.control} />
+
+                                        <div className={'col-span-full'}>
+                                            <FormField render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>Tratamiento</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea {...field} />
+                                                    </FormControl>
+                                                    <FormMessage className={'text-xs'}/>
+                                                </FormItem>
+                                            )} name={'tratamiento'} control={tratamientoForm.control} />
+                                        </div>
+
+                                        <div className={'col-span-full flex justify-end gap-2'}>
+                                            <OutlinedButton label={'Limpiar'} onClick={() => tratamientoForm.reset()}/>
+                                            <Button type={'submit'}>
+                                                Agregar
+                                            </Button>
+                                        </div>
+                                    </form>
+                                </Form>
+                            </section>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+
+
+                <PlanTratamientoTableContext.Provider value={{onDeleteTratamiento: onDeleteTratamiento}}>
+                    <Form {...form}>
+                        <form>
+                            <FormField render={({field}) => (
+                                <FormItem>
+                                    <DataTable columns={columns} data={field.value} />
+                                </FormItem>
+                            )} name={'plan_tratamiento'} control={form.control} />
+                        </form>
+                    </Form>
+                </PlanTratamientoTableContext.Provider>
+
+            </section>
         </Surface>
     )
 }

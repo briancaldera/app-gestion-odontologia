@@ -1,5 +1,5 @@
 import * as React from "react"
-import {format} from "date-fns"
+import {format, Locale} from "date-fns"
 import {Calendar as CalendarIcon} from "lucide-react"
 import {cn} from "@/lib/utils"
 import {Button} from "@/shadcn/ui/button"
@@ -27,7 +27,7 @@ const DatePicker = ({label, name, control, description = '', disabled = false}) 
                                     {field.value ? (
                                         format(field.value, "PPP")
                                     ) : (
-                                        <span>Pick a date</span>
+                                        <span>Seleccione una fecha</span>
                                     )}
                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>

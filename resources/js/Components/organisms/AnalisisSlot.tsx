@@ -72,7 +72,7 @@ const AnalisisSlot = ({title, descripcion, radiografias, onSubmitAnalisis}: Crea
                         ) : (
                             <div
                                 className={'border-2 border-neutral-300 border-dashed rounded-lg h-full w-full flex items-center justify-center'}>
-                                <Text className={'text-neutral-300 font-bold'}>Crear Analisis</Text>
+                                <Text className={'text-neutral-300 font-bold'}>Crear interpretación</Text>
                             </div>
                         )
                     }

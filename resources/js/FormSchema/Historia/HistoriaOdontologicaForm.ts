@@ -1,4 +1,4 @@
-import {z} from "zod";
+import {undefined, z} from "zod";
 
 const Habitos: readonly string[] = [
     'fumar',
@@ -142,25 +142,33 @@ const EstudioModelosObject = z.object({
     pronostico: PronosticoObject,
 })
 
-const TratamientoObject = z.object({
-    diente: z.number().int().min(18).max(48),
-    cavidad: z.string().max(MAX_TEXT_LENGTH),
+export const CAVIDAD_CLASES = ['I', 'II', 'III', 'IV', 'V'] as const
+
+export const TratamientoObject = z.object({
+    diente: z.coerce.number({required_error: 'Número de diente requerido', invalid_type_error: 'Campo debe ser numérico'}).int({message: 'No se admiten decimales'}).min(18, { message: 'Valor mínimo es 18'}).max(48, { message: 'Valor máximo es 48'}),
+    cavidad: z.enum(CAVIDAD_CLASES, {required_error: 'Campo requerido', invalid_type_error: 'Campo debe ser un letra', message: `Campo debe ser un valor entre ${CAVIDAD_CLASES}`}),
     tratamiento: z.string().max(MAX_TEXT_LENGTH),
 })
 
-const ModificacionesPlanTratamiento = z.object({
-    fecha: z.string().date(),
-    diente: z.number().min(18).max(48),
+export const Tratamiento: z.infer<typeof TratamientoObject> = {
+    cavidad: '', diente: 0, tratamiento: ""
+}
+
+export const ModificacionPlanTratamientoObject = z.object({
+    fecha: z.date(),
+    diente: z.coerce.number().int().min(18).max(48),
     tratamiento: z.string().max(MAX_TEXT_LENGTH),
-    nombre_docente: z.string().max(50),
-    aprobacion_docente: z.boolean(),
 })
+
+export const ModificacionPlanTratamiento: z.infer<typeof ModificacionPlanTratamientoObject> = {
+    fecha: '', diente: 0, tratamiento: ""
+}
 
 const PlanTratamientoObject = z.array(TratamientoObject)
 
-const ModificacionesPlanTratamientoObject = z.array(ModificacionesPlanTratamiento)
+const ModificacionesPlanTratamientoObject = z.array(ModificacionPlanTratamientoObject)
 
-const SecuenciaTratamientoObject = z.array(ModificacionesPlanTratamiento)
+const SecuenciaTratamientoObject = z.array(ModificacionPlanTratamientoObject)
 
 const HistoriaOdontologicaFormSchema = z.object({
     ant_personales: AntOdontologicosPersonalesObject,
