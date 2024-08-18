@@ -53,7 +53,7 @@ const columns: ColumnDef<z.infer<typeof TratamientoRealizadoObject>>[] = [
         header: 'Diente'
     }),
     columnHelper.accessor(originalRow => originalRow.tratamiento, {
-        header: 'Tratamiento Realizado'
+        header: 'Tratamientos Realizado'
     }),
     {
         id: 'actions',
