@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
  * @property string $motivo_consulta the reason for the consultation
  * @property string $enfermedad_actual current disease
  * @property int $status the status
+ * @property Correccion $correcciones
  */
 class Historia extends Model
 {
@@ -68,7 +69,10 @@ class Historia extends Model
         return $this->hasOne(HistoriaOdontologica::class);
     }
 
-
+    public function correcciones():HasOne
+    {
+        return $this->hasOne(Correccion::class);
+    }
 }
 
 enum HistoriaStatus: string
