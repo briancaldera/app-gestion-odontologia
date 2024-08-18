@@ -164,6 +164,16 @@ export const ModificacionPlanTratamiento: z.infer<typeof ModificacionPlanTratami
     fecha: '', diente: 0, tratamiento: ""
 }
 
+export const TratamientoRealizadoObject = z.object({
+    fecha: z.date(),
+    diente: z.coerce.number().int().min(18).max(48),
+    tratamiento: z.string().max(MAX_TEXT_LENGTH),
+})
+
+export const TratamientoRealizado: z.infer<typeof TratamientoRealizadoObject> = {
+    fecha: '', diente: 0, tratamiento: ""
+}
+
 const PlanTratamientoObject = z.array(TratamientoObject)
 
 const ModificacionesPlanTratamientoObject = z.array(ModificacionPlanTratamientoObject)

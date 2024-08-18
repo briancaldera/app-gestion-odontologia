@@ -23,7 +23,7 @@ import Input from "@/Components/atoms/Input";
 import Textarea from "@/Components/atoms/Textarea";
 import Label from "@/Components/atoms/Label";
 import {Text} from "@/Components/atoms/Text";
-import {Bone, HeartPulse, Hospital, SquarePlus, Users, MoreHorizontal, Trash2} from "lucide-react"
+import {Bone, HeartPulse, Hospital, SquarePlus, Users, MoreHorizontal, Trash2, ListChecks} from "lucide-react"
 import Tooltip from "@/Components/atoms/Tooltip"
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import AnalisisSlot from "@/Components/organisms/AnalisisSlot";
@@ -57,6 +57,7 @@ import {
     DropdownMenuTrigger,
 } from "@/shadcn/ui/dropdown-menu"
 import ModificacionesPlanTratamientoSection from '@/Components/organisms/historia/ModificacionesPlanTratamientoSection'
+import SecuenciaPlanTratamientoSection from '@/Components/organisms/historia/SecuenciaTratamiento'
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -150,6 +151,13 @@ const HistoriaEditor = ({errors = null}) => {
                             </Icon>
                         </Surface>
                     </TabsTrigger>
+                    <TabsTrigger value="secuenciaPlanTratamiento" className={'p-0'}>
+                        <Surface>
+                            <Icon className={'size-8'}>
+                                <ListChecks />
+                            </Icon>
+                        </Surface>
+                    </TabsTrigger>
                 </TabsList>
                 <div className={'w-full h-full'}>
                     <HistoriaEditorContext.Provider value={{errors: errors}}>
@@ -173,6 +181,9 @@ const HistoriaEditor = ({errors = null}) => {
                         </TabsContent>
                         <TabsContent value="modificacionesPlanTratamiento" className={TabTriggerStyle}>
                             <ModificacionesPlanTratamientoSection form={historiaOdontologicaForm}/>
+                        </TabsContent>
+                        <TabsContent value="secuenciaPlanTratamiento" className={TabTriggerStyle}>
+                            <SecuenciaPlanTratamientoSection form={historiaOdontologicaForm}/>
                         </TabsContent>
                     </HistoriaEditorContext.Provider>
                 </div>

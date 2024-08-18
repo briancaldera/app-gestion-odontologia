@@ -1,25 +1,12 @@
-import {useForm, UseFormReturn} from "react-hook-form";
-import {z} from 'zod'
 import HistoriaOdontologicaFormSchema, {
-    ModificacionPlanTratamiento,
-    ModificacionPlanTratamientoObject,
-} from '@/FormSchema/Historia/HistoriaOdontologicaForm'
-import Title from "@/Components/atoms/Title";
-import React from "react";
-import Surface from "@/Components/atoms/Surface";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover";
-import {Icon} from "@/Components/atoms/Icon";
-import {MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
-import Heading from "@/Components/atoms/Heading";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
-import Input from "@/Components/atoms/Input";
-import Textarea from "@/Components/atoms/Textarea";
-import {OutlinedButton} from "@/Components/molecules/OutlinedButton";
-import {Button} from "@/shadcn/ui/button";
-import DatePicker from "@/Components/molecules/DatePicker";
-import {DataTable} from "@/Components/molecules/DataTable";
+    TratamientoRealizado,
+    TratamientoRealizadoObject
+} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
+import {z} from 'zod'
 import {ColumnDef, createColumnHelper, Row} from "@tanstack/react-table";
+import {useForm, UseFormReturn} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import React from "react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -27,52 +14,55 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
+import {Button} from "@/shadcn/ui/button";
+import {MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
+import Title from "@/Components/atoms/Title";
+import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover";
+import {Icon} from "@/Components/atoms/Icon";
+import Heading from "@/Components/atoms/Heading";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
+import DatePicker from "@/Components/molecules/DatePicker";
+import Input from "@/Components/atoms/Input";
+import Textarea from "@/Components/atoms/Textarea";
+import {OutlinedButton} from "@/Components/molecules/OutlinedButton";
+import {DataTable} from "@/Components/molecules/DataTable";
+import Surface from "@/Components/atoms/Surface";
 
-interface ModificacionesPlanTratamientoSectionProps {
+interface SecuenciaTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof HistoriaOdontologicaFormSchema>>
 }
 
-const columnHelper = createColumnHelper<z.infer<typeof ModificacionPlanTratamiento>>()
+const SecuenciaPlanTratamientoTableContext = React.createContext({onDeleteModificacion: (index: number) => {}})
 
-const columns: ColumnDef<z.infer<typeof ModificacionPlanTratamiento>>[] = [
-    {
-        accessorKey: "fecha",
-        header: "Fecha",
-        enableResizing: false,
-        cell: ({row}) => {
+const columnHelper = createColumnHelper<z.infer<typeof TratamientoRealizadoObject>>()
 
-            const options: Intl.DateTimeFormatOptions = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                weekday: 'short',
-            }
-
-            const dateFormatted = new Intl.DateTimeFormat('es-VE', options).format(row.getValue('fecha'))
-            return dateFormatted
+const columns: ColumnDef<z.infer<typeof TratamientoRealizadoObject>>[] = [
+    columnHelper.accessor(originalRow => {
+        const options: Intl.DateTimeFormatOptions = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'short',
         }
-    },
-    {
-        accessorKey: "diente",
-        header: "Diente",
-        cell: ({ row }) => {
 
-            return <div className="text-right">{row.getValue('diente')}</div>
-        },
-
-    },
-    {
-        accessorKey: "tratamiento",
-        header: "Tratamiento",
-    },
+        return new Intl.DateTimeFormat('es-VE', options).format(originalRow.fecha)
+    }, {
+        header: 'Fecha'
+    }),
+    columnHelper.accessor(originalRow => originalRow.diente, {
+        header: 'Diente'
+    }),
+    columnHelper.accessor(originalRow => originalRow.tratamiento, {
+        header: 'Tratamiento Realizado'
+    }),
     {
         id: 'actions',
-        cell: ({row}) => <ModificacionPlanTratamientoMenu row={row}/>
+        cell: ({row}) => <TratamientoRealizadoMenu row={row}/>
     }
 ]
 
-const ModificacionPlanTratamientoMenu = ({row}: {row: Row<z.infer<typeof ModificacionPlanTratamientoObject>>}) => {
-    const context = React.useContext(ModificacionesPlanTratamientoTableContext)
+const TratamientoRealizadoMenu = ({row}: {row: Row<z.infer<typeof TratamientoRealizadoObject>>}) => {
+    const context = React.useContext(SecuenciaPlanTratamientoTableContext)
 
     return (
         <DropdownMenu>
@@ -90,47 +80,45 @@ const ModificacionPlanTratamientoMenu = ({row}: {row: Row<z.infer<typeof Modific
     )
 }
 
-const ModificacionesPlanTratamientoTableContext = React.createContext({onDeleteModificacion: (index: number) => {}})
+const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) => {
 
-const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamientoSectionProps) => {
+    const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
 
-    const [openAddModificacionPopover, setOpenAddModificacionPopover] = React.useState<boolean>(false)
-
-    const modificacionForm = useForm<z.infer<typeof ModificacionPlanTratamientoObject>>({
-        resolver: zodResolver(ModificacionPlanTratamientoObject),
-        defaultValues: ModificacionPlanTratamiento
+    const tratamientoForm = useForm<z.infer<typeof TratamientoRealizadoObject>>({
+        resolver: zodResolver(TratamientoRealizadoObject),
+        defaultValues: TratamientoRealizado
     })
 
-    const onAddModificacion = (values: z.infer<typeof ModificacionPlanTratamientoObject>) => {
-        const oldData = form.getValues().modificaciones_plan_tratamiento
-        form.setValue('modificaciones_plan_tratamiento', [...oldData, values], {
+    const onAddTratamiento = (values: z.infer<typeof TratamientoRealizado>) => {
+        const oldData = form.getValues().secuencia_tratamiento
+        form.setValue('secuencia_tratamiento', [...oldData, values], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true
         })
-        modificacionForm.reset()
-        setOpenAddModificacionPopover(false)
+        tratamientoForm.reset()
+        setOpenAddTratamientoPopover(false)
     }
 
     const onDeleteModificacion = (index) => {
-        const newData = form.getValues().modificaciones_plan_tratamiento
+        const newData = form.getValues().secuencia_tratamiento
         newData.splice(index, 1)
-        form.setValue('modificaciones_plan_tratamiento', [...newData], {
+        form.setValue('secuencia_tratamiento', [...newData], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true
         })
     }
 
     return (
         <Surface className={'w-full px-6 min-h-screen'}>
-            <Title level={'title-lg'}>Plan de Tratamiento</Title>
+            <Title level={'title-lg'}>Secuencia del Plan de Tratamiento</Title>
 
             <section className={'my-6 relative'}>
                 <header>
-                    <Title level={'title-md'}>Modificaciones del plan de tratamiento</Title>
+                    <Title level={'title-md'}>Secuencia del plan de tratamiento</Title>
                 </header>
 
                 {/*actions*/}
                 <div className={'sticky flex justify-end right-0 top-0'}>
 
-                    <Popover open={openAddModificacionPopover} onOpenChange={setOpenAddModificacionPopover}>
+                    <Popover open={openAddTratamientoPopover} onOpenChange={setOpenAddTratamientoPopover}>
                         <PopoverTrigger type={'button'}
                                         className={'border rounded-full size-12 flex items-center justify-center shadow'}>
                             <Icon className={'flex-none'}>
@@ -140,15 +128,15 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                         <PopoverContent align={'end'}>
                             <section className={'grid grid-cols-2'}>
                                 <header className={'col-span-full'}>
-                                    <Heading level={'h6'}>Agregar plan</Heading>
+                                    <Heading level={'h6'}>Agregar tratamiento realizado</Heading>
                                 </header>
 
-                                <Form {...modificacionForm} className={'col-span-full'}>
-                                    <form onSubmit={modificacionForm.handleSubmit(onAddModificacion)}
+                                <Form {...tratamientoForm} className={'col-span-full'}>
+                                    <form onSubmit={tratamientoForm.handleSubmit(onAddTratamiento)}
                                           className={'grid grid-cols-3 col-span-full gap-5'}>
 
                                         <div className={'col-span-2'}>
-                                            <DatePicker control={modificacionForm.control} label={'Fecha'} name={'fecha'}/>
+                                            <DatePicker control={tratamientoForm.control} label={'Fecha'} name={'fecha'}/>
                                         </div>
 
                                         <FormField render={({field}) => (
@@ -159,7 +147,7 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                                                 </FormControl>
                                                 <FormMessage className={'text-xs'}/>
                                             </FormItem>
-                                        )} name={'diente'} control={modificacionForm.control} className={'col-span-1'}/>
+                                        )} name={'diente'} control={tratamientoForm.control} className={'col-span-1'}/>
 
                                         <div className={'col-span-full'}>
                                             <FormField render={({field}) => (
@@ -170,11 +158,11 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                                                     </FormControl>
                                                     <FormMessage className={'text-xs'}/>
                                                 </FormItem>
-                                            )} name={'tratamiento'} control={modificacionForm.control}/>
+                                            )} name={'tratamiento'} control={tratamientoForm.control}/>
                                         </div>
 
                                         <div className={'col-span-full flex justify-end gap-2'}>
-                                            <OutlinedButton label={'Limpiar'} onClick={() => modificacionForm.reset()}/>
+                                            <OutlinedButton label={'Limpiar'} onClick={() => tratamientoForm.reset()}/>
                                             <Button type={'submit'}>
                                                 Agregar
                                             </Button>
@@ -186,21 +174,21 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                     </Popover>
                 </div>
 
-                <ModificacionesPlanTratamientoTableContext.Provider value={{onDeleteModificacion: onDeleteModificacion}}>
+                <SecuenciaPlanTratamientoTableContext.Provider value={{onDeleteModificacion: onDeleteModificacion}}>
                     <Form {...form}>
                         <form>
                             <FormField render={({field}) => (
                                 <FormItem>
                                     <DataTable columns={columns} data={field.value}/>
                                 </FormItem>
-                            )} name={'modificaciones_plan_tratamiento'} control={form.control}/>
+                            )} name={'secuencia_tratamiento'} control={form.control}/>
                         </form>
                     </Form>
-                </ModificacionesPlanTratamientoTableContext.Provider>
+                </SecuenciaPlanTratamientoTableContext.Provider>
 
             </section>
         </Surface>
     )
 }
 
-export default ModificacionesPlanTratamientoSection
+export default SecuenciaTratamientoSection
