@@ -32,7 +32,7 @@ test('Service can add new correccion message to Correccion model in Historia', f
 
     /** @var CorreccionService $correccionService */
     $correccionService = $this->app->make(CorreccionService::class);
-    $correccionService->crearCorreccion($historia);
+    $correccionService->attachCorreccion($historia);
     $correccionService->addCorreccion($historia, $correccion);
 
 

@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 class CorreccionServiceImpl implements CorreccionService
 {
 
-    public function crearCorreccion(Historia $historia): void
+    public function attachCorreccion(Historia $historia): void
     {
         $historia->correcciones()->create();
     }
