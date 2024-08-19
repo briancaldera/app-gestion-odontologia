@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\HistoriaCreated;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +36,10 @@ class Historia extends Model
     protected $fillable = [
         'motivo_consulta',
         'enfermedad_actual'
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => HistoriaCreated::class
     ];
 
     protected function casts()

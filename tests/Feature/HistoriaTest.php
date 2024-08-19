@@ -1,9 +1,11 @@
 <?php
 
+use App\Events\HistoriaCreated;
 use App\Models\Historia;
 use App\Models\HistoriaStatus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
 
@@ -53,4 +55,21 @@ test('initial status is abierta', function () {
     $historia = Historia::factory()->forPaciente()->create();
 
     expect($historia->status)->toBe(HistoriaStatus::ABIERTA);
+});
+
+test('historia dispatches Created event', function () {
+    Event::fake();
+    /** @var Historia $historia */
+    $historia = Historia::factory()->forPaciente()->create();
+
+    Event::assertDispatched(function (HistoriaCreated $event) use ($historia) {
+        return $event->historia->is($historia);
+    });
+});
+
+test('Correccion is attached when Historia is created', function () {
+    /** @var Historia $historia */
+    $historia = Historia::factory()->forPaciente()->create();
+
+    expect($historia->correcciones->correcciones)->toBeInstanceOf(\Illuminate\Support\Collection::class)->toHaveLength(0);
 });
