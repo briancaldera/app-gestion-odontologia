@@ -64,3 +64,21 @@ test('Service can update existing Correccion', function () {
 
     expect($historia->correcciones->correcciones[0]['content'])->toEqual($newContent);
 });
+
+test('Service can delete Correccion', function () {
+    /** @var Historia $historia*/
+    $historia = Historia::factory()->for(Paciente::factory())->create();
+
+    $correccion = generateRandomCorreccion();
+
+    /** @var CorreccionService $correccionService */
+    $correccionService = $this->app->make(CorreccionService::class);
+
+    $correccionService->addCorreccion($historia, $correccion);
+
+    expect($historia->correcciones->correcciones)->toHaveLength(1);
+
+    $correccionService->deleteCorreccion($historia, $correccion['id']);
+
+    expect($historia->correcciones->correcciones)->toHaveLength(0);
+});

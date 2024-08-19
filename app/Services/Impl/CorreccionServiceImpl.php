@@ -22,13 +22,21 @@ class CorreccionServiceImpl implements CorreccionService
 
     public function updateCorreccion(Historia $historia, string $id, string $newContent): void
     {
-        $historia->correcciones->correcciones = $historia->correcciones->correcciones->map(function ($item) use ($id, $newContent) {
+        $correcciones = $historia->correcciones;
+        $correcciones->correcciones->transform(function ($item) use ($id, $newContent) {
             if ($item['id'] === $id) {
                 $item['content'] = $newContent;
             }
             return $item;
         });
 
-        $historia->correcciones->save();
+        $correcciones->save();
+    }
+
+    public function deleteCorreccion(Historia $historia, string $id): void
+    {
+        $correcciones = $historia->correcciones;
+        $correcciones->correcciones = $correcciones->correcciones->reject(fn ($item) => $item['id'] === $id);
+        $correcciones->save();
     }
 }
