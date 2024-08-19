@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Correccion>
@@ -20,13 +21,16 @@ class CorreccionFactory extends Factory
 
         $generateCorrecciones = function() use ($faker)
         {
+
             $arr = collect();
             $randomNumber = $faker->numberBetween(2, 8);
             foreach (range(1, $randomNumber) as $i) {
                 $arr->add([
+                    'id' => Str::ulid()->toString(),
                     'user' => $faker->uuid(),
                     'content' => $faker->text(),
-                    'datetime' => $faker->dateTime(),
+                    'created' => $faker->dateTime(),
+                    'updated' => null,
                     'seen' => $faker->dateTime(),
                 ]);
             }
