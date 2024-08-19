@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteCorreccionRequest;
 use App\Http\Requests\StoreCorreccionRequest;
 use App\Http\Requests\UpdateCorreccionRequest;
 use App\Models\Correccion;
+use App\Models\Historia;
+use App\Services\CorreccionService;
 
 class CorreccionController extends Controller
 {
+    public function __construct(protected CorreccionService $correccionService)
+    {}
     /**
      * Display a listing of the resource.
      */
@@ -29,7 +34,9 @@ class CorreccionController extends Controller
      */
     public function store(StoreCorreccionRequest $request)
     {
-        //
+        $data = $request->validated();
+        $this->correccionService->addCorreccion($data['historia_id'], $request->user()->id, $data['message']);
+        return redirect()->refresh(201);
     }
 
     /**
@@ -51,16 +58,20 @@ class CorreccionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCorreccionRequest $request, Correccion $correccion)
+    public function update(UpdateCorreccionRequest $request)
     {
-        //
+        $data = $request->validated();
+        $this->correccionService->updateCorreccion($data['historia_id'], $data['correccion_id'], $data['message']);
+        return redirect()->refresh(303);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Correccion $correccion)
+    public function destroy(DeleteCorreccionRequest $request)
     {
-        //
+        $data = $request->validated();
+        $this->correccionService->deleteCorreccion($data['historia_id'], $data['correccion_id']);
+        return redirect()->refresh(303);
     }
 }

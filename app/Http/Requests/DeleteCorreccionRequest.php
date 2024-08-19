@@ -6,7 +6,7 @@ use App\Models\Correccion;
 use App\Models\Historia;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCorreccionRequest extends FormRequest
+class DeleteCorreccionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,6 @@ class UpdateCorreccionRequest extends FormRequest
         return [
             'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id', 'unique:' . Correccion::class],
             'correccion_id' => ['required', 'ulid'],
-            'message' => ['required', 'string', 'max:100']
         ];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CorreccionController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
@@ -97,6 +98,10 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
             Route::post('/{historia}/odontologica', [HistoriaController::class, 'storeHistoriaOdontologica'])->name('storeHistoriaOdontologica');
             Route::patch('/{historia}/odontologica', [HistoriaController::class, 'updateHistoriaOdontologica'])->name('updateHistoriaOdontologica');
 
+//            Route::apiResource('/{historia}/correccion', CorreccionController::class);
+            Route::post('/{historia}/correcciones', [CorreccionController::class, 'store'])->name('correcciones.store');
+            Route::patch('/{historia}/correcciones/{correccion}', [CorreccionController::class, 'update'])->name('correcciones.update');
+            Route::delete('/{historia}/correcciones/{correccion}', [CorreccionController::class, 'destroy'])->name('correcciones.destroy');
         });
 
     });
