@@ -26,6 +26,7 @@ class UserFactory extends Factory
         $faker = fake('es_VE');
 
         return [
+            'id' => $faker->uuid(),
             'name' => $faker->name(),
             'email' => $faker->unique()->safeEmail(),
             'email_verified_at' => now(),

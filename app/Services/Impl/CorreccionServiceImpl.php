@@ -4,6 +4,7 @@ namespace App\Services\Impl;
 
 use App\Models\Historia;
 use App\Services\CorreccionService;
+use Illuminate\Support\Str;
 
 
 class CorreccionServiceImpl implements CorreccionService
@@ -14,8 +15,17 @@ class CorreccionServiceImpl implements CorreccionService
         $historia->correcciones()->create();
     }
 
-    public function addCorreccion(Historia $historia, $data): void
+    public function addCorreccion(Historia $historia, string $userId, string $content): void
     {
+        $data = [
+            'id' => Str::ulid()->toString(),
+            'user' => $userId,
+            'content' => $content,
+            'created' => now(),
+            'updated' => null,
+            'seen' => null,
+        ];
+
         $historia->correcciones->correcciones->add($data);
         $historia->correcciones->save();
     }

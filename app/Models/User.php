@@ -12,6 +12,11 @@ use Illuminate\Notifications\Notifiable;
 
 /**
  * @property int $role the role for the user
+ * @property string $id
+ * @property string $name
+ * @property string $email
+ * @property string $email_verified_at
+ * @property string $password
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
