@@ -36,6 +36,7 @@ class CorreccionServiceImpl implements CorreccionService
         $correcciones->correcciones->transform(function ($item) use ($id, $newContent) {
             if ($item['id'] === $id) {
                 $item['content'] = $newContent;
+                $item['updated'] = now();
             }
             return $item;
         });

@@ -45,6 +45,13 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
         }
     })->name('dashboard');
 
+    Route::prefix('historias')->name('historias.')->group(function () {
+        Route::post('/{historia}/correcciones', [CorreccionController::class, 'store'])->name('correcciones.store');
+        Route::patch('/{historia}/correcciones/{correccion}', [CorreccionController::class, 'update'])->name('correcciones.update');
+        Route::delete('/{historia}/correcciones/{correccion}', [CorreccionController::class, 'destroy'])->name('correcciones.destroy');
+    });
+
+
     // Routes for admin
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
@@ -98,10 +105,6 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
             Route::post('/{historia}/odontologica', [HistoriaController::class, 'storeHistoriaOdontologica'])->name('storeHistoriaOdontologica');
             Route::patch('/{historia}/odontologica', [HistoriaController::class, 'updateHistoriaOdontologica'])->name('updateHistoriaOdontologica');
 
-//            Route::apiResource('/{historia}/correccion', CorreccionController::class);
-            Route::post('/{historia}/correcciones', [CorreccionController::class, 'store'])->name('correcciones.store');
-            Route::patch('/{historia}/correcciones/{correccion}', [CorreccionController::class, 'update'])->name('correcciones.update');
-            Route::delete('/{historia}/correcciones/{correccion}', [CorreccionController::class, 'destroy'])->name('correcciones.destroy');
         });
 
     });

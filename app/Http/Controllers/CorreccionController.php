@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateCorreccionRequest;
 use App\Models\Correccion;
 use App\Models\Historia;
 use App\Services\CorreccionService;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CorreccionController extends Controller
 {
@@ -32,11 +34,11 @@ class CorreccionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCorreccionRequest $request)
+    public function store(Historia $historia, StoreCorreccionRequest $request)
     {
         $data = $request->validated();
-        $this->correccionService->addCorreccion($data['historia_id'], $request->user()->id, $data['message']);
-        return redirect()->refresh(201);
+        $this->correccionService->addCorreccion($historia, $request->user()->id, $data['message']);
+        return response(null, 201);
     }
 
     /**
@@ -58,20 +60,20 @@ class CorreccionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCorreccionRequest $request)
+    public function update(Historia $historia, UpdateCorreccionRequest $request)
     {
         $data = $request->validated();
-        $this->correccionService->updateCorreccion($data['historia_id'], $data['correccion_id'], $data['message']);
-        return redirect()->refresh(303);
+        $this->correccionService->updateCorreccion($historia, $data['correccion_id'], $data['message']);
+        return response(null, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DeleteCorreccionRequest $request)
+    public function destroy(Historia $historia, DeleteCorreccionRequest $request)
     {
         $data = $request->validated();
-        $this->correccionService->deleteCorreccion($data['historia_id'], $data['correccion_id']);
-        return redirect()->refresh(303);
+        $this->correccionService->deleteCorreccion($historia, $data['correccion_id']);
+        return response(null, 200);
     }
 }

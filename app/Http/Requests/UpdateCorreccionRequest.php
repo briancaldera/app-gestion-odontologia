@@ -24,9 +24,9 @@ class UpdateCorreccionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id', 'unique:' . Correccion::class],
+            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
             'correccion_id' => ['required', 'ulid'],
-            'message' => ['required', 'string', 'max:100']
+            'message' => ['required', 'string', 'max:1000']
         ];
     }
 }

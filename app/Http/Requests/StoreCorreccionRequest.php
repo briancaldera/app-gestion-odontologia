@@ -24,7 +24,7 @@ class StoreCorreccionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id', 'unique:' . Correccion::class],
+            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
             'message' => ['required', 'string', 'max:1000'],
         ];
     }
