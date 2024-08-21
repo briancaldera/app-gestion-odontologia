@@ -87,7 +87,7 @@ class GroupController extends Controller
     public function removeMember(Group $group, Request $request)
     {
         $data = $request->validate([
-            'member' => ['required', 'uuid', 'exists:' . User::class],
+            'member' => ['required', 'uuid', 'exists:' . User::class . ',id'],
         ]);
 
         $member = User::find($data['member']);

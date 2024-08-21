@@ -4,6 +4,7 @@ use App\Http\Middleware\EnsureUserHasProfile;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 
 uses(RefreshDatabase::class);
 
@@ -89,5 +90,38 @@ test('Can add member to group', function () {
 });
 
 test('Can remove member from group', function () {
+    // Arrange
+    /* @var User $admin */
+    $admin = User::factory()->createOne(['role' => 0]);
 
-})->todo();
+    /* @var User $profesor */
+    $profesor = User::factory()->createOne(['role' => 2]);
+    $name = 'Example group';
+
+    /* @var Collection<User> $members */
+    $members = User::factory()->count(4)->create(['role' => 3]);
+    $members->add($profesor);
+
+    /* @var Group $group */
+    $group = Group::factory()->createOne(['owner' => $profesor->id, 'members' => $members]);
+
+    /* @var User $member_to_remove */
+    $member_to_remove = $members[0];
+
+    $group->refresh();
+    expect($group->members)->toHaveLength(5);
+
+    // Act
+    $res = $this->actingAs($admin)->deleteJson(route('groups.removeMember', ['group' => $group->id]),
+        [
+            'member' => $member_to_remove->id
+        ]
+    );
+
+    $group->refresh();
+
+    // Assert
+    $res->assertOk();
+
+    expect($group->members)->toHaveLength(4)->and($group->members->contains('id', $member_to_remove->id))->toBeFalse()->and($group->members->contains('id', $members[2]->id))->toBeTrue();
+});
