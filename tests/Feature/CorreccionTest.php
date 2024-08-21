@@ -9,19 +9,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
-function generateRandomCorreccion(): array
-{
-    $faker = fake('es_VE');
+beforeAll(function () {
+    function generateRandomCorreccion(): array
+    {
+        $faker = fake('es_VE');
 
-    return [
-        'id' => Str::ulid()->toString(),
-        'user' => $faker->uuid(),
-        'content' => $faker->text(),
-        'created' => $faker->dateTime(),
-        'updated' => null,
-        'seen' => $faker->dateTime(),
-    ];
-}
+        return [
+            'id' => Str::ulid()->toString(),
+            'user' => $faker->uuid(),
+            'content' => $faker->text(),
+            'created' => $faker->dateTime(),
+            'updated' => null,
+            'seen' => $faker->dateTime(),
+        ];
+    }
+});
 
 uses(RefreshDatabase::class);
 

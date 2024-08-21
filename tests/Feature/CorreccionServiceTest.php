@@ -11,20 +11,6 @@ use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
-function generateRandomCorreccion(): array
-{
-    $faker = fake('es_VE');
-
-    return [
-        'id' => Str::ulid()->toString(),
-        'user' => $faker->uuid(),
-        'content' => $faker->text(),
-        'created' => $faker->dateTime(),
-        'updated' => null,
-        'seen' => $faker->dateTime(),
-    ];
-}
-
 test('Service can attach Correccion model to Historia', function () {
     /** @var Historia $historia*/
     $historia = Historia::factory()->for(Paciente::factory())->create();
