@@ -70,7 +70,7 @@ class GroupController extends Controller
     public function addMember(Group $group, Request $request)
     {
         $data = $request->validate([
-            'new_member' => ['required', 'uuid', 'exists:' . User::class],
+            'new_member' => ['required', 'uuid', 'exists:' . User::class . ',id'],
         ]);
 
         $newMember = User::find($data['new_member']);
