@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -18,9 +19,15 @@ use Illuminate\Support\Collection;
  */
 class Group extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
 
     public $incrementing = false;
+
+    protected $fillable = [
+        'name',
+        'owner',
+        'members'
+    ];
 
     protected $attributes = [
         'members' => '[]',
@@ -34,11 +41,11 @@ class Group extends Model
             get: function (string $members): Collection {
                 $arr = json_decode($members);
                 $collection = collect($arr);
-                return $collection->map(fn(string $id) => User::find($id));
+                return $collection->map(fn(string $id) => User::find($id))->reject(fn($user) => $user == null);
             },
             /** @var Collection<User> $members */
             /** @returns Collection<string> */
-            set: function (Collection $members) {
+            set: function (Collection $members): string {
                 return $members->map(fn(User $member) => $member->id);
             }
         );

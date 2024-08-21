@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('groups', function (Blueprint $table) {
-            $table->ulid('id');
-            $table->foreignUuid('owner')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->ulid('id')->primary();
+            $table->foreignUuid('owner')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->jsonb('members');
             $table->string('name');
             $table->timestamps();

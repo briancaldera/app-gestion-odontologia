@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\CorreccionController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Group;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -51,6 +53,13 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
         Route::delete('/{historia}/correcciones/{correccion}', [CorreccionController::class, 'destroy'])->name('correcciones.destroy');
     });
 
+    Route::prefix('grupos')->name('groups.')->group(function () {
+        Route::post('', [GroupController::class, 'store'])->name('store')->can('create', Group::class);
+        Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy')->can('delete', 'group');
+
+        Route::patch('/{group}/add', [GroupController::class, 'addMember'])->name('addMember')->can('addMember', 'group');
+        Route::delete('/{group}/remove', [GroupController::class, 'removeMember'])->name('removeMember')->can('removeMember', 'group');
+    });
 
     // Routes for admin
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
