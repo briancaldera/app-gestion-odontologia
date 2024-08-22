@@ -15,5 +15,12 @@ export default defineConfig({
         alias: {
             'ziggy-js': resolve('vendor/tightenco/ziggy'),
         }
+    },
+    // TODO Remove server config when deploying.
+    server: {
+        cors: true,
+        hmr: {
+            host: '192.168.1.103',
+        }
     }
 });
