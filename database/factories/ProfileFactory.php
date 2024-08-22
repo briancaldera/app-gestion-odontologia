@@ -31,7 +31,7 @@ class ProfileFactory extends Factory
         ];
     }
 
-    public function WithUser(): Factory
+    public function withUser(): Factory
     {
         return $this->state(function (array $attributes) {
             return [
