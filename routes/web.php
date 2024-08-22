@@ -6,6 +6,8 @@ use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Group;
+use App\Models\Historia;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,7 +37,17 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
         $user = $request->user();
 
         if ($user->isAdmin()) {
-            return response(null, 404);
+            // TODO move this to a proper service... like a StatisticsService
+            $usersCount = User::count();
+            $historiasCount = Historia::count();
+            $estudiantesCount = User::where('role', 3)->count();
+            $profesoresCount = User::where('role', 2)->count();
+            return Inertia::render('Admin/Dashboard', [
+                'usersCount' => $usersCount,
+                'historiasCount' => $historiasCount,
+                'estudiantesCount' => $estudiantesCount,
+                'profesoresCount' => $profesoresCount,
+            ]);
         } elseif ($user->isAdmision()) {
             return response(null, 404);
         } elseif ($user->isProfesor()) {

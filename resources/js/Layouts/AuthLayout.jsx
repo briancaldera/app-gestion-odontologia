@@ -1,4 +1,4 @@
-import {Head, Link, router, usePage} from "@inertiajs/react";
+import {Head, Link, router} from "@inertiajs/react";
 import React from "react";
 import AuthNavbar from "@/Components/organisms/AuthNavbar.jsx";
 import AuthSidebar from "@/Components/organisms/AuthSidebar.jsx"
@@ -16,8 +16,6 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
     const route = useRoute()
     const [loading, setLoading] = React.useState(false)
     const [isDarkMode, toggleDarkMode] = React.useState(false)
-
-    const {auth} = usePage().props
 
     React.useEffect(() => {
         let darkMode = window.localStorage.getItem(DARK_MODE_KEY)
@@ -54,13 +52,13 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
     }
 
     return (
-        <>
             <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 min-h-screen`}>
                 <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode}}>
                     <TooltipProvider>
                         <Head title={title}/>
-                        <nav className={'z-50 fixed inset-x-0 top-0 bg-white h-20 ps-72'}>{navbar ||
-                            <AuthNavbar auth={auth}/>}</nav>
+                        <nav className={'z-50 fixed inset-x-0 top-0 bg-white h-20 ps-72'}>
+                            {navbar || <AuthNavbar/>}
+                        </nav>
                         <aside className={'z-50 bg-indigo-600 fixed inset-y-0 left-0 w-full max-w-72'}>
                             <div className={'h-20 flex items-center'}>
                                 <div className={'overflow-hidden w-20 ps-6 '}>
@@ -74,13 +72,12 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
                                 <Loader/>
                             </div>
                         </aside>
-                        <main className={'pt-20 pl-72 h-screen'}>
+                        <main className={'pt-20 pl-72 min-h-screen'}>
                             {children}
                         </main>
                     </TooltipProvider>
                 </AuthContext.Provider>
             </div>
-        </>
     )
 }
 

@@ -21,7 +21,6 @@ return new class extends Migration
             $table->enum("sexo", ['M', 'F', 'NI']);
             $table->string("cedula")->unique();
             $table->string("picture_url")->nullable();
-            $table->string("lapso")->nullable();
             $table->timestamps();
         });
     }

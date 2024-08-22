@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Profile;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,28 +20,28 @@ class DatabaseSeeder extends Seeder
 
         // User::factory(10)->create();
 
-        User::factory()->create([
+        User::factory()->has(Profile::factory())->create([
             'name' => 'Estudiante',
             'role' => 3,
             'email' => 'estudiante@example.com'
         ]);
 
-        User::factory()->create([
+        User::factory()->has(Profile::factory())->create([
             'name' => 'Profesor',
             'role' => 2,
             'email' => 'profesor@example.com'
         ]);
 
-        User::factory()->create([
+        User::factory()->has(Profile::factory())->create([
             'name' => 'Admision',
             'role' => 1,
             'email' => 'admision@example.com'
         ]);
 
-        User::factory()->create([
+        User::factory()->has(Profile::factory())->create([
             'name' => 'Administracion',
             'role' => 0,
-            'email' => 'administracion@example.com'
+            'email' => 'admin@example.com'
         ]);
 
 //        User::factory()->create([
