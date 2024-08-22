@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Storage;
  * @property string $sexo
  * @property string $cedula
  * @property string $picture_url
- * @property string $lapso
  */
 class Profile extends Model
 {
@@ -52,10 +51,6 @@ class Profile extends Model
         'sexo',
         'cedula',
         'picture_url',
-    ];
-
-    protected $attributes = [
-        'lapso' => null,
     ];
 
     protected $casts = [
