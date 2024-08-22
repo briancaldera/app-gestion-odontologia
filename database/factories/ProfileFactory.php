@@ -20,7 +20,6 @@ class ProfileFactory extends Factory
         $faker = fake('es_VE');
 
         return [
-            'user_id' => User::factory(),
             'nombres' => $faker->firstName() . ' ' . $faker->firstName(),
             'apellidos' => $faker->lastName() . ' ' . $faker->lastName(),
             'fecha_nacimiento' => $faker->date(max: '-18 years'),
@@ -30,5 +29,14 @@ class ProfileFactory extends Factory
             'cedula' => $faker->nationalId(),
             'picture_url' => null,
         ];
+    }
+
+    public function WithUser(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'user_id' => User::factory(),
+            ];
+        });
     }
 }
