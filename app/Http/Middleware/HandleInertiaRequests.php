@@ -2,7 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -34,7 +37,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'messages' => fn() => $request->session()->pull('messages', [])
+            'messages' => fn() => $request->session()->pull('messages', []),
+            'notifications' => fn () => $request->user()?->notifications ?? [],
         ];
     }
 }

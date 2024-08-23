@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Models\Group;
 use App\Models\Historia;
 use App\Models\User;
+use App\Notifications\UserAddedToGroup;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

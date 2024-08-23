@@ -1,6 +1,6 @@
 import {Head, Link, router} from "@inertiajs/react";
 import React from "react";
-import AuthNavbar from "@/Components/organisms/AuthNavbar.jsx";
+import AuthNavbar from "@/Components/organisms/AuthNavbar.tsx";
 import AuthSidebar from "@/Components/organisms/AuthSidebar.jsx"
 import Loader from "@/Components/atoms/Loader.jsx";
 import Logo from "@/Components/atoms/Logo.jsx";

@@ -6,6 +6,7 @@ use App\Exceptions\InvalidMemberException;
 use App\Exceptions\MemberAlreadyExistsException;
 use App\Models\Group;
 use App\Models\User;
+use App\Notifications\UserAddedToGroup;
 use App\Services\GroupService;
 use Exception;
 
@@ -35,6 +36,7 @@ class GroupServiceImpl implements GroupService
 
         $group->members->add($user);
         $group->save();
+        $user->notify(new UserAddedToGroup($group));
     }
 
     public function removeMember(Group $group, User $user): void
