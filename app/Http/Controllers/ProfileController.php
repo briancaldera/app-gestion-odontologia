@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\StoreProfileRequest;
+use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +22,33 @@ class ProfileController extends Controller
 
     const PROFILE_PICTURE_DIR = 'profiles/';
 
-    public function create(): Response | RedirectResponse
+    public function show(Request $request, Profile $profile)
+    {
+        /* @var User $user */
+        $user = $request->user();
+        if ($user->isAdmin()) {
+            $profile->setVisible(['nombres',
+                'apellidos',
+                'fecha_nacimiento',
+                'telefono',
+                'direccion',
+                'sexo',
+                'cedula',
+                'picture_url',
+                'user']);
+            return Inertia::render('Admin/Profiles/Show',
+                [
+                    'profile' => $profile,
+                    'user' => $profile->user,
+                ]
+            );
+        } else if ($user->isAdmision()) {
+            abort(403);
+        }
+
+    }
+
+    public function create(): Response|RedirectResponse
     {
         if (!Auth::user()->profile) {
             return Inertia::render('Auth/CreateProfile');
@@ -84,7 +112,8 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit');
     }
 
-    public function updatePicture(Request $request): RedirectResponse {
+    public function updatePicture(Request $request): RedirectResponse
+    {
         $data = $request->validate([
             'picture' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'between:2, 1024'],
         ]);
