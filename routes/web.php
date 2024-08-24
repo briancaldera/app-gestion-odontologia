@@ -3,6 +3,7 @@
 use App\Http\Controllers\CorreccionController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HistoriaController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Group;
@@ -59,6 +60,10 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
             return response(null, 403);
         }
     })->name('dashboard');
+
+    // Notifications routes
+    Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.index');
+    Route::patch('/notifications/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
 
     Route::prefix('historias')->name('historias.')->group(function () {
         Route::post('/{historia}/correcciones', [CorreccionController::class, 'store'])->name('correcciones.store');

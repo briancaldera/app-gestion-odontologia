@@ -1,6 +1,6 @@
 import {router, usePage} from "@inertiajs/react";
 import Avatar from "@/Components/atoms/Avatar.jsx";
-import {useRoute} from 'ziggy-js'
+import {route, useRoute} from 'ziggy-js'
 import Dropdown from "@/Components/molecules/Dropdown.jsx";
 import React from "react";
 import Switch from "@/Components/atoms/Switch.jsx";
@@ -12,6 +12,10 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuTrigger,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuPortal,
 } from '@/shadcn/ui/dropdown-menu'
 import {Icon} from "@/Components/atoms/Icon";
 import {Bell, EllipsisVertical, Users} from 'lucide-react'
@@ -20,6 +24,12 @@ import Title from "@/Components/atoms/Title";
 import Label from "@/Components/atoms/Label";
 import {Text} from "@/Components/atoms/Text";
 import {toDate, formatRelative} from 'date-fns'
+import {Axios} from "axios";
+import {data} from "autoprefixer";
+import {func} from "prop-types";
+import {PopoverTrigger, PopoverContent, Popover} from '@/shadcn/ui/popover'
+
+declare const axios: Axios
 
 const AuthNavbar = () => {
     return (
@@ -33,7 +43,9 @@ const AuthNavbar = () => {
 const AuthSection = () => {
 
     const {isDarkMode, toggleDarkMode} = React.useContext(AuthContext)
-    const {auth: {user}, notifications}: {notifications: Notification[]} = usePage().props
+    const {auth: {user}} = usePage().props
+
+    const [notifications, setNotifications] = React.useState<Notification[]>([])
 
     const route = useRoute()
 
@@ -43,10 +55,26 @@ const AuthSection = () => {
 
     const hasUnread: boolean = React.useMemo(() => notifications.some(item => item.read_at === null), [notifications])
 
+    // Get notifications
+    React.useEffect(() => {
+        let ignore = false
+
+        const fetchNotifications = async () => {
+            const { data, status } = await axios.get(route('notifications.index'))
+            if (!ignore && status === 200) {
+                setNotifications(data)
+            }
+        }
+
+        fetchNotifications()
+
+        return () => { ignore = true}
+    }, [])
+
     return (
         <div className={'h-full flex justify-center items-center px-8 gap-4 relative'}>
-            <DropdownMenu>
-                <DropdownMenuTrigger>
+            <Popover>
+                <PopoverTrigger>
                     <div className={'relative rounded-full p-2'}>
                         <Icon onClick={() => {}}>
                             <Bell />
@@ -59,11 +87,11 @@ const AuthSection = () => {
                         }
 
                     </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align={'end'} sideOffset={30} className={''}>
-                    <NotificationsSection />
-                </DropdownMenuContent>
-            </DropdownMenu>
+                </PopoverTrigger>
+                <PopoverContent align={'end'} className={'w-80'}>
+                    <NotificationsSection notifications={notifications}/>
+                </PopoverContent>
+            </Popover>
             <Dropdown.Container>
                 <Dropdown.Trigger>
                     <Avatar picture={user.profile.picture_url}/>
@@ -97,17 +125,16 @@ interface Notification {
     updated_at: string,
 }
 
-const NotificationsSection = () => {
-    const {notifications}: {notifications: Notification[]} = usePage().props
+const NotificationsSection = ({notifications}: {notifications: Notification[]}) => {
 
     const now: Date = React.useMemo(() => new Date(), [])
 
     return (
         <>
             <header className={'flex justify-between items-center'}>
-                <DropdownMenuLabel>
+                <div>
                     <Title level={'title-md'}>Notificaciones</Title>
-                </DropdownMenuLabel>
+                </div>
                 <div>
                     <DropdownMenu>
                         <DropdownMenuTrigger>
@@ -127,10 +154,9 @@ const NotificationsSection = () => {
             <div>
                 {
                     (notifications.length) ? (
-                        <div className={''}>
+                        <div>
                             <ScrollArea className={'h-[300px] w-72'}>
                                 {notifications.map((notification, index) => (
-
                                     <DefaultNotification notification={notification} key={index} now={now} />
                                 ))}
                             </ScrollArea>
@@ -148,11 +174,28 @@ const NotificationsSection = () => {
     )
 }
 
-const DefaultNotification = ({notification, key, now}: {notification: Notification, key: number, now: Date}) => {
+const isReadReducer = (state, action) => {
+    if (action.type === 'markAsRead') {
+        return {isRead: true}
+    }
+}
 
+const DefaultNotification = ({notification, now}: {notification: Notification, now: Date}) => {
+
+    const [state, dispatch]: [{isRead: boolean}] = React.useReducer(isReadReducer, {isRead: (notification.read_at !== null)})
+
+    const onMarkAsRead = async () => {
+        const {status} = await axios.patch(route('notifications.markAsRead', {id: notification.id}))
+        if (status === 200) {
+            // TODO find proper way
+            // dirty hack... props should be immutable
+            notification.read_at = new Date().toString()
+            dispatch({type: 'markAsRead'})
+        }
+    }
 
     return (
-        <DropdownMenuItem key={key} className={'p-0'}>
+        <div>
             <div className={'w-full h-[100px] border flex flex-col'}>
                 {/*header*/}
                 <div className={'flex-none self-end pe-3 pt-2'}>
@@ -168,7 +211,7 @@ const DefaultNotification = ({notification, key, now}: {notification: Notificati
                                 <Users/>
                             </Icon>
                             {
-                                (!notification.read_at) && (
+                                (!state.isRead) && (
                                     <div
                                         className={'absolute rounded-full bg-red-600 size-2 -top-1 -left-1 flex items-center justify-center'}>
                                     </div>
@@ -186,13 +229,13 @@ const DefaultNotification = ({notification, key, now}: {notification: Notificati
                         <DropdownMenu>
                             <DropdownMenuTrigger>
                                 <Icon>
-                                    <EllipsisVertical className={'size-4'}/>
+                                    <EllipsisVertical />
                                 </Icon>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align={'end'}>
+                            <DropdownMenuContent>
                                 <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-                                {(!notification.read_at) && (
-                                    <DropdownMenuItem>
+                                {(!state.isRead) && (
+                                    <DropdownMenuItem onClick={onMarkAsRead}>
                                         <Text>
                                             Marcar como leído
                                         </Text>
@@ -203,7 +246,7 @@ const DefaultNotification = ({notification, key, now}: {notification: Notificati
                     </div>
                 </div>
             </div>
-        </DropdownMenuItem>
+        </div>
     )
 }
 
