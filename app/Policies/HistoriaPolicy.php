@@ -13,7 +13,15 @@ class HistoriaPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        if ($user->hasRole('admision')) {
+            return true;
+        }
+
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -21,7 +29,23 @@ class HistoriaPolicy
      */
     public function view(User $user, Historia $historia): bool
     {
-        //
+        if ($user->hasRole('estudiante') AND $historia->autor_id === $user->id) {
+            return true;
+        }
+
+        if ($user->hasRole('profesor')) {
+            return true;
+        }
+
+        if ($user->hasRole('admision')) {
+            return true;
+        }
+
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -29,7 +53,11 @@ class HistoriaPolicy
      */
     public function create(User $user): bool
     {
-        //
+        if ($user->hasRole('estudiante')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -37,7 +65,19 @@ class HistoriaPolicy
      */
     public function update(User $user, Historia $historia): bool
     {
-        //
+        if ($user->hasRole('estudiante') AND $historia->autor_id === $user->id AND $historia->isOpen()) {
+            return true;
+        }
+
+        if ($user->hasRole('admision')) {
+            return true;
+        }
+
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -45,7 +85,11 @@ class HistoriaPolicy
      */
     public function delete(User $user, Historia $historia): bool
     {
-        //
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -53,7 +97,11 @@ class HistoriaPolicy
      */
     public function restore(User $user, Historia $historia): bool
     {
-        //
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -61,6 +109,10 @@ class HistoriaPolicy
      */
     public function forceDelete(User $user, Historia $historia): bool
     {
-        //
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return false;
     }
 }
