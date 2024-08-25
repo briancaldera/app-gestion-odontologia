@@ -19,7 +19,7 @@ const sidebarMenu: MenuItem[] = [
     {name: 'Inicio', link: 'dashboard', icon: <LayoutDashboard/>},
     {name: 'Historias', link: 'historia', icon: <ClipboardDocumentIcon/>},
     {name: 'Grupos', link: 'dashboard', icon: <UserGroupIcon/>},
-    {name: 'Usuarios', link: 'dashboard', icon: <Users/>},
+    {name: 'Usuarios', link: 'profile.index', icon: <Users/>},
     {name: 'Configuración', link: 'dashboard', icon: <MonitorCog/>},
     {name: 'Otros', link: 'dashboard', icon: <Menu/>},
 ]

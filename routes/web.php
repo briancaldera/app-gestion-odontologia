@@ -25,6 +25,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified', 'profile'])->group(function () {
+    Route::get('/profile/index', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/{profile}', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

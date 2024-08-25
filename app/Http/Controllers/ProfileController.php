@@ -22,6 +22,25 @@ class ProfileController extends Controller
 
     const PROFILE_PICTURE_DIR = 'profiles/';
 
+    public function index(Request $request)
+    {
+        /* @var User $user */
+        $user = $request->user();
+        if ($user->isAdmin()) {
+            $profiles = Profile::with('user')->get();
+            $profiles->makeVisible(['cedula', 'user', 'user_id']);
+            $profiles->transform(function (Profile $profile, int $key) {
+                $profile->user->makeVisible(['email']);
+                return $profile;
+            });
+
+            return Inertia::render('Admin/Profiles/Index', [
+                'profiles' => $profiles
+            ]);
+        }
+        abort(403);
+    }
+
     public function show(Request $request, Profile $profile)
     {
         /* @var User $user */
@@ -36,6 +55,7 @@ class ProfileController extends Controller
                 'cedula',
                 'picture_url',
                 'user']);
+            $profile->user->makeVisible(['role', 'id', 'email', 'email_verified_at',]);
             return Inertia::render('Admin/Profiles/Show',
                 [
                     'profile' => $profile,
