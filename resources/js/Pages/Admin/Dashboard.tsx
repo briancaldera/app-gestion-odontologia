@@ -8,6 +8,7 @@ import {ClipboardDocumentIcon, UserGroupIcon} from "@heroicons/react/24/outline"
 import {LayoutDashboard, Menu, MonitorCog, Users, BookOpenText, GraduationCap, Book} from "lucide-react";
 import {Card} from '@/shadcn/ui/card'
 import {Text} from "@/Components/atoms/Text";
+import {usePage} from '@inertiajs/react'
 
 type MenuItem = Readonly<{
     name: string,
@@ -47,13 +48,15 @@ const Dashboard = ({usersCount, historiasCount, estudiantesCount, profesoresCoun
 }
 
 
-const SidebarContent = () => {
+export const SidebarContent = () => {
     const route = useRoute()
+    const { url, component} = usePage()
+
 
     return (
         <div className={'h-full lg:p-6 flex lg:flex-col gap-1 justify-center lg:justify-start'}>
             {sidebarMenu.map((menuItem, index) =>
-                <Link className={`flex-initial flex items-center gap-2 rounded-lg p-2 cursor-pointer hover:bg-white/10`} href={route(menuItem.link)} key={index}
+                <Link className={`flex-initial flex items-center gap-2 rounded-lg p-2 cursor-pointer hover:bg-white/10 ${(route(menuItem.link).endsWith(url))? 'bg-white/10' : ''}`} href={route(menuItem.link)} key={index}
                       onClick={() => {
                 }}>
                     <Icon className={'size-8 text-white'}>
