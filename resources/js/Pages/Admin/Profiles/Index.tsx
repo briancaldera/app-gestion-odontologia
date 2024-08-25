@@ -104,8 +104,6 @@ const columns: ColumnDef<Profile>[] = [
         cell: props => {
             const profile = props.row.original
 
-            console.log(profile)
-
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

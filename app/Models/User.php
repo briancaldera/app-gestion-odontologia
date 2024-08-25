@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Utils\HasRole;
+use App\HasRole;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -72,25 +72,5 @@ class User extends Authenticatable implements MustVerifyEmail
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
-    }
-
-    public function isAdmin(): bool
-    {
-        return $this->role == 0;
-    }
-
-    public function isAdmision(): bool
-    {
-        return $this->role == 1;
-    }
-
-    public function isProfesor(): bool
-    {
-        return $this->role == 2;
-    }
-
-    public function isEstudiante(): bool
-    {
-        return $this->role == 3;
     }
 }
