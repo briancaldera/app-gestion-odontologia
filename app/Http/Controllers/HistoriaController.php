@@ -53,7 +53,8 @@ class HistoriaController extends Controller
     public function store(StoreHistoriaRequest $request, Paciente $paciente)
     {
         $data = $request->validated();
-        $this->historiaService->addHistoria($paciente, $data);
+        $attributes = ['autor' => $request->user()->id, ...$data];
+        $this->historiaService->addHistoria($paciente, $attributes);
         return response(null, 201);
     }
 

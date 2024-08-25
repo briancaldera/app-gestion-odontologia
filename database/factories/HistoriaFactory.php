@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
+use App\Status;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +20,8 @@ class HistoriaFactory extends Factory
     {
         $faker = fake('es_VE');
         return [
+            'status' => Status::ABIERTA,
+            'autor' => User::factory(),
             'numero' => '',
             'motivo_consulta' => $faker->text(),
             'enfermedad_actual' => $faker->text()
