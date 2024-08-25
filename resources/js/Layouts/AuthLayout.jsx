@@ -52,33 +52,37 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
     }
 
     return (
-            <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 min-h-screen`}>
                 <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode}}>
                     <TooltipProvider>
                         <Head title={title}/>
-                        <nav className={'z-50 fixed inset-x-0 top-0 bg-white h-20 ps-72'}>
-                            {navbar || <AuthNavbar/>}
-                        </nav>
-                        <aside className={'z-50 bg-indigo-600 fixed inset-y-0 left-0 w-full max-w-72'}>
-                            <div className={'h-20 flex items-center'}>
-                                <div className={'overflow-hidden w-20 ps-6 '}>
-                                    <Link href={route('dashboard')} className={'grayscale contrast-200 brightness-200'}>
-                                        <Logo/>
-                                    </Link>
+                        <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 min-h-screen`}>
+                            <nav className={'z-50 fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 lg:ps-72 flex justify-end'}>
+                                {navbar || <AuthNavbar/>}
+                            </nav>
+                            <aside className={
+                                ' /*mobile*/ bg-indigo-600 fixed z-50 max-lg:inset-x-0 max-lg:h-16 bottom-0' +
+                                ' /*tablet*/ ' +
+                                ' /*laptop*/  lg:inset-y-0 lg:inset-x-px lg:left-0 lg:w-full lg:max-w-72'}>
+                                <div className={'h-20 flex items-center hidden lg:block'}>
+                                    <div className={'overflow-hidden w-20 ps-6 '}>
+                                        <Link href={route('dashboard')}
+                                              className={'grayscale contrast-200 brightness-200'}>
+                                            <Logo/>
+                                        </Link>
+                                    </div>
                                 </div>
-                            </div>
-                            {sidebar || <AuthSidebar/>}
-                            <div className={'z-50 absolute bottom-0 left-0 p-4'} hidden={!loading}>
-                                <Loader/>
-                            </div>
-                        </aside>
-                        <main className={'pt-20 pl-72 min-h-screen'}>
-                            {children}
-                        </main>
+                                {sidebar || <AuthSidebar/>}
+                                <div className={'z-50 absolute bottom-0 left-0 p-4'} hidden={!loading}>
+                                    <Loader/>
+                                </div>
+                            </aside>
+                            <main className={'pt-20 lg:pb-0 pb-16 lg:pl-72 h-full'}>
+                                {children}
+                            </main>
+                        </div>
                     </TooltipProvider>
                 </AuthContext.Provider>
-            </div>
-    )
+)
 }
 
 export default AuthLayout

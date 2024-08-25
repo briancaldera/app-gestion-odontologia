@@ -18,8 +18,6 @@ import {
 import {router} from "@inertiajs/react"
 import {route} from "ziggy-js";
 
-
-
 const columnHelper = createColumnHelper<Profile>()
 
 const columns: ColumnDef<Profile>[] = [
@@ -135,7 +133,7 @@ const Index = ({profiles}: IndexProps) => {
 
     return (
         <AuthLayout title={'Perfiles'}>
-            <div className={'p-12'}>
+            <div className={'p-2 sm:p-12'}>
                 <Card className={'p-12'}>
                     <Title level={'title-lg'}>Usuarios</Title>
                     <section>

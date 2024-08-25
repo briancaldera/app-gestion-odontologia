@@ -34,9 +34,9 @@ interface DashboardProps extends React.ComponentPropsWithoutRef<React.ReactEleme
 const Dashboard = ({usersCount, historiasCount, estudiantesCount, profesoresCount}: DashboardProps) => {
 
     return (
-        <AuthLayout title={'Inicio'} sidebar={<Sidebar/>}>
+        <AuthLayout title={'Inicio'} sidebar={<SidebarContent/>}>
 
-            <div className={'h-32 grid grid-cols-4 gap-6 m-6'}>
+            <div className={'h-32 grid grid-cols-2 sm:grid-cols-4 gap-6 m-6'}>
                 <StatisticsSlot title={'Usuarios registrados'} data={usersCount} icon={<Users />} />
                 <StatisticsSlot title={'Historias creadas'} data={historiasCount} icon={<ClipboardDocumentIcon />} />
                 <StatisticsSlot title={'Estudiantes registrados'} data={estudiantesCount} icon={<BookOpenText />} />
@@ -47,22 +47,21 @@ const Dashboard = ({usersCount, historiasCount, estudiantesCount, profesoresCoun
 }
 
 
-const Sidebar = () => {
+const SidebarContent = () => {
     const route = useRoute()
 
     return (
-        <div className={'p-6'}>
-            <div className={'space-y-1'}>
-                {sidebarMenu.map((menuItem, index) =>
-                    <Link href={route(menuItem.link)} key={index} onClick={() => {
-                    }}
-                          className={`flex items-center gap-2 rounded-lg p-2 cursor-pointer hover:bg-white/10`}>
-                        <Icon className={'size-8 text-white'}>
-                            {menuItem.icon}
-                        </Icon>
-                        <Title className={'text-white'} level={'title-md'}>{menuItem.name}</Title>
-                    </Link>)}
-            </div>
+        <div className={'h-full lg:p-6 flex lg:flex-col gap-1 justify-center lg:justify-start'}>
+            {sidebarMenu.map((menuItem, index) =>
+                <Link className={`flex-initial flex items-center gap-2 rounded-lg p-2 cursor-pointer hover:bg-white/10`} href={route(menuItem.link)} key={index}
+                      onClick={() => {
+                }}>
+                    <Icon className={'size-8 text-white'}>
+                        {menuItem.icon}
+                    </Icon>
+                    <Title className={'max-lg:hidden text-white'} level={'title-md'}>{menuItem.name}</Title>
+                </Link>
+            )}
         </div>
     )
 }
