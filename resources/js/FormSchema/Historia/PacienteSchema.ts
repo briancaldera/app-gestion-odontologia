@@ -27,26 +27,26 @@ const PacienteSchema = z.object({
     edad: z
         .coerce
         .number()
-        .int()
-        .positive()
-        .min(0)
-        .max(150),
+        .int({message: 'Solo números enteros'})
+        .positive({message: 'Solo números positivos 😠'})
+        .min(0, {message: 'Mínimo 0'})
+        .max(150, {message: 'Máximo 150 años'}),
     sexo: z
-        .enum(['F', 'M', 'NI']),
+        .enum(['F', 'M', 'NI'], {message: 'Debe ser F, M o NI'}),
     peso: z
         .coerce
         .number()
         .step(0.01)
-        .min(0)
-        .max(300),
+        .min(0, {message: 'Mínimo 0'})
+        .max(300, {message: 'Máximo 300 kilos '}),
     fecha_nacimiento: z
         .date()
         .max(new Date(), {message: 'Fecha de nacimiento inválida'})
         .nullable(),
     ocupacion: z
         .string()
-        .min(0)
-        .max(50),
+        .min(0, {message: 'Mínimo 0 caracteres'})
+        .max(50, {message: 'Máximo 50 caracteres'}),
     direccion: z
         .string()
         .min(3)
@@ -56,14 +56,14 @@ const PacienteSchema = z.object({
         .string()
         .min(0)
         .max(15)
-        .regex(/^[\d]{4}-[\d]{7}$/)
+        .regex(/^[\d]{4}-[\d]{7}$/, {message: 'El formato debe ser similar a 0414-1234567'})
         .optional(),
     foto: z
         .any()
         .refine((file: File) => ACCEPTED_PICTURE_MIME.includes(file?.type), {message: 'Archivo inválido. Formatos permitidos: .jpg .jpeg .png'})
         .refine((file: File) => file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
         .refine((file: File) => file?.size >= MIN_PICTURE_SIZE, {message: 'Archivo muy pequeño'})
-        .nullable().or(z.string().url())
+        .nullable().or(z.string().url()).transform((value) =>  (typeof value === 'string') ? null : value)
 })
 
 export const PacienteDefaults = {
