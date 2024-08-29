@@ -1,8 +1,7 @@
 import {z} from 'zod'
-import TrastornosFormSchema, {Trastornos} from "./TrastornosForm";
+import TrastornosSchema, {TrastornosDefaults} from "./TrastornosSchema";
 
-
-const medicamentoObject = z.object({
+const MedicamentoSchema = z.object({
     positivo: z
         .boolean(),
     dosis: z
@@ -22,41 +21,41 @@ const medicamentoObject = z.object({
     return !(!positivo && dosis !== null);
 }, {message: 'El campo dosis no puede contener valor si no aplica'})
 
-const alergiaObject = z.boolean()
+const AlergiaSchema = z.boolean()
 
-const AntPersonalesFormSchema = z.object({
-    historia_id: z.string(),
-    trastornos: TrastornosFormSchema,
+const AntPersonalesSchema = z.object({
+    historia_id: z.string().nullish(),
+    trastornos: TrastornosSchema,
     medicamentos: z.object({
-        hipertensivos: medicamentoObject,
-        analgesicos: medicamentoObject,
-        esteroides: medicamentoObject,
-        antidepresivos: medicamentoObject,
-        anticonceptivos: medicamentoObject,
-        hipogicemiante: medicamentoObject,
-        anticonvulsivos: medicamentoObject,
-        sildenafil: medicamentoObject,
-        acidoacetilicidico: medicamentoObject,
-        anticoagulante: medicamentoObject,
-        bifosfanato: medicamentoObject,
+        hipertensivos: MedicamentoSchema,
+        analgesicos: MedicamentoSchema,
+        esteroides: MedicamentoSchema,
+        antidepresivos: MedicamentoSchema,
+        anticonceptivos: MedicamentoSchema,
+        hipogicemiante: MedicamentoSchema,
+        anticonvulsivos: MedicamentoSchema,
+        sildenafil: MedicamentoSchema,
+        acidoacetilicidico: MedicamentoSchema,
+        anticoagulante: MedicamentoSchema,
+        bifosfanato: MedicamentoSchema,
         otros: z.object({
             positivo: z.boolean(),
             descripcion: z.string().max(255)
         })
     }),
     alergias: z.object({
-        antibioticos: alergiaObject,
-        analgesicos: alergiaObject,
-        anestesicos: alergiaObject,
-        yodo: alergiaObject,
-        otros: alergiaObject,
+        antibioticos: AlergiaSchema,
+        analgesicos: AlergiaSchema,
+        anestesicos: AlergiaSchema,
+        yodo: AlergiaSchema,
+        otros: AlergiaSchema,
         descripcion: z.string().max(255),
     })
 })
 
-export const AntPersonalesForm: z.infer<typeof AntPersonalesFormSchema> = {
-    historia_id: '',
-    trastornos: Trastornos,
+export const AntPersonalesDefaults = {
+    historia_id: null,
+    trastornos: TrastornosDefaults,
     medicamentos: {
         hipertensivos: {
             positivo: false,
@@ -115,6 +114,6 @@ export const AntPersonalesForm: z.infer<typeof AntPersonalesFormSchema> = {
         otros: false,
         descripcion: '',
     },
-}
+} satisfies z.infer<typeof AntPersonalesSchema>
 
-export default AntPersonalesFormSchema
+export default AntPersonalesSchema

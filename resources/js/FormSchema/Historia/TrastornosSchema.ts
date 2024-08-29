@@ -18,159 +18,159 @@ const toTrastornoObject = (trastorno: string) => {
     return {[trastorno]: z.boolean()}
 }
 
-const trastornoObject = z.boolean()
-const otrosTrastornosObject = z.string().max(MAX_TEXT_SIZE)
+const TrastornoSchema = z.boolean()
+const OtrosTrastornosSchema = z.string().max(MAX_TEXT_SIZE)
 
-const tCardiovascularesObject = z.object({
-    disnea: trastornoObject,
-    cansancio: trastornoObject,
-    vertigo: trastornoObject,
-    palpitaciones: trastornoObject,
-    taquicardia: trastornoObject,
-    bradicardia: trastornoObject,
-    varices: trastornoObject,
-    infarto_miocardio: trastornoObject,
-    angina_pecho: trastornoObject,
-    hipertension: trastornoObject,
-    endocarditis: trastornoObject,
-    otros: otrosTrastornosObject,
-})
-
-const tHematologicosObject = z.object({
-    palidez: trastornoObject,
-    ictericia: trastornoObject,
-    anemia: trastornoObject,
-    hemorragias: trastornoObject,
-    hematoma: trastornoObject,
-    equimosis: trastornoObject,
-    petequias: trastornoObject,
-    dengue: trastornoObject,
-    hemofilia: trastornoObject,
-    otros: otrosTrastornosObject,
+const TCardiovascularesSchema = z.object({
+    disnea: TrastornoSchema,
+    cansancio: TrastornoSchema,
+    vertigo: TrastornoSchema,
+    palpitaciones: TrastornoSchema,
+    taquicardia: TrastornoSchema,
+    bradicardia: TrastornoSchema,
+    varices: TrastornoSchema,
+    infarto_miocardio: TrastornoSchema,
+    angina_pecho: TrastornoSchema,
+    hipertension: TrastornoSchema,
+    endocarditis: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
 })
 
-const tRespiratoriosObject = z.object({
-    ciaonosis: trastornoObject,
-    hemoptisis: trastornoObject,
-    esputos: trastornoObject,
-    enfisema_pulmonar: trastornoObject,
-    asma: trastornoObject,
-    asfixia: trastornoObject,
-    tos_frecuente: trastornoObject,
-    rinitis: trastornoObject,
-    sonido_anormal: trastornoObject,
-    inf_respiratorias: trastornoObject,
-    otros: otrosTrastornosObject,
+const THematologicosSchema = z.object({
+    palidez: TrastornoSchema,
+    ictericia: TrastornoSchema,
+    anemia: TrastornoSchema,
+    hemorragias: TrastornoSchema,
+    hematoma: TrastornoSchema,
+    equimosis: TrastornoSchema,
+    petequias: TrastornoSchema,
+    dengue: TrastornoSchema,
+    hemofilia: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
 })
 
-const tEndocrinosObject = z.object({
-    poliuria: trastornoObject,
-    polidipsia: trastornoObject,
-    polifagia: trastornoObject,
-    variacion_peso: trastornoObject,
-    irritabilidad: trastornoObject,
-    sudoracion_excesiva: trastornoObject,
-    diabetes: trastornoObject,
-    intolerancia_frio: trastornoObject,
-    hipoglicemia: trastornoObject,
-    hipertiroidismo: trastornoObject,
-    adenopatia: trastornoObject,
-    hipotiroidismo: trastornoObject,
-    otros: otrosTrastornosObject,
+const TRespiratoriosSchema = z.object({
+    ciaonosis: TrastornoSchema,
+    hemoptisis: TrastornoSchema,
+    esputos: TrastornoSchema,
+    enfisema_pulmonar: TrastornoSchema,
+    asma: TrastornoSchema,
+    asfixia: TrastornoSchema,
+    tos_frecuente: TrastornoSchema,
+    rinitis: TrastornoSchema,
+    sonido_anormal: TrastornoSchema,
+    inf_respiratorias: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
 })
 
-const tGastrointestinalesObject = z.object({
-    diarrea: trastornoObject,
-    flatulencia: trastornoObject,
-    acidez: trastornoObject,
-    nauseas: trastornoObject,
-    vomitos: trastornoObject,
-    ulceras: trastornoObject,
-    dolor_estomacal: trastornoObject,
-    gastritis: trastornoObject,
-    parasitos: trastornoObject,
-    reflujo_gastrico: trastornoObject,
-    gastroenteritis: trastornoObject,
-    colon_irritable: trastornoObject,
-    cirrosis_hepatica: trastornoObject,
-    estrenimiento: trastornoObject,
-    otros: otrosTrastornosObject,
+const TEndocrinosSchema = z.object({
+    poliuria: TrastornoSchema,
+    polidipsia: TrastornoSchema,
+    polifagia: TrastornoSchema,
+    variacion_peso: TrastornoSchema,
+    irritabilidad: TrastornoSchema,
+    sudoracion_excesiva: TrastornoSchema,
+    diabetes: TrastornoSchema,
+    intolerancia_frio: TrastornoSchema,
+    hipoglicemia: TrastornoSchema,
+    hipertiroidismo: TrastornoSchema,
+    adenopatia: TrastornoSchema,
+    hipotiroidismo: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
 })
 
-const tNeurologicosObject = z.object({
-    convulsiones: trastornoObject,
-    temblor: trastornoObject,
-    tic: trastornoObject,
-    epilepsia: trastornoObject,
-    cefalea: trastornoObject,
-    depresion: trastornoObject,
-    dislexia: trastornoObject,
-    parkinson: trastornoObject,
-    alzheimer: trastornoObject,
-    ecv: trastornoObject,
-    bulimia: trastornoObject,
-    anorexia: trastornoObject,
-    sindrome_down: trastornoObject,
-    retardo_mental: trastornoObject,
-    otros: otrosTrastornosObject,
+const TGastrointestinalesSchema = z.object({
+    diarrea: TrastornoSchema,
+    flatulencia: TrastornoSchema,
+    acidez: TrastornoSchema,
+    nauseas: TrastornoSchema,
+    vomitos: TrastornoSchema,
+    ulceras: TrastornoSchema,
+    dolor_estomacal: TrastornoSchema,
+    gastritis: TrastornoSchema,
+    parasitos: TrastornoSchema,
+    reflujo_gastrico: TrastornoSchema,
+    gastroenteritis: TrastornoSchema,
+    colon_irritable: TrastornoSchema,
+    cirrosis_hepatica: TrastornoSchema,
+    estrenimiento: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
 })
 
-const tOseosObject = z.object({
-    deformidades: trastornoObject,
-    fracturas: trastornoObject,
-    escleroticas_azules: trastornoObject,
-    artritis: trastornoObject,
-    dificultad_movimiento: trastornoObject,
-    osteoporosis: trastornoObject,
-    osteomelitis: trastornoObject,
-    otros: otrosTrastornosObject,
-})
-const tGinecologicosObject = z.object({
-    embarazo: trastornoObject,
-    menstruacion: trastornoObject,
-    abortos: trastornoObject,
-    menopausia: trastornoObject,
-    otros: otrosTrastornosObject,
-})
-const tUrologicosObject = z.object({
-    insuficiencia_renal: trastornoObject,
-    colico_nefritico: trastornoObject,
-    cancer_prostata: trastornoObject,
-    andropausia: trastornoObject,
-    otros: otrosTrastornosObject,
-})
-const tInfectocontagiosaObject = z.object({
-    parotiditis: trastornoObject,
-    tuberculosis: trastornoObject,
-    vih_sida: trastornoObject,
-    blenorragia: trastornoObject,
-    sifilis: trastornoObject,
-    herpes: trastornoObject,
-    hepatitis_abc: trastornoObject,
-    influenza: trastornoObject,
-    vhp: trastornoObject,
-    rubeola: trastornoObject,
-    varicela: trastornoObject,
-    sarampion: trastornoObject,
-    covid: trastornoObject,
-    otros: otrosTrastornosObject,
+const TNeurologicosSchema = z.object({
+    convulsiones: TrastornoSchema,
+    temblor: TrastornoSchema,
+    tic: TrastornoSchema,
+    epilepsia: TrastornoSchema,
+    cefalea: TrastornoSchema,
+    depresion: TrastornoSchema,
+    dislexia: TrastornoSchema,
+    parkinson: TrastornoSchema,
+    alzheimer: TrastornoSchema,
+    ecv: TrastornoSchema,
+    bulimia: TrastornoSchema,
+    anorexia: TrastornoSchema,
+    sindrome_down: TrastornoSchema,
+    retardo_mental: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
 })
 
-const TrastornosFormSchema = z.object({
+const TOseosSchema = z.object({
+    deformidades: TrastornoSchema,
+    fracturas: TrastornoSchema,
+    escleroticas_azules: TrastornoSchema,
+    artritis: TrastornoSchema,
+    dificultad_movimiento: TrastornoSchema,
+    osteoporosis: TrastornoSchema,
+    osteomelitis: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
+})
+const TGinecologicosSchema = z.object({
+    embarazo: TrastornoSchema,
+    menstruacion: TrastornoSchema,
+    abortos: TrastornoSchema,
+    menopausia: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
+})
+const TUrologicosSchema = z.object({
+    insuficiencia_renal: TrastornoSchema,
+    colico_nefritico: TrastornoSchema,
+    cancer_prostata: TrastornoSchema,
+    andropausia: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
+})
+const TInfectocontagiosaSchema = z.object({
+    parotiditis: TrastornoSchema,
+    tuberculosis: TrastornoSchema,
+    vih_sida: TrastornoSchema,
+    blenorragia: TrastornoSchema,
+    sifilis: TrastornoSchema,
+    herpes: TrastornoSchema,
+    hepatitis_abc: TrastornoSchema,
+    influenza: TrastornoSchema,
+    vhp: TrastornoSchema,
+    rubeola: TrastornoSchema,
+    varicela: TrastornoSchema,
+    sarampion: TrastornoSchema,
+    covid: TrastornoSchema,
+    otros: OtrosTrastornosSchema,
+})
+
+const TrastornosSchema = z.object({
     historia_id: z.string().nullish(),
-    cardiovasculares: tCardiovascularesObject,
-    hematologicos: tHematologicosObject,
-    respiratorios: tRespiratoriosObject,
-    endocrinos: tEndocrinosObject,
-    gastrointestinales: tGastrointestinalesObject,
-    neurologicos: tNeurologicosObject,
-    oseos: tOseosObject,
-    ginecologicos: tGinecologicosObject,
-    urologicos: tUrologicosObject,
-    infectocontagiosa: tInfectocontagiosaObject,
+    cardiovasculares: TCardiovascularesSchema,
+    hematologicos: THematologicosSchema,
+    respiratorios: TRespiratoriosSchema,
+    endocrinos: TEndocrinosSchema,
+    gastrointestinales: TGastrointestinalesSchema,
+    neurologicos: TNeurologicosSchema,
+    oseos: TOseosSchema,
+    ginecologicos: TGinecologicosSchema,
+    urologicos: TUrologicosSchema,
+    infectocontagiosa: TInfectocontagiosaSchema,
 })
 
-export const Trastornos: z.infer<typeof TrastornosFormSchema> = {
+export const TrastornosDefaults: z.infer<typeof TrastornosSchema> = {
     historia_id: null,
     cardiovasculares: {
         angina_pecho: false,
@@ -300,4 +300,4 @@ export const Trastornos: z.infer<typeof TrastornosFormSchema> = {
     }
 }
 
-export default TrastornosFormSchema
+export default TrastornosSchema
