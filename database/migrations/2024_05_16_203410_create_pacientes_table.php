@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('apellido');
             $table->integer('edad');
-            $table->enum('sexo', ['M', 'F']);
+            $table->enum('sexo', ['F', 'M', 'NI']);
             $table->decimal('peso');
             $table->date('fecha_nacimiento');
             $table->string('ocupacion');
