@@ -16,7 +16,7 @@ import PacienteSchema, {PacienteDefaults} from "@/FormSchema/Historia/PacienteSc
 import AntPersonalesSchema, {
     AntPersonalesDefaults
 } from "@/FormSchema/Historia/AntPersonalesSchema";
-import AntFamiliaresFormSchema, {AntFamiliaresForm} from "@/FormSchema/Historia/AntFamiliaresForm";
+import AntFamiliaresSchema , {AntFamiliaresDefaults} from "@/FormSchema/Historia/AntFamiliaresSchema";
 import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema";
 import HistoriaOdontologicaFormSchema, {HistoriaOdontologica, TratamientoObject, Tratamiento, CAVIDAD_CLASES} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
 import ExamenRadiograficoSchema, {ExamenRadiografico} from '@/FormSchema/Historia/ExamenRadiograficoForm'
@@ -76,6 +76,7 @@ import Historia from '@/src/models/Historia'
 import {router} from "@inertiajs/react";
 import PacienteSection from "@/Components/organisms/historia/PacienteSection";
 import HistoriaSection from "@/Components/organisms/historia/HistoriaSection";
+import AntFamiliaresSection from "@/Components/organisms/historia/AntFamiliaresSection";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -104,9 +105,9 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
         defaultValues: AntPersonalesDefaults,
     })
 
-    const antFamiliaresForm = useForm<z.infer<typeof AntFamiliaresFormSchema>>({
-        resolver: zodResolver(AntFamiliaresFormSchema),
-        defaultValues: AntFamiliaresForm,
+    const antFamiliaresForm = useForm<z.infer<typeof AntFamiliaresSchema>>({
+        resolver: zodResolver(AntFamiliaresSchema),
+        defaultValues: AntFamiliaresDefaults,
     })
 
     const historiaOdontologicaForm = useForm<z.infer<typeof HistoriaOdontologicaFormSchema>>({
@@ -207,7 +208,7 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
                             <AntecedentesMedicosPersonalesSection form={antPersonalesForm}/>
                         </TabsContent>
                         <TabsContent value="antFamiliares" className={TabTriggerStyle}>
-                            <AntecedentesMedicosFamiliaresSection form={antFamiliaresForm}/>
+                            <AntFamiliaresSection form={antFamiliaresForm}/>
                         </TabsContent>
                         <TabsContent value="historiaOdon" className={TabTriggerStyle}>
                             <HistoriaOdontologicaSection form={historiaOdontologicaForm}/>
@@ -232,66 +233,6 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
             </Tabs>
 
         </div>
-    )
-}
-
-type AntecedentesMedicosFamiliaresSectionProps = {
-    form: ReturnType<typeof useForm<typeof z.infer<typeof AntFamiliaresFormSchema>>>
-}
-
-const AntecedentesMedicosFamiliaresSection = ({form}: AntecedentesMedicosFamiliaresSectionProps) => {
-    const route = useRoute()
-
-    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
-        console.log(values)
-
-        // router.post(route(''), Object.create(values))
-    }
-
-    return (
-        <Surface className={SectionStyle}>
-
-            <Title level={'title-lg'}>Antecedentes Médicos Familiares</Title>
-
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
-
-                    <section>
-                        <header className={'mb-1.5 mt-5 space-y-1.5'}>
-                            <Title level={'title-md'}>Antecedentes Médicos Familiares</Title>
-                            <Text level={'body-sm'}>Describa el estado actual o causa de muerte de padres hermanos y
-                                abuelos.</Text>
-                        </header>
-
-
-                        <div
-                            className={'grid grid-cols-1 sm:grid-cols-2 gap-6 border rounded-2xl border-slate-300 p-3'}>
-                            {
-                                Object.keys(form.formState.defaultValues).filter(key => key !== 'historia_id').map(familiar => {
-
-                                    return (
-                                        <div key={familiar}>
-                                            <FormField render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel className={'capitalize'}
-                                                               htmlFor={field.name}>{familiar.replace('_', ' ')}</FormLabel>
-                                                    <FormControl>
-                                                        <Textarea className={'h-36'} id={field.name} {...field}/>
-                                                    </FormControl>
-                                                    <FormMessage/>
-                                                </FormItem>
-                                            )} name={familiar} control={form.control}/>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
-
-                    </section>
-
-                </form>
-            </Form>
-        </Surface>
     )
 }
 
