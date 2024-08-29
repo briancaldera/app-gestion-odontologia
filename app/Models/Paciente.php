@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 
 /**
@@ -41,6 +42,35 @@ class Paciente extends Model
         'ocupacion',
         'direccion',
         'telefono',
+        'foto_url',
+    ];
+
+    /**
+     * @return string[]
+     */
+    public function getVisible(): array
+    {
+        $user = Auth::user();
+
+        if (!isset($user)) {
+            return $this->visible;
+        }
+
+        if($user->isAdmin() OR $user->isAdmision()) {
+            return [];
+        }
+
+        if ($user->isEstudiante() AND $this->historia->autor_id === $user->id) {
+            return [];
+        }
+
+        return $this->visible;
+    }
+
+    protected $visible = [
+        'id',
+        'nombre',
+        'apellido',
         'foto_url',
     ];
 

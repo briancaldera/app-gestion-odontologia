@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property string $id the UUID
@@ -33,18 +34,48 @@ class Historia extends Model implements StatusHolder
 
     protected $attributes = [
         'numero' => '',
-        'status' => 'abierta',
         'motivo_consulta' => '',
         'enfermedad_actual' => '',
     ];
 
     protected $fillable = [
+        'status',
         'motivo_consulta',
-        'enfermedad_actual'
+        'enfermedad_actual',
+        'autor_id',
     ];
 
     protected $dispatchesEvents = [
         'created' => HistoriaCreated::class
+    ];
+
+    /**
+     * @return string[]
+     */
+    public function getVisible(): array
+    {
+        $user = Auth::user();
+
+        if (!isset($user)) {
+            return $this->visible;
+        }
+
+        if($user->isAdmin() OR $user->isAdmision()) {
+            return [];
+        }
+
+        if ($user->isEstudiante() AND $this->autor_id === $user->id) {
+            return [];
+        }
+
+        return $this->visible;
+    }
+
+    protected $visible = [
+        'id',
+        'paciente_id',
+        'autor_id',
+        'numero',
     ];
 
     protected function casts()
