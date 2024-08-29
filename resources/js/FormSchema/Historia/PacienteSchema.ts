@@ -6,14 +6,14 @@ const MIN_PICTURE_SIZE = 5 * 1000 // 5 KB
 const ACCEPTED_PICTURE_MIME = ['image/jpeg', 'image/jpg', 'image/png']
 
 const PacienteSchema = z.object({
+    id: z.string().optional(),
     cedula: z
         .string({
             description: 'La cédula de paciente',
         })
         .min(4, 'Mínimo 4 caracteres')
         .max(10, 'Máximo 10 caracteres')
-        .regex(/^[VE][\d]{3,9}$/, 'La cédula no corresponde al formato correcto')
-        .default('V1234'),
+        .regex(/^[VE][\d]{3,9}$/, 'La cédula no corresponde al formato correcto'),
     nombre: z
         .string()
         .trim()
@@ -28,7 +28,7 @@ const PacienteSchema = z.object({
         .coerce
         .number()
         .int({message: 'Solo números enteros'})
-        .positive({message: 'Solo números positivos 😠'})
+        .positive({message: 'Solo números positivos'})
         .min(0, {message: 'Mínimo 0'})
         .max(150, {message: 'Máximo 150 años'}),
     sexo: z
@@ -36,10 +36,10 @@ const PacienteSchema = z.object({
     peso: z
         .coerce
         .number()
-        .step(0.01)
         .min(0, {message: 'Mínimo 0'})
         .max(300, {message: 'Máximo 300 kilos '}),
     fecha_nacimiento: z
+        .coerce
         .date()
         .max(new Date(), {message: 'Fecha de nacimiento inválida'})
         .nullable(),
@@ -63,7 +63,7 @@ const PacienteSchema = z.object({
         .refine((file: File) => ACCEPTED_PICTURE_MIME.includes(file?.type), {message: 'Archivo inválido. Formatos permitidos: .jpg .jpeg .png'})
         .refine((file: File) => file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
         .refine((file: File) => file?.size >= MIN_PICTURE_SIZE, {message: 'Archivo muy pequeño'})
-        .nullable().or(z.string().url()).transform((value) =>  (typeof value === 'string') ? null : value)
+        .nullish()
 })
 
 export const PacienteDefaults = {
