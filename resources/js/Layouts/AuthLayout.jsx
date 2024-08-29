@@ -76,7 +76,7 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
                                     <Loader/>
                                 </div>
                             </aside>
-                            <main className={'pt-20 lg:pb-0 pb-16 lg:pl-72 h-full'}>
+                            <main className={'pt-20 lg:pb-0 pb-16 lg:pl-72 min-h-screen'}>
                                 {children}
                             </main>
                         </div>
