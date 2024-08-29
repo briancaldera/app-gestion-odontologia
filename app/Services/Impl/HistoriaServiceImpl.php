@@ -9,16 +9,25 @@ use App\Models\Historia;
 use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
 use App\Models\Trastornos;
+use App\Models\User;
 use App\Services\HistoriaService;
+use App\Status;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 
 class HistoriaServiceImpl implements HistoriaService
 {
+    const PACIENTE_PHOTO_DIR = 'pacientes/fotos/';
+    const HISTORIA_DIR = 'historias/';
 
     public function addPaciente(array $data): Paciente
     {
 
-        $paciente = Paciente::create([
+        if (isset($data['foto'])) {
+            $foto_url = $this->savePhotoToFilesystem($data['foto']);
+        }
+
+        return Paciente::create([
             'cedula' => $data['cedula'],
             'nombre' => $data['nombre'],
             'apellido' => $data['apellido'],
@@ -29,15 +38,39 @@ class HistoriaServiceImpl implements HistoriaService
             'ocupacion' => $data['ocupacion'],
             'direccion' => $data['direccion'],
             'telefono' => $data['telefono'],
-            'foto_url' => $data['foto_url'],
+            'foto_url' => $foto_url ?? null,
         ]);
-
-        return $paciente;
     }
 
-    public function addHistoria(Paciente $paciente, array $data): Historia
+    public function updatePaciente(Paciente $paciente, array $data): void
     {
-        return $paciente->historia()->create($data);
+        if (isset($data['foto'])) {
+            $foto_url = $this->savePhotoToFilesystem($data['foto']);
+        }
+
+        $paciente->updateOrFail([
+            'nombre' => $data['nombre'],
+            'apellido' => $data['apellido'],
+            'edad' => $data['edad'],
+            'sexo' => $data['sexo'],
+            'peso' => $data['peso'],
+            'fecha_nacimiento' => $data['fecha_nacimiento'],
+            'ocupacion' => $data['ocupacion'],
+            'direccion' => $data['direccion'],
+            'telefono' => $data['telefono'],
+            'foto_url' => $foto_url ?? null,
+        ]);
+    }
+
+
+    public function addHistoria(Paciente $paciente, User $autor): Historia
+    {
+        $initial_status = Status::ABIERTA;
+        $new_data = [
+            'status' => $initial_status,
+            'autor_id' => $autor->id
+        ];
+        return $paciente->historia()->create($new_data);
     }
 
     public function updateHistoria(Historia $historia, array $data): Historia
@@ -100,6 +133,13 @@ class HistoriaServiceImpl implements HistoriaService
     {
         $examenRadio->updateOrFail($data);
         return $examenRadio;
+    }
+
+    private function savePhotoToFilesystem(UploadedFile $file): string
+    {
+        $now = now();
+        $folder = normalize_path(self::PACIENTE_PHOTO_DIR . $now->year . '/'. $now->month);
+        return $file->store($folder);
     }
 }
 

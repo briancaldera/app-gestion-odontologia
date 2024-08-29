@@ -9,11 +9,13 @@ use App\Models\Historia;
 use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
 use App\Models\Trastornos;
+use App\Models\User;
 
 interface HistoriaService
 {
     public function addPaciente(array $data): Paciente;
-    public function addHistoria(Paciente $paciente, array $data): Historia;
+    public function updatePaciente(Paciente $paciente, array $data): void;
+    public function addHistoria(Paciente $paciente, User $autor): Historia;
     public function updateHistoria(Historia $historia, array $data): Historia;
     public function addAntFamiliares(Historia $historia, array $data): AntFamiliares;
     public function updateAntFamiliares(AntFamiliares $antFamiliares, array $data): AntFamiliares;
