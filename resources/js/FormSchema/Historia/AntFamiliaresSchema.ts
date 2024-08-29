@@ -1,7 +1,7 @@
 import {z} from 'zod'
 
-const AntFamiliaresFormSchema = z.object({
-    historia_id: z.string().nullable(),
+const AntFamiliaresSchema = z.object({
+    historia_id: z.string().nullish(),
     madre: z.string().max(255),
     padre: z.string().max(255),
     hermanos: z.string().max(255),
@@ -9,13 +9,12 @@ const AntFamiliaresFormSchema = z.object({
     abuelos_paternos: z.string().max(255),
 })
 
-export const AntFamiliaresForm: z.infer<typeof AntFamiliaresFormSchema> = {
-    historia_id: null,
+export const AntFamiliaresDefaults = {
     madre: '',
     padre: '',
     hermanos: '',
     abuelos_maternos: '',
     abuelos_paternos: '',
-}
+} satisfies z.infer<typeof AntFamiliaresSchema> as const
 
-export default AntFamiliaresFormSchema
+export default AntFamiliaresSchema
