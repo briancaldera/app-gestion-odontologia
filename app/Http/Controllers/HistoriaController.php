@@ -6,11 +6,13 @@ use App\Http\Requests\StoreAntFamiliaresRequest;
 use App\Http\Requests\StoreAntPersonalesRequest;
 use App\Http\Requests\StoreHistoriaOdontologicaRequest;
 use App\Http\Requests\StoreHistoriaRequest;
+use App\Http\Requests\StorePacienteRequest;
 use App\Http\Requests\StoreTrastornosRequest;
 use App\Http\Requests\UpdateAntFamiliaresRequest;
 use App\Http\Requests\UpdateAntPersonalesRequest;
 use App\Http\Requests\UpdateHistoriaOdontologicaRequest;
 use App\Http\Requests\UpdateHistoriaRequest;
+use App\Http\Requests\UpdatePacienteRequest;
 use App\Http\Requests\UpdateTrastornosRequest;
 use App\Models\AntFamiliares;
 use App\Models\AntPersonales;
@@ -18,8 +20,12 @@ use App\Models\Historia;
 use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
 use App\Models\Trastornos;
+use App\Models\User;
+use App\Services\CorreccionService;
 use App\Services\HistoriaService;
+use App\Services\PacienteService;
 use App\Services\RadiografiaService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class HistoriaController extends Controller
@@ -30,13 +36,27 @@ class HistoriaController extends Controller
     public function __construct(
         protected HistoriaService $historiaService,
         protected RadiografiaService $radiografiaService,
+        protected CorreccionService $correccionService
     ) {}
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        /* @var User $user */
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+
+        } elseif ($user->isAdmision()) {
+
+        } elseif ($user->isProfesor()) {
+
+        } elseif ($user->isEstudiante()) {
+            return Inertia::render('Estudiante/Historias/Index', [
+
+            ]);
+        }
     }
 
     /**
@@ -44,18 +64,28 @@ class HistoriaController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Estudiante/Historia/Create');
+        return Inertia::render('Estudiante/Historias/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreHistoriaRequest $request, Paciente $paciente)
+    public function store(StorePacienteRequest $request)
     {
         $data = $request->validated();
-        $attributes = ['autor' => $request->user()->id, ...$data];
-        $this->historiaService->addHistoria($paciente, $attributes);
-        return response(null, 201);
+        $autor = $request->user();
+        $paciente = $this->historiaService->addPaciente($data);
+        $historia = $this->historiaService->addHistoria($paciente, $autor);
+        $this->correccionService->attachCorreccion($historia);
+        return to_route('historias.edit', [
+            'historia' => $historia->id
+        ]);
+    }
+
+    public function updatePaciente(Paciente $paciente, UpdatePacienteRequest $request)
+    {
+        $data = $request->validated();
+
+        $this->historiaService->updatePaciente($paciente, $data);
+        message('Paciente actualizado', \Type::Success);
+        return response(null, 200);
     }
 
     public function storeAntFamiliares(StoreAntFamiliaresRequest $request, Historia $historia)
@@ -123,17 +153,47 @@ class HistoriaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Historia $historia)
+    public function show(Historia $historia, Request $request)
     {
-        //
+        /* @var User $user*/
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+
+        } elseif ($user->isAdmision()) {
+
+        } elseif ($user->isProfesor()) {
+
+        } elseif ($user->isEstudiante()) {
+            return Inertia::render('Estudiante/Historias/Show', [
+               'historia' => $historia
+            ]);
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Historia $historia)
+    public function edit(Historia $historia, Request $request)
     {
-        //
+        /* @var User $user*/
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+
+        } elseif ($user->isAdmision()) {
+
+        } elseif ($user->isProfesor()) {
+
+        } elseif ($user->isEstudiante()) {
+
+            $historia->makeVisible(['paciente']);
+            $historia->paciente;
+
+            return Inertia::render('Estudiante/Historias/Edit', [
+                'historia' => $historia
+            ]);
+        }
     }
 
     /**

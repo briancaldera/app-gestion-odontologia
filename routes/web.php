@@ -67,6 +67,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.index');
     Route::patch('/notifications/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
 
+    // Correccion routes
     Route::prefix('historias')->name('historias.')->group(function () {
         Route::post('/{historia}/correcciones', [CorreccionController::class, 'store'])->name('correcciones.store');
         Route::patch('/{historia}/correcciones/{correccion}', [CorreccionController::class, 'update'])->name('correcciones.update');
@@ -105,21 +106,28 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     });
 
-    // Routes for estudiante
+//    Routes for HCE
+    Route::get('/historias', [HistoriaController::class, 'index'])->name('historias.index');
+    Route::get('/historias/crear', [HistoriaController::class, 'create'])->name('historias.create')->can('create', Historia::class);
+    Route::post('/historias/store', [HistoriaController::class, 'store'])->name('historias.store')->can('create', Historia::class);
+    Route::get('/historias/{historia}/editar', [HistoriaController::class, 'edit'])->name('historias.edit')->can('update', 'historia');
+    Route::patch('/pacientes/{paciente}', [HistoriaController::class, 'updatePaciente'])->name('pacientes.update')->can('update', 'paciente');
+    Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show')->can('view', Historia::class);
+
     Route::middleware(['role:estudiante'])->group(function () {
 
-        Route::resource('pacientes', PacienteController::class);
+//        Route::resource('pacientes', PacienteController::class);
 
-        Route::get('/historias', function (){
-
-            return Inertia::render('Estudiante/Historia/Dashboard',[]);
-        })->name('historia');
+//        Route::get('/historias', function (){
+//
+//            return Inertia::render('Estudiante/Historia/Dashboard',[]);
+//        })->name('historia');
 
         Route::prefix('historias')->name('historias.')->group(function () {
 
             Route::get('/create', [HistoriaController::class, 'create'])->name('historia.create');
 
-            Route::post('/{paciente}', [HistoriaController::class, 'store'])->name('store');
+//            Route::post('/{paciente}', [HistoriaController::class, 'store'])->name('store');
             Route::patch('/{historia}', [HistoriaController::class, 'update'])->name('update');
 
             Route::post('/{historia}/antfamiliares', [HistoriaController::class, 'storeAntFamiliares'])->name('storeAntFamiliares');
