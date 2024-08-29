@@ -12,10 +12,12 @@ import React from "react";
 import Title from "@/Components/atoms/Title";
 import Field from "@/Components/molecules/Field";
 import DatePicker from "@/Components/molecules/DatePicker";
-import PacienteFormSchema, {Paciente} from "@/FormSchema/Historia/PacienteForm";
-import AntPersonalesFormSchema, {AntPersonalesForm} from "@/FormSchema/Historia/AntPersonalesForm";
+import PacienteSchema, {PacienteDefaults} from "@/FormSchema/Historia/PacienteSchema";
+import AntPersonalesSchema, {
+    AntPersonalesDefaults
+} from "@/FormSchema/Historia/AntPersonalesSchema";
 import AntFamiliaresFormSchema, {AntFamiliaresForm} from "@/FormSchema/Historia/AntFamiliaresForm";
-import HistoriaFormSchema, {Historia} from "@/FormSchema/Historia/HistoriaForm";
+import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema";
 import HistoriaOdontologicaFormSchema, {HistoriaOdontologica, TratamientoObject, Tratamiento, CAVIDAD_CLASES} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
 import ExamenRadiograficoSchema, {ExamenRadiografico} from '@/FormSchema/Historia/ExamenRadiograficoForm'
 import Checkbox from "@/Components/atoms/Checkbox";
@@ -39,7 +41,6 @@ import Tooltip from "@/Components/atoms/Tooltip"
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import AnalisisSlot from "@/Components/organisms/AnalisisSlot";
 import EstudioModelosSection from "@/Components/organisms/historia/EstudioModelosSection";
-
 import {
     Popover,
     PopoverContent,
@@ -71,28 +72,36 @@ import {
 } from "@/shadcn/ui/dropdown-menu"
 import ModificacionesPlanTratamientoSection from '@/Components/organisms/historia/ModificacionesPlanTratamientoSection'
 import SecuenciaPlanTratamientoSection from '@/Components/organisms/historia/SecuenciaTratamientoSection'
+import Historia from '@/src/models/Historia'
+import {router} from "@inertiajs/react";
+import PacienteSection from "@/Components/organisms/historia/PacienteSection";
+import HistoriaSection from "@/Components/organisms/historia/HistoriaSection";
 
 const TabTriggerStyle = 'p-0 m-0'
 
 const SectionStyle = 'w-full px-6 min-h-screen'
 
-const HistoriaEditorContext = React.createContext({errors: null})
+const HistoriaEditorContext = React.createContext({})
 
-const HistoriaEditor = ({errors = null}) => {
+interface HistoriaEditorProps {
+    historia?: Historia
+}
 
-    const pacienteForm = useForm<z.infer<typeof PacienteFormSchema>>({
-        resolver: zodResolver(PacienteFormSchema),
-        defaultValues: Paciente,
+const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
+
+    const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
+        resolver: zodResolver(HistoriaSchema),
+        defaultValues: historia ?? HistoriaDefaults,
     })
 
-    const historiaForm = useForm<z.infer<typeof HistoriaFormSchema>>({
-        resolver: zodResolver(HistoriaFormSchema),
-        defaultValues: Historia,
+    const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
+        resolver: zodResolver(PacienteSchema),
+        defaultValues: historia?.paciente ?? PacienteDefaults,
     })
 
-    const antPersonalesForm = useForm<z.infer<typeof AntPersonalesFormSchema>>({
-        resolver: zodResolver(AntPersonalesFormSchema),
-        defaultValues: AntPersonalesForm,
+    const antPersonalesForm = useForm<z.infer<typeof AntPersonalesSchema>>({
+        resolver: zodResolver(AntPersonalesSchema),
+        defaultValues: AntPersonalesDefaults,
     })
 
     const antFamiliaresForm = useForm<z.infer<typeof AntFamiliaresFormSchema>>({
@@ -116,6 +125,13 @@ const HistoriaEditor = ({errors = null}) => {
             <Tabs defaultValue="paciente" className="flex h-full" orientation={'vertical'}>
                 <TabsList className={'flex flex-col items-end justify-start p-0 sticky top-0'}>
                     <TabsTrigger value="paciente" className={'p-0'}>
+                        <Surface>
+                            <Icon className={'size-8'}>
+                                <UserCircleIcon/>
+                            </Icon>
+                        </Surface>
+                    </TabsTrigger>
+                    <TabsTrigger value="historia" className={'p-0'}>
                         <Surface>
                             <Icon className={'size-8'}>
                                 <UserCircleIcon/>
@@ -180,9 +196,12 @@ const HistoriaEditor = ({errors = null}) => {
                     </TabsTrigger>
                 </TabsList>
                 <div className={'w-full h-full'}>
-                    <HistoriaEditorContext.Provider value={{errors: errors}}>
+                    <HistoriaEditorContext.Provider value={{}}>
                         <TabsContent value="paciente" className={TabTriggerStyle}>
                             <PacienteSection form={pacienteForm}/>
+                        </TabsContent>
+                        <TabsContent value="historia" className={TabTriggerStyle}>
+                            <HistoriaSection form={historiaForm} historia_id={historia?.id ?? ''}/>
                         </TabsContent>
                         <TabsContent value="antPersonales" className={TabTriggerStyle}>
                             <AntecedentesMedicosPersonalesSection form={antPersonalesForm}/>
@@ -216,82 +235,14 @@ const HistoriaEditor = ({errors = null}) => {
     )
 }
 
-const PacienteSection = ({form}) => {
-
-    const {errors} = React.useContext(HistoriaEditorContext)
-    const route = useRoute()
-
-    const [processing, setProcessing] = React.useState(false)
-
-    const handleSubmit = (values: z.infer<typeof PacienteFormSchema>) => {
-        console.log(values)
-
-        // router.post(route(''), Object.create(values))
-    }
-
-    return (
-        <Surface className={SectionStyle}>
-            <Title level={'title-lg'}>Datos Personales</Title>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className={'grid grid-cols-1 sm:grid-cols-3 gap-4'}>
-
-                    <div className={'col-span-1'}>
-                        <Field control={form.control} name={'cedula'} label={'Cédula'}/>
-                    </div>
-
-                    <div className={'hidden sm:block'}></div>
-                    <div className={'row-span-3 bg-amber-200'}></div>
-
-                    <Field control={form.control} name={'nombre'} label={'Nombre'}/>
-
-                    <Field control={form.control} name={'apellido'} label={'Apellido'}/>
-
-                    <div className={'grid grid-cols-2 gap-4'}>
-                        <Field control={form.control} name={'edad'} label={'Edad'} type={'number'}/>
-                        <Field control={form.control} name={'peso'} label={'Peso'} type={'number'}/>
-                    </div>
-
-                    <div className={'grid grid-cols-4 gap-4'}>
-                        <div className={'col-span-1'}>
-                            <Field control={form.control} name={'sexo'} label={'Sexo'}/>
-                        </div>
-                        <div className={'col-span-3'}>
-                            <DatePicker control={form.control} label={'Fecha de nacimiento'} name={'fecha_nacimiento'}/>
-                        </div>
-                    </div>
-
-                    <div className={'col-span-2'}>
-                        <Field control={form.control} name={'direccion'} label={'Dirección'}/>
-                    </div>
-
-                    <Field control={form.control} name={'telefono'} label={'Teléfono'} type={'tel'}
-                           placeholder={'Ejemplo: 0414-1234567'}/>
-
-
-                    <Field control={form.control} name={'ocupacion'} label={'Ocupación'}/>
-
-
-                    <div className={'hidden sm:block'}></div>
-                    <div className={'hidden sm:block'}></div>
-
-                    <div className={'w-full'}>
-                        <Button type={'submit'}>Guardar</Button>
-                    </div>
-                </form>
-            </Form>
-        </Surface>
-    )
-}
-
 type AntecedentesMedicosFamiliaresSectionProps = {
     form: ReturnType<typeof useForm<typeof z.infer<typeof AntFamiliaresFormSchema>>>
 }
 
 const AntecedentesMedicosFamiliaresSection = ({form}: AntecedentesMedicosFamiliaresSectionProps) => {
-    const {errors} = React.useContext(HistoriaEditorContext)
     const route = useRoute()
 
-    const handleSubmit = (values: z.infer<typeof PacienteFormSchema>) => {
+    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
         console.log(values)
 
         // router.post(route(''), Object.create(values))
@@ -345,15 +296,14 @@ const AntecedentesMedicosFamiliaresSection = ({form}: AntecedentesMedicosFamilia
 }
 
 type AntecedentesMedicosPersonalesSectionProps = {
-    form: ReturnType<typeof useForm<typeof z.infer<typeof AntPersonalesFormSchema>>>
+    form: ReturnType<typeof useForm<typeof z.infer<typeof AntPersonalesSchema>>>
 }
 
 const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersonalesSectionProps) => {
 
-    const {errors} = React.useContext(HistoriaEditorContext)
     const route = useRoute()
 
-    const handleSubmit = (values: z.infer<typeof PacienteFormSchema>) => {
+    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
         console.log(values)
 
         // router.post(route(''), Object.create(values))
@@ -512,10 +462,9 @@ type HistoriaOdontologicaSectionProps = {
 
 const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) => {
 
-    const {errors} = React.useContext(HistoriaEditorContext)
     const route = useRoute()
 
-    const handleSubmit = (values: z.infer<typeof PacienteFormSchema>) => {
+    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
         console.log(values)
 
         // router.post(route(''), Object.create(values))
@@ -801,7 +750,6 @@ type ExamenRadiograficoSectionProps = {
 
 const ExamenRadiograficoSection = ({form}: ExamenRadiograficoSectionProps) => {
 
-    const {errors} = React.useContext(HistoriaEditorContext)
     const route = useRoute()
 
     const handleSubmit = (values: z.infer<typeof ExamenRadiograficoSchema>) => {

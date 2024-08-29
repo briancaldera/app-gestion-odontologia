@@ -11,7 +11,7 @@ import {useRoute} from 'ziggy-js'
 import {Text} from "@/Components/atoms/Text.jsx";
 import Avatar from "@/Components/atoms/Avatar.jsx";
 import Modal from "@/Components/organisms/Modal.jsx";
-import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.jsx";
+import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.tsx";
 import {Button} from "@/Components/molecules/Button.jsx";
 import ErrorText from "@/Components/atoms/ErrorText.jsx";
 import Select from "@/Components/molecules/Select.jsx"

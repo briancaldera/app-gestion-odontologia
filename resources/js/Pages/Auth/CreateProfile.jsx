@@ -11,7 +11,7 @@ import Label from "@/Components/atoms/Label.jsx";
 import ErrorText from "@/Components/atoms/ErrorText.jsx";
 import {Text} from "@/Components/atoms/Text.jsx";
 import {OutlinedButton} from "@/Components/molecules/OutlinedButton.jsx";
-import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.jsx";
+import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.tsx";
 import Loader from "@/Components/atoms/Loader.jsx";
 import {useRoute} from "ziggy-js"
 

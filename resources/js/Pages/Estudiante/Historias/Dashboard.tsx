@@ -6,14 +6,27 @@ import React from "react";
 import { router } from '@inertiajs/react'
 import { useRoute } from 'ziggy-js'
 import HistoriaEditor from "@/Components/organisms/HistoriaEditor.tsx";
+import StatisticsCard from "@/Components/molecules/StatisticsCard";
+import {Car, Clipboard} from 'lucide-react'
+import { Card } from '@/shadcn/ui/card'
+import {RadialChartText} from "@/Components/molecules/charts/RadialChartText";
 
 const Dashboard = ({historias}) => {
 
     return (
         <AuthLayout title={'Historias'}>
-            <HistoriaEditor />
+            {/*<HistoriaEditor />*/}
+            <div className={'h-96 grid grid-cols-2 grid-rows-2 sm:grid-cols-4 gap-6 m-6'}>
+                <StatisticsCard title={'Historias creadas'} data={2} icon={<Clipboard/>} />
+                <StatisticsCard title={'Historias creadas'} data={2} icon={<Clipboard/>} />
+
+             <div className={'col-span-2 row-span-2'}>
+                 <RadialChartText title={'Historias'} description={'Status de historias'}/>
+             </div>
+
+            </div>
         </AuthLayout>
-    )
+)
 }
 
 const EmptySection = () => {
