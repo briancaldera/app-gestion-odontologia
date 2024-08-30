@@ -18,7 +18,7 @@ interface HistoriaService
     public function addHistoria(Paciente $paciente, User $autor): Historia;
     public function updateHistoria(Historia $historia, array $data): Historia;
     public function addAntFamiliares(Historia $historia, array $data): AntFamiliares;
-    public function updateAntFamiliares(AntFamiliares $antFamiliares, array $data): AntFamiliares;
+    public function updateAntFamiliares(Historia $historia, array $data): AntFamiliares;
     public function addAntPersonales(Historia $historia, array $data): AntPersonales;
     public function updateAntPersonales(AntPersonales $antPersonales, array $data): AntPersonales;
     public function addTrastornos(Historia $historia, array $data): Trastornos;

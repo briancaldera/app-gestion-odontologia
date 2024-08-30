@@ -84,9 +84,9 @@ class HistoriaServiceImpl implements HistoriaService
         return $historia->antFamiliares()->create($data);
     }
 
-    public function updateAntFamiliares(AntFamiliares $antFamiliares, array $data): AntFamiliares
+    public function updateAntFamiliares(Historia $historia, array $data): AntFamiliares
     {
-        $antFamiliares->updateOrFail($data);
+        $antFamiliares = $historia->antFamiliares()->updateOrCreate(['historia_id' => $historia->id] ,$data);
         return $antFamiliares;
     }
 

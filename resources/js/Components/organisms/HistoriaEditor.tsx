@@ -90,6 +90,8 @@ interface HistoriaEditorProps {
 
 const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
 
+    console.log(historia?.ant_familiares)
+
     const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
         resolver: zodResolver(HistoriaSchema),
         defaultValues: historia ?? HistoriaDefaults,
@@ -107,7 +109,7 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
 
     const antFamiliaresForm = useForm<z.infer<typeof AntFamiliaresSchema>>({
         resolver: zodResolver(AntFamiliaresSchema),
-        defaultValues: AntFamiliaresDefaults,
+        defaultValues: historia?.ant_familiares ?? Object.assign(AntFamiliaresDefaults, {historia_id: historia?.id}),
     })
 
     const historiaOdontologicaForm = useForm<z.infer<typeof HistoriaOdontologicaFormSchema>>({

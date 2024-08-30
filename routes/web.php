@@ -112,6 +112,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::post('/historias/store', [HistoriaController::class, 'store'])->name('historias.store')->can('create', Historia::class);
     Route::get('/historias/{historia}/editar', [HistoriaController::class, 'edit'])->name('historias.edit')->can('update', 'historia');
     Route::patch('/pacientes/{paciente}', [HistoriaController::class, 'updatePaciente'])->name('pacientes.update')->can('update', 'paciente');
+    Route::patch('/historias/{historia}/antfamiliares/update', [HistoriaController::class, 'updateAntFamiliares'])->name('historias.antfamiliares.update')->can('update', 'historia');
     Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show')->can('view', Historia::class);
 
     Route::middleware(['role:estudiante'])->group(function () {

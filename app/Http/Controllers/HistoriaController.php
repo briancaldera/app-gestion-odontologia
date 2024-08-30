@@ -95,12 +95,12 @@ class HistoriaController extends Controller
         return response(null, 201);
     }
 
-    public function updateAntFamiliares(UpdateAntFamiliaresRequest $request)
+    public function updateAntFamiliares(Historia $historia, UpdateAntFamiliaresRequest $request)
     {
         $data = $request->validated();
-        $antFamiliares = AntFamiliares::findOrFail($data['historia_id']);
-        $this->historiaService->updateAntFamiliares($antFamiliares, $data);
-        return response()->noContent();
+        $this->historiaService->updateAntFamiliares($historia, $data);
+        message('Antecedentes médicos familiares actualizados exitosamente 👍🏻', \Type::Success);
+        return response(null, 200);
     }
 
     public function storeAntPersonales(StoreAntPersonalesRequest $request, Historia $historia)
@@ -189,6 +189,7 @@ class HistoriaController extends Controller
 
             $historia->makeVisible(['paciente']);
             $historia->paciente;
+            $historia->antFamiliares;
 
             return Inertia::render('Estudiante/Historias/Edit', [
                 'historia' => $historia

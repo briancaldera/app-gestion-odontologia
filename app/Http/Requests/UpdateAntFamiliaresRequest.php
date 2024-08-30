@@ -24,7 +24,7 @@ class UpdateAntFamiliaresRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['required', 'uuid', 'exists:'.AntFamiliares::class],
+            'historia_id' => ['required', 'uuid', 'exists:'. Historia::class. ',id'],
             'madre' => ['sometimes', 'nullable', 'string', 'max:255'],
             'padre' => ['sometimes', 'nullable', 'string', 'max:255'],
             'hermanos' => ['sometimes', 'nullable', 'string', 'max:255'],

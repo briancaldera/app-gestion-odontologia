@@ -1,26 +1,43 @@
-import {useForm} from "react-hook-form";
+import {useForm, UseFormReturn} from "react-hook-form";
 import {z} from "zod";
-import AntFamiliaresFormSchema from "@/FormSchema/Historia/AntFamiliaresSchema";
 import {useRoute} from "ziggy-js";
-import PacienteSchema from "@/FormSchema/Historia/PacienteSchema";
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import {Text} from "@/Components/atoms/Text";
 import Textarea from "@/Components/atoms/Textarea";
 import React from "react";
+import AntFamiliaresSchema from "@/FormSchema/Historia/AntFamiliaresSchema";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
+import {Button} from "@/shadcn/ui/button";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 type AntFamiliaresSectionProps = {
-    form: ReturnType<typeof useForm<typeof z.infer<typeof AntFamiliaresFormSchema>>>
+    form: UseFormReturn<z.infer<typeof AntFamiliaresSchema>>
 }
 
 const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
     const route = useRoute()
 
-    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
-        console.log(values)
+    const { isProcessing, router } = useInertiaSubmit()
 
-        // router.post(route(''), Object.create(values))
+    const handleSubmit = (values: z.infer<typeof AntFamiliaresSchema>) => {
+
+        const endpoint = route('historias.antfamiliares.update', {
+            historia: form.getValues().historia_id
+        })
+
+        router.patch(endpoint, values, {
+            onError: errors => {
+                console.log(errors)
+                Object.keys(errors).forEach(key => form.setError(key, {type: 'custom', message: errors[key]}))
+            },
+            onSuccess: visit => {
+                console.log('OK')
+                form.reset(values)
+            }
+        })
     }
 
     return (
@@ -64,6 +81,9 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
 
                     </section>
 
+                    <div className={'flex justify-end mt-2'}>
+                        <Button disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
+                    </div>
                 </form>
             </Form>
         </Surface>
