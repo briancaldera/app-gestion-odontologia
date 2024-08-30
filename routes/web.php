@@ -113,6 +113,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/historias/{historia}/editar', [HistoriaController::class, 'edit'])->name('historias.edit')->can('update', 'historia');
     Route::patch('/pacientes/{paciente}', [HistoriaController::class, 'updatePaciente'])->name('pacientes.update')->can('update', 'paciente');
     Route::patch('/historias/{historia}/antfamiliares/update', [HistoriaController::class, 'updateAntFamiliares'])->name('historias.antfamiliares.update')->can('update', 'historia');
+    Route::patch('/historias/{historia}/antpersonales/update', [HistoriaController::class, 'updateAntPersonales'])->name('historias.antpersonales.update');
     Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show')->can('view', Historia::class);
 
     Route::middleware(['role:estudiante'])->group(function () {

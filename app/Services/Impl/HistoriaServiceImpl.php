@@ -96,9 +96,11 @@ class HistoriaServiceImpl implements HistoriaService
         return $historia->antPersonales()->create($data);
     }
 
-    public function updateAntPersonales(AntPersonales $antPersonales, array $data): AntPersonales
+    public function updateAntPersonales(Historia $historia, array $data): AntPersonales
     {
-        $antPersonales->updateOrFail($data);
+        $antPersonales = $historia->antPersonales()->updateOrCreate(['historia_id' => $historia->id], $data);
+        $trastornos_data = $data['trastornos'];
+        $trastornos = $historia->trastornos()->updateOrCreate(['historia_id' => $historia->id], $trastornos_data);
         return $antPersonales;
     }
 

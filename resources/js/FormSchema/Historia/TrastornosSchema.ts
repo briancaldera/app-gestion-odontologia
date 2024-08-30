@@ -19,7 +19,7 @@ const toTrastornoObject = (trastorno: string) => {
 }
 
 const TrastornoSchema = z.boolean()
-const OtrosTrastornosSchema = z.string().max(MAX_TEXT_SIZE)
+const OtrosTrastornosSchema = z.string().max(MAX_TEXT_SIZE).nullable()
 
 const TCardiovascularesSchema = z.object({
     disnea: TrastornoSchema,
@@ -157,7 +157,6 @@ const TInfectocontagiosaSchema = z.object({
 })
 
 const TrastornosSchema = z.object({
-    historia_id: z.string().nullish(),
     cardiovasculares: TCardiovascularesSchema,
     hematologicos: THematologicosSchema,
     respiratorios: TRespiratoriosSchema,
@@ -170,8 +169,7 @@ const TrastornosSchema = z.object({
     infectocontagiosa: TInfectocontagiosaSchema,
 })
 
-export const TrastornosDefaults: z.infer<typeof TrastornosSchema> = {
-    historia_id: null,
+export const TrastornosDefaults = {
     cardiovasculares: {
         angina_pecho: false,
         bradicardia: false,
@@ -298,6 +296,6 @@ export const TrastornosDefaults: z.infer<typeof TrastornosSchema> = {
         insuficiencia_renal: false,
         otros: ""
     }
-}
+} satisfies z.infer<typeof TrastornosSchema> as const
 
 export default TrastornosSchema

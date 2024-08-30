@@ -33,7 +33,7 @@ class Historia extends Model implements StatusHolder
     const HISTORIA_DIR = 'historias/';
 
     protected $attributes = [
-        'numero' => '',
+        'numero' => null,
         'motivo_consulta' => '',
         'enfermedad_actual' => '',
     ];

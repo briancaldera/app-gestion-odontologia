@@ -77,6 +77,8 @@ import {router} from "@inertiajs/react";
 import PacienteSection from "@/Components/organisms/historia/PacienteSection";
 import HistoriaSection from "@/Components/organisms/historia/HistoriaSection";
 import AntFamiliaresSection from "@/Components/organisms/historia/AntFamiliaresSection";
+import AntPersonalesSection from "@/Components/organisms/historia/AntPersonalesSection";
+import {TrastornosDefaults} from "@/FormSchema/Historia/TrastornosSchema";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -90,8 +92,6 @@ interface HistoriaEditorProps {
 
 const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
 
-    console.log(historia?.ant_familiares)
-
     const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
         resolver: zodResolver(HistoriaSchema),
         defaultValues: historia ?? HistoriaDefaults,
@@ -102,9 +102,15 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
         defaultValues: historia?.paciente ?? PacienteDefaults,
     })
 
+    const trastornos = historia?.trastornos!!
+
+    if (historia?.ant_personales) {
+        historia.ant_personales.trastornos = trastornos
+    }
+
     const antPersonalesForm = useForm<z.infer<typeof AntPersonalesSchema>>({
         resolver: zodResolver(AntPersonalesSchema),
-        defaultValues: AntPersonalesDefaults,
+        defaultValues: historia?.ant_personales ?? Object.assign(AntPersonalesDefaults, {historia_id: historia?.id}),
     })
 
     const antFamiliaresForm = useForm<z.infer<typeof AntFamiliaresSchema>>({
@@ -207,7 +213,7 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
                             <HistoriaSection form={historiaForm} historia_id={historia?.id ?? ''}/>
                         </TabsContent>
                         <TabsContent value="antPersonales" className={TabTriggerStyle}>
-                            <AntecedentesMedicosPersonalesSection form={antPersonalesForm}/>
+                            <AntPersonalesSection form={antPersonalesForm}/>
                         </TabsContent>
                         <TabsContent value="antFamiliares" className={TabTriggerStyle}>
                             <AntFamiliaresSection form={antFamiliaresForm}/>
@@ -235,167 +241,6 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
             </Tabs>
 
         </div>
-    )
-}
-
-type AntecedentesMedicosPersonalesSectionProps = {
-    form: ReturnType<typeof useForm<typeof z.infer<typeof AntPersonalesSchema>>>
-}
-
-const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersonalesSectionProps) => {
-
-    const route = useRoute()
-
-    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
-        console.log(values)
-
-        // router.post(route(''), Object.create(values))
-    }
-    return (
-
-        <Surface className={SectionStyle}>
-
-            <Title level={'title-lg'}>Antecedentes Médicos Personales</Title>
-
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
-
-                    <section className={'my-6'}>
-                        <header>
-                            <Title level={'title-md'}>Trastornos</Title>
-                        </header>
-
-                        <div
-                            className={'grid grid-cols-1 sm:grid-cols-2 gap-6 border rounded-2xl border-slate-300 p-3'}>
-                            {
-
-                                Object.entries(form.formState.defaultValues.trastornos).filter(([key, _]) => key !== 'historia_id').map(([key, value]: [string, object]) => (
-                                    <div id={key}
-                                         className={'grid grid-cols-2 gap-2 border rounded-lg p-6 content-start'}
-                                         key={key}>
-                                        <div className={'col-span-full capitalize'}>
-                                            <Label htmlFor={key}>{key}</Label>
-                                        </div>
-                                        {
-                                            Object.keys(value).filter(trastorno => trastorno !== 'otros').map(trastorno => {
-                                                return (
-                                                    <div key={trastorno}>
-                                                        <FormField render={({field}) => {
-                                                            return (
-                                                                <div key={trastorno}>
-                                                                    <FormItem className={'flex flex-col'}>
-                                                                        <div className={'flex items-center gap-2'}>
-                                                                            <FormControl>
-                                                                                <Checkbox id={field.name}
-                                                                                          checked={field.value}
-                                                                                          onCheckedChange={field.onChange}/>
-                                                                            </FormControl>
-                                                                            <FormLabel htmlFor={field.name}
-                                                                                       className={'capitalize'}>{trastorno.replace('_', ' ')}</FormLabel>
-                                                                        </div>
-                                                                        <FormMessage/>
-                                                                    </FormItem>
-                                                                </div>
-                                                            )
-                                                        }} name={`trastornos.${key}.${trastorno}`}
-                                                                   control={form.control}/>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                ))
-                            }
-                        </div>
-
-
-                    </section>
-
-                    <section className={'my-6'}>
-                        <header>
-                            <Title level={'title-md'}>Alergias</Title>
-                        </header>
-
-                        <div
-                            className={'grid sm:flex grid-cols-1 items-center gap-6 border rounded-2xl border-slate-300 p-3'}>
-                            {
-                                Object.keys(form.formState.defaultValues.alergias).filter(alergia => alergia !== 'descripcion').map(alergia => (
-                                    <div key={alergia}>
-                                        <FormField render={({field}) => (
-                                            <FormItem className={'flex gap-2 items-center'}>
-                                                <FormControl>
-                                                    <Checkbox id={field.name} checked={field.value}
-                                                              onCheckedChange={field.onChange}/>
-                                                </FormControl>
-                                                <Title level={'title-md'} className={'capitalize'}>{alergia}</Title>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )} name={`alergias.${alergia}`} control={form.control}/>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                        <div className={'mt-4'}>
-                            <FormField render={({field}) => (
-                                <FormItem>
-                                    <FormLabel htmlFor={field.name} className={'mb-1.5'}>Descripción</FormLabel>
-                                    <FormControl>
-                                        <Textarea id={field.name} {...field}/>
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )} name={'alergias.descripcion'} control={form.control}/>
-                        </div>
-                    </section>
-
-                    <hr/>
-
-                    <section className={'my-6'}>
-                        <header>
-                            <Title level={'title-md'}>Medicamentos que toma actualmente (mg y dosis diaria)</Title>
-                        </header>
-
-                        <div
-                            className={'col-span-full grid grid-cols-1 gap-4 sm:grid-cols-3 border rounded-2xl border-slate-300 p-3'}>
-                            {
-                                Object.keys(form.formState.defaultValues.medicamentos).filter(medicamento => medicamento !== 'otros').map(medicamento => (
-                                    <div key={medicamento}>
-                                        <div className={'flex gap-4 items-center'}>
-                                            <FormField render={({field}) =>
-                                                <FormItem className={'flex gap-4 items-center'}>
-                                                    <FormControl>
-                                                        <Checkbox id={field.name} checked={field.value}
-                                                                  onCheckedChange={field.onChange}/>
-                                                    </FormControl>
-                                                    <FormLabel htmlFor={field.name}
-                                                               className={'capitalize'}>{medicamento}</FormLabel>
-                                                </FormItem>
-                                            } name={`medicamentos.${medicamento}.positivo`}
-                                                       control={form.control}/>
-                                            <FormField render={({field}) =>
-                                                <FormItem className={'flex items-top gap-1'}>
-                                                    <FormControl>
-                                                        <Input id={field.name} {...field} type={'number'} step={'0.1'}
-                                                               className={'text-xl'}/>
-                                                    </FormControl>
-                                                    <FormMessage/>
-                                                    <FormLabel htmlFor={field.name}
-                                                               className={'font-light text-xs text-neutral-500 text-muted'}>mg</FormLabel>
-                                                </FormItem>
-                                            } name={`medicamentos.${medicamento}.dosis`}
-                                                       control={form.control}/>
-                                        </div>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </section>
-
-                    <Button type={"submit"}>Guardar</Button>
-
-                </form>
-            </Form>
-        </Surface>
     )
 }
 
