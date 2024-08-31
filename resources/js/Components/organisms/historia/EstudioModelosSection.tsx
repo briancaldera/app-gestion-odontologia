@@ -1,6 +1,6 @@
 import {z} from "zod"
 import {UseFormReturn} from 'react-hook-form'
-import HistoriaOdontologicaFormSchema from '@/FormSchema/Historia/HistoriaOdontologicaForm'
+import HistoriaOdontologicaSchema from '@/FormSchema/Historia/HistoriaOdontologicaSchema'
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
@@ -9,7 +9,7 @@ import {Checkbox} from "@/shadcn/ui/checkbox"
 
 
 interface EstudioModelosSectionProps {
-    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaFormSchema>>
+    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaSchema>>
 }
 
 const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {

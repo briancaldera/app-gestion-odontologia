@@ -1,6 +1,7 @@
 import Paciente from "@/src/models/Paciente";
 import AntFamiliares from '@/src/models/AntFamiliares'
 import AntPersonales, {Trastornos} from "@/src/models/AntPersonales";
+import HistoriaOdontologica from "@/src/models/HistoriaOdontologica";
 
 type Historia = {
     readonly id: string,
@@ -14,6 +15,7 @@ type Historia = {
     readonly ant_familiares?: AntFamiliares
     readonly ant_personales?: AntPersonales
     readonly trastornos?: Trastornos
+    readonly historia_odontologica?: HistoriaOdontologica
 }
 
 enum Status {

@@ -28,6 +28,17 @@ class HistoriaOdontologica extends Model
     protected $primaryKey = 'historia_id';
     public $incrementing = false;
 
+    protected $attributes = [
+        'ant_personales' => null,
+        'habitos' => '{}',
+        'portador' => '{}',
+        'examen_fisico' => '{}',
+        'estudio_modelos' => '{}',
+        'plan_tratamiento' => '{}',
+        'modificaciones_plan_tratamiento' => '{}',
+        'secuencia_tratamiento' => '{}',
+    ];
+
     protected $fillable = [
         'habitos',
         'portador',

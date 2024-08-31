@@ -18,7 +18,7 @@ import AntPersonalesSchema, {
 } from "@/FormSchema/Historia/AntPersonalesSchema";
 import AntFamiliaresSchema , {AntFamiliaresDefaults} from "@/FormSchema/Historia/AntFamiliaresSchema";
 import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema";
-import HistoriaOdontologicaFormSchema, {HistoriaOdontologica, TratamientoObject, Tratamiento, CAVIDAD_CLASES} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
+import HistoriaOdontologicaSchema, {HistoriaOdontologicaDefaults, TratamientoSchema, TratamientoDefaults, CAVIDAD_CLASES} from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
 import ExamenRadiograficoSchema, {ExamenRadiografico} from '@/FormSchema/Historia/ExamenRadiograficoForm'
 import Checkbox from "@/Components/atoms/Checkbox";
 import Input from "@/Components/atoms/Input";
@@ -78,7 +78,7 @@ import PacienteSection from "@/Components/organisms/historia/PacienteSection";
 import HistoriaSection from "@/Components/organisms/historia/HistoriaSection";
 import AntFamiliaresSection from "@/Components/organisms/historia/AntFamiliaresSection";
 import AntPersonalesSection from "@/Components/organisms/historia/AntPersonalesSection";
-import {TrastornosDefaults} from "@/FormSchema/Historia/TrastornosSchema";
+import HistoriaOdontologicaSection from "@/Components/organisms/historia/HistoriaOdontologicaSection";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -118,9 +118,9 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
         defaultValues: historia?.ant_familiares ?? Object.assign(AntFamiliaresDefaults, {historia_id: historia?.id}),
     })
 
-    const historiaOdontologicaForm = useForm<z.infer<typeof HistoriaOdontologicaFormSchema>>({
-        resolver: zodResolver(HistoriaOdontologicaFormSchema),
-        defaultValues: HistoriaOdontologica
+    const historiaOdontologicaForm = useForm<z.infer<typeof HistoriaOdontologicaSchema>>({
+        resolver: zodResolver(HistoriaOdontologicaSchema),
+        defaultValues: historia?.historia_odontologica ?? Object.assign(HistoriaOdontologicaDefaults, {historia_id: historia?.id})
     })
 
     const examenRadiograficoForm = useForm<z.infer<typeof ExamenRadiograficoSchema>>({
@@ -244,294 +244,6 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
     )
 }
 
-type HistoriaOdontologicaSectionProps = {
-    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaFormSchema>>
-}
-
-const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) => {
-
-    const route = useRoute()
-
-    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
-        console.log(values)
-
-        // router.post(route(''), Object.create(values))
-    }
-
-
-    return (
-
-        <Surface className={SectionStyle}>
-
-            <Title level={'title-lg'}>Historia Odontologica</Title>
-
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
-
-                    <section className={'my-6'}>
-                        <header className={'mb-1.5 mt-5 space-y-1'}>
-                            <Title level={'title-md'}>Antecedentes Odontologicos Personales</Title>
-                            <Text>Restauraciones, cirugías, prótesis, tratamientos periodontales, endodonticos,
-                                ortodonticos que ha recibido el paciente</Text>
-                        </header>
-
-                        <div>
-                            <FormField render={({field}) => {
-                                return (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Textarea id={field.name} className={'min-h-48'} {...field}/>
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )
-                            }} name={'ant_personales'} control={form.control}/>
-                        </div>
-
-                        <div className={'grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4'}>
-
-                            <section
-                                className={'col-span-full sm:col-span-1 border rounded-lg grid grid-cols-1 sm:grid-cols-2 gap-2 p-5 content-start'}>
-                                <div className={'col-span-full'}>
-                                    <Title>Portador</Title>
-                                    <Text level={'body-sm'}>Seleccione las opciones que apliquen al paciente</Text>
-                                </div>
-                                {
-                                    Object.keys(form.formState.defaultValues.portador).map(item => (
-                                        <div key={item} className={'col-span-full'}>
-                                            <FormField render={({field}) => (
-                                                <FormItem>
-                                                    <div className={'flex items-center gap-1'}>
-                                                        <FormControl>
-                                                            <Checkbox id={field.name} checked={field.value}
-                                                                      onCheckedChange={field.onChange}/>
-                                                        </FormControl>
-                                                        <FormLabel htmlFor={field.name}
-                                                                   className={'capitalize'}>{item}</FormLabel>
-                                                    </div>
-                                                    <FormMessage/>
-                                                </FormItem>
-                                            )} name={`portador.${item}`} control={form.control}/>
-                                        </div>
-                                    ))
-                                }
-                            </section>
-
-                            <section
-                                className={'col-span-full sm:col-span-2 border rounded-lg grid grid-cols-1 sm:grid-cols-2 gap-2 p-5 content-start'}>
-                                <div className={'col-span-full'}>
-                                    <Title>Hábitos</Title>
-                                    <Text level={'body-sm'}>Seleccione los hábitos que presenta el paciente</Text>
-                                </div>
-                                <div
-                                    className={'col-span-full grid grid-cols-1 gap-2 grid-flow-col-dense sm:grid-cols-4 sm:grid-rows-5'}>
-                                    {
-                                        Object.keys(form.formState.defaultValues.habitos).filter(habito => habito !== 'descripcion').sort().map(habito => {
-                                            return (
-                                                <div key={habito}>
-                                                    <FormField render={({field}) => (
-                                                        <FormItem>
-                                                            <div className={'flex gap-2'}>
-                                                                <FormControl>
-                                                                    <Checkbox id={field.name} checked={field.value}
-                                                                              onCheckedChange={field.onChange}/>
-                                                                </FormControl>
-                                                                <FormLabel htmlFor={field.name}
-                                                                           className={'capitalize'}>{habito.replace('_', ' ')}</FormLabel>
-                                                            </div>
-                                                            <FormMessage/>
-                                                        </FormItem>
-                                                    )} name={`habitos.${habito}`} control={form.control}/>
-                                                </div>
-                                            )
-                                        })
-                                    }
-
-                                </div>
-                                <div className={'col-span-full'}>
-                                    <FormField render={({field}) => (
-                                        <FormItem>
-                                            <div className={'mt-1'}>
-                                                <FormLabel htmlFor={field.name}>Descripción</FormLabel>
-                                                <Text level={'body-sm'}>En caso de presentar algún hábito explique desde
-                                                    cuándo y la frecuencia</Text>
-                                            </div>
-                                            <FormControl>
-                                                <Textarea id={field.name} {...field}/>
-                                            </FormControl>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={'habitos.descripcion'} control={form.control}/>
-                                </div>
-
-                            </section>
-
-                        </div>
-                    </section>
-
-                    <section className={'my-6 border rounded-lg p-5'}>
-                        <header className={'mb-1.5 space-y-1'}>
-                            <Title level={'title-md'}>Examen físico</Title>
-                        </header>
-
-                        <section>
-                            <header>
-                                <Title level={'title-sm'}>Signos vitales</Title>
-                            </header>
-
-                            <div className={'grid grid-cols-8 gap-2'}>
-                                <div className={'grid grid-cols-1'}>
-                                    <FormField render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel htmlFor={field.name}
-                                                       className={'capitalize'}>Diastole</FormLabel>
-                                            <div className={'flex items-baseline gap-2'}>
-                                                <FormControl>
-                                                    <Input id={field.name} {...field} type={'number'}/>
-                                                </FormControl>
-                                                <Text level={'body-md'} className={'font-bold '}>mmHg</Text>
-                                            </div>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={'examen_fisico.signos_vitales.tension_arterial.diastole'}
-                                               control={form.control}/>
-                                    <FormField render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel htmlFor={field.name} className={'capitalize'}>Sistole</FormLabel>
-                                            <div className={'flex items-baseline gap-2'}>
-                                                <FormControl>
-                                                    <Input id={field.name} {...field} type={'number'}/>
-                                                </FormControl>
-                                                <Text level={'body-md'} className={'font-bold '}>mmHg</Text>
-                                            </div>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={'examen_fisico.signos_vitales.tension_arterial.sistole'}
-                                               control={form.control}/>
-                                </div>
-
-                                <div className={'col-span-7 grid grid-cols-1 sm:grid-cols-4 gap-6'}>
-                                    <FormField render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel htmlFor={field.name} className={'capitalize'}>Pulso</FormLabel>
-                                            <div className={'flex gap-2 items-baseline'}>
-                                                <FormControl>
-                                                    <Input id={field.name}  {...field} type={'number'}/>
-                                                </FormControl>
-                                                <Tooltip>
-                                                    <Tooltip.Trigger onClick={(e) => e.preventDefault()}>
-                                                        <abbr>PPM</abbr>
-                                                    </Tooltip.Trigger>
-                                                    <Tooltip.Content>
-                                                        Pulsaciones por minuto
-                                                    </Tooltip.Content>
-                                                </Tooltip>
-                                            </div>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={'examen_fisico.signos_vitales.pulso'} control={form.control}/>
-
-                                    <FormField render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel htmlFor={field.name}
-                                                       className={'capitalize'}>Respiración</FormLabel>
-                                            <div className={'flex gap-2 items-baseline'}>
-                                                <FormControl>
-                                                    <Input id={field.name}  {...field} type={'number'}/>
-                                                </FormControl>
-                                                <Tooltip>
-                                                    <Tooltip.Trigger onClick={(e) => e.preventDefault()}>
-                                                        <abbr>RPM</abbr>
-                                                    </Tooltip.Trigger>
-                                                    <Tooltip.Content>
-                                                        Respiraciones por minuto
-                                                    </Tooltip.Content>
-                                                </Tooltip>
-                                            </div>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={'examen_fisico.signos_vitales.respiracion'} control={form.control}/>
-
-                                    <FormField render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel htmlFor={field.name}
-                                                       className={'capitalize'}>Temperatura</FormLabel>
-                                            <div className={'flex gap-2 items-baseline'}>
-                                                <FormControl>
-                                                    <Input id={field.name}  {...field} type={'number'} step={0.1}/>
-                                                </FormControl>
-                                                <Tooltip>
-                                                    <Tooltip.Trigger onClick={(e) => e.preventDefault()}>
-                                                        <em>C°</em>
-                                                    </Tooltip.Trigger>
-                                                    <Tooltip.Content>
-                                                        Grados Celsius
-                                                    </Tooltip.Content>
-                                                </Tooltip>
-                                            </div>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={'examen_fisico.signos_vitales.temperatura'} control={form.control}/>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section className={'mt-6'}>
-                            <header>
-                                <Title level={'title-md'}>Examen Extraoral</Title>
-                            </header>
-
-                            <div>
-                                {
-                                    Object.keys(form.formState.defaultValues.examen_fisico.examen_extraoral).map(char => (
-                                        <div key={char}>
-                                            <FormField render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel htmlFor={field.name}
-                                                               className={'capitalize'}>{char.replaceAll('_', ' ')}</FormLabel>
-                                                    <FormControl>
-                                                        <Textarea id={field.name} {...field}/>
-                                                    </FormControl>
-                                                    <FormMessage/>
-                                                </FormItem>
-                                            )} name={`examen_fisico.examen_extraoral.${char}`} control={form.control}/>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        </section>
-
-                        <section className={'mt-6'}>
-                            <header>
-                                <Title level={'title-md'}>Examen Intraoral</Title>
-                            </header>
-
-                            <div>
-                                {
-                                    Object.keys(form.formState.defaultValues.examen_fisico.examen_intraoral).map(char => (
-                                        <FormField key={char} render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel htmlFor={field.name}
-                                                           className={'capitalize'}>{char.replaceAll('_', ' ')}</FormLabel>
-                                                <FormControl>
-                                                    <Textarea id={field.name} {...field}/>
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )} name={`examen_fisico.examen_intraoral.${char}`} control={form.control}/>
-                                    ))
-                                }
-                            </div>
-                        </section>
-
-                    </section>
-
-                </form>
-            </Form>
-        </Surface>
-    );
-}
-
 type ExamenRadiograficoSectionProps = {
     form: UseFormReturn<z.infer<typeof ExamenRadiograficoSchema>>
 }
@@ -632,7 +344,7 @@ const ExamenRadiograficoSection = ({form}: ExamenRadiograficoSectionProps) => {
 
 const PlanTratamientoTableContext = React.createContext({onDeleteTratamiento: (index: number) => {console.log('nose')}})
 
-const columns: ColumnDef<z.infer<typeof TratamientoObject>>[] = [
+const columns: ColumnDef<z.infer<typeof TratamientoSchema>>[] = [
     {
         accessorKey: "diente",
         header: "Diente",
@@ -651,7 +363,7 @@ const columns: ColumnDef<z.infer<typeof TratamientoObject>>[] = [
     }
 ]
 
-const TratamientoMenu = ({row}: {row: Row<z.infer<typeof TratamientoObject>>}) => {
+const TratamientoMenu = ({row}: {row: Row<z.infer<typeof TratamientoSchema>>}) => {
     const context = React.useContext(PlanTratamientoTableContext)
 
     return (
@@ -681,12 +393,12 @@ const PlanTratamientoSection = ({form}: HistoriaOdontologicaSectionProps) => {
 
     const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
 
-    const tratamientoForm = useForm<z.infer<typeof TratamientoObject>>({
-        resolver: zodResolver(TratamientoObject),
-        defaultValues: Tratamiento
+    const tratamientoForm = useForm<z.infer<typeof TratamientoSchema>>({
+        resolver: zodResolver(TratamientoSchema),
+        defaultValues: TratamientoDefaults
     })
 
-    const onAddTratamiento = (values: z.infer<typeof TratamientoObject>) => {
+    const onAddTratamiento = (values: z.infer<typeof TratamientoSchema>) => {
         const oldData = form.getValues().plan_tratamiento
         form.setValue('plan_tratamiento', [...oldData, values], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true

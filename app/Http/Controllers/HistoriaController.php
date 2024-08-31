@@ -140,12 +140,12 @@ class HistoriaController extends Controller
         return response(null, 201);
     }
 
-    public function updateHistoriaOdontologica(UpdateHistoriaOdontologicaRequest $request)
+    public function updateHistoriaOdontologica(Historia $historia, UpdateHistoriaOdontologicaRequest $request)
     {
         $data = $request->validated();
-        $historiaOdon = HistoriaOdontologica::findOrFail($data['historia_id']);
-        $this->historiaService->updateHistoriaOdontologica($historiaOdon, $data);
-        return response()->noContent();
+        $this->historiaService->updateHistoriaOdontologica($historia, $data);
+        message('Historia odontológica actualizada exitosamente 👍🏻', \Type::Success);
+        return response(null, 200);
     }
 
 
@@ -192,6 +192,7 @@ class HistoriaController extends Controller
             $historia->antFamiliares;
             $historia->antPersonales;
             $historia->trastornos;
+            $historia->historiaOdontologica;
 
             return Inertia::render('Estudiante/Historias/Edit', [
                 'historia' => $historia

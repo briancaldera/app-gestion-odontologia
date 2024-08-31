@@ -120,9 +120,9 @@ class HistoriaServiceImpl implements HistoriaService
         return $historia->historiaOdontologica()->create($data);
     }
 
-    public function updateHistoriaOdontologica(HistoriaOdontologica $historiaOdon, array $data): HistoriaOdontologica
+    public function updateHistoriaOdontologica(Historia $historia, array $data): HistoriaOdontologica
     {
-        $historiaOdon->updateOrFail($data);
+        $historiaOdon = $historia->historiaOdontologica()->updateOrCreate(['historia_id' => $historia->id], $data);
         return $historiaOdon;
     }
 

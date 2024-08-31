@@ -1,7 +1,7 @@
-import HistoriaOdontologicaFormSchema, {
-    TratamientoRealizado,
-    TratamientoRealizadoObject
-} from "@/FormSchema/Historia/HistoriaOdontologicaForm";
+import HistoriaOdontologicaSchema, {
+    TratamientoRealizadoDefaults,
+    TratamientoRealizadoSchema
+} from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
 import {z} from 'zod'
 import {ColumnDef, createColumnHelper, Row} from "@tanstack/react-table";
 import {useForm, UseFormReturn} from "react-hook-form";
@@ -29,14 +29,14 @@ import {DataTable} from "@/Components/molecules/DataTable";
 import Surface from "@/Components/atoms/Surface";
 
 interface SecuenciaTratamientoSectionProps {
-    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaFormSchema>>
+    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaSchema>>
 }
 
 const SecuenciaPlanTratamientoTableContext = React.createContext({onDeleteModificacion: (index: number) => {}})
 
-const columnHelper = createColumnHelper<z.infer<typeof TratamientoRealizadoObject>>()
+const columnHelper = createColumnHelper<z.infer<typeof TratamientoRealizadoSchema>>()
 
-const columns: ColumnDef<z.infer<typeof TratamientoRealizadoObject>>[] = [
+const columns: ColumnDef<z.infer<typeof TratamientoRealizadoSchema>>[] = [
     columnHelper.accessor(originalRow => {
         const options: Intl.DateTimeFormatOptions = {
             year: 'numeric',
@@ -61,7 +61,7 @@ const columns: ColumnDef<z.infer<typeof TratamientoRealizadoObject>>[] = [
     }
 ]
 
-const TratamientoRealizadoMenu = ({row}: {row: Row<z.infer<typeof TratamientoRealizadoObject>>}) => {
+const TratamientoRealizadoMenu = ({row}: {row: Row<z.infer<typeof TratamientoRealizadoSchema>>}) => {
     const context = React.useContext(SecuenciaPlanTratamientoTableContext)
 
     return (
@@ -84,12 +84,12 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
 
     const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
 
-    const tratamientoForm = useForm<z.infer<typeof TratamientoRealizadoObject>>({
-        resolver: zodResolver(TratamientoRealizadoObject),
-        defaultValues: TratamientoRealizado
+    const tratamientoForm = useForm<z.infer<typeof TratamientoRealizadoSchema>>({
+        resolver: zodResolver(TratamientoRealizadoSchema),
+        defaultValues: TratamientoRealizadoDefaults
     })
 
-    const onAddTratamiento = (values: z.infer<typeof TratamientoRealizado>) => {
+    const onAddTratamiento = (values: z.infer<typeof TratamientoRealizadoDefaults>) => {
         const oldData = form.getValues().secuencia_tratamiento
         form.setValue('secuencia_tratamiento', [...oldData, values], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true

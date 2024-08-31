@@ -1,9 +1,9 @@
 import {useForm, UseFormReturn} from "react-hook-form";
 import {z} from 'zod'
-import HistoriaOdontologicaFormSchema, {
-    ModificacionPlanTratamiento,
-    ModificacionPlanTratamientoObject,
-} from '@/FormSchema/Historia/HistoriaOdontologicaForm'
+import HistoriaOdontologicaSchema, {
+    ModificacionPlanTratamientoDefaults,
+    ModificacionPlanTratamientoSchema,
+} from '@/FormSchema/Historia/HistoriaOdontologicaSchema'
 import Title from "@/Components/atoms/Title";
 import React from "react";
 import Surface from "@/Components/atoms/Surface";
@@ -29,12 +29,12 @@ import {
 } from "@/shadcn/ui/dropdown-menu";
 
 interface ModificacionesPlanTratamientoSectionProps {
-    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaFormSchema>>
+    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaSchema>>
 }
 
-const columnHelper = createColumnHelper<z.infer<typeof ModificacionPlanTratamiento>>()
+const columnHelper = createColumnHelper<z.infer<typeof ModificacionPlanTratamientoDefaults>>()
 
-const columns: ColumnDef<z.infer<typeof ModificacionPlanTratamiento>>[] = [
+const columns: ColumnDef<z.infer<typeof ModificacionPlanTratamientoDefaults>>[] = [
     {
         accessorKey: "fecha",
         header: "Fecha",
@@ -71,7 +71,7 @@ const columns: ColumnDef<z.infer<typeof ModificacionPlanTratamiento>>[] = [
     }
 ]
 
-const ModificacionPlanTratamientoMenu = ({row}: {row: Row<z.infer<typeof ModificacionPlanTratamientoObject>>}) => {
+const ModificacionPlanTratamientoMenu = ({row}: {row: Row<z.infer<typeof ModificacionPlanTratamientoSchema>>}) => {
     const context = React.useContext(ModificacionesPlanTratamientoTableContext)
 
     return (
@@ -96,12 +96,12 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
 
     const [openAddModificacionPopover, setOpenAddModificacionPopover] = React.useState<boolean>(false)
 
-    const modificacionForm = useForm<z.infer<typeof ModificacionPlanTratamientoObject>>({
-        resolver: zodResolver(ModificacionPlanTratamientoObject),
-        defaultValues: ModificacionPlanTratamiento
+    const modificacionForm = useForm<z.infer<typeof ModificacionPlanTratamientoSchema>>({
+        resolver: zodResolver(ModificacionPlanTratamientoSchema),
+        defaultValues: ModificacionPlanTratamientoDefaults
     })
 
-    const onAddModificacion = (values: z.infer<typeof ModificacionPlanTratamientoObject>) => {
+    const onAddModificacion = (values: z.infer<typeof ModificacionPlanTratamientoSchema>) => {
         const oldData = form.getValues().modificaciones_plan_tratamiento
         form.setValue('modificaciones_plan_tratamiento', [...oldData, values], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true

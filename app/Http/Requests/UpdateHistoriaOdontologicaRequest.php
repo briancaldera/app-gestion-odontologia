@@ -24,18 +24,18 @@ class UpdateHistoriaOdontologicaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['sometimes', 'required', 'uuid', 'exists:' . Historia::class . ',id', 'unique:' . HistoriaOdontologica::class],
-            'ant_personales' => ['sometimes', 'present', 'string', 'max:255'],
+            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
+            'ant_personales' => ['sometimes', 'nullable', 'string', 'max:255'],
 
             'portador' => ['required', 'array:ortodoncia,protesis'],
             'portador.*' => ['required', 'boolean'],
 
-            'habitos' => ['sometimes', 'required', 'json', 'array'],
+            'habitos' => ['sometimes', 'required', 'array'],
             'habitos.*' => ['sometimes', 'boolean'],
-            'habitos.descripcion' => ['sometimes', 'string'],
+            'habitos.descripcion' => ['sometimes', 'nullable', 'string'],
 
 
-            'examen_fisico' => ['sometimes', 'required', 'json', 'array'],
+            'examen_fisico' => ['sometimes', 'required', 'array'],
             'examen_fisico.signos_vitales' => ['sometimes', 'required', 'array'],
             'examen_fisico.signos_vitales.tension_arterial' => ['sometimes', 'required', 'array:sistole,diastole'],
             'examen_fisico.signos_vitales.tension_arterial.sistole' => ['sometimes', 'required', 'integer'],
@@ -44,9 +44,9 @@ class UpdateHistoriaOdontologicaRequest extends FormRequest
             'examen_fisico.signos_vitales.respiracion' => ['sometimes', 'required', 'integer'],
             'examen_fisico.signos_vitales.temperatura' => ['sometimes', 'required', 'numeric'],
             'examen_fisico.examen_extraoral' => ['sometimes', 'required', 'array'],
-            'examen_fisico.examen_extraoral.*' => ['sometimes', 'string'], // Validate each value in examen_extraoral to be string
+            'examen_fisico.examen_extraoral.*' => ['sometimes', 'nullable', 'string'], // Validate each value in examen_extraoral to be string
             'examen_fisico.examen_intraoral' => ['sometimes', 'required', 'array'],
-            'examen_fisico.examen_intraoral.*' => ['sometimes', 'string'], // Validate each value in examen_intraoral to be string
+            'examen_fisico.examen_intraoral.*' => ['sometimes', 'nullable', 'string'], // Validate each value in examen_intraoral to be string
         ];
     }
 }
