@@ -1,7 +1,3 @@
-import HistoriaOdontologicaSchema, {
-    TratamientoRealizadoDefaults,
-    TratamientoRealizadoSchema
-} from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
 import {z} from 'zod'
 import {ColumnDef, createColumnHelper, Row} from "@tanstack/react-table";
 import {useForm, UseFormReturn} from "react-hook-form";
@@ -27,62 +23,18 @@ import Textarea from "@/Components/atoms/Textarea";
 import {OutlinedButton} from "@/Components/molecules/OutlinedButton";
 import {DataTable} from "@/Components/molecules/DataTable";
 import Surface from "@/Components/atoms/Surface";
+import SecuenciaTratamientoSchema, {TratamientoRealizadoSchema, TratamientoRealizadoDefaults} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
+import {formatDate} from 'date-fns'
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 
 interface SecuenciaTratamientoSectionProps {
-    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaSchema>>
-}
-
-const SecuenciaPlanTratamientoTableContext = React.createContext({onDeleteModificacion: (index: number) => {}})
-
-const columnHelper = createColumnHelper<z.infer<typeof TratamientoRealizadoSchema>>()
-
-const columns: ColumnDef<z.infer<typeof TratamientoRealizadoSchema>>[] = [
-    columnHelper.accessor(originalRow => {
-        const options: Intl.DateTimeFormatOptions = {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            weekday: 'short',
-        }
-
-        return new Intl.DateTimeFormat('es-VE', options).format(originalRow.fecha)
-    }, {
-        header: 'Fecha'
-    }),
-    columnHelper.accessor(originalRow => originalRow.diente, {
-        header: 'Diente'
-    }),
-    columnHelper.accessor(originalRow => originalRow.tratamiento, {
-        header: 'Tratamientos Realizado'
-    }),
-    {
-        id: 'actions',
-        cell: ({row}) => <TratamientoRealizadoMenu row={row}/>
-    }
-]
-
-const TratamientoRealizadoMenu = ({row}: {row: Row<z.infer<typeof TratamientoRealizadoSchema>>}) => {
-    const context = React.useContext(SecuenciaPlanTratamientoTableContext)
-
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Abrir menú de tratamiento</span>
-                    <MoreHorizontal className="size-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-                <DropdownMenuItem className={'text-rose-600'} onClick={() => context.onDeleteModificacion(row.index)}><Trash2 className={'size-4 me-1'}/>Eliminar modificación</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
+    form: UseFormReturn<z.infer<typeof SecuenciaTratamientoSchema>>
 }
 
 const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) => {
 
     const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
+    const {isProcessing, router} = useInertiaSubmit()
 
     const tratamientoForm = useForm<z.infer<typeof TratamientoRealizadoSchema>>({
         resolver: zodResolver(TratamientoRealizadoSchema),
@@ -104,6 +56,10 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
         form.setValue('secuencia_tratamiento', [...newData], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true
         })
+    }
+
+    const onSubmitSecuencia = (values: z.infer<typeof SecuenciaTratamientoSchema>) => {
+        console.log(values)
     }
 
     return (
@@ -176,18 +132,64 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
 
                 <SecuenciaPlanTratamientoTableContext.Provider value={{onDeleteModificacion: onDeleteModificacion}}>
                     <Form {...form}>
-                        <form>
+                        <form onSubmit={form.handleSubmit(onSubmitSecuencia)}>
                             <FormField render={({field}) => (
                                 <FormItem>
                                     <DataTable columns={columns} data={field.value}/>
                                 </FormItem>
                             )} name={'secuencia_tratamiento'} control={form.control}/>
+
+                            <div className={'flex justify-end'}>
+                                <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
+                            </div>
                         </form>
                     </Form>
                 </SecuenciaPlanTratamientoTableContext.Provider>
 
             </section>
         </Surface>
+    )
+}
+
+const SecuenciaPlanTratamientoTableContext = React.createContext<{onDeleteModificacion: (index: number) => void}>({onDeleteModificacion: (_index: number) => {}})
+
+const columnHelper = createColumnHelper<z.infer<typeof TratamientoRealizadoSchema>>()
+
+const columns: ColumnDef<z.infer<typeof TratamientoRealizadoSchema>>[] = [
+    columnHelper.accessor(originalRow => formatDate(originalRow.fecha, 'eee, PP'), {
+        id: 'fecha',
+        header: 'Fecha'
+    }),
+    columnHelper.accessor(originalRow => originalRow.diente, {
+        id: 'diente',
+        header: 'Diente'
+    }),
+    columnHelper.accessor(originalRow => originalRow.tratamiento, {
+        id: 'tratamiento',
+        header: 'Tratamientos Realizado'
+    }),
+    columnHelper.display({
+        id: 'actions',
+        cell: ({row}) => <TratamientoRealizadoMenu row={row}/>
+    }),
+]
+
+const TratamientoRealizadoMenu = ({row}: {row: Row<z.infer<typeof TratamientoRealizadoSchema>>}) => {
+    const context = React.useContext(SecuenciaPlanTratamientoTableContext)
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Abrir menú de tratamiento</span>
+                    <MoreHorizontal className="size-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                <DropdownMenuItem className={'text-rose-600'} onClick={() => context.onDeleteModificacion(row.index)}><Trash2 className={'size-4 me-1'}/>Eliminar modificación</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }
 

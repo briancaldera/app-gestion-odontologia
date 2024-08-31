@@ -15,12 +15,13 @@ import {
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+    data: TData[],
+    searchable?: boolean
 }
 
 export function DataTable<TData, TValue>({
                                              columns,
-                                             data,
+                                             data, searchable = false
                                          }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -51,32 +52,37 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-            <div className="flex items-center py-4 gap-2">
-                <Input
-                    placeholder="Buscar por"
-                    value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn(filter)?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
+            {
+                (searchable) && (
+                    <div className="flex items-center py-4 gap-2">
+                        <Input
+                            placeholder="Buscar por"
+                            value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
+                            onChange={(event) =>
+                                table.getColumn(filter)?.setFilterValue(event.target.value)
+                            }
+                            className="max-w-sm"
+                        />
 
-                <Select onValueChange={onFilterChange} defaultValue={columns[0].id}>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Por defecto" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {
-                            columns.filter(col => col.id !== 'actions').filter(col => col.id !== '').map((column) => {
+                        <Select onValueChange={onFilterChange} defaultValue={columns[0].id}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Por defecto"/>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {
+                                    columns.every(col => 'id' in col) && columns.filter(col => col.id !== 'actions').filter(col => col.id !== '').map((column) => {
 
-                                return (
-                                    <SelectItem key={column.id} value={column.id}>{column.meta?.title ?? ''}</SelectItem>
-                                )
-                            })
-                        }
-                    </SelectContent>
-                </Select>
-            </div>
+                                        return (
+                                            <SelectItem key={column.id}
+                                                        value={column.id}>{column.meta?.title ?? column.id}</SelectItem>
+                                        )
+                                    })
+                                }
+                            </SelectContent>
+                        </Select>
+                    </div>
+                )
+            }
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
@@ -114,7 +120,7 @@ export function DataTable<TData, TValue>({
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
+                                    Sin resultados.
                                 </TableCell>
                             </TableRow>
                         )}

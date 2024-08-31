@@ -1,9 +1,5 @@
 import {useForm, UseFormReturn} from "react-hook-form";
 import {z} from 'zod'
-import HistoriaOdontologicaSchema, {
-    ModificacionPlanTratamientoDefaults,
-    ModificacionPlanTratamientoSchema,
-} from '@/FormSchema/Historia/HistoriaOdontologicaSchema'
 import Title from "@/Components/atoms/Title";
 import React from "react";
 import Surface from "@/Components/atoms/Surface";
@@ -27,73 +23,20 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
+import ModificacionesPlanTratamientoSchema, {
+    ModificacionPlanTratamientoDefaults,
+    ModificacionPlanTratamientoSchema
+} from "@/FormSchema/Historia/ModificacionesPlanTratamientoSchema";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
+import {formatDate} from 'date-fns'
 
 interface ModificacionesPlanTratamientoSectionProps {
-    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaSchema>>
+    form: UseFormReturn<z.infer<typeof ModificacionesPlanTratamientoSchema>>
 }
-
-const columnHelper = createColumnHelper<z.infer<typeof ModificacionPlanTratamientoDefaults>>()
-
-const columns: ColumnDef<z.infer<typeof ModificacionPlanTratamientoDefaults>>[] = [
-    {
-        accessorKey: "fecha",
-        header: "Fecha",
-        enableResizing: false,
-        cell: ({row}) => {
-
-            const options: Intl.DateTimeFormatOptions = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                weekday: 'short',
-            }
-
-            const dateFormatted = new Intl.DateTimeFormat('es-VE', options).format(row.getValue('fecha'))
-            return dateFormatted
-        }
-    },
-    {
-        accessorKey: "diente",
-        header: "Diente",
-        cell: ({ row }) => {
-
-            return <div className="text-right">{row.getValue('diente')}</div>
-        },
-
-    },
-    {
-        accessorKey: "tratamiento",
-        header: "Tratamiento",
-    },
-    {
-        id: 'actions',
-        cell: ({row}) => <ModificacionPlanTratamientoMenu row={row}/>
-    }
-]
-
-const ModificacionPlanTratamientoMenu = ({row}: {row: Row<z.infer<typeof ModificacionPlanTratamientoSchema>>}) => {
-    const context = React.useContext(ModificacionesPlanTratamientoTableContext)
-
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Abrir menú de tratamiento</span>
-                    <MoreHorizontal className="size-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-                <DropdownMenuItem className={'text-rose-600'} onClick={() => context.onDeleteModificacion(row.index)}><Trash2 className={'size-4 me-1'}/>Eliminar modificación</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
-}
-
-const ModificacionesPlanTratamientoTableContext = React.createContext({onDeleteModificacion: (index: number) => {}})
 
 const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamientoSectionProps) => {
 
+    const {isProcessing, router} = useInertiaSubmit()
     const [openAddModificacionPopover, setOpenAddModificacionPopover] = React.useState<boolean>(false)
 
     const modificacionForm = useForm<z.infer<typeof ModificacionPlanTratamientoSchema>>({
@@ -118,9 +61,13 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
         })
     }
 
+    const onSubmitModificaciones = (values: z.infer<typeof ModificacionesPlanTratamientoSchema>) => {
+        console.log(values)
+    }
+
     return (
         <Surface className={'w-full px-6 min-h-screen'}>
-            <Title level={'title-lg'}>Plan de Tratamiento</Title>
+            <Title level={'title-lg'}>Modificaciones del Plan de Tratamiento</Title>
 
             <section className={'my-6 relative'}>
                 <header>
@@ -188,18 +135,66 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
 
                 <ModificacionesPlanTratamientoTableContext.Provider value={{onDeleteModificacion: onDeleteModificacion}}>
                     <Form {...form}>
-                        <form>
+                        <form onSubmit={form.handleSubmit(onSubmitModificaciones)}>
                             <FormField render={({field}) => (
                                 <FormItem>
                                     <DataTable columns={columns} data={field.value}/>
                                 </FormItem>
                             )} name={'modificaciones_plan_tratamiento'} control={form.control}/>
+                            <div className={'flex justify-end'}>
+                                <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
+                            </div>
                         </form>
                     </Form>
                 </ModificacionesPlanTratamientoTableContext.Provider>
 
             </section>
         </Surface>
+    )
+}
+
+const ModificacionesPlanTratamientoTableContext = React.createContext<{onDeleteModificacion: (number) => void }>({onDeleteModificacion: (_index: number) => {}})
+
+const columnHelper = createColumnHelper<z.infer<typeof ModificacionPlanTratamientoSchema>>()
+
+const columns: ColumnDef<z.infer<typeof ModificacionPlanTratamientoSchema>>[] = [
+    columnHelper.accessor(originalRow => formatDate(originalRow.fecha, 'eee, PP'), {
+        id: 'fecha',
+        header: _props => 'Fecha',
+    }),
+    columnHelper.accessor(originalRow => originalRow.diente, {
+        id: 'diente',
+        header: 'Diente',
+        cell: props => {
+            return <div className="text-right">{props.row.original.diente}</div>
+        }
+    }),
+    columnHelper.accessor(originalRow => originalRow.tratamiento, {
+        id: 'tratamiento',
+        header: 'Tratamiento modificado'
+    }),
+    columnHelper.display({
+        id: 'actions',
+        cell: ({row}) => <ModificacionPlanTratamientoMenu row={row}/>
+    }),
+]
+
+const ModificacionPlanTratamientoMenu = ({row}: {row: Row<z.infer<typeof ModificacionPlanTratamientoSchema>>}) => {
+    const context = React.useContext(ModificacionesPlanTratamientoTableContext)
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Abrir menú de tratamiento</span>
+                    <MoreHorizontal className="size-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                <DropdownMenuItem className={'text-rose-600'} onClick={() => context.onDeleteModificacion(row.index)}><Trash2 className={'size-4 me-1'}/>Eliminar modificación</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }
 

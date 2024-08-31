@@ -142,57 +142,17 @@ const EstudioModelosSchema = z.object({
     pronostico: PronosticoSchema,
 })
 
-export const CAVIDAD_CLASES = ['I', 'II', 'III', 'IV', 'V'] as const
-
-export const TratamientoSchema = z.object({
-    diente: z.coerce.number({required_error: 'Número de diente requerido', invalid_type_error: 'Campo debe ser numérico'}).int({message: 'No se admiten decimales'}).min(18, { message: 'Valor mínimo es 18'}).max(48, { message: 'Valor máximo es 48'}),
-    cavidad: z.enum(CAVIDAD_CLASES, {required_error: 'Campo requerido', invalid_type_error: 'Campo debe ser un letra', message: `Campo debe ser un valor entre ${CAVIDAD_CLASES}`}),
-    tratamiento: z.string().max(MAX_TEXT_LENGTH).nullable(),
-})
-
-export const TratamientoDefaults = {
-    cavidad: '', diente: 0, tratamiento: ""
-} satisfies z.infer<typeof TratamientoSchema> as const
-
-export const ModificacionPlanTratamientoSchema = z.object({
-    fecha: z.coerce.date(),
-    diente: z.coerce.number().int().min(18).max(48),
-    tratamiento: z.string().max(MAX_TEXT_LENGTH).nullable(),
-})
-
-export const ModificacionPlanTratamientoDefaults = {
-    fecha: new Date(), diente: 0, tratamiento: ""
-} satisfies z.infer<typeof ModificacionPlanTratamientoSchema> as const
-
-export const TratamientoRealizadoSchema = z.object({
-    fecha: z.coerce.date(),
-    diente: z.coerce.number().int().min(18).max(48),
-    tratamiento: z.string().max(MAX_TEXT_LENGTH).nullable(),
-})
-
-export const TratamientoRealizadoDefaults = {
-    fecha: new Date(), diente: 0, tratamiento: ""
-} satisfies z.infer<typeof TratamientoRealizadoSchema> as const
-
-const PlanTratamientoSchema = z.array(TratamientoSchema)
-
-const ModificacionesPlanTratamientoSchema = z.array(ModificacionPlanTratamientoSchema)
-
-const SecuenciaTratamientoSchema = z.array(ModificacionPlanTratamientoSchema)
-
 const HistoriaOdontologicaSchema = z.object({
     historia_id: z.string().nullish(),
     ant_personales: AntOdontologicosPersonalesSchema,
     portador: PortadorSchema,
     habitos: HabitosSchema,
     examen_fisico: ExamenFisicoSchema,
-    // estudio_modelos: EstudioModelosSchema,
-    // plan_tratamiento: PlanTratamientoSchema,
-    // modificaciones_plan_tratamiento: ModificacionesPlanTratamientoSchema,
-    // secuencia_tratamiento: SecuenciaTratamientoSchema
+    estudio_modelos: EstudioModelosSchema,
 })
 
 export const HistoriaOdontologicaDefaults = {
+    historia_id: null,
     ant_personales: "",
     portador: {
         ortodoncia: false,
@@ -285,10 +245,7 @@ export const HistoriaOdontologicaDefaults = {
         queilofagia: false,
         respirador_bucal: false,
         succion_digital: false
-    },
-    modificaciones_plan_tratamiento: [],
-    plan_tratamiento: [],
-    secuencia_tratamiento: []
+    }
 } satisfies z.infer<typeof HistoriaOdontologicaSchema> as const
 
 export default HistoriaOdontologicaSchema
