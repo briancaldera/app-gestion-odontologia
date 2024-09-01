@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Historia;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSecuenciaTratamiento extends FormRequest
@@ -22,14 +23,15 @@ class UpdateSecuenciaTratamiento extends FormRequest
     public function rules(): array
     {
         return [
+            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
+
             'secuencia_tratamiento' => ['sometimes', 'required', 'array'],
-            'secuencia_tratamiento.secuencia' => ['sometimes', 'array'],
-            'secuencia_tratamiento.secuencia.*' => ['sometimes', 'array:fecha,diente,tratamiento,nombre_docente,aprobacion_docente'],
-            'secuencia_tratamiento.secuencia.*.fecha' => ['sometimes', 'required', 'date'],
-            'secuencia_tratamiento.secuencia.*.diente' => ['sometimes', 'required', 'integer', 'between:18,48'],
-            'secuencia_tratamiento.secuencia.*.tratamiento' => ['sometimes', 'required', 'string', 'max:255'],
-            'secuencia_tratamiento.secuencia.*.nombre_docente' => ['sometimes', 'required', 'string', 'max:255'],
-            'secuencia_tratamiento.secuencia.*.aprobacion_docente' => ['sometimes', 'required', 'boolean'],
+            'secuencia_tratamiento.*' => ['sometimes', 'array:fecha,diente,tratamiento'],
+            'secuencia_tratamiento.*.fecha' => ['sometimes', 'required', 'date'],
+            'secuencia_tratamiento.*.diente' => ['sometimes', 'required', 'integer', 'between:18,48'],
+            'secuencia_tratamiento.*.tratamiento' => ['sometimes', 'required', 'string', 'max:255'],
+//            'secuencia_tratamiento.secuencia.*.nombre_docente' => ['sometimes', 'required', 'string', 'max:255'],
+//            'secuencia_tratamiento.secuencia.*.aprobacion_docente' => ['sometimes', 'required', 'boolean'],
         ];
     }
 }

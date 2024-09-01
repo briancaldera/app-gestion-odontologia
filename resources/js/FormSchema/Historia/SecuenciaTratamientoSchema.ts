@@ -13,10 +13,12 @@ const TratamientoRealizadoDefaults = {
 } satisfies z.infer<typeof TratamientoRealizadoSchema>
 
 const SecuenciaTratamientoSchema = z.object({
+    historia_id: z.string().nullish(),
     secuencia_tratamiento: z.array(TratamientoRealizadoSchema)
 })
 
 const SecuenciaTratamientoDefaults = {
+    historia_id: null,
     secuencia_tratamiento: []
 } satisfies z.infer<typeof SecuenciaTratamientoSchema> as const
 

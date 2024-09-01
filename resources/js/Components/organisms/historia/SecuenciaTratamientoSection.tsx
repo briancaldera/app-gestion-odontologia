@@ -26,6 +26,7 @@ import Surface from "@/Components/atoms/Surface";
 import SecuenciaTratamientoSchema, {TratamientoRealizadoSchema, TratamientoRealizadoDefaults} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
 import {formatDate} from 'date-fns'
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
+import {route} from "ziggy-js";
 
 interface SecuenciaTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof SecuenciaTratamientoSchema>>
@@ -59,7 +60,20 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
     }
 
     const onSubmitSecuencia = (values: z.infer<typeof SecuenciaTratamientoSchema>) => {
-        console.log(values)
+
+        const endpoint: string = route('historias.odontologica.secuenciatratamiento.update', {
+            historia: values.historia_id
+        })
+
+        router.patch(endpoint, values, {
+            onError: errors => {
+                // TODO Show errors
+                console.log(errors)
+            },
+            onSuccess: page => {
+                form.reset(values)
+            }
+        })
     }
 
     return (

@@ -142,6 +142,15 @@ class HistoriaServiceImpl implements HistoriaService
         ]);
     }
 
+    public function updateSecuenciaTratamiento(Historia $historia, array $data): void
+    {
+        $secuencia = $data['secuencia_tratamiento'];
+        $historia_odon = $historia->historiaOdontologica()->updateOrCreate(['historia_id' => $historia->id], [
+            'secuencia_tratamiento' => $secuencia
+        ]);
+    }
+
+
     public function addExamenRadiografico(HistoriaOdontologica $historiaOdon, array $data): ExamenRadiografico
     {
         return $historiaOdon->examenRadiografico()->create($data);

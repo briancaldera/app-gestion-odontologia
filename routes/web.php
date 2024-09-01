@@ -117,6 +117,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::patch('/historias/{historia}/odontologica/update', [HistoriaController::class, 'updateHistoriaOdontologica'])->name('historias.odontologica.update')->can('update', 'historia');
     Route::patch('/historias/{historia}/odontologica/plan/update', [HistoriaController::class, 'updatePlanTratamiento'])->name('historias.odontologica.plantratamiento.update')->can('update', 'historia');
     Route::patch('/historias/{historia}/odontologica/modificaciones/update', [HistoriaController::class, 'updateModificacionesPlanTratamiento'])->name('historias.odontologica.modificacionestratamiento.update')->can('update', 'historia');
+    Route::patch('/historias/{historia}/odontologica/secuencia/update', [HistoriaController::class, 'updateSecuenciaTratamiento'])->name('historias.odontologica.secuenciatratamiento.update')->can('update', 'historia');
 
     Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show')->can('view', Historia::class);
 

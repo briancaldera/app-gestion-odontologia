@@ -27,6 +27,7 @@ interface HistoriaService
     public function updateHistoriaOdontologica(Historia $historia, array $data): HistoriaOdontologica;
     public function updatePlanTratamiento(Historia $historia, array $data): void;
     public function updateModificacionesPlanTratamiento(Historia $historia, array $data): void;
+    public function updateSecuenciaTratamiento(Historia $historia, array $data): void;
     public function addExamenRadiografico(HistoriaOdontologica $historiaOdon, array $data): ExamenRadiografico;
     public function updateExamenRadiografico(ExamenRadiografico $examenRadio, array $data): ExamenRadiografico;
 }

@@ -104,9 +104,14 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
         defaultValues: modificacionesDefaults
     })
 
+    const secuenciaDefaults = (historia.historia_odontologica?.secuencia_tratamiento) ? {
+        secuencia_tratamiento: historia.historia_odontologica?.secuencia_tratamiento ?? [],
+        historia_id: historia.id
+    } satisfies z.infer<typeof SecuenciaTratamientoSchema> : Object.assign(SecuenciaTratamientoDefaults, {historia_id: historia.id}) satisfies z.infer<typeof SecuenciaTratamientoSchema>
+
     const secuenciaTratamientoForm = useForm<z.infer<typeof SecuenciaTratamientoSchema>>({
         resolver: zodResolver(SecuenciaTratamientoSchema),
-        defaultValues: SecuenciaTratamientoDefaults
+        defaultValues: secuenciaDefaults
     })
 
     const examenRadiograficoForm = useForm<z.infer<typeof ExamenRadiograficoSchema>>({
