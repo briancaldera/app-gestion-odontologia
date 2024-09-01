@@ -29,6 +29,7 @@ import ModificacionesPlanTratamientoSchema, {
 } from "@/FormSchema/Historia/ModificacionesPlanTratamientoSchema";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {formatDate} from 'date-fns'
+import {route} from "ziggy-js";
 
 interface ModificacionesPlanTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof ModificacionesPlanTratamientoSchema>>
@@ -63,6 +64,22 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
 
     const onSubmitModificaciones = (values: z.infer<typeof ModificacionesPlanTratamientoSchema>) => {
         console.log(values)
+
+        console.log(values.historia_id)
+        const endpoint = route('historias.odontologica.modificacionestratamiento.update', {
+            historia: values.historia_id
+        })
+
+        router.patch(endpoint, values, {
+            onError: errors => {
+                console.log(errors)
+                // TODO Show errors somewhere in the table
+            },
+            onSuccess: page => {
+                form.reset(values)
+            }
+        })
+
     }
 
     return (

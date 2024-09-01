@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Historia;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateModificacionesPlanTratamiento extends FormRequest
@@ -22,16 +23,17 @@ class UpdateModificacionesPlanTratamiento extends FormRequest
     public function rules(): array
     {
         return [
+            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
+
             'modificaciones_plan_tratamiento' => ['sometimes', 'required', 'array'],
-            'modificaciones_plan_tratamiento.modificaciones' => ['sometimes', 'array'],
-            'modificaciones_plan_tratamiento.modificaciones.*' => ['sometimes', 'array:fecha,diente,tratamiento,nombre_docente,aprobacion_docente'],
-            'modificaciones_plan_tratamiento.modificaciones.*.fecha' => ['sometimes', 'required', 'date'],
-            'modificaciones_plan_tratamiento.modificaciones.*.diente' => ['sometimes', 'required', 'integer', 'between:18,48'],
-            'modificaciones_plan_tratamiento.modificaciones.*.tratamiento' => ['sometimes', 'nullable', 'required', 'string'],
-            'modificaciones_plan_tratamiento.modificaciones.*.nombre_docente' => ['sometimes', 'nullable', 'required', 'string'],
-            'modificaciones_plan_tratamiento.modificaciones.*.aprobacion_docente' => ['sometimes', 'required', 'boolean'],
-            'modificaciones_plan_tratamiento.paciente' => ['sometimes', 'required', 'string'],
-            'modificaciones_plan_tratamiento.firma' => ['sometimes', 'nullable', 'string'],
+            'modificaciones_plan_tratamiento.*' => ['sometimes', 'required', 'array:fecha,diente,tratamiento'],
+            'modificaciones_plan_tratamiento.*.fecha' => ['sometimes', 'required', 'date'],
+            'modificaciones_plan_tratamiento.*.diente' => ['sometimes', 'required', 'integer', 'between:18,48'],
+            'modificaciones_plan_tratamiento.*.tratamiento' => ['sometimes', 'nullable', 'string', 'max:255'],
+//            'modificaciones_plan_tratamiento.*.nombre_docente' => ['sometimes', 'nullable', 'required', 'string'],
+//            'modificaciones_plan_tratamiento.*.aprobacion_docente' => ['sometimes', 'required', 'boolean'],
+//            'modificaciones_plan_tratamiento.paciente' => ['sometimes', 'required', 'string'],
+//            'modificaciones_plan_tratamiento.firma' => ['sometimes', 'nullable', 'string'],
         ];
     }
 }

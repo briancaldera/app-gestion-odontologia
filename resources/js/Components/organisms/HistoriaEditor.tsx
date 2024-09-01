@@ -3,7 +3,7 @@ import {UserCircleIcon} from '@heroicons/react/24/outline'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon";
 import {useForm, UseFormReturn} from "react-hook-form"
-import {undefined, z} from 'zod'
+import {z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormField, FormItem} from "@/shadcn/ui/form";
 import {useRoute} from "ziggy-js";
@@ -38,7 +38,6 @@ import ModificacionesPlanTratamientoSchema, {
 import SecuenciaTratamientoSchema, {
     SecuenciaTratamientoDefaults
 } from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
-import historia from "@/src/models/Historia";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -51,8 +50,6 @@ interface HistoriaEditorProps {
 }
 
 const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
-
-    console.log(historia)
 
     const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
         resolver: zodResolver(HistoriaSchema),
@@ -97,9 +94,14 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
         defaultValues: defaults
     })
 
+    const modificacionesDefaults = (historia.historia_odontologica?.modificaciones_plan_tratamiento) ? {
+        modificaciones_plan_tratamiento: historia.historia_odontologica?.modificaciones_plan_tratamiento ?? [],
+        historia_id: historia.id
+    } satisfies z.infer<typeof ModificacionesPlanTratamientoSchema> : Object.assign(ModificacionesPlanTratamientoDefaults, {historia_id: historia?.id}) satisfies z.infer<typeof ModificacionesPlanTratamientoSchema>
+
     const modificacionesTratamientoForm = useForm<z.infer<typeof ModificacionesPlanTratamientoSchema>>({
         resolver: zodResolver(ModificacionesPlanTratamientoSchema),
-        defaultValues: ModificacionesPlanTratamientoDefaults
+        defaultValues: modificacionesDefaults
     })
 
     const secuenciaTratamientoForm = useForm<z.infer<typeof SecuenciaTratamientoSchema>>({

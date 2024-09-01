@@ -13,10 +13,12 @@ const ModificacionPlanTratamientoDefaults = {
 } satisfies z.infer<typeof ModificacionPlanTratamientoSchema> as const
 
 const ModificacionesPlanTratamientoSchema = z.object({
+    historia_id: z.string().nullish(),
     modificaciones_plan_tratamiento: z.array(ModificacionPlanTratamientoSchema)
 })
 
 const ModificacionesPlanTratamientoDefaults = {
+    historia_id: null,
     modificaciones_plan_tratamiento: []
 } satisfies z.infer<typeof ModificacionesPlanTratamientoSchema> as const
 
