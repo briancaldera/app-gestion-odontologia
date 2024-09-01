@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Historia;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatePlanTratamiento extends FormRequest
@@ -22,11 +23,12 @@ class UpdatePlanTratamiento extends FormRequest
     public function rules(): array
     {
         return [
+            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
+
             'plan_tratamiento' => ['sometimes', 'required', 'array'],
-            'plan_tratamiento.plan' => ['sometimes', 'array'],
-            'plan_tratamiento.plan.*.diente' => ['sometimes', 'required', 'integer', 'between:18,48'],
-            'plan_tratamiento.plan.*.cavidad' => ['sometimes', 'required', 'string', 'max:255'],
-            'plan_tratamiento.plan.*.tratamiento' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'plan_tratamiento.*.diente' => ['sometimes', 'required', 'integer', 'between:18,48'],
+            'plan_tratamiento.*.cavidad' => ['sometimes', 'required', 'string', 'max:255'],
+            'plan_tratamiento.*.tratamiento' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
 }

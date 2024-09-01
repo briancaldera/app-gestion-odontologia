@@ -3,7 +3,7 @@ import {UserCircleIcon} from '@heroicons/react/24/outline'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon";
 import {useForm, UseFormReturn} from "react-hook-form"
-import {z} from 'zod'
+import {undefined, z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormField, FormItem} from "@/shadcn/ui/form";
 import {useRoute} from "ziggy-js";
@@ -38,6 +38,7 @@ import ModificacionesPlanTratamientoSchema, {
 import SecuenciaTratamientoSchema, {
     SecuenciaTratamientoDefaults
 } from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
+import historia from "@/src/models/Historia";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -46,10 +47,12 @@ const SectionStyle = 'w-full px-6 min-h-screen'
 const HistoriaEditorContext = React.createContext({})
 
 interface HistoriaEditorProps {
-    historia?: Historia
+    historia: Historia
 }
 
 const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
+
+    console.log(historia)
 
     const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
         resolver: zodResolver(HistoriaSchema),
@@ -82,9 +85,16 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
         defaultValues: historia?.historia_odontologica ?? Object.assign(HistoriaOdontologicaDefaults, {historia_id: historia?.id})
     })
 
+    console.log({ ...PlanTratamientoDefaults, ...historia?.historia_odontologica?.plan_tratamiento})
+
+    const defaults = (historia?.historia_odontologica?.plan_tratamiento) ? {
+        plan_tratamiento: historia.historia_odontologica?.plan_tratamiento ?? [],
+        historia_id: historia.id
+    } satisfies z.infer<typeof PlanTratamientoSchema> : Object.assign(PlanTratamientoDefaults, {historia_id: historia?.id}) satisfies z.infer<typeof PlanTratamientoSchema>
+
     const planTratamientoForm = useForm<z.infer<typeof PlanTratamientoSchema>>({
         resolver: zodResolver(PlanTratamientoSchema),
-        defaultValues: PlanTratamientoDefaults
+        defaultValues: defaults
     })
 
     const modificacionesTratamientoForm = useForm<z.infer<typeof ModificacionesPlanTratamientoSchema>>({

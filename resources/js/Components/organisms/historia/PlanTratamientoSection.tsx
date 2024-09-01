@@ -24,8 +24,9 @@ import {
     DropdownMenuLabel, DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
-import {route} from "ziggy-js";
+import {route, useRoute} from "ziggy-js";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
+import {mapServerErrorsToFields} from "@/src/Utils/Utils";
 
 interface PlanTratamientoSectionProps {
     form: UseFormReturn<z.infer<PlanTratamientoSchema>>
@@ -35,6 +36,7 @@ const PlanTratamientoTableContext = React.createContext<{onDeleteTratamiento: (i
 
 const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
 
+    const route = useRoute()
     const {isProcessing, router} = useInertiaSubmit()
     const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
 
@@ -61,8 +63,18 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
     }
 
     const onSubmitPlan = (values: z.infer<typeof PlanTratamientoSchema>) => {
-        const endpoint = route()
+        const endpoint = route('historias.odontologica.plantratamiento.update', {
+            historia: values.historia_id
+        })
         console.log(values)
+
+        router.patch(endpoint, values, {
+            onError: errors => {
+                console.log(errors)
+                mapServerErrorsToFields(form, errors)
+            },
+            onSuccess: page => form.reset(values)
+        })
     }
 
     return (

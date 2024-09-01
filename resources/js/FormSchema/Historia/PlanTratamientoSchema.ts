@@ -15,10 +15,12 @@ export const TratamientoDefaults = {
 } satisfies z.infer<typeof TratamientoSchema> as const
 
 const PlanTratamientoSchema = z.object({
+    historia_id: z.string().nullish(),
     plan_tratamiento: z.array(TratamientoSchema)
 })
 
 export const PlanTratamientoDefaults = {
+    historia_id: null,
     plan_tratamiento: []
 } satisfies z.infer<typeof PlanTratamientoSchema> as const
 
