@@ -2,7 +2,7 @@ import {Head, Link, router} from "@inertiajs/react";
 import React from "react";
 import AuthNavbar from "@/Components/organisms/AuthNavbar.tsx";
 import AuthSidebar from "@/Components/organisms/AuthSidebar.jsx"
-import Loader from "@/Components/atoms/Loader.jsx";
+import Loader from "@/Components/atoms/Loader.tsx";
 import Logo from "@/Components/atoms/Logo.jsx";
 import {useRoute} from 'ziggy-js'
 import {TooltipProvider} from "@/Components/atoms/Tooltip"

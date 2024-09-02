@@ -107,6 +107,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     });
 
 //    Routes for HCE
+    Route::get('/historias/dashboard', [HistoriaController::class, 'dashboard'])->name('historias.dashboard');
     Route::get('/historias', [HistoriaController::class, 'index'])->name('historias.index');
     Route::get('/historias/crear', [HistoriaController::class, 'create'])->name('historias.create')->can('create', Historia::class);
     Route::post('/historias/store', [HistoriaController::class, 'store'])->name('historias.store')->can('create', Historia::class);

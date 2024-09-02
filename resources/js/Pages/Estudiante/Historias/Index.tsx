@@ -1,25 +1,22 @@
 import AuthLayout from "@/Layouts/AuthLayout";
-import {Card, CardHeader, CardTitle, CardContent, CardDescription} from '@/shadcn/ui/card'
+import {Card, CardContent, CardHeader, CardTitle} from '@/shadcn/ui/card'
 import Title from "@/Components/atoms/Title";
-import { Calendar } from "@/shadcn/ui/calendar"
-import {Clipboard, FilePlus2} from "lucide-react";
-import {type MenuItem} from '@/src/SidebarMenu'
-import SidebarMenu from "@/Components/organisms/SidebarMenu";
+import {Calendar} from "@/shadcn/ui/calendar"
+import {ArrowBigLeft} from "lucide-react";
+import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu";
 
-const sidebarMenuItems: MenuItem[] = [
-    {name: 'Ver Historias', link: 'dashboard', icon: <Clipboard />},
-    {name: 'Crear Historia', link: 'historias.create', icon: <FilePlus2 />}
-] as const
-
+const menu = [
+    {icon: <ArrowBigLeft />, link: "historias.dashboard", name: "Volver"}
+] satisfies MenuItem[]
 
 interface IndexProps {
 
 }
 
-const Index = ({}) => {
+const Index = ({}: IndexProps) => {
 
     return (
-        <AuthLayout title={'Ver historias'} sidebar={<SidebarMenu menu={sidebarMenuItems}/>}>
+        <AuthLayout title={'Ver historias'} sidebar={<SidebarMenu menu={menu}/>}>
             <div className={'p-6 h-[400px] grid grid-cols-4 gap-6'}>
                 <Card className={'col-span-2'}>
                     <CardHeader>

@@ -7,14 +7,21 @@ import { router } from '@inertiajs/react'
 import { useRoute } from 'ziggy-js'
 import HistoriaEditor from "@/Components/organisms/HistoriaEditor.tsx";
 import StatisticsCard from "@/Components/molecules/StatisticsCard";
-import {Car, Clipboard} from 'lucide-react'
+import {ArrowBigLeft, Car, Clipboard, FilePlus2} from 'lucide-react'
 import { Card } from '@/shadcn/ui/card'
 import {RadialChartText} from "@/Components/molecules/charts/RadialChartText";
+import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu";
+
+const menu = [
+    {icon: <ArrowBigLeft />, link: "dashboard", name: "Volver"},
+    {name: 'Ver Historias', link: 'historias.index', icon: <Clipboard />},
+    {name: 'Crear Historia', link: 'historias.create', icon: <FilePlus2 />}
+] satisfies MenuItem[] as const
 
 const Dashboard = ({historias}) => {
 
     return (
-        <AuthLayout title={'Historias'}>
+        <AuthLayout title={'Historias'} sidebar={<SidebarMenu menu={menu}/>}>
             {/*<HistoriaEditor />*/}
             <div className={'h-96 grid grid-cols-2 grid-rows-2 sm:grid-cols-4 gap-6 m-6'}>
                 <StatisticsCard title={'Historias creadas'} data={2} icon={<Clipboard/>} />

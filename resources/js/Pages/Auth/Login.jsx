@@ -7,7 +7,7 @@ import Surface from "@/Components/atoms/Surface.jsx";
 import InputField from "@/Components/molecules/InputField.jsx";
 import {Text} from "@/Components/atoms/Text.jsx";
 import {Button} from "@/Components/molecules/Button.jsx";
-import Loader from "@/Components/atoms/Loader.jsx";
+import Loader from "@/Components/atoms/Loader.tsx";
 import Logo from "@/Components/atoms/Logo.jsx";
 import Heading from "@/Components/atoms/Heading.jsx";
 

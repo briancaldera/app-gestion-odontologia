@@ -1,4 +1,4 @@
-import Loader from "@/Components/atoms/Loader.jsx"
+import Loader from "@/Components/atoms/Loader.tsx"
 
 export default {
     title: "atoms/Loader",

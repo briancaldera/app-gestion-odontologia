@@ -32,4 +32,11 @@ const SidebarMenu = ({menu}: SidebarProps) => {
     )
 }
 
+type MenuItem = Readonly<{
+    name: string,
+    icon: React.ReactElement,
+    link: string
+}>
+
 export default SidebarMenu
+export {type MenuItem}

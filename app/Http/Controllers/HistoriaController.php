@@ -42,6 +42,25 @@ class HistoriaController extends Controller
         protected RadiografiaService $radiografiaService,
         protected CorreccionService $correccionService
     ) {}
+
+    public function dashboard(Request $request)
+    {
+        /* @var User $user */
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+
+        } elseif ($user->isAdmision()) {
+
+        } elseif ($user->isProfesor()) {
+
+        } elseif ($user->isEstudiante()) {
+            return Inertia::render('Estudiante/Historias/Dashboard', [
+
+            ]);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
