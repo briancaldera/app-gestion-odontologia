@@ -38,6 +38,9 @@ import ModificacionesPlanTratamientoSchema, {
 import SecuenciaTratamientoSchema, {
     SecuenciaTratamientoDefaults
 } from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
+import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Historia/EstudioModelosSchema";
+import deepMerge from "react-hook-form/dist/utils/deepMerge";
+import {mergeDeep} from "@/src/Utils/Utils";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -82,8 +85,6 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
         defaultValues: historia?.historia_odontologica ?? Object.assign(HistoriaOdontologicaDefaults, {historia_id: historia?.id})
     })
 
-    console.log({ ...PlanTratamientoDefaults, ...historia?.historia_odontologica?.plan_tratamiento})
-
     const defaults = (historia?.historia_odontologica?.plan_tratamiento) ? {
         plan_tratamiento: historia.historia_odontologica?.plan_tratamiento ?? [],
         historia_id: historia.id
@@ -117,6 +118,14 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
     const examenRadiograficoForm = useForm<z.infer<typeof ExamenRadiograficoSchema>>({
         resolver: zodResolver(ExamenRadiograficoSchema),
         defaultValues: ExamenRadiografico,
+    })
+
+    const estudioModelosDefaults = (historia.historia_odontologica?.estudio_modelos) ? mergeDeep({...EstudioModelosDefaults}, {estudio_modelos: historia.historia_odontologica?.estudio_modelos}, {historia_id: historia.id}) satisfies z.infer<typeof EstudioModelosSchema>
+        : Object.assign(EstudioModelosDefaults, {historia_id: historia.id}) satisfies z.infer<typeof EstudioModelosSchema>
+
+    const estudioModelosForm = useForm<z.infer<typeof EstudioModelosSchema>>({
+        resolver: zodResolver(EstudioModelosSchema),
+        defaultValues: estudioModelosDefaults,
     })
 
     return (
@@ -225,7 +234,7 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
                             <SecuenciaPlanTratamientoSection form={secuenciaTratamientoForm}/>
                         </TabsContent>
                         <TabsContent value="estudioModelos" className={TabTriggerStyle}>
-                            <EstudioModelosSection form={historiaOdontologicaForm}/>
+                            <EstudioModelosSection form={estudioModelosForm}/>
                         </TabsContent>
                     </HistoriaEditorContext.Provider>
                 </div>

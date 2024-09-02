@@ -6,16 +6,37 @@ import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import {Textarea} from '@/shadcn/ui/textarea'
 import {Checkbox} from "@/shadcn/ui/checkbox"
+import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Historia/EstudioModelosSchema";
+import {Button} from "@/shadcn/ui/button";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
+import {useRoute} from "ziggy-js";
 
 
 interface EstudioModelosSectionProps {
-    form: UseFormReturn<z.infer<typeof HistoriaOdontologicaSchema>>
+    form: UseFormReturn<z.infer<typeof EstudioModelosSchema>>
 }
 
 const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
 
+    const {isProcessing, router}: ReturnType<typeof useInertiaSubmit> = useInertiaSubmit()
+    const route = useRoute()
+
     const onHandleSubmit = (values) => {
         console.log(values)
+
+        const endpoint: string = route('historias.odontologica.modelos.update', {
+            historia: values.historia_id
+        })
+
+        router.patch(endpoint, values, {
+            preserveScroll: true,
+            onError: errors => {
+                console.log(errors)
+            },
+            onSuccess: page => {
+                form.reset(values)
+            }
+        })
     }
 
     return (
@@ -152,7 +173,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
-                                )} name={'estudio_modelos.examenes_comp'} control={form.control}/>
+                                )} name={'estudio_modelos.interconsultas.descripcion'} control={form.control}/>
                             </div>
                         </section>
 
@@ -185,7 +206,9 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
                         </section>
 
                     </section>
-
+                    <div className={'flex justify-end'}>
+                        <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
+                    </div>
                 </form>
             </Form>
         </Surface>

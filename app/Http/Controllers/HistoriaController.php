@@ -10,6 +10,7 @@ use App\Http\Requests\StorePacienteRequest;
 use App\Http\Requests\StoreTrastornosRequest;
 use App\Http\Requests\UpdateAntFamiliaresRequest;
 use App\Http\Requests\UpdateAntPersonalesRequest;
+use App\Http\Requests\UpdateEstudioModelos;
 use App\Http\Requests\UpdateHistoriaOdontologicaRequest;
 use App\Http\Requests\UpdateHistoriaRequest;
 use App\Http\Requests\UpdateModificacionesPlanTratamiento;
@@ -147,6 +148,14 @@ class HistoriaController extends Controller
     {
         $data = $request->validated();
         $this->historiaService->updateHistoriaOdontologica($historia, $data);
+        message('Historia odontológica actualizada exitosamente 👍🏻', \Type::Success);
+        return response(null, 200);
+    }
+
+    public function updateEstudioModelos(Historia $historia, UpdateEstudioModelos $request)
+    {
+        $data = $request->validated();
+        $this->historiaService->updateEstudioModelos($historia, $data);
         message('Historia odontológica actualizada exitosamente 👍🏻', \Type::Success);
         return response(null, 200);
     }
