@@ -9,21 +9,16 @@ import {LayoutDashboard, Menu, MonitorCog, Users, BookOpenText, GraduationCap, B
 import {Card} from '@/shadcn/ui/card'
 import {Text} from "@/Components/atoms/Text";
 import {usePage} from '@inertiajs/react'
+import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu";
 
-type MenuItem = Readonly<{
-    name: string,
-    icon: React.ReactElement,
-    link: string
-}>
-
-const sidebarMenu: MenuItem[] = [
+const menu: MenuItem[] = [
     {name: 'Inicio', link: 'dashboard', icon: <LayoutDashboard/>},
-    {name: 'Historias', link: 'historia', icon: <ClipboardDocumentIcon/>},
-    {name: 'Grupos', link: 'dashboard', icon: <UserGroupIcon/>},
+    {name: 'Historias', link: 'historias.dashboard', icon: <ClipboardDocumentIcon/>},
+    {name: 'Grupos', link: 'groups.index', icon: <UserGroupIcon/>},
     {name: 'Usuarios', link: 'profile.index', icon: <Users/>},
     {name: 'Configuración', link: 'dashboard', icon: <MonitorCog/>},
     {name: 'Otros', link: 'dashboard', icon: <Menu/>},
-]
+] satisfies MenuItem[] as const
 
 interface DashboardProps extends React.ComponentPropsWithoutRef<React.ReactElement> {
     usersCount: number,
@@ -35,7 +30,7 @@ interface DashboardProps extends React.ComponentPropsWithoutRef<React.ReactEleme
 const Dashboard = ({usersCount, historiasCount, estudiantesCount, profesoresCount}: DashboardProps) => {
 
     return (
-        <AuthLayout title={'Inicio'} sidebar={<SidebarContent/>}>
+        <AuthLayout title={'Inicio'} sidebar={<SidebarMenu menu={menu}/>}>
 
             <div className={'h-32 grid grid-cols-2 sm:grid-cols-4 gap-6 m-6'}>
                 <StatisticsSlot title={'Usuarios registrados'} data={usersCount} icon={<Users />} />

@@ -17,7 +17,7 @@ class GroupServiceImpl implements GroupService
     {
 
         $attributes = [
-          'owner' => $owner->id,
+          'owner_id' => $owner->id,
           'name' => $name,
           'members' => collect([$owner])
         ];

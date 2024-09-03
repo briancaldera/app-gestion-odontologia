@@ -13,7 +13,9 @@ class GroupPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        if ($user->isAdmin() || $user->isAdmision()) return true;
+
+        return false;
     }
 
     /**
@@ -21,7 +23,9 @@ class GroupPolicy
      */
     public function view(User $user, Group $group): bool
     {
-        //
+        if ($user->isAdmin() || $user->isAdmision()) return true;
+
+        return false;
     }
 
     /**

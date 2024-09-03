@@ -75,6 +75,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     });
 
     Route::prefix('grupos')->name('groups.')->group(function () {
+        Route::get('/index', [GroupController::class, 'index'])->name('index')->can('viewAny', Group::class);
         Route::post('', [GroupController::class, 'store'])->name('store')->can('create', Group::class);
         Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy')->can('delete', 'group');
 

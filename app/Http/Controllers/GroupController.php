@@ -10,6 +10,7 @@ use App\Models\Group;
 use App\Models\User;
 use App\Services\GroupService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class GroupController extends Controller
 {
@@ -19,9 +20,19 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
 
+        if ($user->isAdmin()) {
+            $groups = Group::with(['owner.profile'])->get();
+
+            $profesores = User::where('role', '2')->get();
+            return Inertia::render('Admin/Groups/Index', [
+                'groups' => $groups,
+                'profesores' => $profesores
+            ]);
+        }
     }
 
     /**
@@ -40,7 +51,7 @@ class GroupController extends Controller
         $data = $request->validated();
         $owner = User::find($data['owner']);
         $this->groupService->createGroup($data['name'], $owner);
-        return response(null, 201);
+        return response(null, 200);
     }
 
     /**

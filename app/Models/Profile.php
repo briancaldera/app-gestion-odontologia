@@ -57,6 +57,26 @@ class Profile extends Model
         'fecha_nacimiento' => 'date'
     ];
 
+    public function getVisible(): array
+    {
+        /* @var User $user*/
+        $user = auth()->user();
+
+        if (!isset($user)) {
+            return $this->visible;
+        }
+
+        if ($user->id === $this->id) {
+            return [];
+        }
+
+        if ($user->isAdmin() OR $user->isAdmision()) {
+            return [];
+        }
+
+        return $this->visible;
+    }
+
     protected $visible = [
         'nombres',
         'apellidos',

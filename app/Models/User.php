@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property int $role the role for the user
@@ -44,18 +45,42 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
+     * @return string[]
+     */
+    public function getVisible(): array
+    {
+        /* @var User $user*/
+        $user = Auth::user();
+
+        if (!isset($user)) {
+            return $this->visible;
+        }
+
+        if ($user->id === $this->id) {
+            return [];
+        }
+
+        if ($user->isAdmin() OR $user->isAdmision()) {
+            return [];
+        }
+
+        return $this->visible;
+    }
+
+    protected $visible = [
+        'id',
+        'name'
+    ];
+
+    /**
      * The attributes that should be hidden for serialization.
+     * These attributes should never be serialized. Not even for an admin or superuser.
      *
      * @var array<int, string>
      */
     protected $hidden = [
-        'role',
-        'id',
-        'email',
-        'email_verified_at',
         'password',
         'remember_token',
-        'historias',
     ];
 
     /**

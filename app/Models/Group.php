@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property string $id
- * @property string $owner
+ * @property User $owner
  * @property Collection<User> $members
  * @property string $name
  * @property string $updated_at
@@ -25,13 +27,43 @@ class Group extends Model
 
     protected $fillable = [
         'name',
-        'owner',
+        'owner_id',
         'members'
     ];
 
     protected $attributes = [
         'members' => '[]',
     ];
+
+    /**
+     * @return string[]
+     */
+    public function getVisible(): array
+    {
+        /* @var User $user*/
+        $user = Auth::user();
+
+        if (!isset($user)) {
+            return $this->visible;
+        }
+
+        if ($user->isAdmin() OR $user->isAdmision()) {
+            return [];
+        }
+
+        return $this->visible;
+    }
+
+    protected $visible = [
+        'owner',
+        'name',
+        'created_at',
+    ];
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id', 'id');
+    }
 
     protected function members(): Attribute
     {
