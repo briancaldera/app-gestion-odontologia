@@ -11,11 +11,8 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
-    DropdownMenuPortal,
 } from '@/shadcn/ui/dropdown-menu'
 import {Icon} from "@/Components/atoms/Icon";
 import {Bell, EllipsisVertical, Users} from 'lucide-react'
@@ -23,11 +20,11 @@ import {ScrollArea} from '@/shadcn/ui/scroll-area'
 import Title from "@/Components/atoms/Title";
 import Label from "@/Components/atoms/Label";
 import {Text} from "@/Components/atoms/Text";
-import {toDate, formatRelative} from 'date-fns'
+import {formatRelative} from 'date-fns'
 import {Axios} from "axios";
-import {data} from "autoprefixer";
-import {func} from "prop-types";
-import {PopoverTrigger, PopoverContent, Popover} from '@/shadcn/ui/popover'
+import {Popover, PopoverContent, PopoverTrigger} from '@/shadcn/ui/popover'
+import Heading from "@/Components/atoms/Heading";
+import User from "@/src/models/User";
 
 declare const axios: Axios
 
@@ -43,7 +40,7 @@ const AuthNavbar = () => {
 const AuthSection = () => {
 
     const {isDarkMode, toggleDarkMode} = React.useContext(AuthContext)
-    const {auth: {user}} = usePage().props
+    const {auth: {user}}: {auth: {user: User}} = usePage().props
 
     const [notifications, setNotifications] = React.useState<Notification[]>([])
 
@@ -94,11 +91,16 @@ const AuthSection = () => {
             </Popover>
             <Dropdown.Container>
                 <Dropdown.Trigger>
-                    <Avatar picture={user.profile.picture_url}/>
+                    <Avatar picture={user.profile?.picture_url}/>
                 </Dropdown.Trigger>
 
                 <Dropdown>
-
+                    <DropdownMenuLabel>
+                        <Heading level={'h6'} className={'line-clamp-1 truncate'}>@{user.name}</Heading>
+                        <Label className={'text-slate-400 font-medium line-clamp-1 truncate'}>{user.profile?.nombres}</Label>
+                        <Label className={'text-slate-400 font-medium line-clamp-1 truncate'}>{user.profile?.apellidos}</Label>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
                     <Dropdown.Option href={route("profile.edit")}>Perfil</Dropdown.Option>
                     <Dropdown.StaticOption>
                         <div className={"flex justify-between items-center gap-4"}>
