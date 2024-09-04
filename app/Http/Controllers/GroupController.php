@@ -57,9 +57,22 @@ class GroupController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Group $group)
+    public function show(Group $group, Request $request)
     {
-        //
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+
+            $group->owner->profile;
+            $group->members->each(fn (User $user) => $user->profile);
+
+            $students = User::where('role', '3')->with('profile')->get()->reject(fn (User $user) => $group->members->contains('id', $user->id));
+
+            return Inertia::render('Admin/Groups/Show', [
+                'group' => $group,
+                'students' => $students,
+            ]);
+        }
     }
 
     /**
@@ -78,20 +91,25 @@ class GroupController extends Controller
 
     }
 
-    public function addMember(Group $group, Request $request)
+    public function addMembers(Group $group, Request $request)
     {
         $data = $request->validate([
-            'new_member' => ['required', 'uuid', 'exists:' . User::class . ',id'],
+            'group_id' => ['required', 'ulid', 'exists:' . Group::class . ',id'],
+            'new_members' => ['required', 'array'],
+            'new_members.*' => ['required', 'uuid', 'exists:' . User::class . ',id'],
         ]);
 
-        $newMember = User::find($data['new_member']);
+        $new_members_id = collect($data['new_members']);
+
+        $new_members = $new_members_id->map(fn(string $id) => User::findOrFail($id));
 
         try {
-            $this->groupService->addMember($group, $newMember);
+            $new_members->each(fn(User $member) => $this->groupService->addMember($group, $member));
         } catch (MemberAlreadyExistsException $e) {
             report($e);
-            return response('Member already exists', 400);
+            return response("Member already exists", 400);
         }
+        message('Miembros agregados al grupo exitosamente', \Type::Success);
         return response(null, 200);
     }
 

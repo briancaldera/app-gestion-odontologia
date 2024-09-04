@@ -76,10 +76,11 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     Route::prefix('grupos')->name('groups.')->group(function () {
         Route::get('/index', [GroupController::class, 'index'])->name('index')->can('viewAny', Group::class);
+        Route::get('/{group}', [GroupController::class, 'show'])->name('show')->can('view', 'group');
         Route::post('', [GroupController::class, 'store'])->name('store')->can('create', Group::class);
         Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy')->can('delete', 'group');
 
-        Route::patch('/{group}/add', [GroupController::class, 'addMember'])->name('addMember')->can('addMember', 'group');
+        Route::patch('/{group}/add', [GroupController::class, 'addMembers'])->name('addMembers')->can('addMember', 'group');
         Route::delete('/{group}/remove', [GroupController::class, 'removeMember'])->name('removeMember')->can('removeMember', 'group');
     });
 
