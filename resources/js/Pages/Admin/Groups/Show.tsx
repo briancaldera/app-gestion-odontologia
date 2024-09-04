@@ -1,6 +1,6 @@
 import AuthLayout from "@/Layouts/AuthLayout";
 import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu";
-import {ArrowBigLeft} from 'lucide-react'
+import {ArrowBigLeft, GraduationCap, Apple} from 'lucide-react'
 import Group from "@/src/models/Group";
 import Surface from "@/Components/atoms/Surface";
 import Heading from "@/Components/atoms/Heading";
@@ -15,10 +15,14 @@ import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} fro
 import React from "react";
 import SelectionDataTable from "@/Components/molecules/SelectionDataTable";
 import {Checkbox} from "@/shadcn/ui/checkbox";
-import {z} from "zod";
+import {map, z} from "zod";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {enqueueSnackbar} from "notistack";
 import {route} from "ziggy-js";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/shadcn/ui/tooltip";
+import {Icon} from "@/Components/atoms/Icon";
+import App from "@inertiajs/react/types/App";
+
 
 interface ShowProps {
     group: Group,
@@ -183,7 +187,51 @@ const AddMembersColumns: ColumnDef<User>[] = [
     }),
 ]
 
+const roles: Map<number, string> = new Map([
+    [0, 'admin'],
+    [1, 'admision'],
+    [2, 'profesor'],
+    [3, 'estudiante']
+]) satisfies Map<number, string> as const
+
+
 const MembersColumns = [
+    columnHelper.accessor((row: User) => row.role, {
+        id: 'role',
+        header: 'Rol',
+        cell: props => {
+
+            const description = roles.get(props.row.original.role)
+
+            let icon // TODO change this misery
+
+            switch (props.row.original.role) {
+                case 2:
+                    icon = (<Apple />)
+                    break
+                case 3:
+                    icon = (<GraduationCap />)
+                    break
+                default:
+                    break
+            }
+
+            return (
+                <Tooltip>
+                    <TooltipTrigger>
+                        <Icon className={'size-4'}>
+                            {
+                                icon
+                            }
+                        </Icon>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        {description}
+                    </TooltipContent>
+                </Tooltip>
+            )
+        }
+    }),
     columnHelper.accessor((row: User) => row.name, {
         id: 'username',
         header: 'Usuario',

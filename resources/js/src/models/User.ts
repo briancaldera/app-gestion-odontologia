@@ -1,7 +1,7 @@
 import Profile from "@/src/models/Profile";
 
 type User = {
-    role: string
+    role: number
     id: string
     name: string
     email: string
