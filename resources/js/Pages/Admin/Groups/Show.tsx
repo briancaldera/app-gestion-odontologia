@@ -75,19 +75,30 @@ const InfoSection = ({group}: { group: Group }) => {
 const MembersSection = ({group, students}: { group: Group, students: User[] }) => {
 
     const [openAddMemberDialog, setOpenAddMemberDialog] = React.useState<boolean>(false)
+    const [openRemoveMemberDialog, setOpenRemoveMemberDialog] = React.useState<boolean>(false)
 
     return (
         <Surface className={'p-6'}>
             <div className={'grid grid-cols-4 gap-6'}>
                 <div className={'col-span-3'}>
-                    <DataTable columns={MembersColumns} data={group.members} />
+                    <DataTable columns={MembersColumns} data={group.members}/>
                 </div>
-                <div className={'col-span-1'}>
+                <div className={'col-span-1 space-y-4'}>
                     <div className={'space-y-3 border rounded-lg p-3'}>
                         <Title>Agregar nuevos miembros</Title>
                         <div className={'flex justify-end'}>
-                            <AddMemberDialog group={group} open={openAddMemberDialog} onOpenChange={setOpenAddMemberDialog} students={students}/>
+                            <AddMemberDialog group={group} open={openAddMemberDialog}
+                                             onOpenChange={setOpenAddMemberDialog} students={students}/>
                             <Button onClick={() => setOpenAddMemberDialog(true)}>Agregar</Button>
+                        </div>
+                    </div>
+
+                    <div className={'space-y-3 border rounded-lg p-3'}>
+                        <Title>Remover miembros</Title>
+                        <div className={'flex justify-end'}>
+                            <RemoveMemberDialog group={group} open={openRemoveMemberDialog}
+                                             onOpenChange={setOpenRemoveMemberDialog} students={students}/>
+                            <Button variant={'destructive'} onClick={() => setOpenRemoveMemberDialog(true)}>Remover</Button>
                         </div>
                     </div>
                 </div>
@@ -96,7 +107,12 @@ const MembersSection = ({group, students}: { group: Group, students: User[] }) =
     )
 }
 
-const AddMemberDialog = ({group, students, open, onOpenChange}: {group: Group, students: User[], open: boolean, onOpenChange: (boolean) => void}) => {
+const AddMemberDialog = ({group, students, open, onOpenChange}: {
+    group: Group,
+    students: User[],
+    open: boolean,
+    onOpenChange: (boolean) => void
+}) => {
 
     const {isProcessing, router} = useInertiaSubmit()
 
@@ -140,6 +156,54 @@ const AddMemberDialog = ({group, students, open, onOpenChange}: {group: Group, s
 const AddMembersSchema = z.object({
     group_id: z.string(),
     new_members: z.array(z.string().uuid()),
+})
+
+const RemoveMemberDialog = ({group, open, onOpenChange}: {
+    group: Group,
+    open: boolean,
+    onOpenChange: (boolean) => void
+}) => {
+
+    const {isProcessing, router} = useInertiaSubmit()
+
+    const onSubmitMembers = (members: User[]) => {
+        try {
+
+            const values = RemoveMembersSchema.parse({
+                group_id: group.id,
+                members: members.map((user) => user.id),
+            })
+
+            const endpoint = route('groups.removeMembers', {group: group.id})
+
+            router.patch(endpoint, {...values}, {
+                onError: errors => {enqueueSnackbar('No se removieron los usuarios seleccionados.', {variant: "error"})},
+                onSuccess: page => router.reload()
+            })
+        } catch (e: Error) {
+            console.error(e)
+            enqueueSnackbar('No se removieron los usuarios seleccionados.', {variant: "error"})
+        }
+    }
+
+    return (
+        <Dialog onOpenChange={onOpenChange} open={open}>
+            <DialogContent className={'min-w-[1200px]'}>
+                <DialogHeader>
+                    <DialogTitle>Remover miembros</DialogTitle>
+                    <DialogDescription>Selecciona usuarios que desees remover del grupo.</DialogDescription>
+                    <div>
+                        <SelectionDataTable columns={AddMembersColumns} data={group.members.filter(user => user.id !== group.owner.id)} onSubmitSelected={(members) => onSubmitMembers(members)}/>
+                    </div>
+                </DialogHeader>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+const RemoveMembersSchema = z.object({
+    group_id: z.string(),
+    members: z.array(z.string().uuid()),
 })
 
 const columnHelper = createColumnHelper<User>()

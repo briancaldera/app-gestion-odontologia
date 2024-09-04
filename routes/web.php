@@ -81,7 +81,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
         Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy')->can('delete', 'group');
 
         Route::patch('/{group}/add', [GroupController::class, 'addMembers'])->name('addMembers')->can('addMember', 'group');
-        Route::delete('/{group}/remove', [GroupController::class, 'removeMember'])->name('removeMember')->can('removeMember', 'group');
+        Route::patch('/{group}/remove', [GroupController::class, 'removeMembers'])->name('removeMembers')->can('removeMember', 'group');
     });
 
     // Routes for admin

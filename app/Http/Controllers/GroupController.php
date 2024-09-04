@@ -113,20 +113,23 @@ class GroupController extends Controller
         return response(null, 200);
     }
 
-    public function removeMember(Group $group, Request $request)
+    public function removeMembers(Group $group, Request $request)
     {
         $data = $request->validate([
-            'member' => ['required', 'uuid', 'exists:' . User::class . ',id'],
+            'group_id' => ['required', 'ulid', 'exists:' . Group::class . ',id'],
+            'members' => ['required', 'array'],
+            'members.*' => ['required', 'uuid', 'exists:' . User::class . ',id'],
         ]);
 
-        $member = User::find($data['member']);
+        $members = collect($data['members'])->map(fn (string $id) => User::findOrFail($id));
 
         try {
-            $this->groupService->removeMember($group, $member);
+            $members->each(fn (User $member) => $this->groupService->removeMember($group, $member));
         } catch (InvalidMemberException $e) {
             report($e);
             return response('Invalid member', 400);
         }
+        message('Miembros removidos del grupo exitosamente', \Type::Success);
         return response(null, 200);
     }
 
