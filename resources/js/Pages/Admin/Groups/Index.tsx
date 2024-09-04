@@ -5,7 +5,7 @@ import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import Group from "@/src/models/Group";
 import Surface from "@/Components/atoms/Surface";
 import {z} from "zod";
-import {ArrowBigLeft, Check, ChevronsUpDown, MoreHorizontal} from 'lucide-react'
+import {ArrowBigLeft, Check, ChevronsUpDown, MoreHorizontal, Trash2} from 'lucide-react'
 import Title from "@/Components/atoms/Title";
 import {Button} from "@/shadcn/ui/button";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,} from "@/shadcn/ui/dialog"
@@ -27,7 +27,7 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
+    DropdownMenuLabel, DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
 import {router} from "@inertiajs/react";
@@ -247,6 +247,13 @@ const columns: ColumnDef<Group>[] = [
         header: _props => 'Opciones',
         cell: props => {
 
+            const onDeleteGroup = (group_id: string) => {
+                router.delete(route('groups.destroy', {group: group_id}), {
+                    onError: errors => console.log(errors),
+                    onSuccess: page => router.reload(),
+                })
+            }
+
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -262,7 +269,15 @@ const columns: ColumnDef<Group>[] = [
                         >
                             Ver grupo
                         </DropdownMenuItem>
-
+                        <DropdownMenuSeparator/>
+                        <DropdownMenuItem className={'text-rose-600'}
+                            onClick={() => onDeleteGroup(props.row.original.id)}
+                        >
+                            <Icon className={'me-1'}>
+                                <Trash2 className={'text-rose-600 size-5'}/>
+                            </Icon>
+                            Eliminar
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

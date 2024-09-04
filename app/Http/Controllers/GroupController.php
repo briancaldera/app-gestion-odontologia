@@ -139,6 +139,7 @@ class GroupController extends Controller
     public function destroy(Group $group)
     {
         $this->groupService->deleteGroup($group);
+        message('Grupo eliminado exitosamente', \Type::Success);
         return response(null, 200);
     }
 }
