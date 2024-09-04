@@ -5,7 +5,7 @@ import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import Group from "@/src/models/Group";
 import Surface from "@/Components/atoms/Surface";
 import {z} from "zod";
-import {ArrowBigLeft, Check, ChevronsUpDown} from 'lucide-react'
+import {ArrowBigLeft, Check, ChevronsUpDown, MoreHorizontal} from 'lucide-react'
 import Title from "@/Components/atoms/Title";
 import {Button} from "@/shadcn/ui/button";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,} from "@/shadcn/ui/dialog"
@@ -16,20 +16,27 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/shadcn/ui/command"
 import {Popover, PopoverContent, PopoverTrigger,} from "@/shadcn/ui/popover"
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
-import {useRoute} from "ziggy-js";
+import {route, useRoute} from "ziggy-js";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils";
 import {Input} from "@/shadcn/ui/input";
 import User from "@/src/models/User";
 import {Icon} from "@/Components/atoms/Icon";
 import {cn} from "@/lib/utils";
 import {formatDate} from 'date-fns'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuTrigger
+} from "@/shadcn/ui/dropdown-menu";
+import {router} from "@inertiajs/react";
 
 interface IndexProps {
     readonly groups: Group[]
 }
 
 const Index = ({groups, profesores}: IndexProps) => {
-    console.log(groups)
 
     const [openCreateGroupDialog, setOpenCreateGroupDialog] = React.useState<boolean>(false)
 
@@ -235,6 +242,32 @@ const columns: ColumnDef<Group>[] = [
         id: 'created_at',
         header: 'Fecha de creación'
     }),
+    columnHelper.display({
+        id: 'actions',
+        header: _props => 'Opciones',
+        cell: props => {
+
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                        <DropdownMenuItem
+                            onClick={() => router.visit(route('groups.show', {group: props.row.original.id}))}
+                        >
+                            Ver grupo
+                        </DropdownMenuItem>
+
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
+        }
+    })
 ]
 
 export default Index
