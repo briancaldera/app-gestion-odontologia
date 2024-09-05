@@ -24,4 +24,9 @@ trait HasStatus
         return $this->getAttributeValue($this->column_key) === Status::ABIERTA OR
             $this->getAttributeValue($this->column_key) === Status::CORRECCION;
     }
+
+    public function hasStatus(string $status): bool
+    {
+        return $this->getAttributeValue($this->column_key) === $status;
+    }
 }
