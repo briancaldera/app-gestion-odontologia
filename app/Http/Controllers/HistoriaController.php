@@ -50,6 +50,13 @@ class HistoriaController extends Controller
 
         if ($user->isAdmin()) {
 
+            $statistics = [
+                'created_HCE' => Historia::count(),
+            ];
+
+            return inertia()->render('Admin/Historias/Dashboard', [
+                'statistics' => $statistics
+            ]);
         } elseif ($user->isAdmision()) {
 
         } elseif ($user->isProfesor()) {
