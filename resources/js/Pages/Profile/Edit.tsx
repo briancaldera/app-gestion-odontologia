@@ -16,7 +16,9 @@ import {Button} from "@/Components/molecules/Button.jsx";
 import ErrorText from "@/Components/atoms/ErrorText.jsx";
 import Select from "@/Components/molecules/Select.jsx"
 import Label from "@/Components/atoms/Label.jsx";
-
+import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu";
+import {ArrowBigLeft} from 'lucide-react'
+import {undefined} from "zod";
 
 const ProfileUpdateContext = React.createContext()
 
@@ -44,6 +46,10 @@ export default function Edit({auth, mustVerifyEmail, status, profile}) {
         </AuthLayout>
     );
 }
+
+const menu = [
+    {icon: <ArrowBigLeft />, link: "dashboard", name: "Volver"}
+] satisfies MenuItem[] as const
 
 const Sidebar = ({
                      defaultSection = 0, onClick = () => {
@@ -99,95 +105,91 @@ const PerfilSection = () => {
 
     return (
 
-        <section>
-            <Surface className={'mx-6 my-6'}>
-                <div className="py-12">
-                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <Surface className={'mx-6 my-6 p-6'}>
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-12">
 
-                        <Title level={'title-lg'} className={'text-gray-400'}>Configuracion de perfil</Title>
-                        <hr className={'mt-2'}/>
+                <Title level={'title-lg'} className={'text-gray-400'}>Configuracion de perfil</Title>
+                <hr className={'mt-2'}/>
 
 
-                        <div className={'grid grid-cols-3 py-4'}>
-                            <div className={'col-span-2 w-2/4'}>
-                                <form onSubmit={submit} className={'space-y-5'}>
+                <div className={'grid grid-cols-1 sm:grid-cols-3 py-4'}>
+                    <div className={'col-span-1 sm:col-span-2 sm:w-2/4'}>
+                        <form onSubmit={submit} className={'space-y-5'}>
 
-                                    <div>
-                                        <InputField name={'nombres'} label={'Nombres'} id={'nombres'} required={true}
-                                                    value={data.nombres} onChange={handleChange('nombres')}
-                                                    error={errors.nombres}/>
-                                        <Text level={'body-xs'}>Su nombre real. Este nombre aparecerá publicamente en
-                                            las
-                                            historias.</Text>
-                                    </div>
-
-                                    <div>
-                                        <InputField name={'apellidos'} label={'Apellidos'} id={'apellidos'}
-                                                    required={true} value={data.apellidos}
-                                                    onChange={handleChange('apellidos')} error={errors.apellidos}/>
-                                        <Text level={'body-xs'}>Su apellido u apellidos. Este apellido aparecera junto a
-                                            su
-                                            nombre real.</Text>
-                                    </div>
-
-                                    <InputField type={'date'} name={'fecha_nacimiento'}
-                                                label={'Fecha de nacimiento'}
-                                                id={'fecha_nacimiento'} required={true}
-                                                value={`${date.getUTCFullYear()}` + '-' + `${date.getUTCMonth() + 1}`.padStart(2, '0') + '-' + `${date.getUTCDate()}`.padStart(2, '0')}
-                                                onChange={handleChange('fecha_nacimiento')}
-                                                error={errors.fecha_nacimiento}/>
-
-                                    <InputField name={'direccion'} label={'Dirección'} id={'direccion'}
-                                                required={true} value={data.direccion}
-                                                onChange={handleChange('direccion')} error={errors.direccion}/>
-
-                                    <InputField name={'telefono'} label={'Teléfono'} id={'telefono'}
-                                                required={true} value={data.telefono}
-                                                onChange={handleChange('telefono')} error={errors.telefono}/>
-
-
-                                    <div>
-
-                                        <Label htmlFor={'sexo'} value={'Sexo'}/>
-                                        <Select value={data.sexo} id={'sexo'}
-                                                onChange={(value) => setData('sexo', value)}>
-                                            <Select.Option value={'F'}>Femenino</Select.Option>
-                                            <Select.Option value={'M'}>Masculino</Select.Option>
-                                            <Select.Option value={'NI'}>No indicado</Select.Option>
-                                        </Select>
-                                    </div>
-
-                                    <InputField name={'cedula'} label={'Cédula'} id={'cedula'} value={profile.cedula}
-                                                disabled={true}/>
-
-                                    <div className={'flex gap-4 justify-end'}>
-                                        <Button label={'Actualizar perfil'} disabled={!isDirty} loading={processing}
-                                                onClick={submit}/>
-                                    </div>
-                                </form>
-
-                            </div>
-                            <div className={'aspect-square'}>
-                                <Text level={'title-md mb-4'}>Foto de perfil</Text>
-                                <div className={'w-full sm:w-1/2 aspect-square'}>
-                                    <Avatar picture={profile.picture_url} className={'size-full'} onClick={() => {
-                                        setOpenPictureModal(true)
-                                    }}/>
-                                </div>
+                            <div>
+                                <InputField name={'nombres'} label={'Nombres'} id={'nombres'} required={true}
+                                            value={data.nombres} onChange={handleChange('nombres')}
+                                            error={errors.nombres}/>
+                                <Text level={'body-xs'}>Su nombre real. Este nombre aparecerá publicamente en
+                                    las
+                                    historias.</Text>
                             </div>
 
-                        </div>
+                            <div>
+                                <InputField name={'apellidos'} label={'Apellidos'} id={'apellidos'}
+                                            required={true} value={data.apellidos}
+                                            onChange={handleChange('apellidos')} error={errors.apellidos}/>
+                                <Text level={'body-xs'}>Su apellido u apellidos. Este apellido aparecera junto a
+                                    su
+                                    nombre real.</Text>
+                            </div>
 
+                            <InputField type={'date'} name={'fecha_nacimiento'}
+                                        label={'Fecha de nacimiento'}
+                                        id={'fecha_nacimiento'} required={true}
+                                        value={`${date.getUTCFullYear()}` + '-' + `${date.getUTCMonth() + 1}`.padStart(2, '0') + '-' + `${date.getUTCDate()}`.padStart(2, '0')}
+                                        onChange={handleChange('fecha_nacimiento')}
+                                        error={errors.fecha_nacimiento}/>
+
+                            <InputField name={'direccion'} label={'Dirección'} id={'direccion'}
+                                        required={true} value={data.direccion}
+                                        onChange={handleChange('direccion')} error={errors.direccion}/>
+
+                            <InputField name={'telefono'} label={'Teléfono'} id={'telefono'}
+                                        required={true} value={data.telefono}
+                                        onChange={handleChange('telefono')} error={errors.telefono}/>
+
+
+                            <div>
+
+                                <Label htmlFor={'sexo'} value={'Sexo'}/>
+                                <Select value={data.sexo} id={'sexo'}
+                                        onChange={(value) => setData('sexo', value)}>
+                                    <Select.Option value={'F'}>Femenino</Select.Option>
+                                    <Select.Option value={'M'}>Masculino</Select.Option>
+                                    <Select.Option value={'NI'}>No indicado</Select.Option>
+                                </Select>
+                            </div>
+
+                            <InputField name={'cedula'} label={'Cédula'} id={'cedula'} value={profile.cedula}
+                                        disabled={true}/>
+
+                            <div className={'flex gap-4 justify-end'}>
+                                <Button label={'Actualizar perfil'} disabled={!isDirty} loading={processing}
+                                        onClick={submit}/>
+                            </div>
+                        </form>
 
                     </div>
+                    <div className={'aspect-square'}>
+                        <Text level={'title-md mb-4'}>Foto de perfil</Text>
+                        <div className={'w-full sm:w-1/2 aspect-square'}>
+                            <Avatar picture={profile.picture_url} className={'size-full'} onClick={() => {
+                                setOpenPictureModal(true)
+                            }}/>
+                        </div>
+                    </div>
+
                 </div>
-            </Surface>
+
+
+            </div>
             <Modal ariaLabelledBy={'Imagen de perfil'} ariaDescribedBy={'Cambiar imagen de perfil'}
                    open={openPictureModal} onClose={() => setOpenPictureModal(false)}>
                 <ChangeProfilePicture picture_url={profile.picture_url}/>
             </Modal>
-        </section>
-    )
+        </Surface>
+    );
 }
 
 const ChangeProfilePicture = ({picture_url = null}) => {
