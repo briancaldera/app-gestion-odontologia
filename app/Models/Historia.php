@@ -54,17 +54,18 @@ class Historia extends Model implements StatusHolder
      */
     public function getVisible(): array
     {
+        /* @var User $user */
         $user = Auth::user();
 
         if (!isset($user)) {
             return $this->visible;
         }
 
-        if($user->isAdmin() OR $user->isAdmision()) {
+        if ($this->autor_id === $user->id) {
             return [];
         }
 
-        if ($user->isEstudiante() AND $this->autor_id === $user->id) {
+        if ($user->isAdmin() OR $user->isAdmision()) {
             return [];
         }
 

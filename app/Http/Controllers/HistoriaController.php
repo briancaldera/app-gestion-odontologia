@@ -78,6 +78,11 @@ class HistoriaController extends Controller
 
         if ($user->isAdmin()) {
 
+            $historias = Historia::all();
+
+            return inertia()->render('Admin/Historias/Index', [
+                'historias' => $historias,
+            ]);
         } elseif ($user->isAdmision()) {
 
         } elseif ($user->isProfesor()) {

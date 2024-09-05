@@ -2,21 +2,24 @@ import Paciente from "@/src/models/Paciente";
 import AntFamiliares from '@/src/models/AntFamiliares'
 import AntPersonales, {Trastornos} from "@/src/models/AntPersonales";
 import HistoriaOdontologica from "@/src/models/HistoriaOdontologica";
+import User from "@/src/models/User";
 
-type Historia = {
-    readonly id: string,
-    readonly paciente_id: string,
-    readonly autor_id: string,
-    readonly numero: string,
-    readonly motivo_consulta?: string,
-    readonly enfermedad_actual?: string,
-    readonly status?: Status,
-    readonly paciente?: Paciente,
-    readonly ant_familiares?: AntFamiliares
-    readonly ant_personales?: AntPersonales
-    readonly trastornos?: Trastornos
-    readonly historia_odontologica?: HistoriaOdontologica
-}
+type Historia = Readonly<{
+    id: string
+    paciente_id: string
+    autor_id: string
+    numero: string
+
+    autor?: User
+    motivo_consulta?: string
+    enfermedad_actual?: string
+    status?: Status
+    paciente?: Paciente,
+    ant_familiares?: AntFamiliares
+    ant_personales?: AntPersonales
+    trastornos?: Trastornos
+    historia_odontologica?: HistoriaOdontologica
+}>
 
 enum Status {
     ABIERTA = 'abierta',
