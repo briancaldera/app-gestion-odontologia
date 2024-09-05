@@ -108,7 +108,11 @@ class HistoriaController extends Controller
         $autor = $request->user();
         $paciente = $this->historiaService->addPaciente($data);
         $historia = $this->historiaService->addHistoria($paciente, $autor);
+        $historia->motivo_consulta = $data['motivo_consulta'];
+        $historia->enfermedad_actual = $data['enfermedad_actual'];
+        $historia->save();
         $this->correccionService->attachCorreccion($historia);
+        message('Paciente creado exitosamente. A continuacion podrá editar la historia asignada.');
         return to_route('historias.edit', [
             'historia' => $historia->id
         ]);

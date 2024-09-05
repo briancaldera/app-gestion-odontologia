@@ -1,25 +1,29 @@
 import AuthLayout from "@/Layouts/AuthLayout.jsx";
-import {Card} from "@/shadcn/ui/card";
-import React, {useEffect} from "react";
+import React from "react";
 import {useRoute} from "ziggy-js";
 import {z} from "zod";
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
-import {Form, FormField, FormMessage, FormItem, FormControl, FormLabel, FormDescription} from "@/shadcn/ui/form";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import Field from "@/Components/molecules/Field";
 import DatePicker from "@/Components/molecules/DatePicker";
 import {Button} from "@/shadcn/ui/button";
-import {useForm as useFormHook, UseFormReturn} from 'react-hook-form'
-import PacienteSchema , {PacienteDefaults, PacienteFake} from "@/FormSchema/Historia/PacienteSchema";
+import {useForm} from 'react-hook-form'
+import PacienteSchema, {PacienteDefaults, PacienteFake} from "@/FormSchema/Historia/PacienteSchema";
 import {zodResolver} from "@hookform/resolvers/zod";
 import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker";
-import {Select, SelectItem, SelectTrigger, SelectValue, SelectSeparator, SelectContent} from '@/shadcn/ui/select'
-import {router, useForm} from "@inertiajs/react";
-
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/shadcn/ui/select'
+import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu";
+import {ArrowBigLeft} from 'lucide-react'
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
+import {mapServerErrorsToFields} from "@/src/Utils/Utils";
+import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema";
+import {Textarea} from "@/shadcn/ui/textarea";
 
 const Create = () => {
+
     return (
-        <AuthLayout title={'Crear historia'}>
+        <AuthLayout title={'Crear historia'} sidebar={<SidebarMenu menu={menu}/>}>
             <div className={'p-12'}>
                 <PacienteSection />
             </div>
@@ -27,38 +31,31 @@ const Create = () => {
     )
 }
 
+const menu: readonly MenuItem[] = [
+    {icon: <ArrowBigLeft/>, link: "historias.dashboard", name: "Volver"}
+] satisfies MenuItem[]
+
 const PacienteSection = () => {
 
+    const {isProcessing, router} = useInertiaSubmit()
 
-    const [processing, setProcessing] = React.useState<boolean>(false)
-
-    const form = useFormHook<z.infer<typeof PacienteSchema>>({
-        resolver: zodResolver(PacienteSchema),
-        defaultValues: PacienteFake,
+    const form = useForm<z.infer<typeof CreateHistoriaSchema>>({
+        resolver: zodResolver(CreateHistoriaSchema),
+        defaultValues: CreateHistoriaDefaults,
+        values: PacienteFake,
     })
 
     const route = useRoute()
 
     const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
         const endpoint: string = route('historias.store')
-        router.post(endpoint, values, {
-            onStart: () => {setProcessing(true)},
-            onFinish: () => {setProcessing(false)},
-            onError: errors => {
-                Object.keys(errors).forEach((key) => {
-                    console.log(key)
-                    form.setError(key, {type: 'custom', message: errors[key]})
-                })
-
-            }
+        router.post(endpoint, {...values}, {
+            onError: errors => {mapServerErrorsToFields(form, errors)}
         })
-
-        // inertiaSubmit.post()
-        // router.post(route(''), Object.create(values))
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <Surface className={'w-full p-6'}>
             <Title level={'title-lg'}>Datos Personales</Title>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={'grid grid-cols-1 sm:grid-cols-3 gap-4'}>
@@ -108,8 +105,8 @@ const PacienteSection = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value={'F'}>F</SelectItem>
-                                                <SelectItem value={'M'}>M</SelectItem>
+                                                <SelectItem value={'F'}>Femenino</SelectItem>
+                                                <SelectItem value={'M'}>Masculino</SelectItem>
                                                 <SelectItem value={'NI'}>No indicado</SelectItem>
                                             </SelectContent>
                                         </Select>
@@ -135,11 +132,32 @@ const PacienteSection = () => {
                     <Field control={form.control} name={'ocupacion'} label={'Ocupación'}/>
 
 
+
+                    <FormField render={({field}) => (
+                        <FormItem className={'col-span-2 col-start-1'}>
+                            <FormLabel>Motivo de consulta</FormLabel>
+                            <FormControl>
+                                <Textarea {...field}/>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} name={'motivo_consulta'} control={form.control}/>
+
+                    <FormField render={({field}) => (
+                        <FormItem className={'col-span-2 col-start-1'}>
+                            <FormLabel>Enfermedad actual</FormLabel>
+                            <FormControl>
+                                <Textarea {...field}/>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} name={'enfermedad_actual'} control={form.control}/>
+
                     <div className={'hidden sm:block'}></div>
                     <div className={'hidden sm:block'}></div>
 
-                    <div className={'w-full'}>
-                        <Button type={'submit'} disabled={processing}>Guardar</Button>
+                    <div className={'sm:col-span-full flex justify-end'}>
+                        <Button type={'submit'} disabled={isProcessing}>Crear nueva historia</Button>
                     </div>
                 </form>
             </Form>
@@ -147,5 +165,9 @@ const PacienteSection = () => {
     )
 }
 
+const CreateHistoriaSchema = z.intersection(PacienteSchema, HistoriaSchema.omit({paciente_id: true}))
+
+const {paciente_id, ...HistoriaDefaultsMod} = HistoriaDefaults
+const CreateHistoriaDefaults = {...PacienteDefaults, ...HistoriaDefaultsMod} satisfies z.infer<typeof CreateHistoriaSchema>
 
 export default Create

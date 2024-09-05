@@ -66,7 +66,7 @@ const PacienteSchema = z.object({
         .nullish()
 })
 
-export const PacienteDefaults = {
+const PacienteDefaults = {
     cedula: '',
     nombre: '',
     apellido: '',
@@ -78,9 +78,9 @@ export const PacienteDefaults = {
     ocupacion: '',
     telefono: '',
     foto: null
-} satisfies z.infer<typeof PacienteSchema> as const
+} satisfies z.infer<typeof PacienteSchema>
 
-export const PacienteFake = {
+const PacienteFake = {
     apellido: faker.person.lastName(),
     cedula: 'V26009495',
     direccion: faker.location.streetAddress(),
@@ -94,4 +94,5 @@ export const PacienteFake = {
     telefono: '0414-1234567'
 } satisfies z.infer<typeof PacienteSchema>
 
+export {PacienteDefaults, PacienteFake}
 export default PacienteSchema

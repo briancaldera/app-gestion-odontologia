@@ -1,17 +1,15 @@
 import {z} from "zod";
 
 const HistoriaSchema = z.object({
-    paciente_id: z.string().uuid(),
-    numero: z.string().nullable(),
-    motivo_consulta: z.string(),
+    paciente_id: z.string().uuid().nullish(),
+    motivo_consulta: z.string().min(1, {message: 'Debe especificar el motivo de la consulta'}),
     enfermedad_actual: z.string(),
 })
 
-export const HistoriaDefaults: z.infer<typeof HistoriaSchema> = {
+const HistoriaDefaults = {
     enfermedad_actual: "",
     motivo_consulta: "",
-    numero: null,
-    paciente_id: "",
-}
+} satisfies z.infer<typeof HistoriaSchema>
 
+export {HistoriaDefaults}
 export default HistoriaSchema
