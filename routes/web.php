@@ -123,7 +123,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::patch('/historias/{historia}/odontologica/modificaciones/update', [HistoriaController::class, 'updateModificacionesPlanTratamiento'])->name('historias.odontologica.modificacionestratamiento.update')->can('update', 'historia');
     Route::patch('/historias/{historia}/odontologica/secuencia/update', [HistoriaController::class, 'updateSecuenciaTratamiento'])->name('historias.odontologica.secuenciatratamiento.update')->can('update', 'historia');
 
-    Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show')->can('view', Historia::class);
+    Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show')->can('view', 'historia');
 
     Route::middleware(['role:estudiante'])->group(function () {
 

@@ -1,10 +1,26 @@
-const Show = ({historia}) => {
+import AuthLayout from "@/Layouts/AuthLayout";
+import type Historia from "@/src/models/Historia.ts";
+import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
+import {ArrowBigLeft} from 'lucide-react'
+import HistoriaEditor from "@/Components/organisms/HistoriaEditor.tsx";
+
+type ShowProps = {
+    historia: Historia
+}
+
+const Show = ({historia}: ShowProps) => {
     // Show my marvelous HCE here
     return (
-        <div className={'p-6'}>
-
-        </div>
+        <AuthLayout title={`Paciente: ${historia.paciente?.nombre} ${historia.paciente?.apellido}`} sidebar={<SidebarMenu menu={menu}/>}>
+            <div className={'p-6'}>
+                <HistoriaEditor historia={historia} readMode={true}/>
+            </div>
+        </AuthLayout>
     )
 }
+
+const menu: MenuItem[] = [
+    {icon: <ArrowBigLeft />, link: "historias.index", name: "Volver"}
+] satisfies MenuItem[]
 
 export default Show

@@ -88,8 +88,11 @@ class HistoriaController extends Controller
         } elseif ($user->isProfesor()) {
 
         } elseif ($user->isEstudiante()) {
-            return Inertia::render('Estudiante/Historias/Index', [
 
+            $historias = $user->historias()->with(['paciente'])->get();
+
+            return Inertia::render('Estudiante/Historias/Index', [
+                'historias' => $historias,
             ]);
         }
     }
@@ -234,6 +237,9 @@ class HistoriaController extends Controller
         } elseif ($user->isProfesor()) {
 
         } elseif ($user->isEstudiante()) {
+
+            $historia->paciente;
+
             return Inertia::render('Estudiante/Historias/Show', [
                'historia' => $historia
             ]);

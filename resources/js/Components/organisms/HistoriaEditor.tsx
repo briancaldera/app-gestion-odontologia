@@ -48,20 +48,23 @@ const SectionStyle = 'w-full px-6 min-h-screen'
 
 const HistoriaEditorContext = React.createContext({})
 
-interface HistoriaEditorProps {
+type HistoriaEditorProps = {
     historia: Historia
+    readMode?: boolean
 }
 
-const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
+const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
 
     const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
         resolver: zodResolver(HistoriaSchema),
         defaultValues: historia ?? HistoriaDefaults,
+        disabled: readMode,
     })
 
     const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
         resolver: zodResolver(PacienteSchema),
         defaultValues: historia?.paciente ?? PacienteDefaults,
+        disabled: readMode,
     })
 
     const trastornos = historia?.trastornos!!
@@ -73,16 +76,19 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
     const antPersonalesForm = useForm<z.infer<typeof AntPersonalesSchema>>({
         resolver: zodResolver(AntPersonalesSchema),
         defaultValues: historia?.ant_personales ?? Object.assign(AntPersonalesDefaults, {historia_id: historia?.id}),
+        disabled: readMode,
     })
 
     const antFamiliaresForm = useForm<z.infer<typeof AntFamiliaresSchema>>({
         resolver: zodResolver(AntFamiliaresSchema),
         defaultValues: historia?.ant_familiares ?? Object.assign(AntFamiliaresDefaults, {historia_id: historia?.id}),
+        disabled: readMode,
     })
 
     const historiaOdontologicaForm = useForm<z.infer<typeof HistoriaOdontologicaSchema>>({
         resolver: zodResolver(HistoriaOdontologicaSchema),
-        defaultValues: historia?.historia_odontologica ?? Object.assign(HistoriaOdontologicaDefaults, {historia_id: historia?.id})
+        defaultValues: historia?.historia_odontologica ?? Object.assign(HistoriaOdontologicaDefaults, {historia_id: historia?.id}),
+        disabled: readMode,
     })
 
     const defaults = (historia?.historia_odontologica?.plan_tratamiento) ? {
@@ -92,7 +98,8 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
 
     const planTratamientoForm = useForm<z.infer<typeof PlanTratamientoSchema>>({
         resolver: zodResolver(PlanTratamientoSchema),
-        defaultValues: defaults
+        defaultValues: defaults,
+        disabled: readMode,
     })
 
     const modificacionesDefaults = (historia.historia_odontologica?.modificaciones_plan_tratamiento) ? {
@@ -102,7 +109,8 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
 
     const modificacionesTratamientoForm = useForm<z.infer<typeof ModificacionesPlanTratamientoSchema>>({
         resolver: zodResolver(ModificacionesPlanTratamientoSchema),
-        defaultValues: modificacionesDefaults
+        defaultValues: modificacionesDefaults,
+        disabled: readMode,
     })
 
     const secuenciaDefaults = (historia.historia_odontologica?.secuencia_tratamiento) ? {
@@ -112,12 +120,14 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
 
     const secuenciaTratamientoForm = useForm<z.infer<typeof SecuenciaTratamientoSchema>>({
         resolver: zodResolver(SecuenciaTratamientoSchema),
-        defaultValues: secuenciaDefaults
+        defaultValues: secuenciaDefaults,
+        disabled: readMode,
     })
 
     const examenRadiograficoForm = useForm<z.infer<typeof ExamenRadiograficoSchema>>({
         resolver: zodResolver(ExamenRadiograficoSchema),
         defaultValues: ExamenRadiografico,
+        disabled: readMode,
     })
 
     const estudioModelosDefaults = (historia.historia_odontologica?.estudio_modelos) ? mergeDeep({...EstudioModelosDefaults}, {estudio_modelos: historia.historia_odontologica?.estudio_modelos}, {historia_id: historia.id}) satisfies z.infer<typeof EstudioModelosSchema>
@@ -126,6 +136,7 @@ const HistoriaEditor = ({historia}: HistoriaEditorProps) => {
     const estudioModelosForm = useForm<z.infer<typeof EstudioModelosSchema>>({
         resolver: zodResolver(EstudioModelosSchema),
         defaultValues: estudioModelosDefaults,
+        disabled: readMode,
     })
 
     return (
