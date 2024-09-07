@@ -27,7 +27,7 @@ const Index = ({groups}: IndexProps) => {
 
                     <ScrollArea className={'basis-full'}>
                         <div className={'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pr-3'}>
-                            {groups.map(group => (<GroupItem group={group}/>))}
+                            {groups.map(group => (<GroupItem key={group.id} group={group}/>))}
                         </div>
                     </ScrollArea>
 
