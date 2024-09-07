@@ -65,7 +65,7 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
             historia: values.historia_id
         })
 
-        router.patch(endpoint, values, {
+        router.patch(endpoint, {...values}, {
             onError: errors => {
                 // TODO Show errors
                 console.log(errors)
