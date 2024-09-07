@@ -20,7 +20,7 @@ type ShowProps = {
 const Show = ({group}: ShowProps) => {
     return (
         <AuthLayout title={'Grupo'} sidebar={<SidebarMenu menu={menu}/>}>
-            <div className={'p-6'}>
+            <div className={'p-6 h-full'}>
                 <Tabs className={'w-full'} defaultValue={'members'}>
                     <TabsList className="w-full grid grid-cols-2 md:grid-cols-4">
                         <TabsTrigger value="homework">Evaluación</TabsTrigger>
