@@ -55,6 +55,7 @@ class Group extends Model
     }
 
     protected $visible = [
+        'id',
         'owner',
         'name',
         'created_at',

@@ -15,6 +15,8 @@ class GroupPolicy
     {
         if ($user->isAdmin() || $user->isAdmision()) return true;
 
+        if ($user->isEstudiante() || $user->isProfesor()) return true;
+
         return false;
     }
 

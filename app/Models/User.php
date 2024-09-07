@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\HasRole;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\Metadata\Api\Groups;
 
 /**
  * @property int $role the role for the user
@@ -104,5 +106,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function historias(): HasMany
     {
         return $this->hasMany(Historia::class, 'autor_id', 'id');
+    }
+
+    public function groups(): Collection
+    {
+        return Group::whereJsonContains('members', $this->id)->get();
     }
 }

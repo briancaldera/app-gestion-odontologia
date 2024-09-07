@@ -32,6 +32,13 @@ class GroupController extends Controller
                 'groups' => $groups,
                 'profesores' => $profesores
             ]);
+        } elseif ($user->isEstudiante()) {
+
+            $groups = $user->groups()->load(['owner.profile'])->makeVisible('owner');
+            $groups->each(fn (Group $group) => $group->owner->makeVisible('profile'));
+            return Inertia::render('Estudiante/Groups/Index', [
+                'groups' => $groups,
+            ]);
         }
     }
 

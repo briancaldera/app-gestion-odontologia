@@ -3,10 +3,10 @@ import User from "@/src/models/User";
 type Group = {
     id: string
     owner: User
-    members: User[]
+    members?: User[]
     name: string
-    created_at: Date
-    updated_at: Date
+    created_at: string
+    updated_at?: string
 }
 
 export default Group
