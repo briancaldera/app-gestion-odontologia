@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import HistoriaEditor from "@/Components/organisms/HistoriaEditor";
 import Historia from "@/src/models/Historia";
 

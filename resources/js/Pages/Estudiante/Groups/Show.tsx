@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import Group from "@/src/models/Group.ts";
 import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
 import {LayoutDashboard, Users} from "lucide-react";

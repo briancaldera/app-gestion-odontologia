@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu";
 import {undefined} from "zod";
 import {ArrowBigLeft, Clipboard} from 'lucide-react'

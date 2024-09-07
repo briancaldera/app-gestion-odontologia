@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu";
 import {ArrowBigLeft} from 'lucide-react'
 import {ColumnDef, ColumnHelper, createColumnHelper} from "@tanstack/react-table";

@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout.jsx";
+import AuthLayout from "@/Layouts/AuthLayout.js";
 import {Text} from "@/Components/atoms/Text.jsx";
 import {Button} from "@/Components/molecules/Button.jsx";
 import {DocumentTextIcon} from "@heroicons/react/24/outline/index.js";

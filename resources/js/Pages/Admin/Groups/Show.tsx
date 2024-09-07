@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu";
 import {ArrowBigLeft, GraduationCap, Apple} from 'lucide-react'
 import Group from "@/src/models/Group";

@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu";
 import {DataTable} from "@/Components/molecules/DataTable";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";

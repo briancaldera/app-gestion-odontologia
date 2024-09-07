@@ -1,5 +1,5 @@
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
-import AuthLayout from "@/Layouts/AuthLayout.jsx";
+import AuthLayout from "@/Layouts/AuthLayout.js";
 import Title from "@/Components/atoms/Title.jsx";
 import {Cog6ToothIcon, UserCircleIcon} from "@heroicons/react/24/outline"
 import {Icon} from "@/Components/atoms/Icon.jsx";

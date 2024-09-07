@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import type Historia from "@/src/models/Historia.ts";
 import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
 import {ArrowBigLeft} from 'lucide-react'

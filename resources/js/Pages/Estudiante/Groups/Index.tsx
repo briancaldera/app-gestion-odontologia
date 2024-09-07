@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
 import {ClipboardDocumentIcon} from "@heroicons/react/24/outline";
 import {LayoutDashboard, Users} from "lucide-react";

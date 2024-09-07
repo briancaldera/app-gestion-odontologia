@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from '@/shadcn/ui/card'
 import Title from "@/Components/atoms/Title";
 import {Calendar} from "@/shadcn/ui/calendar"

@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout.jsx";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 
 const Dashboard = ({auth}) => {
 

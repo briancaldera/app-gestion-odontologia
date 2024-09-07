@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout";
+import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import {useRoute} from "ziggy-js";
 import {Link} from "@inertiajs/react";
 import {Icon} from "@/Components/atoms/Icon";

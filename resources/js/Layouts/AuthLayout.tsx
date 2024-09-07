@@ -9,7 +9,7 @@ import {TooltipProvider} from "@/Components/atoms/Tooltip"
 
 const DARK_MODE_KEY = 'dark_mode'
 
-export const AuthContext = React.createContext()
+export const AuthContext = React.createContext({})
 
 const AuthLayout = ({title, navbar, sidebar, children}) => {
 

@@ -1,5 +1,5 @@
 import React from "react";
-import AuthLayout from "@/Layouts/AuthLayout.jsx";
+import AuthLayout from "@/Layouts/AuthLayout.js";
 import {LayoutDashboard, Users} from 'lucide-react'
 import {ClipboardDocumentIcon} from '@heroicons/react/24/outline'
 import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu";

@@ -1,4 +1,4 @@
-import AuthLayout from "@/Layouts/AuthLayout.jsx";
+import AuthLayout from "@/Layouts/AuthLayout.js";
 import React from "react";
 import {useRoute} from "ziggy-js";
 import {z} from "zod";

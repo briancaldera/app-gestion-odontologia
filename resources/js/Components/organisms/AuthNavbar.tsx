@@ -5,7 +5,7 @@ import Dropdown from "@/Components/molecules/Dropdown.jsx";
 import React from "react";
 import Switch from "@/Components/atoms/Switch.jsx";
 import {MoonIcon, SunIcon} from "@heroicons/react/24/outline"
-import {AuthContext} from "@/Layouts/AuthLayout.jsx";
+import {AuthContext} from "@/Layouts/AuthLayout.js";
 import {
     DropdownMenu,
     DropdownMenuContent,
