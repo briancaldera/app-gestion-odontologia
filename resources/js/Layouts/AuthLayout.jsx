@@ -55,7 +55,7 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
                 <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode}}>
                     <TooltipProvider>
                         <Head title={title}/>
-                        <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 min-h-screen`}>
+                        <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 h-screen flex flex-col`}>
                             <nav className={'z-50 fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 lg:ps-72 flex justify-end'}>
                                 {navbar || <AuthNavbar/>}
                             </nav>
@@ -76,7 +76,7 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
                                     <Loader/>
                                 </div>
                             </aside>
-                            <main className={'pt-20 lg:pb-0 pb-16 lg:pl-72 min-h-screen'}>
+                            <main className={'pt-14 sm:pt-20 lg:pb-0 pb-16 lg:pl-72 h-full basis-full flex-none'}>
                                 {children}
                             </main>
                         </div>
