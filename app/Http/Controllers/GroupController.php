@@ -85,8 +85,11 @@ class GroupController extends Controller
             $group->owner->makeVisible(['profile']);
             $group->owner->profile->makeVisible(['nombres', 'apellidos']);
 
+            $historias = $user->historias()->where('status', 'abierta')->orWhere('status', 'correccion')->with(['paciente'])->get();
+
             return Inertia::render('Estudiante/Groups/Show', [
-                'group' => $group
+                'group' => $group,
+                'historias' => $historias,
             ]);
         }
     }
