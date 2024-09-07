@@ -63,14 +63,12 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
     }
 
     const onSubmitModificaciones = (values: z.infer<typeof ModificacionesPlanTratamientoSchema>) => {
-        console.log(values)
 
-        console.log(values.historia_id)
         const endpoint = route('historias.odontologica.modificacionestratamiento.update', {
             historia: values.historia_id
         })
 
-        router.patch(endpoint, values, {
+        router.patch(endpoint, {...values}, {
             onError: errors => {
                 console.log(errors)
                 // TODO Show errors somewhere in the table

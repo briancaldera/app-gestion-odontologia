@@ -1,15 +1,16 @@
 import {z} from "zod";
 
 const MAX_TEXT_LENGTH: number = 1000
+const MAX_TOOTH_LENGTH: number = 100
 
 const ModificacionPlanTratamientoSchema = z.object({
     fecha: z.coerce.date(),
-    diente: z.coerce.number().int().min(18).max(48),
-    tratamiento: z.string().max(MAX_TEXT_LENGTH).nullable(),
+    diente: z.string().max(MAX_TOOTH_LENGTH, {message: `Máximo ${MAX_TOOTH_LENGTH} caracteres`}),
+    tratamiento: z.string().max(MAX_TEXT_LENGTH, {message: `Máximo ${MAX_TEXT_LENGTH} caracteres`}).nullable(),
 })
 
 const ModificacionPlanTratamientoDefaults = {
-    diente: 0, fecha: new Date(), tratamiento: ''
+    diente: '', fecha: new Date(), tratamiento: ''
 } satisfies z.infer<typeof ModificacionPlanTratamientoSchema> as const
 
 const ModificacionesPlanTratamientoSchema = z.object({
