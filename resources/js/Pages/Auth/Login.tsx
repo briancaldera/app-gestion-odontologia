@@ -6,12 +6,12 @@ import {useRoute} from 'ziggy-js'
 import Surface from "@/Components/atoms/Surface.jsx";
 import InputField from "@/Components/molecules/InputField.jsx";
 import {Text} from "@/Components/atoms/Text.jsx";
-import {Button} from "@/Components/molecules/Button.jsx";
 import Loader from "@/Components/atoms/Loader.tsx";
 import Logo from "@/Components/atoms/Logo.jsx";
 import Heading from "@/Components/atoms/Heading.jsx";
+import {Button} from "@/shadcn/ui/button.js";
 
-const LoginContext = React.createContext()
+const LoginContext = React.createContext({})
 
 const Login = ({status, canResetPassword}) => {
 
@@ -52,7 +52,7 @@ const LoginForm = () => {
 
     return (
         <Surface
-            className={"mt-6 w-full overflow-hidden px-6 py-6 sm:max-w-md flex flex-col justify-center items-center"}>
+            className={"m-6 w-full overflow-hidden px-6 py-6 sm:max-w-md flex flex-col justify-center items-center"}>
             {processing ? (<Loader/>) : (<>
 
                     <div className={'size-28 mb-6'}>
@@ -107,8 +107,8 @@ const LoginForm = () => {
                                 </Link>
                             )}
 
-                            <Button label={'Iniciar sesión'} disabled={processing}
-                                    onClick={submit}/>
+                            <Button className={'basis-3/4'} disabled={processing} type={'button'}
+                                    onClick={submit}>Iniciar sesión</Button>
                         </div>
                     </form>
                 </>
