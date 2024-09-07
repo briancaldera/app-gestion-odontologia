@@ -20,7 +20,7 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
     React.useEffect(() => {
         let darkMode = window.localStorage.getItem(DARK_MODE_KEY)
 
-        if (darkMode === null) {
+        if (darkMode) {
             darkMode = 'false'
             window.localStorage.setItem(DARK_MODE_KEY, darkMode)
         }
@@ -52,37 +52,38 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
     }
 
     return (
-                <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode}}>
-                    <TooltipProvider>
-                        <Head title={title}/>
-                        <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 h-screen flex flex-col`}>
-                            <nav className={'z-50 fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 lg:ps-72 flex justify-end'}>
-                                {navbar || <AuthNavbar/>}
-                            </nav>
-                            <aside className={
-                                ' /*mobile*/ bg-indigo-600 fixed z-50 max-lg:inset-x-0 max-lg:h-16 bottom-0' +
-                                ' /*tablet*/ ' +
-                                ' /*laptop*/  lg:inset-y-0 lg:inset-x-px lg:left-0 lg:w-full lg:max-w-72'}>
-                                <div className={'h-20 flex items-center hidden lg:block'}>
-                                    <div className={'overflow-hidden w-20 ps-6 '}>
-                                        <Link href={route('dashboard')}
-                                              className={'grayscale contrast-200 brightness-200'}>
-                                            <Logo/>
-                                        </Link>
-                                    </div>
-                                </div>
-                                {sidebar || <AuthSidebar/>}
-                                <div className={'z-50 absolute bottom-0 left-0 p-4'} hidden={!loading}>
-                                    <Loader/>
-                                </div>
-                            </aside>
-                            <main className={'pt-14 sm:pt-20 lg:pb-0 pb-16 lg:pl-72 h-full basis-full flex-none'}>
-                                {children}
-                            </main>
+        <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode}}>
+            <TooltipProvider>
+                <Head title={title}/>
+                <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 h-screen flex flex-col`}>
+                    <nav
+                        className={'z-50 fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 lg:ps-72 flex justify-end'}>
+                        {navbar || <AuthNavbar/>}
+                    </nav>
+                    <aside className={
+                        ' /*mobile*/ bg-indigo-600 fixed z-50 max-lg:inset-x-0 max-lg:h-16 bottom-0' +
+                        ' /*tablet*/ ' +
+                        ' /*laptop*/  lg:inset-y-0 lg:inset-x-px lg:left-0 lg:w-full lg:max-w-72'}>
+                        <div className={'h-20 flex items-center hidden lg:block'}>
+                            <div className={'overflow-hidden w-20 ps-6 '}>
+                                <Link href={route('dashboard')}
+                                      className={'grayscale contrast-200 brightness-200'}>
+                                    <Logo/>
+                                </Link>
+                            </div>
                         </div>
-                    </TooltipProvider>
-                </AuthContext.Provider>
-)
+                        {sidebar || <AuthSidebar/>}
+                        <div className={'z-50 absolute bottom-0 left-0 p-4'} hidden={!loading}>
+                            <Loader/>
+                        </div>
+                    </aside>
+                    <main className={'pt-14 sm:pt-20 lg:pb-0 pb-16 lg:pl-72 h-full basis-full flex-none'}>
+                        {children}
+                    </main>
+                </div>
+            </TooltipProvider>
+        </AuthContext.Provider>
+    )
 }
 
 export default AuthLayout
