@@ -27,6 +27,14 @@ class GroupPolicy
     {
         if ($user->isAdmin() || $user->isAdmision()) return true;
 
+        if ($user->isProfesor() AND $group->owner->id === $user->id) {
+            return true;
+        }
+
+        if ($user->isEstudiante() AND $group->members->contains('id', $user->id)) {
+            return true;
+        };
+
         return false;
     }
 

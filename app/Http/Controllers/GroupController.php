@@ -79,6 +79,15 @@ class GroupController extends Controller
                 'group' => $group,
                 'students' => $students,
             ]);
+        } elseif ($user->isEstudiante()) {
+
+            $group->owner->profile;
+            $group->owner->makeVisible(['profile']);
+            $group->owner->profile->makeVisible(['nombres', 'apellidos']);
+
+            return Inertia::render('Estudiante/Groups/Show', [
+                'group' => $group
+            ]);
         }
     }
 
