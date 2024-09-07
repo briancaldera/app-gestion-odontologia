@@ -55,9 +55,9 @@ const GroupItem = ({group}: { group: Group }) => {
                 </div>
                 <div className={'relative'}>
                     <div
-                        className={'origin-center rounded-full bg-white w-1/4 aspect-square border absolute right-2/3 -translate-y-1/2 overflow-hidden bg-sky-200 flex justify-center items-center'}>
+                        className={'origin-center rounded-full bg-white w-1/4 aspect-square absolute right-2/3 -translate-y-1/2 overflow-hidden bg-sky-200 flex justify-center items-center'}>
                         <Avatar src={group.owner.profile?.picture_url}
-                                className={'text-white text-4xl font-bold size-full bg-transparent'}>{group.owner.profile?.nombres[0] ?? ''}</Avatar>
+                                className={'text-white text-4xl font-bold size-full bg-transparent border-white border-4'}>{group.owner.profile?.nombres[0] ?? ''}</Avatar>
                     </div>
                 </div>
                 <div className={'basis-3/5 flex flex-col'}>
