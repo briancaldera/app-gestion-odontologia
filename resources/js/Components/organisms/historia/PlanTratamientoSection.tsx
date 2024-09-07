@@ -1,7 +1,7 @@
 import React from "react";
 import {FormProps, useForm, UseFormReturn} from "react-hook-form";
 import {z} from "zod";
-import PlanTratamientoSchema, {CAVIDAD_CLASES, TratamientoDefaults, TratamientoSchema} from "@/FormSchema/Historia/PlanTratamientoSchema";
+import PlanTratamientoSchema, {TratamientoDefaults, TratamientoSchema} from "@/FormSchema/Historia/PlanTratamientoSchema";
 import {zodResolver} from "@hookform/resolvers/zod";
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";

@@ -2,17 +2,18 @@ import {z} from "zod";
 
 const MAX_TEXT_LENGTH: number = 1000
 const MAX_CAVITY_LENGTH: number = 100
+const MAX_TOOTH_LENGTH: number = 100
 
 const CAVIDAD_CLASES: readonly string[] = ['I', 'II', 'III', 'IV', 'V'] as const
 
 const TratamientoSchema = z.object({
-    diente: z.coerce.number({required_error: 'Número de diente requerido', invalid_type_error: 'Campo debe ser numérico'}).int({message: 'No se admiten decimales'}).min(18, { message: 'Valor mínimo es 18'}).max(48, { message: 'Valor máximo es 48'}),
-    cavidad: z.string({required_error: 'Campo requerido'}).max(MAX_CAVITY_LENGTH, {message: 'Máximo 100 caracteres'}),
-    tratamiento: z.string().max(MAX_TEXT_LENGTH).nullable(),
+    diente: z.string().max(MAX_TOOTH_LENGTH, {message: `Máximo ${MAX_TOOTH_LENGTH} caracteres`}),
+    cavidad: z.string().max(MAX_CAVITY_LENGTH, {message: `Máximo ${MAX_CAVITY_LENGTH} caracteres`}),
+    tratamiento: z.string().max(MAX_TEXT_LENGTH, {message: `Máximo ${MAX_TEXT_LENGTH} caracteres`}),
 })
 
 const TratamientoDefaults = {
-    cavidad: '', diente: 0, tratamiento: ""
+    cavidad: '', diente: '', tratamiento: ''
 } satisfies z.infer<typeof TratamientoSchema>
 
 const PlanTratamientoSchema = z.object({

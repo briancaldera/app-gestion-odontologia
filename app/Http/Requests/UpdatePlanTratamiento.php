@@ -26,7 +26,7 @@ class UpdatePlanTratamiento extends FormRequest
             'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
 
             'plan_tratamiento' => ['sometimes', 'required', 'array'],
-            'plan_tratamiento.*.diente' => ['sometimes', 'required', 'integer', 'between:18,48'],
+            'plan_tratamiento.*.diente' => ['sometimes', 'required', 'string', 'max:100'],
             'plan_tratamiento.*.cavidad' => ['sometimes', 'nullable', 'string', 'max:100'],
             'plan_tratamiento.*.tratamiento' => ['sometimes', 'nullable', 'string', 'max:1000'],
         ];
