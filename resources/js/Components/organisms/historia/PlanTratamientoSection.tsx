@@ -117,18 +117,9 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
                                         <FormField render={({field}) => (
                                             <FormItem>
                                                 <FormLabel>Cavidad</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                     <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Selecciona un tipo de cavidad"/>
-                                                        </SelectTrigger>
+                                                        <Input {...field}/>
                                                     </FormControl>
-
-                                                    <SelectContent>
-                                                        {CAVIDAD_CLASES.map((clase: string) => (<SelectItem key={clase}
-                                                                                                            value={clase}>Clase {clase}</SelectItem>))}
-                                                    </SelectContent>
-                                                </Select>
                                                 <FormMessage className={'text-xs'}/>
                                             </FormItem>
                                         )} name={'cavidad'} control={tratamientoForm.control} />
