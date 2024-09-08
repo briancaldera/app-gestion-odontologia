@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('historia_odontologicas', function (Blueprint $table) {
+            $table->id();
             $table->foreignUuid('historia_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->text('ant_personales')->nullable();
             $table->jsonb('portador');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->jsonb('plan_tratamiento');
             $table->jsonb('modificaciones_plan_tratamiento');
             $table->jsonb('secuencia_tratamiento');
+            $table->jsonb('examen_radiografico');
         });
     }
 
