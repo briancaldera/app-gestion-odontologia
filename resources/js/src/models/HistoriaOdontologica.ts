@@ -5,7 +5,7 @@ import ExamenRadiograficoSchema from "@/FormSchema/Historia/ExamenRadiograficoSc
 type HistoriaOdontologica = {
     historia_id: string
     ant_personales: string
-    habitos: string
+    habitos: Habitos
     portador: Portador
     examen_fisico: ExamenFisico
     estudio_modelos: z.infer<typeof EstudioModelosSchema>
@@ -13,6 +13,7 @@ type HistoriaOdontologica = {
     modificaciones_plan_tratamiento: ModificacionTratamiento[]
     secuencia_tratamiento: TratamientoRealizado[]
     examen_radiografico: z.infer<typeof ExamenRadiograficoSchema>
+    panoramicas: readonly string[]
 }
 
 type Portador = {
@@ -72,5 +73,23 @@ const examen_fisico = {
 }
 
 type ExamenFisico = typeof examen_fisico
+
+const habitos = {
+    alcohol: false,
+    bruxismo: false,
+    bruxomania: false,
+    deglusion_atip: false,
+    descripcion: "",
+    drogas: false,
+    fumar: false,
+    onicofagia: false,
+    otros: false,
+    palillos: false,
+    queilofagia: false,
+    respirador_bucal: false,
+    succion_digital: false
+}
+
+type Habitos = typeof habitos
 
 export default HistoriaOdontologica
