@@ -19,7 +19,7 @@ type AntecedentesMedicosPersonalesSectionProps = {
 }
 
 const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersonalesSectionProps) => {
-    console.log(Object.keys(AntPersonalesSchema.shape.trastornos.shape))
+    
     const route = useRoute()
     const { isProcessing, router} = useInertiaSubmit()
 
