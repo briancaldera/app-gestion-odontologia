@@ -6,12 +6,13 @@ import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import Label from "@/Components/atoms/Label";
-import Checkbox from "@/Components/atoms/Checkbox";
+import {Checkbox} from "@/shadcn/ui/checkbox.tsx";
 import Textarea from "@/Components/atoms/Textarea";
 import Input from "@/Components/atoms/Input";
 import {Button} from "@/shadcn/ui/button";
 import React from "react";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
+import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 
 type AntecedentesMedicosPersonalesSectionProps = {
     form: UseFormReturn<z.infer<typeof AntPersonalesSchema>>
@@ -22,21 +23,15 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
     const route = useRoute()
     const { isProcessing, router} = useInertiaSubmit()
 
-    console.log(form.formState.errors)
-    console.log(form.getValues().medicamentos.acidoacetilicidico)
-
     const handleSubmit = (values: z.infer<typeof AntPersonalesSchema>) => {
-        console.log(values)
 
         const endpoint = route('historias.antpersonales.update', {
             historia: values.historia_id
         })
 
-        router.patch(endpoint, values, {
-            onError: errors => {
-                console.log(errors)
-            },
-            onSuccess: page => {
+        router.patch(endpoint, {...values}, {
+            onError: errors => mapServerErrorsToFields(form, errors),
+            onSuccess: _page => {
                 form.reset(values)
             }
         })
@@ -77,6 +72,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                                                         <div className={'flex items-center gap-2'}>
                                                                             <FormControl>
                                                                                 <Checkbox id={field.name}
+                                                                                          disabled={field.disabled}
                                                                                           checked={field.value}
                                                                                           onCheckedChange={field.onChange}/>
                                                                             </FormControl>
@@ -114,7 +110,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                         <FormField render={({field}) => (
                                             <FormItem className={'flex gap-2 items-center'}>
                                                 <FormControl>
-                                                    <Checkbox id={field.name} checked={field.value}
+                                                    <Checkbox id={field.name} checked={field.value} disabled={field.disabled}
                                                               onCheckedChange={field.onChange}/>
                                                 </FormControl>
                                                 <Title level={'title-md'} className={'capitalize'}>{alergia}</Title>
@@ -154,7 +150,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                                             <FormField render={({field}) =>
                                                 <FormItem className={'flex gap-4 items-center'}>
                                                     <FormControl>
-                                                        <Checkbox id={field.name} checked={field.value}
+                                                        <Checkbox id={field.name} checked={field.value} disabled={field.disabled}
                                                                   onCheckedChange={field.onChange}/>
                                                     </FormControl>
                                                     <FormLabel htmlFor={field.name}
