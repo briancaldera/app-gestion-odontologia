@@ -59,9 +59,24 @@ return [
         'media' => [
             'driver' => 'local',
             'root'   => storage_path('app/media'),
-            'url'    => env('APP_URL').'/app/media',
+            'url'    => env('APP_URL').'/media',
         ],
 
+        'historia' => [
+            'driver' => 'local',
+            'root' => storage_path('app/historias'),
+        ],
+
+        'odontologica' => [
+            'driver' => 'local',
+            'root' => storage_path('app/historias/odontologicas'),
+        ],
+
+        'panoramicas' => [
+            'driver' => 'local',
+            'root' => storage_path('app/historias/odontologicas/panoramicas'),
+            'url'    => env('APP_URL').'/historias/odontologicas/panoramicas',
+        ],
     ],
 
     /*
