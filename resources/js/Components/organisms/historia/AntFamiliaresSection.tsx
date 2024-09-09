@@ -1,4 +1,4 @@
-import {useForm, UseFormReturn} from "react-hook-form";
+import {UseFormReturn} from "react-hook-form";
 import {z} from "zod";
 import {useRoute} from "ziggy-js";
 import Surface from "@/Components/atoms/Surface";
@@ -10,8 +10,7 @@ import React from "react";
 import AntFamiliaresSchema from "@/FormSchema/Historia/AntFamiliaresSchema";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {Button} from "@/shadcn/ui/button";
-import {Simulate} from "react-dom/test-utils";
-import error = Simulate.error;
+import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 
 type AntFamiliaresSectionProps = {
     form: UseFormReturn<z.infer<typeof AntFamiliaresSchema>>
@@ -25,16 +24,12 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
     const handleSubmit = (values: z.infer<typeof AntFamiliaresSchema>) => {
 
         const endpoint = route('historias.antfamiliares.update', {
-            historia: form.getValues().historia_id
+            historia: values.historia_id
         })
 
-        router.patch(endpoint, values, {
-            onError: errors => {
-                console.log(errors)
-                Object.keys(errors).forEach(key => form.setError(key, {type: 'custom', message: errors[key]}))
-            },
-            onSuccess: visit => {
-                console.log('OK')
+        router.patch(endpoint, {...values}, {
+            onError: errors => mapServerErrorsToFields(form, errors),
+            onSuccess: _page => {
                 form.reset(values)
             }
         })
@@ -59,7 +54,7 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
                         <div
                             className={'grid grid-cols-1 sm:grid-cols-2 gap-6 border rounded-2xl border-slate-300 p-3'}>
                             {
-                                Object.keys(form.formState.defaultValues).filter(key => key !== 'historia_id').map(familiar => {
+                                Object.keys(AntFamiliaresSchema.shape).filter(key => key !== 'historia_id').map(familiar => {
 
                                     return (
                                         <div key={familiar}>
@@ -82,7 +77,7 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
                     </section>
 
                     <div className={'flex justify-end mt-2'}>
-                        <Button disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
+                        <Button disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>Guardar</Button>
                     </div>
                 </form>
             </Form>

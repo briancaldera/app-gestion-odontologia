@@ -26,7 +26,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
     const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
 
         const endpoint = route('pacientes.update', {
-            paciente: form.getValues().id
+            paciente: values.id
         })
 
         router.patch(endpoint, {...values}, {
@@ -121,7 +121,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                     <div className={'hidden sm:block'}></div>
 
                     <div className={'w-full'}>
-                        <Button type={'submit'} disabled={!form.formState.isDirty || isProcessing}>Actualizar</Button>
+                        <Button disabled={!form.formState.isDirty || isProcessing || form.formState.disabled} type={'submit'}>Actualizar</Button>
                     </div>
                 </form>
             </Form>

@@ -6,8 +6,8 @@ import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import {Text} from "@/Components/atoms/Text";
-import Textarea from "@/Components/atoms/Textarea";
-import Checkbox from "@/Components/atoms/Checkbox";
+import {Textarea} from "@/shadcn/ui/textarea.tsx";
+import {Checkbox} from "@/shadcn/ui/checkbox.tsx";
 import Input from "@/Components/atoms/Input";
 import Tooltip from "@/Components/atoms/Tooltip";
 import React from "react";
@@ -25,18 +25,16 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
     const {isProcessing, router} = useInertiaSubmit()
 
     const handleSubmit = (values: z.infer<typeof HistoriaOdontologicaSchema>) => {
-        console.log(values)
 
         const endpoint = route('historias.odontologica.update', {
             historia: values.historia_id
         })
 
-        router.patch(endpoint, values, {
+        router.patch(endpoint, {...values}, {
             onError: errors => {
-                console.log(errors)
                 mapServerErrorsToFields(form, errors)
             },
-            onSuccess: page => form.reset(values)
+            onSuccess: _page => form.reset(values)
         })
     }
 
@@ -79,13 +77,13 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
                                     <Text level={'body-sm'}>Seleccione las opciones que apliquen al paciente</Text>
                                 </div>
                                 {
-                                    Object.keys(form.getValues().portador).map(item => (
+                                    Object.keys(HistoriaOdontologicaSchema.shape.portador.shape).map(item => (
                                         <div key={item} className={'col-span-full'}>
                                             <FormField render={({field}) => (
                                                 <FormItem>
                                                     <div className={'flex items-center gap-1'}>
                                                         <FormControl>
-                                                            <Checkbox id={field.name} checked={field.value}
+                                                            <Checkbox id={field.name} checked={field.value} disabled={field.disabled}
                                                                       onCheckedChange={field.onChange}/>
                                                         </FormControl>
                                                         <FormLabel htmlFor={field.name}
@@ -108,14 +106,14 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
                                 <div
                                     className={'col-span-full grid grid-cols-1 gap-2 grid-flow-col-dense sm:grid-cols-4 sm:grid-rows-5'}>
                                     {
-                                        Object.keys(form.getValues().habitos).filter(habito => habito !== 'descripcion').sort().map(habito => {
+                                        Object.keys(HistoriaOdontologicaSchema.shape.habitos.shape).filter(habito => habito !== 'descripcion').sort().map(habito => {
                                             return (
                                                 <div key={habito}>
                                                     <FormField render={({field}) => (
                                                         <FormItem>
                                                             <div className={'flex gap-2'}>
                                                                 <FormControl>
-                                                                    <Checkbox id={field.name} checked={field.value}
+                                                                    <Checkbox id={field.name} checked={field.value} disabled={field.disabled}
                                                                               onCheckedChange={field.onChange}/>
                                                                 </FormControl>
                                                                 <FormLabel htmlFor={field.name}
@@ -265,7 +263,7 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
 
                             <div>
                                 {
-                                    Object.keys(form.getValues().examen_fisico.examen_extraoral).map(char => (
+                                    Object.keys(HistoriaOdontologicaSchema.shape.examen_fisico.shape.examen_extraoral.shape).map(char => (
                                         <div key={char}>
                                             <FormField render={({field}) => (
                                                 <FormItem>
@@ -290,7 +288,7 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
 
                             <div>
                                 {
-                                    Object.keys(form.getValues().examen_fisico.examen_intraoral).map(char => (
+                                    Object.keys(HistoriaOdontologicaSchema.shape.examen_fisico.shape.examen_intraoral.shape).map(char => (
                                         <div key={char}>
                                             <FormField render={({field}) => (
                                                 <FormItem>
@@ -311,7 +309,7 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
                     </section>
 
                     <div className={'flex justify-end'}>
-                        <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
+                        <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>Guardar</Button>
                     </div>
 
                 </form>

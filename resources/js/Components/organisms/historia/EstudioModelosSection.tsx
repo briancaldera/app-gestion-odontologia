@@ -10,9 +10,10 @@ import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Histori
 import {Button} from "@/shadcn/ui/button";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {useRoute} from "ziggy-js";
+import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 
 
-interface EstudioModelosSectionProps {
+type EstudioModelosSectionProps = {
     form: UseFormReturn<z.infer<typeof EstudioModelosSchema>>
 }
 
@@ -22,7 +23,6 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
     const route = useRoute()
 
     const onHandleSubmit = (values) => {
-        console.log(values)
 
         const endpoint: string = route('historias.odontologica.modelos.update', {
             historia: values.historia_id
@@ -30,10 +30,8 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
 
         router.patch(endpoint, values, {
             preserveScroll: true,
-            onError: errors => {
-                console.log(errors)
-            },
-            onSuccess: page => {
+            onError: errors => mapServerErrorsToFields(form, errors),
+            onSuccess: _page => {
                 form.reset(values)
             }
         })
@@ -61,7 +59,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
 
                                 <div className={'grid row-span-9 grid-rows-subgrid border p-2 rounded-lg'}>
                                     {
-                                        Object.keys(form.getValues().estudio_modelos.maxilar_sup).map(item => {
+                                        Object.keys(EstudioModelosSchema.shape.estudio_modelos.shape.maxilar_sup.shape).map(item => {
                                             return (
                                                 <FormField key={item} render={({field}) => (
                                                     <FormItem>
@@ -82,7 +80,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
                                 <div className={'grid row-span-9 grid-rows-subgrid border p-2 rounded-lg'}>
 
                                     {
-                                        Object.keys(form.getValues().estudio_modelos.maxilar_inf).map(item => {
+                                        Object.keys(EstudioModelosSchema.shape.estudio_modelos.shape.maxilar_inf.shape).map(item => {
                                             return (
                                                 <FormField key={item} render={({field}) => (
                                                     <FormItem>
@@ -103,7 +101,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
 
 
                                     {
-                                        Object.keys(form.getValues().estudio_modelos.modelos_oclusion).map(item => {
+                                        Object.keys(EstudioModelosSchema.shape.estudio_modelos.shape.modelos_oclusion.shape).map(item => {
                                             return (
                                                 <FormField key={item} render={({field}) => (
                                                     <FormItem>
@@ -148,12 +146,12 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
 
                             <div className={'flex justify-evenly flex-wrap gap-5'}>
                                 {
-                                    Object.keys(form.getValues().estudio_modelos.interconsultas).filter(item => item !== 'descripcion').map(item => (
+                                    Object.keys(EstudioModelosSchema.shape.estudio_modelos.shape.interconsultas.shape).filter(item => item !== 'descripcion').map(item => (
                                         <FormField key={item} render={({field}) => (
                                             <FormItem className={'shrink-0'}>
                                                 <div className={'flex items-center gap-1'}>
                                                     <FormControl>
-                                                        <Checkbox checked={field.value}
+                                                        <Checkbox checked={field.value} disabled={field.disabled}
                                                                   onCheckedChange={field.onChange}/>
                                                     </FormControl>
                                                     <FormLabel>{item}</FormLabel>
@@ -207,7 +205,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
 
                     </section>
                     <div className={'flex justify-end'}>
-                        <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
+                        <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>Guardar</Button>
                     </div>
                 </form>
             </Form>

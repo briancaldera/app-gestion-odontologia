@@ -19,7 +19,7 @@ type AntecedentesMedicosPersonalesSectionProps = {
 }
 
 const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersonalesSectionProps) => {
-
+    console.log(Object.keys(AntPersonalesSchema.shape.trastornos.shape))
     const route = useRoute()
     const { isProcessing, router} = useInertiaSubmit()
 
@@ -54,15 +54,16 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                             className={'grid grid-cols-1 sm:grid-cols-2 gap-6 border rounded-2xl border-slate-300 p-3'}>
                             {
 
-                                Object.entries(form.getValues().trastornos).filter(([key, _]) => key !== 'historia_id').map(([key, value]: [string, object]) => (
+                                Object.keys(AntPersonalesSchema.shape.trastornos.shape).map((key: string) => (
                                     <div id={key}
                                          className={'grid grid-cols-2 gap-2 border rounded-lg p-6 content-start'}
                                          key={key}>
                                         <div className={'col-span-full capitalize'}>
                                             <Label htmlFor={key}>{key}</Label>
                                         </div>
+                                        {/*TODO: Add 'otros' field*/}
                                         {
-                                            Object.keys(value).filter(trastorno => trastorno !== 'otros').map(trastorno => {
+                                            Object.keys(AntPersonalesSchema.shape.trastornos.shape[key].shape).filter(trastorno => trastorno !== 'otros').map(trastorno => {
                                                 return (
                                                     <div key={trastorno}>
                                                         <FormField render={({field}) => {
@@ -105,7 +106,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                         <div
                             className={'grid sm:flex grid-cols-1 items-center gap-6 border rounded-2xl border-slate-300 p-3'}>
                             {
-                                Object.keys(form.getValues().alergias).filter(alergia => alergia !== 'descripcion').map(alergia => (
+                                Object.keys(AntPersonalesSchema.shape.alergias.shape).filter(alergia => alergia !== 'descripcion').map(alergia => (
                                     <div key={alergia}>
                                         <FormField render={({field}) => (
                                             <FormItem className={'flex gap-2 items-center'}>
@@ -144,7 +145,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                         <div
                             className={'col-span-full grid grid-cols-1 gap-4 sm:grid-cols-3 border rounded-2xl border-slate-300 p-3'}>
                             {
-                                Object.keys(form.getValues().medicamentos).filter(medicamento => medicamento !== 'otros').map(medicamento => (
+                                Object.keys(AntPersonalesSchema.shape.medicamentos.shape).filter(medicamento => medicamento !== 'otros').map(medicamento => (
                                     <div key={medicamento}>
                                         <div className={'flex gap-4 items-center'}>
                                             <FormField render={({field}) =>
@@ -177,7 +178,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                         </div>
                     </section>
 
-                    <Button type={"submit"} disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
+                    <Button type={"submit"} disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>Guardar</Button>
 
                 </form>
             </Form>
