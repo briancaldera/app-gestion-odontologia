@@ -1,16 +1,17 @@
 import {z} from "zod";
+import {formatDate} from 'date-fns'
 
 const MAX_TEXT_LENGTH: number = 1000
 const MAX_TOOTH_LENGTH: number = 100
 
 const ModificacionPlanTratamientoSchema = z.object({
-    fecha: z.coerce.date(),
+    fecha: z.coerce.string().date(),
     diente: z.string().max(MAX_TOOTH_LENGTH, {message: `Máximo ${MAX_TOOTH_LENGTH} caracteres`}),
     tratamiento: z.string().max(MAX_TEXT_LENGTH, {message: `Máximo ${MAX_TEXT_LENGTH} caracteres`}).nullable(),
 })
 
 const ModificacionPlanTratamientoDefaults = {
-    diente: '', fecha: new Date(), tratamiento: ''
+    diente: '', fecha: new Date().toISOString(), tratamiento: ''
 } satisfies z.infer<typeof ModificacionPlanTratamientoSchema> as const
 
 const ModificacionesPlanTratamientoSchema = z.object({

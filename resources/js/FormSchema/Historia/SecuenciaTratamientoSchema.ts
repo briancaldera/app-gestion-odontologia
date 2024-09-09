@@ -4,13 +4,13 @@ const MAX_TEXT_LENGTH: number = 1000
 const MAX_TOOTH_LENGTH: number = 100
 
 const TratamientoRealizadoSchema = z.object({
-    fecha: z.coerce.date(),
+    fecha: z.coerce.string().date(),
     diente: z.string().max(MAX_TOOTH_LENGTH, {message: `Máximo ${MAX_TOOTH_LENGTH} caracteres`}),
     tratamiento: z.string().max(MAX_TEXT_LENGTH).nullable(),
 })
 
 const TratamientoRealizadoDefaults = {
-    diente: '', fecha: new Date(), tratamiento: ''
+    diente: '', fecha: new Date().toISOString(), tratamiento: ''
 } satisfies z.infer<typeof TratamientoRealizadoSchema>
 
 const SecuenciaTratamientoSchema = z.object({
