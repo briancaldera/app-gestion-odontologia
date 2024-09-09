@@ -5,15 +5,15 @@ import PacienteSchema from "@/FormSchema/Historia/PacienteSchema";
 import {useRoute} from "ziggy-js";
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
-import {Form, FormControl, FormLabel, FormMessage, FormItem, FormDescription, FormField} from "@/shadcn/ui/form";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import Field from "@/Components/molecules/Field";
 import DatePicker from "@/Components/molecules/DatePicker";
 import {Button} from "@/shadcn/ui/button";
-import {Select, SelectItem, SelectValue, SelectTrigger, SelectContent, SelectLabel} from "@/shadcn/ui/select";
-import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/shadcn/ui/select";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
+import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 
-interface PacienteSectionProps {
+type PacienteSectionProps = {
     form: UseFormReturn<z.infer<typeof PacienteSchema>>
 }
 
@@ -29,13 +29,9 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
             paciente: form.getValues().id
         })
 
-        router.patch(endpoint, values, {
-            onError: errors => {
-                Object.keys(errors).forEach((key: string) => {
-                    form.setError(key, {type: 'custom', message: errors[key]})
-                })
-            },
-            onSuccess: page => {
+        router.patch(endpoint, {...values}, {
+            onError: errors => mapServerErrorsToFields(form, errors),
+            onSuccess: _page => {
                 // This will reload data from server. Might think later on it... 🤔
                 // router.reload()
                 // This is cheaper and will simply set the form default values to the current accepted ones
@@ -45,7 +41,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <Surface className={'w-full p-6 h-screen'}>
             <Title level={'title-lg'}>Datos Personales</Title>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={'grid grid-cols-1 sm:grid-cols-3 gap-4'}>
@@ -89,7 +85,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                             <FormField render={({field}) => (
                                 <FormItem>
                                     <FormLabel>Sexo</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={field.disabled}>
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder={'Sexo'} />

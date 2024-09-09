@@ -18,6 +18,7 @@ const DatePicker = ({label, name, control, description = '', disabled = false}) 
                             <PopoverTrigger asChild>
                                 <FormControl>
                                 <Button
+                                    disabled={field.disabled}
                                     variant={"outline"}
                                     className={cn(
                                         "w-full pl-3 text-left font-normal",
@@ -35,6 +36,7 @@ const DatePicker = ({label, name, control, description = '', disabled = false}) 
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
                                 <Calendar
+                                    disabled={field.disabled}
                                     fromYear={1900}
                                     toYear={2100}
                                     mode="single"
