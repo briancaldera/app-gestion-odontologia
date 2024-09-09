@@ -22,6 +22,11 @@ class AntPersonales extends Model
     protected $primaryKey = 'historia_id';
     public $incrementing = false;
 
+    protected $attributes = [
+        'medicamentos' => '{}',
+        'alergias' => '{}'
+    ];
+
     protected $fillable = [
         'medicamentos',
         'alergias',

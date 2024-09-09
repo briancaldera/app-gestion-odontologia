@@ -10,16 +10,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property string $historia_id the medical record id
- * @property array|Json $cardiovasculares
- * @property array|Json $hematologicos
- * @property array|Json $respiratorios
- * @property array|Json $endocrinos
- * @property array|Json $gastrointestinales
- * @property array|Json $neurologicos
- * @property array|Json $oseos
- * @property array|Json $ginecologicos
- * @property array|Json $urologicos
- * @property array|Json $infectocontagiosa
+ * @property array $cardiovasculares
+ * @property array $hematologicos
+ * @property array $respiratorios
+ * @property array $endocrinos
+ * @property array $gastrointestinales
+ * @property array $neurologicos
+ * @property array $oseos
+ * @property array $ginecologicos
+ * @property array $urologicos
+ * @property array $infectocontagiosa
  */
 class Trastornos extends Model
 {
@@ -29,6 +29,19 @@ class Trastornos extends Model
 
     protected $primaryKey = 'historia_id';
     public $incrementing = false;
+
+    protected $attributes = [
+        'cardiovasculares' => '{}',
+        'hematologicos' => '{}',
+        'respiratorios' => '{}',
+        'endocrinos' => '{}',
+        'gastrointestinales' => '{}',
+        'neurologicos' => '{}',
+        'oseos' => '{}',
+        'ginecologicos' => '{}',
+        'urologicos' => '{}',
+        'infectocontagiosa' => '{}',
+    ];
 
     protected $fillable = [
         'cardiovasculares',
