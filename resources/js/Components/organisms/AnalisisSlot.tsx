@@ -26,7 +26,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/shadcn/ui/form";
 import {enqueueSnackbar} from "notistack";
 import {VisuallyHidden} from '@radix-ui/react-visually-hidden'
-import {RadiografiaSchema, MAX_PICTURES_PER_RADIOGRAFIA} from '@/FormSchema/Historia/ExamenRadiograficoForm'
+import {RadiografiaSchema, MAX_PICTURES_PER_RADIOGRAFIA} from '@/FormSchema/Historia/ExamenRadiograficoSchema.ts'
 
 type CreateAnalisisProps = Readonly<{
     title: string,
