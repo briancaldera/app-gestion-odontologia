@@ -2,12 +2,12 @@ import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import HistoriaEditor from "@/Components/organisms/HistoriaEditor";
 import Historia from "@/src/models/Historia";
 
-const Edit = ({historia}: {historia? : Historia}) => {
+const Edit = ({historia}: {historia : Historia}) => {
 
     return (
         <AuthLayout title={'Historia'}>
             <div className={'p-6'}>
-                <HistoriaEditor historia={historia}/>
+                <HistoriaEditor historia={historia} readMode={false}/>
             </div>
         </AuthLayout>
     )
