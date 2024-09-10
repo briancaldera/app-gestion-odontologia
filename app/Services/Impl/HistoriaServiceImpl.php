@@ -13,7 +13,6 @@ use App\Models\User;
 use App\Services\HistoriaService;
 use App\Status;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Arr;
 
 class HistoriaServiceImpl implements HistoriaService
 {
@@ -70,7 +69,15 @@ class HistoriaServiceImpl implements HistoriaService
             'status' => $initial_status,
             'autor_id' => $autor->id
         ];
-        return $paciente->historia()->create($new_data);
+
+        /* @var Historia $historia */
+        $historia =  $paciente->historia()->create($new_data);
+        $historia->antFamiliares()->create();
+        $historia->antPersonales()->create();
+        $historia->trastornos()->create();
+        /* @var HistoriaOdontologica $historia_odon */
+        $historia->historiaOdontologica()->create();
+        return $historia;
     }
 
     public function updateHistoria(Historia $historia, array $data): Historia
