@@ -167,8 +167,8 @@ JSON,
 
     protected $appends = [
         'panoramicas',
-//        'coronales',
-//        'periapicales,'
+        'coronales',
+        'periapicales'
     ];
 
     protected function casts()
@@ -211,18 +211,18 @@ JSON,
             get: fn() => $this->getMedia('panoramicas')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/panoramicas/$media->uuid"))
         );
     }
-//
-//    protected function coronales(): Attribute
-//    {
-//        return new Attribute(
-//            get: fn() => $this->getMedia('coronales')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/coronales/$media->uuid"))
-//        );
-//    }
 
-//    protected function periapicales(): Attribute
-//    {
-//        return new Attribute(
-//            get: fn() => $this->getMedia('periapicales')->map(fn(Media $media) => $media->getFullUrl())
-//        );
-//    }
+    protected function coronales(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('coronales')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/coronales/$media->uuid"))
+        );
+    }
+
+    protected function periapicales(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('periapicales')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/periapicales/$media->uuid"))
+        );
+    }
 }
