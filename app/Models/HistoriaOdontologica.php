@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -15,14 +17,15 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 /**
  * @property string $historia_id the medical record id
  * @property string $ant_personales the dental history
- * @property array $habitos the manners of the patient
- * @property array $portador
- * @property array $examen_fisico the information about the physical examination
- * @property array $estudio_modelos the models examination
- * @property array $plan_tratamiento the treatment plan
- * @property array $modificaciones_plan_tratamiento the modifications to the treatment plan
- * @property array $secuencia_tratamiento the sequence of treatments undergone by the patient
- * @property array $examen_radiografico
+ * @property ArrayObject $habitos the manners of the patient
+ * @property ArrayObject $portador
+ * @property ArrayObject $examen_fisico the information about the physical examination
+ * @property ArrayObject $estudio_modelos the models examination
+ * @property ArrayObject $plan_tratamiento the treatment plan
+ * @property ArrayObject $modificaciones_plan_tratamiento the modifications to the treatment plan
+ * @property ArrayObject $secuencia_tratamiento the sequence of treatments undergone by the patient
+ * @property ArrayObject $examen_radiografico
+ * @property Collection<string> $panoramicas
  */
 class HistoriaOdontologica extends Model implements HasMedia
 {
@@ -40,7 +43,19 @@ class HistoriaOdontologica extends Model implements HasMedia
         'plan_tratamiento' => '[]',
         'modificaciones_plan_tratamiento' => '[]',
         'secuencia_tratamiento' => '[]',
-        'examen_radiografico' => '{}'
+        'examen_radiografico' => <<<'JSON'
+{
+  "interpretacion_panoramica": {
+    "nasomaxilar": null,
+    "ATM": null,
+    "mandibular": null,
+    "dento_alveolar_sup": null,
+    "dento_alveolar_inf": null
+  },
+  "interpretacion_periapicales":  null,
+  "interpretacion_coronales": null
+}
+JSON,
     ];
 
     protected $fillable = [
@@ -55,7 +70,9 @@ class HistoriaOdontologica extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'panoramicas'
+        'panoramicas',
+//        'coronales',
+//        'periapicales,'
     ];
 
     protected function casts()
@@ -83,6 +100,8 @@ class HistoriaOdontologica extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('panoramicas')->useDisk('panoramicas');
+        $this->addMediaCollection('coronales')->useDisk('coronales');
+        $this->addMediaCollection('periapicales')->useDisk('periapicales');
     }
 
     public function historia(): BelongsTo
@@ -93,7 +112,21 @@ class HistoriaOdontologica extends Model implements HasMedia
     protected function panoramicas(): Attribute
     {
         return new Attribute(
-            get: fn() => $this->getMedia('panoramicas')->map(fn(Media $media) => $media->getFullUrl())
+            get: fn() => $this->getMedia('panoramicas')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/panoramicas/$media->uuid"))
         );
     }
+//
+//    protected function coronales(): Attribute
+//    {
+//        return new Attribute(
+//            get: fn() => $this->getMedia('coronales')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/coronales/$media->uuid"))
+//        );
+//    }
+
+//    protected function periapicales(): Attribute
+//    {
+//        return new Attribute(
+//            get: fn() => $this->getMedia('periapicales')->map(fn(Media $media) => $media->getFullUrl())
+//        );
+//    }
 }
