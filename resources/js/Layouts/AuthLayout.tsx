@@ -64,7 +64,7 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
                         ' /*mobile*/ bg-indigo-600 fixed z-50 max-lg:inset-x-0 max-lg:h-16 bottom-0' +
                         ' /*tablet*/ ' +
                         ' /*laptop*/  lg:inset-y-0 lg:inset-x-px lg:left-0 lg:w-full lg:max-w-72'}>
-                        <div className={'h-20 flex items-center hidden lg:block'}>
+                        <div className={'sm:h-20 items-center hidden lg:flex'}>
                             <div className={'overflow-hidden w-20 ps-6 '}>
                                 <Link href={route('dashboard')}
                                       className={'grayscale contrast-200 brightness-200'}>
