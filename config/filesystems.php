@@ -77,6 +77,18 @@ return [
             'root' => storage_path('app/historias/odontologicas/panoramicas'),
             'url'    => env('APP_URL').'/historias/odontologicas/panoramicas',
         ],
+
+        'coronales' => [
+            'driver' => 'local',
+            'root' => storage_path('app/historias/odontologicas/coronales'),
+            'url'    => env('APP_URL').'/historias/odontologicas/coronales',
+        ],
+
+        'periapicales' => [
+            'driver' => 'local',
+            'root' => storage_path('app/historias/odontologicas/periapicales'),
+            'url'    => env('APP_URL').'/historias/odontologicas/periapicales',
+        ],
     ],
 
     /*
