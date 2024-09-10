@@ -362,4 +362,26 @@ class HistoriaController extends Controller
 
         return response()->file($panoramica->getPath());
     }
+
+    public function getCoronales(Historia $historia, string $id)
+    {
+        /* @var HistoriaOdontologica $historia_odo */
+        $historia_odo = $historia->historiaOdontologica;
+
+        /* @var Media $coronales */
+        $coronales = $historia_odo->getMedia('coronales')->firstOrFail(fn(Media $media) => $media->uuid === $id);
+
+        return response()->file($coronales->getPath());
+    }
+
+    public function getPeriapicales(Historia $historia, string $id)
+    {
+        /* @var HistoriaOdontologica $historia_odo */
+        $historia_odo = $historia->historiaOdontologica;
+
+        /* @var Media $periapicales */
+        $periapicales = $historia_odo->getMedia('periapicales')->firstOrFail(fn(Media $media) => $media->uuid === $id);
+
+        return response()->file($periapicales->getPath());
+    }
 }

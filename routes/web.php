@@ -126,6 +126,11 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     // Get panoramicas
     Route::get('/historias/{historia}/odontologica/panoramicas/{id}', [HistoriaController::class, 'getPanoramica'])->name('historias.odontologica.panoramicas')->can('view', 'historia');
+    // Get coronales
+    Route::get('/historias/{historia}/odontologica/coronales/{id}', [HistoriaController::class, 'getCoronales'])->name('historias.odontologica.coronales')->can('view', 'historia');
+    // Get periapicales
+    Route::get('/historias/{historia}/odontologica/periapicales/{id}', [HistoriaController::class, 'getPeriapicales'])->name('historias.odontologica.periapicales')->can('view', 'historia');
+
 
     Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show')->can('view', 'historia');
 
