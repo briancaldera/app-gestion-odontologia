@@ -36,10 +36,106 @@ class HistoriaOdontologica extends Model implements HasMedia
 
     protected $attributes = [
         'ant_personales' => null,
-        'habitos' => '{}',
-        'portador' => '{}',
-        'examen_fisico' => '{}',
-        'estudio_modelos' => '{}',
+        'habitos' => <<<'JSON'
+{
+        "alcohol": false,
+        "bruxismo": false,
+        "bruxomania": false,
+        "deglusion_atip": false,
+        "drogas": false,
+        "fumar": false,
+        "onicofagia": false,
+        "otros": false,
+        "palillos": false,
+        "queilofagia": false,
+        "respirador_bucal": false,
+        "succion_digital": false,
+        "descripcion": ""
+    }
+JSON,
+        'portador' => <<<'JSON'
+{
+        "ortodoncia": false,
+        "protesis": false
+    }
+JSON,
+        'examen_fisico' => <<<'JSON'
+{
+        "examen_extraoral": {
+            "articulacion_temporomandibular": "",
+            "cabeza": "",
+            "cara": "",
+            "lesiones_extraorales": "",
+            "palpacion_ganglios": "",
+            "piel": "",
+            "simetria_facial": ""
+        },
+        "examen_intraoral": {
+            "dientes": "",
+            "discromias": "",
+            "encias": "",
+            "frenillos": "",
+            "labios": "",
+            "lengua_tipo": "",
+            "maxilares": "",
+            "mejillas": "",
+            "paladar_duro_blando": "",
+            "piso_boca": ""
+        },
+        "signos_vitales": {
+            "pulso": 0,
+            "respiracion": 0,
+            "temperatura": 0,
+            "tension_arterial": {
+                "diastole": 0,
+                "sistole": 0
+            }
+        }
+    }
+JSON,
+        'estudio_modelos' => <<<'JSON'
+{
+        "examenes_comp": "",
+        "interconsultas": {
+            "cirugia": false, "endodoncia": false, "ortodoncia": false, "periodoncia": false, "protesis": false, "descripcion": ""
+        },
+        "maxilar_sup": {
+            "tipo_arco": "",
+            "forma_arco": "",
+            "simetria_arco": "",
+            "paladar": "",
+            "maloclusion": "",
+            "dientes_ausentes": "",
+            "facetas_desgaste": "",
+            "diastemas": "",
+            "anomalia": ""
+        },
+        "maxilar_inf": {
+            "tipo_arco": "",
+            "forma_arco": "",
+            "simetria_arco": "",
+            "piso_boca": "",
+            "maloclusion": "",
+            "dientes_ausentes": "",
+            "facetas_desgaste": "",
+            "diastemas": "",
+            "anomalia": ""
+        },
+        "modelos_oclusion": {
+            "linea_media": "",
+            "sobresalte": "",
+            "sobrepase": "",
+            "relacion_canina": "",
+            "relacion_molar": "",
+            "mordida_anterior": "",
+            "mordida_posterior": "",
+            "curva_compensacion": "",
+            "plano_oclusal": ""
+        },
+        "diagnostico": "",
+        "pronostico": ""
+    }
+JSON,
         'plan_tratamiento' => '[]',
         'modificaciones_plan_tratamiento' => '[]',
         'secuencia_tratamiento' => '[]',
