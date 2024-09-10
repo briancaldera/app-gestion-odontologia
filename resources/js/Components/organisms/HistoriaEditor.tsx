@@ -2,13 +2,10 @@ import Surface from '@/Components/atoms/Surface'
 import {UserCircleIcon} from '@heroicons/react/24/outline'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon";
-import {useForm, UseFormReturn} from "react-hook-form"
+import {useForm} from "react-hook-form"
 import {z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Form, FormControl, FormField, FormItem} from "@/shadcn/ui/form";
-import {useRoute} from "ziggy-js";
 import React from "react";
-import Title from "@/Components/atoms/Title";
 import PacienteSchema, {PacienteDefaults} from "@/FormSchema/Historia/PacienteSchema";
 import AntPersonalesSchema, {AntPersonalesDefaults} from "@/FormSchema/Historia/AntPersonalesSchema";
 import AntFamiliaresSchema, {AntFamiliaresDefaults} from "@/FormSchema/Historia/AntFamiliaresSchema";
@@ -16,11 +13,8 @@ import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSc
 import HistoriaOdontologicaSchema, {
     HistoriaOdontologicaDefaults
 } from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
-import ExamenRadiograficoSchema, {ExamenRadiografico} from '@/FormSchema/Historia/ExamenRadiograficoForm'
-import {Text} from "@/Components/atoms/Text";
+import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema/Historia/ExamenRadiograficoSchema.ts'
 import {Bone, BriefcaseMedical, FileBox, HeartPulse, Hospital, ListChecks, RefreshCcwDot, Users} from "lucide-react"
-import DragAndDrop from "@/Components/molecules/DragAndDrop";
-import AnalisisSlot from "@/Components/organisms/AnalisisSlot";
 import EstudioModelosSection from "@/Components/organisms/historia/EstudioModelosSection";
 import ModificacionesPlanTratamientoSection from '@/Components/organisms/historia/ModificacionesPlanTratamientoSection'
 import SecuenciaPlanTratamientoSection from '@/Components/organisms/historia/SecuenciaTratamientoSection'
@@ -39,8 +33,9 @@ import SecuenciaTratamientoSchema, {
     SecuenciaTratamientoDefaults
 } from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
 import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Historia/EstudioModelosSchema";
-import deepMerge from "react-hook-form/dist/utils/deepMerge";
 import {mergeDeep} from "@/src/Utils/Utils";
+import ExamenRadiograficoSection from "@/Components/organisms/historia/ExamenRadiograficoSection.tsx";
+import historia from "@/src/models/Historia";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -55,15 +50,19 @@ type HistoriaEditorProps = {
 
 const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
 
+    console.log(historia)
+
     const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
         resolver: zodResolver(HistoriaSchema),
-        defaultValues: historia ?? HistoriaDefaults,
+        defaultValues: HistoriaDefaults,
+        values: historia,
         disabled: readMode,
     })
 
     const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
         resolver: zodResolver(PacienteSchema),
-        defaultValues: historia?.paciente ?? PacienteDefaults,
+        defaultValues: PacienteDefaults,
+        values: historia.paciente,
         disabled: readMode,
     })
 
@@ -75,19 +74,28 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
 
     const antPersonalesForm = useForm<z.infer<typeof AntPersonalesSchema>>({
         resolver: zodResolver(AntPersonalesSchema),
-        defaultValues: historia?.ant_personales ?? Object.assign(AntPersonalesDefaults, {historia_id: historia?.id}),
+        defaultValues: AntPersonalesDefaults,
+        values: historia.ant_personales,
         disabled: readMode,
     })
 
     const antFamiliaresForm = useForm<z.infer<typeof AntFamiliaresSchema>>({
         resolver: zodResolver(AntFamiliaresSchema),
-        defaultValues: historia?.ant_familiares ?? Object.assign(AntFamiliaresDefaults, {historia_id: historia?.id}),
+        defaultValues: AntFamiliaresDefaults,
+        values: historia.ant_familiares,
         disabled: readMode,
     })
 
     const historiaOdontologicaForm = useForm<z.infer<typeof HistoriaOdontologicaSchema>>({
         resolver: zodResolver(HistoriaOdontologicaSchema),
-        defaultValues: historia?.historia_odontologica ?? Object.assign(HistoriaOdontologicaDefaults, {historia_id: historia?.id}),
+        defaultValues: HistoriaOdontologicaDefaults,
+        values: {
+            historia_id: historia.historia_odontologica!.historia_id,
+            ant_personales: historia.historia_odontologica!.ant_personales,
+            examen_fisico: historia.historia_odontologica!.examen_fisico,
+            habitos: historia.historia_odontologica!.habitos,
+            portador: historia.historia_odontologica!.portador
+        },
         disabled: readMode,
     })
 
@@ -98,7 +106,11 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
 
     const planTratamientoForm = useForm<z.infer<typeof PlanTratamientoSchema>>({
         resolver: zodResolver(PlanTratamientoSchema),
-        defaultValues: defaults,
+        defaultValues: PlanTratamientoDefaults,
+        values: {
+            historia_id: historia.historia_odontologica!.historia_id,
+            plan_tratamiento: historia.historia_odontologica!.plan_tratamiento
+        },
         disabled: readMode,
     })
 
@@ -109,7 +121,11 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
 
     const modificacionesTratamientoForm = useForm<z.infer<typeof ModificacionesPlanTratamientoSchema>>({
         resolver: zodResolver(ModificacionesPlanTratamientoSchema),
-        defaultValues: modificacionesDefaults,
+        defaultValues: ModificacionesPlanTratamientoDefaults,
+        values: {
+            historia_id: historia.historia_odontologica!.historia_id,
+            modificaciones_plan_tratamiento: historia.historia_odontologica!.modificaciones_plan_tratamiento,
+        },
         disabled: readMode,
     })
 
@@ -120,22 +136,44 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
 
     const secuenciaTratamientoForm = useForm<z.infer<typeof SecuenciaTratamientoSchema>>({
         resolver: zodResolver(SecuenciaTratamientoSchema),
-        defaultValues: secuenciaDefaults,
+        defaultValues: SecuenciaTratamientoDefaults,
+        values: {
+            historia_id: historia.historia_odontologica!.historia_id,
+            secuencia_tratamiento: historia.historia_odontologica!.secuencia_tratamiento,
+        },
         disabled: readMode,
     })
 
     const examenRadiograficoForm = useForm<z.infer<typeof ExamenRadiograficoSchema>>({
         resolver: zodResolver(ExamenRadiograficoSchema),
-        defaultValues: ExamenRadiografico,
+        defaultValues: ExamenRadiograficoDefaults,
+        values: {
+            historia_id: historia.historia_odontologica?.historia_id,
+            interpretacion_panoramica: {
+                descripcion: historia.historia_odontologica?.examen_radiografico.interpretacion_panoramica?.descripcion,
+                imagenes: []
+            },
+            interpretacion_coronales: {
+                descripcion: historia.historia_odontologica?.examen_radiografico.interpretacion_coronales?.descripcion ?? '',
+                imagenes: []
+            },
+            interpretacion_periapicales: {
+                descripcion: historia.historia_odontologica?.examen_radiografico.interpretacion_periapicales?.descripcion ?? '',
+                imagenes: []
+            }
+        },
         disabled: readMode,
     })
+
+    console.log(historia.historia_odontologica?.examen_radiografico.interpretacion_periapicales?.descripcion)
 
     const estudioModelosDefaults = (historia.historia_odontologica?.estudio_modelos) ? mergeDeep({...EstudioModelosDefaults}, {estudio_modelos: historia.historia_odontologica?.estudio_modelos}, {historia_id: historia.id}) satisfies z.infer<typeof EstudioModelosSchema>
         : Object.assign(EstudioModelosDefaults, {historia_id: historia.id}) satisfies z.infer<typeof EstudioModelosSchema>
 
     const estudioModelosForm = useForm<z.infer<typeof EstudioModelosSchema>>({
         resolver: zodResolver(EstudioModelosSchema),
-        defaultValues: estudioModelosDefaults,
+        defaultValues: EstudioModelosDefaults,
+        values: historia.historia_odontologica?.estudio_modelos,
         disabled: readMode,
     })
 
@@ -233,7 +271,7 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
                             <HistoriaOdontologicaSection form={historiaOdontologicaForm}/>
                         </TabsContent>
                         <TabsContent value="examenRadiografico" className={TabTriggerStyle}>
-                            <ExamenRadiograficoSection form={examenRadiograficoForm}/>
+                            <ExamenRadiograficoSection historiaOdontologica={historia.historia_odontologica!} form={examenRadiograficoForm}/>
                         </TabsContent>
                         <TabsContent value="planTratamiento" className={TabTriggerStyle}>
                             <PlanTratamientoSection form={planTratamientoForm}/>
@@ -252,104 +290,6 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
             </Tabs>
 
         </div>
-    )
-}
-
-type ExamenRadiograficoSectionProps = {
-    form: UseFormReturn<z.infer<typeof ExamenRadiograficoSchema>>
-}
-
-const ExamenRadiograficoSection = ({form}: ExamenRadiograficoSectionProps) => {
-
-    const route = useRoute()
-
-    const handleSubmit = (values: z.infer<typeof ExamenRadiograficoSchema>) => {
-        console.log(values)
-
-        // router.post(route(''), Object.create(values))
-    }
-
-    return (
-        <Surface className={SectionStyle}>
-
-            <Title level={'title-lg'}>Examen Radiografico</Title>
-
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
-
-                    <section className={'my-6'}>
-                        <header className={'mb-1.5 mt-5 space-y-1'}>
-                            <Title level={'title-md'}>Interpretación panorámica</Title>
-                        </header>
-
-                        <div className={'grid grid-rows-5 grid-cols-3 gap-4'}>
-                            {
-                                Object.keys(form.formState.defaultValues?.interpretacion_panoramica).map(char => (
-                                    <div key={char}>
-                                        <FormField render={({field}) => {
-                                            return (<FormItem>
-                                                    <div className={'capitalize font-semibold'}>
-                                                        {char.replaceAll('_', ' ')}
-                                                    </div>
-                                                    <div className={'border border-gray-400 rounded-lg'}>
-                                                        <FormControl>
-                                                            <AnalisisSlot title={char.replaceAll('_', ' ')}
-                                                                          descripcion={field.value.descripcion}
-                                                                          radiografias={field.value.radiografias}
-                                                                          onSubmitAnalisis={(values) => {
-                                                                              // field.onChange(values) // This doesn't work. Please do NOT use
-                                                                              form.setValue(`interpretacion_panoramica.${char}.radiografias`, values.radiografias, {
-                                                                                  shouldDirty: true,
-                                                                                  shouldTouch: true,
-                                                                                  shouldValidate: true
-                                                                              })
-                                                                              form.setValue(`interpretacion_panoramica.${char}.descripcion`, values.descripcion, {
-                                                                                  shouldDirty: true,
-                                                                                  shouldTouch: true,
-                                                                                  shouldValidate: true
-                                                                              })
-                                                                          }}/>
-                                                        </FormControl>
-                                                    </div>
-                                                    {/*<FormMessage hidden={true}/>*/}
-                                                </FormItem>
-                                            )
-                                        }} name={`interpretacion_panoramica.${char}`} control={form.control}/>
-
-
-                                    </div>
-                                ))
-                            }
-
-
-                        </div>
-                    </section>
-
-                    <section className={'my-6'}>
-                        <header className={'mb-1.5 mt-5 space-y-1'}>
-                            <Title level={'title-md'}>Interpretación radiográfica periapicales</Title>
-                            <Text level={'body-md'}>(Corona, Raíz, Hueso y Espacio Ligamento Periodontal)</Text>
-                        </header>
-
-                        <div>
-                            <DragAndDrop/>
-                        </div>
-                    </section>
-
-                    <section className={'my-6'}>
-                        <header className={'mb-1.5 mt-5 space-y-1'}>
-                            <Title level={'title-md'}>Interpretación radiográfica coronales</Title>
-                            <Text level={'body-md'}>(Corona, Cresta Alveolar, Espacio de la camara pulpar)</Text>
-                        </header>
-
-                        <div>
-
-
-                        </div>
-                    </section>
-                </form>
-            </Form>
-        </Surface>
     )
 }
 

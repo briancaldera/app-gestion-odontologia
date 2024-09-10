@@ -55,11 +55,11 @@ const ExamenRadiograficoSchema = z
             }),
             imagenes: PanoramicasSchema
         }),
-        interpretacion_radiografica_periapicales: z.object({
+        interpretacion_periapicales: z.object({
             descripcion: DescripcionSchema,
             imagenes: PeriapicalesSchema,
         }),
-        interpretacion_radiografica_coronales: z.object({
+        interpretacion_coronales: z.object({
             descripcion: DescripcionSchema,
             imagenes: CoronalesSchema,
         }),

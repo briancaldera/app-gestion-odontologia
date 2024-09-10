@@ -19,7 +19,7 @@ type AntecedentesMedicosPersonalesSectionProps = {
 }
 
 const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersonalesSectionProps) => {
-    
+
     const route = useRoute()
     const { isProcessing, router} = useInertiaSubmit()
 
