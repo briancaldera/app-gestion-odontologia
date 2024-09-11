@@ -13,7 +13,7 @@ const Show = ({historia}: ShowProps) => {
     return (
         <AuthLayout title={`Paciente: ${historia.paciente?.nombre} ${historia.paciente?.apellido}`} sidebar={<SidebarMenu menu={menu}/>}>
             <div className={'p-6'}>
-                <HistoriaEditor historia={historia} readMode={true}/>
+                <HistoriaEditor historia={historia} readMode={false}/>
             </div>
         </AuthLayout>
     )
