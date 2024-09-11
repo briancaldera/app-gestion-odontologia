@@ -95,6 +95,12 @@ return [
             'root' => storage_path('app/historias/odontologicas/periodontodiagramas'),
             'url'    => env('APP_URL').'/historias/odontologicas/periodontodiagramas',
         ],
+
+        'odontologica.media' => [
+            'driver' => 'local',
+            'root' => storage_path('app/historias/odontologicas/media'),
+            'url'    => env('APP_URL').'/historias/odontologicas/media',
+        ],
     ],
 
     /*
