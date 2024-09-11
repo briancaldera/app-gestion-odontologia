@@ -30,17 +30,17 @@ class UpdateExamenRadiografico extends FormRequest
             'interpretacion_panoramica' => ['required', 'array:descripcion,imagenes',],
             'interpretacion_panoramica.descripcion' => ['required', 'array:nasomaxilar,ATM,mandibular,dento_alveolar_sup,dento_alveolar_inf'],
             'interpretacion_panoramica.descripcion.*' => ['nullable', 'string', 'max:1000'],
-            'interpretacion_panoramica.imagenes' => ['required', 'array', 'between:1,10'],
+            'interpretacion_panoramica.imagenes' => ['array', 'between:0,10'],
             'interpretacion_panoramica.imagenes.*' => ['image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000'],
 
-            'interpretacion_periapicales' => ['required', 'array:imagenes,descripcion',],
+            'interpretacion_periapicales' => ['required', 'array:descripcion,imagenes',],
             'interpretacion_periapicales.descripcion' => ['nullable', 'string', 'max:1000'],
-            'interpretacion_periapicales.imagenes' => ['required', 'array', 'between:1,10'],
+            'interpretacion_periapicales.imagenes' => ['array', 'between:0,10'],
             'interpretacion_periapicales.imagenes.*' => ['image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000'],
 
-            'interpretacion_coronales' => ['required', 'array:imagenes,descripcion',],
+            'interpretacion_coronales' => ['required', 'array:descripcion,imagenes',],
             'interpretacion_coronales.descripcion' => ['nullable', 'string', 'max:1000'],
-            'interpretacion_coronales.imagenes' => ['required', 'array', 'between:1,10'],
+            'interpretacion_coronales.imagenes' => ['array', 'between:0,10'],
             'interpretacion_coronales.imagenes.*' => ['image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000'],
         ];
     }
