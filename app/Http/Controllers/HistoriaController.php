@@ -15,6 +15,7 @@ use App\Http\Requests\UpdateHistoriaOdontologicaRequest;
 use App\Http\Requests\UpdateHistoriaRequest;
 use App\Http\Requests\UpdateModificacionesPlanTratamiento;
 use App\Http\Requests\UpdatePacienteRequest;
+use App\Http\Requests\UpdatePeriodontodiagramaRequest;
 use App\Http\Requests\UpdatePlanTratamiento;
 use App\Http\Requests\UpdateSecuenciaTratamiento;
 use App\Http\Requests\UpdateTrastornosRequest;
@@ -274,6 +275,19 @@ class HistoriaController extends Controller
             $historia_odon->examen_radiografico->interpretacion_periapicales = $int_periapicales['descripcion']  ?? null;
             $historia_odon->save();
         }
+
+        message('Examen radiografico actualizado exitosamente 👍🏻', Type::Success);
+        return response(null, 200);
+    }
+
+    public function updatePeriodontodiagrama(Historia $historia, UpdatePeriodontodiagramaRequest $request)
+    {
+        $periodontodiagrama = $request->validated()['periodontodiagrama'];
+
+        /* @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+
+        $historia_odon->addMedia($periodontodiagrama)->toMediaCollection('periodontodiagrama');
 
         message('Examen radiografico actualizado exitosamente 👍🏻', Type::Success);
         return response(null, 200);
