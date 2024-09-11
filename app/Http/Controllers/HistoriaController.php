@@ -28,6 +28,7 @@ use App\Services\HistoriaService;
 use App\Services\RadiografiaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Inertia\Inertia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Type;
@@ -234,15 +235,17 @@ class HistoriaController extends Controller
             $int_panoramica = $request->safe()->only(['interpretacion_panoramica'])['interpretacion_panoramica'];
 
             $descripcion = $int_panoramica['descripcion'];
-            $imagenes = collect($int_panoramica['imagenes']);
 
-            $imagenes->each(fn(UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('panoramicas'));
+            if (isset($int_panoramica['imagenes']) AND count($int_panoramica['imagenes']) !== 0) {
+                $imagenes = collect($int_panoramica['imagenes']);
+                $imagenes->each(fn(UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('panoramicas'));
+            }
 
-            $historia_odon->examen_radiografico->interpretacion_panoramica['nasomaxilar'] = $descripcion['nasomaxilar'];
-            $historia_odon->examen_radiografico->interpretacion_panoramica['ATM'] = $descripcion['ATM'];
-            $historia_odon->examen_radiografico->interpretacion_panoramica['mandibular'] = $descripcion['mandibular'];
-            $historia_odon->examen_radiografico->interpretacion_panoramica['dento_alveolar_sup'] = $descripcion['dento_alveolar_sup'];
-            $historia_odon->examen_radiografico->interpretacion_panoramica['dento_alveolar_inf'] = $descripcion['dento_alveolar_inf'];
+            $historia_odon->examen_radiografico->interpretacion_panoramica['nasomaxilar'] = $descripcion['nasomaxilar'] ?? null;
+            $historia_odon->examen_radiografico->interpretacion_panoramica['ATM'] = $descripcion['ATM']  ?? null;
+            $historia_odon->examen_radiografico->interpretacion_panoramica['mandibular'] = $descripcion['mandibular']  ?? null;
+            $historia_odon->examen_radiografico->interpretacion_panoramica['dento_alveolar_sup'] = $descripcion['dento_alveolar_sup']  ?? null;
+            $historia_odon->examen_radiografico->interpretacion_panoramica['dento_alveolar_inf'] = $descripcion['dento_alveolar_inf']  ?? null;
             $historia_odon->save();
         }
 
@@ -250,12 +253,12 @@ class HistoriaController extends Controller
 
             $int_coronales = $request->safe()->only(['interpretacion_coronales'])['interpretacion_coronales'];
 
-            $descripcion = $int_coronales['descripcion'];
+            if (isset($int_coronales['imagenes']) AND count($int_coronales['imagenes']) !== 0) {
             $imagenes = collect($int_coronales['imagenes']);
-
             $imagenes->each(fn(UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('coronales'));
+            }
 
-            $historia_odon->examen_radiografico->interpretacion_coronales = $descripcion;
+            $historia_odon->examen_radiografico->interpretacion_coronales = $int_coronales['descripcion']  ?? null;
             $historia_odon->save();
         }
 
@@ -263,12 +266,12 @@ class HistoriaController extends Controller
 
             $int_periapicales = $request->safe()->only(['interpretacion_periapicales'])['interpretacion_periapicales'];
 
-            $descripcion = $int_periapicales['descripcion'];
+            if (isset($int_periapicales['imagenes']) AND count($int_periapicales['imagenes']) !== 0) {
             $imagenes = collect($int_periapicales['imagenes']);
-
             $imagenes->each(fn(UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('periapicales'));
+            }
 
-            $historia_odon->examen_radiografico->interpretacion_periapicales = $descripcion;
+            $historia_odon->examen_radiografico->interpretacion_periapicales = $int_periapicales['descripcion']  ?? null;
             $historia_odon->save();
         }
 

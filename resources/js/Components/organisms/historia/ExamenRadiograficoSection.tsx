@@ -1,33 +1,26 @@
 import {useRoute} from "ziggy-js";
-import {undefined, z} from "zod";
+import {z} from "zod";
 import ExamenRadiograficoSchema from "@/FormSchema/Historia/ExamenRadiograficoSchema.ts";
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
-import AnalisisSlot from "@/Components/organisms/AnalisisSlot.tsx";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
 import {Text} from "@/Components/atoms/Text";
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import React, {ClassAttributes} from "react";
-import {useForm, UseFormReturn} from "react-hook-form";
-import {Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext} from '@/shadcn/ui/carousel.tsx'
+import {UseFormReturn} from "react-hook-form";
+import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from '@/shadcn/ui/carousel.tsx'
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
-import {zodResolver} from "@hookform/resolvers/zod";
 import HistoriaOdontologica from "@/src/models/HistoriaOdontologica.ts";
-import {ur} from "@faker-js/faker";
 
 type ExamenRadiograficoSectionProps = {
     historiaOdontologica: HistoriaOdontologica
     form: UseFormReturn<z.infer<typeof ExamenRadiograficoSchema>>
 }
 
-// const PanSchema = ExamenRadiograficoSchema.pick({historia_id: true, interpretacion_panoramica: true})
-
 const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograficoSectionProps) => {
-
-    console.log(historiaOdontologica)
 
     const route = useRoute()
     const {isProcessing, router} = useInertiaSubmit()
@@ -44,13 +37,12 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
         } satisfies z.infer<typeof ExamenRadiograficoSchema> & {_method: 'patch'}
 
         router.post(endpoint, data, {
-            onError: errors => {mapServerErrorsToFields(form, errors);
-                console.log(errors)},
+            onError: errors => mapServerErrorsToFields(form, errors),
             onSuccess: page => {
-                console.log('Good')
+                form.reset()
+                router.reload()
             }
         })
-
     }
 
     const handleDropPanoramica = (files: File[]) => {
@@ -89,8 +81,6 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
         })
     }
 
-    console.log(form.formState.errors)
-
     return (
         <Surface className={'w-full px-6 min-h-screen'}>
 
@@ -108,18 +98,16 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
                             <Carousel>
                                 <CarouselContent className={'h-[700px] bg-neutral-950'}>
                                     {
-                                        form.getValues().interpretacion_panoramica.imagenes.map((file: File) => (
-                                            <CarouselItem key={file.name} className={'flex items-center'}>
-                                                <Image src={file} className={'w-full h-auto flex-none'}/>
+                                        historiaOdontologica.panoramicas.map((url: string) => (
+                                            <CarouselItem key={url} className={'flex items-center bg-neutral-950'}>
+                                                <Image src={url} className={'w-full h-auto flex-none'}/>
                                             </CarouselItem>
                                         ))
                                     }
                                     {
-                                        historiaOdontologica.panoramicas.map((url: string) => (
-                                            <CarouselItem key={url}>
-                                                <div className={'bg-neutral-950'}>
-                                                    <img className={'object-contain w-full h-auto'} src={url} alt={''}/>
-                                                </div>
+                                        form.getValues().interpretacion_panoramica.imagenes.map((file: File) => (
+                                            <CarouselItem key={file.name} className={'flex items-center'}>
+                                                <Image src={file} className={'w-full h-auto flex-none'}/>
                                             </CarouselItem>
                                         ))
                                     }
@@ -156,50 +144,6 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
                                 ))
                             }
                         </div>
-                        <div className={'grid grid-rows-5 grid-cols-3 gap-4'}>
-
-{/*
-                            {
-                                Object.keys(form.formState.defaultValues?.interpretacion_panoramica).map(char => (
-                                    <div key={char}>
-                                        <FormField render={({field}) => {
-                                            return (<FormItem>
-                                                    <div className={'capitalize font-semibold'}>
-                                                        {char.replaceAll('_', ' ')}
-                                                    </div>
-                                                    <div className={'border border-gray-400 rounded-lg'}>
-                                                        <FormControl>
-                                                            <AnalisisSlot title={char.replaceAll('_', ' ')}
-                                                                          descripcion={field.value.descripcion}
-                                                                          radiografias={field.value.radiografias}
-                                                                          onSubmitAnalisis={(values) => {
-                                                                              // field.onChange(values) // This doesn't work. Please do NOT use
-                                                                              form.setValue(`interpretacion_panoramica.${char}.radiografias`, values.radiografias, {
-                                                                                  shouldDirty: true,
-                                                                                  shouldTouch: true,
-                                                                                  shouldValidate: true
-                                                                              })
-                                                                              form.setValue(`interpretacion_panoramica.${char}.descripcion`, values.descripcion, {
-                                                                                  shouldDirty: true,
-                                                                                  shouldTouch: true,
-                                                                                  shouldValidate: true
-                                                                              })
-                                                                          }}/>
-                                                        </FormControl>
-                                                    </div>
-                                                    <FormMessage hidden={true}/>
-                                                </FormItem>
-                                            )
-                                        }} name={`interpretacion_panoramica.${char}`} control={form.control}/>
-
-
-                                    </div>
-                                ))
-                            }
-*/}
-
-
-                        </div>
                     </section>
 
                     <section className={'my-6'}>
@@ -212,18 +156,16 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
                             <Carousel>
                                 <CarouselContent className={'h-[700px] bg-neutral-950'}>
                                     {
-                                        form.getValues().interpretacion_periapicales.imagenes.map((file: File) => (
-                                            <CarouselItem key={file.name} className={'flex items-center'}>
-                                                <Image src={file} className={'w-full h-auto flex-none'}/>
+                                        historiaOdontologica.periapicales.map((url: string) => (
+                                            <CarouselItem key={url} className={'flex items-center bg-neutral-950'}>
+                                                <Image src={url} className={'w-full h-auto flex-none'}/>
                                             </CarouselItem>
                                         ))
                                     }
                                     {
-                                        historiaOdontologica.panoramicas.map((url: string) => (
-                                            <CarouselItem key={url}>
-                                                <div className={'bg-neutral-950'}>
-                                                    <img className={'object-contain w-full h-auto'} src={url} alt={''}/>
-                                                </div>
+                                        form.getValues().interpretacion_periapicales.imagenes.map((file: File) => (
+                                            <CarouselItem key={file.name} className={'flex items-center'}>
+                                                <Image src={file} className={'w-full h-auto flex-none'}/>
                                             </CarouselItem>
                                         ))
                                     }
@@ -259,18 +201,16 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
                             <Carousel>
                                 <CarouselContent className={'h-[700px] bg-neutral-950'}>
                                     {
-                                        form.getValues().interpretacion_coronales.imagenes.map((file: File) => (
-                                            <CarouselItem key={file.name} className={'flex items-center'}>
-                                                <Image src={file} className={'w-full h-auto flex-none'}/>
+                                        historiaOdontologica.coronales.map((url: string) => (
+                                            <CarouselItem key={url} className={'flex items-center bg-neutral-950'}>
+                                                <Image src={url} className={'w-full h-auto flex-none'}/>
                                             </CarouselItem>
                                         ))
                                     }
                                     {
-                                        historiaOdontologica.panoramicas.map((url: string) => (
-                                            <CarouselItem key={url}>
-                                                <div className={'bg-neutral-950'}>
-                                                    <img className={'object-contain w-full h-auto'} src={url} alt={''}/>
-                                                </div>
+                                        form.getValues().interpretacion_coronales.imagenes.map((file: File) => (
+                                            <CarouselItem key={file.name} className={'flex items-center'}>
+                                                <Image src={file} className={'w-full h-auto flex-none'}/>
                                             </CarouselItem>
                                         ))
                                     }
