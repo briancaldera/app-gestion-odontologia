@@ -198,6 +198,7 @@ JSON,
         $this->addMediaCollection('panoramicas')->useDisk('panoramicas');
         $this->addMediaCollection('coronales')->useDisk('coronales');
         $this->addMediaCollection('periapicales')->useDisk('periapicales');
+        $this->addMediaCollection('periodontograma')->useDisk('periodontogramas')->singleFile();
     }
 
     public function historia(): BelongsTo
@@ -223,6 +224,13 @@ JSON,
     {
         return new Attribute(
             get: fn() => $this->getMedia('periapicales')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/periapicales/$media->uuid"))
+        );
+    }
+
+    protected function periodontograma(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('periodontograma')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/periodontograma/$media->uuid"))
         );
     }
 }
