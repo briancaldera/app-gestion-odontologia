@@ -388,13 +388,13 @@ class HistoriaController extends Controller
         return response()->file($periapicales->getPath());
     }
 
-    public function getPeriodontograma(Historia $historia, string $id)
+    public function getPeriodontodiagrama(Historia $historia, string $id)
     {
         /* @var HistoriaOdontologica $historia_odo */
         $historia_odo = $historia->historiaOdontologica;
 
-        $periodontograma = $historia_odo->getMedia('periodontograma')->firstOrFail(fn(Media $media) => $media->uuid === $id);
+        $periodontodiagrama = $historia_odo->getMedia('periodontodiagrama')->firstOrFail(fn(Media $media) => $media->uuid === $id);
 
-        return response()->file($periodontograma->getPath());
+        return response()->file($periodontodiagrama->getPath());
     }
 }

@@ -168,7 +168,8 @@ JSON,
     protected $appends = [
         'panoramicas',
         'coronales',
-        'periapicales'
+        'periapicales',
+        'periodontodiagrama'
     ];
 
     protected function casts()
@@ -198,7 +199,7 @@ JSON,
         $this->addMediaCollection('panoramicas')->useDisk('panoramicas');
         $this->addMediaCollection('coronales')->useDisk('coronales');
         $this->addMediaCollection('periapicales')->useDisk('periapicales');
-        $this->addMediaCollection('periodontograma')->useDisk('periodontogramas')->singleFile();
+        $this->addMediaCollection('periodontodiagrama')->useDisk('periodontodiagramas')->singleFile();
     }
 
     public function historia(): BelongsTo
@@ -227,10 +228,10 @@ JSON,
         );
     }
 
-    protected function periodontograma(): Attribute
+    protected function periodontodiagrama(): Attribute
     {
         return new Attribute(
-            get: fn() => $this->getMedia('periodontograma')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/periodontograma/$media->uuid"))
+            get: fn() => $this->getMedia('periodontodiagrama')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/periodontodiagrama/$media->uuid"))
         );
     }
 }

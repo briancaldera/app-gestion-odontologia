@@ -90,10 +90,10 @@ return [
             'url'    => env('APP_URL').'/historias/odontologicas/periapicales',
         ],
 
-        'periodontogramas' => [
+        'periodontodiagramas' => [
             'driver' => 'local',
-            'root' => storage_path('app/historias/odontologicas/periodontogramas'),
-            'url'    => env('APP_URL').'/historias/odontologicas/periodontogramas',
+            'root' => storage_path('app/historias/odontologicas/periodontodiagramas'),
+            'url'    => env('APP_URL').'/historias/odontologicas/periodontodiagramas',
         ],
     ],
 
