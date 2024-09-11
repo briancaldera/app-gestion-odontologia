@@ -6,7 +6,7 @@ const Edit = ({historia}: {historia : Historia}) => {
 
     return (
         <AuthLayout title={'Historia'}>
-            <div className={'p-6'}>
+            <div className={'p-6 h-full'}>
                 <HistoriaEditor historia={historia} readMode={false}/>
             </div>
         </AuthLayout>
