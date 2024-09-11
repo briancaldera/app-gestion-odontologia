@@ -15,17 +15,17 @@ const ImageFileSchema = z
 
 const PanoramicasSchema = z
     .array(ImageFileSchema)
-    .nonempty({message: 'Debe seleccionar al menos 1 archivo'})
+    // .nonempty({message: 'Debe seleccionar al menos 1 archivo'})
     .max(MAX_PICTURES_PER_RADIOGRAFIA, {message: `No puede seleccionar más de ${MAX_PICTURES_PER_RADIOGRAFIA} archivos`})
 
 const PeriapicalesSchema = z
     .array(ImageFileSchema)
-    .nonempty({message: 'Debe seleccionar al menos 1 archivo'})
+    // .nonempty({message: 'Debe seleccionar al menos 1 archivo'})
     .max(MAX_PICTURES_PER_RADIOGRAFIA, {message: `No puede seleccionar más de ${MAX_PICTURES_PER_RADIOGRAFIA} archivos`})
 
 const CoronalesSchema = z
     .array(ImageFileSchema)
-    .nonempty({message: 'Debe seleccionar al menos 1 archivo'})
+    // .nonempty({message: 'Debe seleccionar al menos 1 archivo'})
     .max(MAX_PICTURES_PER_RADIOGRAFIA, {message: `No puede seleccionar más de ${MAX_PICTURES_PER_RADIOGRAFIA} archivos`})
 
 const RadiografiaSchema = z.object({
@@ -40,7 +40,10 @@ const RadiografiaSchema = z.object({
     descripcion: z.string({required_error: 'Descripción es requerida'}).max(MAX_ANALISIS_LENGTH, {message: 'Máximo 1000 caracteres'}),
 }, )
 
-const DescripcionSchema = z.string({required_error: 'Descripción es requerida'}).max(MAX_ANALISIS_LENGTH, {message: 'Máximo 1000 caracteres'})
+const DescripcionSchema = z
+    .string({required_error: 'Descripción es requerida'})
+    .max(MAX_ANALISIS_LENGTH, {message: 'Máximo 1000 caracteres'})
+    .optional()
 
 const ExamenRadiograficoSchema = z
     .object({
@@ -77,11 +80,13 @@ const ExamenRadiograficoDefaults = {
         },
         imagenes: []
     },
-    interpretacion_radiografica_coronales: {
-        descripcion: "", imagenes: []
+    interpretacion_coronales: {
+        descripcion: "",
+        imagenes: []
     },
-    interpretacion_radiografica_periapicales: {
-        descripcion: "", imagenes: []
+    interpretacion_periapicales: {
+        descripcion: "",
+        imagenes: []
     }
 } satisfies z.infer<typeof ExamenRadiograficoSchema>
 
