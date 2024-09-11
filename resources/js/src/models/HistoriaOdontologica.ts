@@ -15,6 +15,7 @@ type HistoriaOdontologica = {
     panoramicas: readonly string[]
     coronales: readonly string[]
     periapicales: readonly string[]
+    periodontodiagrama: readonly string[]
 }
 
 type Portador = {

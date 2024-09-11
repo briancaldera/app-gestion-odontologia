@@ -14,7 +14,7 @@ import HistoriaOdontologicaSchema, {
     HistoriaOdontologicaDefaults
 } from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
 import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema/Historia/ExamenRadiograficoSchema.ts'
-import {Bone, BriefcaseMedical, FileBox, HeartPulse, Hospital, ListChecks, RefreshCcwDot, Users, Clipboard} from "lucide-react"
+import {Bone, BriefcaseMedical, FileBox, HeartPulse, Hospital, ListChecks, RefreshCcwDot, Users, Clipboard, TableRowsSplit} from "lucide-react"
 import EstudioModelosSection from "@/Components/organisms/historia/EstudioModelosSection";
 import ModificacionesPlanTratamientoSection from '@/Components/organisms/historia/ModificacionesPlanTratamientoSection'
 import SecuenciaPlanTratamientoSection from '@/Components/organisms/historia/SecuenciaTratamientoSection'
@@ -35,10 +35,11 @@ import SecuenciaTratamientoSchema, {
 import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Historia/EstudioModelosSchema";
 import {mergeDeep} from "@/src/Utils/Utils";
 import ExamenRadiograficoSection from "@/Components/organisms/historia/ExamenRadiograficoSection.tsx";
+import PeriodontodiagramaSchema from "@/FormSchema/Historia/PeriodontodiagramaSchema.ts";
+import PeriodontodiagramaSection from "@/Components/organisms/historia/PeriodontodiagramaSection.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 const TabTriggerStyle = 'p-0 m-0'
-
-const SectionStyle = 'w-full px-6 min-h-screen'
 
 const HistoriaEditorContext = React.createContext({})
 
@@ -180,11 +181,24 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
         disabled: readMode,
     })
 
+    const periodontodiagramaForm = useForm<z.infer<typeof PeriodontodiagramaSchema>>({
+        resolver: zodResolver(PeriodontodiagramaSchema),
+        defaultValues: {
+            historia_id: historia.id,
+            periodontodiagrama: null
+        },
+        values: {
+            historia_id: historia.id,
+            periodontodiagrama: null
+        },
+        disabled: readMode,
+    })
+
     return (
-        <div className={'w-full h-full px-6 py-6'}>
+        <div className={'h-full p-6'}>
 
             <Tabs defaultValue="paciente" className="flex h-full" orientation={'vertical'}>
-                <TabsList className={'flex flex-col items-end justify-start p-0 sticky top-0'}>
+                <TabsList className={'flex-none flex flex-col items-end justify-start p-0 sticky top-0'}>
                     <TabsTrigger value="paciente" className={'p-0'}>
                         <Surface>
                             <Icon className={'size-8'}>
@@ -255,8 +269,15 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
                             </Icon>
                         </Surface>
                     </TabsTrigger>
+                    <TabsTrigger value="periodontodiagrama" className={'p-0'}>
+                        <Surface>
+                            <Icon className={'size-8'}>
+                                <TableRowsSplit />
+                            </Icon>
+                        </Surface>
+                    </TabsTrigger>
                 </TabsList>
-                <div className={'w-full h-full'}>
+                <ScrollArea className={'flex-1 w-full h-full'}>
                     <HistoriaEditorContext.Provider value={{}}>
                         <TabsContent value="paciente" className={TabTriggerStyle}>
                             <PacienteSection form={pacienteForm}/>
@@ -288,8 +309,11 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
                         <TabsContent value="estudioModelos" className={TabTriggerStyle}>
                             <EstudioModelosSection form={estudioModelosForm}/>
                         </TabsContent>
+                        <TabsContent value="periodontodiagrama" className={TabTriggerStyle}>
+                            <PeriodontodiagramaSection form={periodontodiagramaForm} periodontograma={historia.historia_odontologica?.periodontodiagrama[0] ?? null}/>
+                        </TabsContent>
                     </HistoriaEditorContext.Provider>
-                </div>
+                </ScrollArea>
             </Tabs>
 
         </div>
