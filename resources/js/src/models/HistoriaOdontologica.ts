@@ -1,6 +1,5 @@
 import {z} from 'zod'
 import EstudioModelosSchema from "@/FormSchema/Historia/EstudioModelosSchema";
-import ExamenRadiograficoSchema from "@/FormSchema/Historia/ExamenRadiograficoSchema.ts";
 
 type HistoriaOdontologica = {
     historia_id: string
@@ -12,8 +11,10 @@ type HistoriaOdontologica = {
     plan_tratamiento: Tratamiento[]
     modificaciones_plan_tratamiento: ModificacionTratamiento[]
     secuencia_tratamiento: TratamientoRealizado[]
-    examen_radiografico: z.infer<typeof ExamenRadiograficoSchema>
+    examen_radiografico: ExamenRadiografico
     panoramicas: readonly string[]
+    coronales: readonly string[]
+    periapicales: readonly string[]
 }
 
 type Portador = {
@@ -91,5 +92,17 @@ const habitos = {
 }
 
 type Habitos = typeof habitos
+
+type ExamenRadiografico = {
+    interpretacion_panoramica: {
+        nasomaxilar: string | null
+        ATM: string | null
+        mandibular: string | null
+        dento_alveolar_sup: string | null
+        dento_alveolar_inf: string | null
+    }
+    interpretacion_periapicales: string | null
+    interpretacion_coronales: string | null
+}
 
 export default HistoriaOdontologica
