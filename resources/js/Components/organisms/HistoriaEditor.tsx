@@ -3,7 +3,7 @@ import {UserCircleIcon} from '@heroicons/react/24/outline'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon";
 import {useForm} from "react-hook-form"
-import {z} from 'zod'
+import {undefined, z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
 import React from "react";
 import PacienteSchema, {PacienteDefaults} from "@/FormSchema/Historia/PacienteSchema";
@@ -14,7 +14,7 @@ import HistoriaOdontologicaSchema, {
     HistoriaOdontologicaDefaults
 } from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
 import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema/Historia/ExamenRadiograficoSchema.ts'
-import {Bone, BriefcaseMedical, FileBox, HeartPulse, Hospital, ListChecks, RefreshCcwDot, Users} from "lucide-react"
+import {Bone, BriefcaseMedical, FileBox, HeartPulse, Hospital, ListChecks, RefreshCcwDot, Users, Clipboard} from "lucide-react"
 import EstudioModelosSection from "@/Components/organisms/historia/EstudioModelosSection";
 import ModificacionesPlanTratamientoSection from '@/Components/organisms/historia/ModificacionesPlanTratamientoSection'
 import SecuenciaPlanTratamientoSection from '@/Components/organisms/historia/SecuenciaTratamientoSection'
@@ -35,7 +35,6 @@ import SecuenciaTratamientoSchema, {
 import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Historia/EstudioModelosSchema";
 import {mergeDeep} from "@/src/Utils/Utils";
 import ExamenRadiograficoSection from "@/Components/organisms/historia/ExamenRadiograficoSection.tsx";
-import historia from "@/src/models/Historia";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -148,24 +147,28 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
         resolver: zodResolver(ExamenRadiograficoSchema),
         defaultValues: ExamenRadiograficoDefaults,
         values: {
-            historia_id: historia.historia_odontologica?.historia_id,
+            historia_id: historia.id,
             interpretacion_panoramica: {
-                descripcion: historia.historia_odontologica?.examen_radiografico.interpretacion_panoramica?.descripcion,
+                descripcion: {
+                    ATM: historia.historia_odontologica?.examen_radiografico.interpretacion_panoramica?.ATM ?? '',
+                    dento_alveolar_inf: historia.historia_odontologica?.examen_radiografico.interpretacion_panoramica?.dento_alveolar_inf ?? '',
+                    dento_alveolar_sup: historia.historia_odontologica?.examen_radiografico.interpretacion_panoramica?.dento_alveolar_sup ?? '',
+                    mandibular: historia.historia_odontologica?.examen_radiografico.interpretacion_panoramica?.mandibular ?? '',
+                    nasomaxilar: historia.historia_odontologica?.examen_radiografico.interpretacion_panoramica?.nasomaxilar ?? '',
+                },
                 imagenes: []
             },
             interpretacion_coronales: {
-                descripcion: historia.historia_odontologica?.examen_radiografico.interpretacion_coronales?.descripcion ?? '',
+                descripcion: historia.historia_odontologica?.examen_radiografico.interpretacion_coronales ?? '',
                 imagenes: []
             },
             interpretacion_periapicales: {
-                descripcion: historia.historia_odontologica?.examen_radiografico.interpretacion_periapicales?.descripcion ?? '',
+                descripcion: historia.historia_odontologica?.examen_radiografico.interpretacion_periapicales ?? '',
                 imagenes: []
             }
         },
         disabled: readMode,
     })
-
-    console.log(historia.historia_odontologica?.examen_radiografico.interpretacion_periapicales?.descripcion)
 
     const estudioModelosDefaults = (historia.historia_odontologica?.estudio_modelos) ? mergeDeep({...EstudioModelosDefaults}, {estudio_modelos: historia.historia_odontologica?.estudio_modelos}, {historia_id: historia.id}) satisfies z.infer<typeof EstudioModelosSchema>
         : Object.assign(EstudioModelosDefaults, {historia_id: historia.id}) satisfies z.infer<typeof EstudioModelosSchema>
@@ -192,7 +195,7 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
                     <TabsTrigger value="historia" className={'p-0'}>
                         <Surface>
                             <Icon className={'size-8'}>
-                                <UserCircleIcon/>
+                                <Clipboard />
                             </Icon>
                         </Surface>
                     </TabsTrigger>
