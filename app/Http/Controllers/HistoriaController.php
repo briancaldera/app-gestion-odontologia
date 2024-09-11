@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAntFamiliaresRequest;
 use App\Http\Requests\StoreAntPersonalesRequest;
 use App\Http\Requests\StoreHistoriaOdontologicaRequest;
+use App\Http\Requests\StoreOdontologiaMediaRequest;
 use App\Http\Requests\StorePacienteRequest;
 use App\Http\Requests\StoreTrastornosRequest;
 use App\Http\Requests\UpdateAntFamiliaresRequest;
@@ -291,6 +292,28 @@ class HistoriaController extends Controller
 
         message('Examen radiografico actualizado exitosamente 👍🏻', Type::Success);
         return response(null, 200);
+    }
+
+    public function storeOdontologiaMedia(Historia $historia, StoreOdontologiaMediaRequest $request)
+    {
+        /* @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+        $media = $request->collect('files');
+
+        $media->each(fn (UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('anymedia'));
+
+        message('Archivos anexados a la historia exitosamente');
+        return response(null, '200');
+    }
+
+    public function getMedia(Historia $historia, string $id)
+    {
+        /* @var HistoriaOdontologica $historia_odo */
+        $historia_odo = $historia->historiaOdontologica;
+
+        $file = $historia_odo->getMedia('anymedia')->firstOrFail(fn(Media $media) => $media->uuid === $id);
+
+        return response()->file($file->getPath());
     }
 
     /**
