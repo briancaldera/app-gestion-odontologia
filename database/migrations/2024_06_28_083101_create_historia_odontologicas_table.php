@@ -23,6 +23,7 @@ return new class extends Migration
             $table->jsonb('modificaciones_plan_tratamiento');
             $table->jsonb('secuencia_tratamiento');
             $table->jsonb('examen_radiografico');
+            $table->jsonb('historia_periodontal');
         });
     }
 

@@ -25,6 +25,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ArrayObject $modificaciones_plan_tratamiento the modifications to the treatment plan
  * @property ArrayObject $secuencia_tratamiento the sequence of treatments undergone by the patient
  * @property ArrayObject $examen_radiografico
+ * @property ArrayObject $historia_periodontal
  * @property Collection<string> $panoramicas
  */
 class HistoriaOdontologica extends Model implements HasMedia
@@ -152,6 +153,33 @@ JSON,
   "interpretacion_coronales": null
 }
 JSON,
+        'historia_periodontal' => /* @lang JSON */
+            '{
+"higiene_bucal": {
+  "frecuencia_cepillado": null,
+  "tipo_cepillo": null,
+  "metodo_cepillado": null,
+  "metodo_auxiliar": {
+    "hilo_dental": false,
+    "enjuague_bucal": false,
+    "hidroterapia": false,
+    "cepillo_interdental": false
+  },
+  "sustancia_reveladora": {
+    "descripcion": null,
+    "otro": null
+  },
+  "cepillado_lengua": null
+},
+"control_higiene_bucal": {
+  "tecnica_cepillado_ensenada": null,
+  "cepillo_recomendado": null,
+  "metodos_auxiliares_requeridos": null,
+  "placa_bacteriana_lengua": false,
+  "control_halitosis": null,
+  "tratamiento": null
+}
+}'
     ];
 
     protected $fillable = [
@@ -184,6 +212,7 @@ JSON,
             'modificaciones_plan_tratamiento' => AsArrayObject::class,
             'secuencia_tratamiento' => AsArrayObject::class,
             'examen_radiografico' => AsArrayObject::class,
+            'historia_periodontal' => AsArrayObject::class,
         ];
     }
 
