@@ -22,8 +22,9 @@ class StoreOdontologiaMediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'files' => ['array', 'between:1,20'],
-            'files.*' => ['image', 'min:1', 'max:10000'],
+            'title' => ['required', 'string', 'between:1,255'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'file' => ['image', 'min:1', 'max:10000'],
         ];
     }
 }

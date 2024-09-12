@@ -201,7 +201,7 @@ JSON,
         $this->addMediaCollection('coronales')->useDisk('coronales');
         $this->addMediaCollection('periapicales')->useDisk('periapicales');
         $this->addMediaCollection('periodontodiagrama')->useDisk('periodontodiagramas')->singleFile();
-        $this->addMediaCollection('anymedia')->useDisk('odontologica.media');
+        $this->addMediaCollection('anymedia')->useDisk('odontologica-media');
     }
 
     public function historia(): BelongsTo

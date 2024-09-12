@@ -298,9 +298,14 @@ class HistoriaController extends Controller
     {
         /* @var HistoriaOdontologica $historia_odon */
         $historia_odon = $historia->historiaOdontologica;
-        $media = $request->collect('files');
+        $data = $request->validated();
+        $file = $data['file'];
 
-        $media->each(fn (UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('anymedia'));
+        $properties = [
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
+        ];
+        $historia_odon->addMedia($file)->withCustomProperties($properties)->toMediaCollection('anymedia');
 
         message('Archivos anexados a la historia exitosamente');
         return response(null, '200');

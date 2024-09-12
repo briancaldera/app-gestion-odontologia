@@ -14,7 +14,7 @@ import HistoriaOdontologicaSchema, {
     HistoriaOdontologicaDefaults
 } from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
 import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema/Historia/ExamenRadiograficoSchema.ts'
-import {Bone, BriefcaseMedical, FileBox, HeartPulse, Hospital, ListChecks, RefreshCcwDot, Users, Clipboard, TableRowsSplit} from "lucide-react"
+import {Bone, BriefcaseMedical, FileBox, HeartPulse, Hospital, ListChecks, RefreshCcwDot, Users, Clipboard, TableRowsSplit, Images} from "lucide-react"
 import EstudioModelosSection from "@/Components/organisms/historia/EstudioModelosSection";
 import ModificacionesPlanTratamientoSection from '@/Components/organisms/historia/ModificacionesPlanTratamientoSection'
 import SecuenciaPlanTratamientoSection from '@/Components/organisms/historia/SecuenciaTratamientoSection'
@@ -38,6 +38,7 @@ import ExamenRadiograficoSection from "@/Components/organisms/historia/ExamenRad
 import PeriodontodiagramaSchema from "@/FormSchema/Historia/PeriodontodiagramaSchema.ts";
 import PeriodontodiagramaSection from "@/Components/organisms/historia/PeriodontodiagramaSection.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import MediaSection from "@/Components/organisms/historia/MediaSection.tsx";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -45,7 +46,7 @@ const HistoriaEditorContext = React.createContext({})
 
 type HistoriaEditorProps = {
     historia: Historia
-    readMode?: boolean
+    readMode: boolean
 }
 
 const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
@@ -195,89 +196,96 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
     })
 
     return (
-        <div className={'h-full p-6'}>
+        <div className={'h-full'}>
 
             <Tabs defaultValue="paciente" className="flex h-full" orientation={'vertical'}>
                 <TabsList className={'flex-none flex flex-col items-end justify-start p-0 sticky top-0'}>
                     <TabsTrigger value="paciente" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-l-lg rounded-r-none rounded-b-none'}>
                             <Icon className={'size-8'}>
                                 <UserCircleIcon/>
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="historia" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <Clipboard />
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="antPersonales" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <HeartPulse/>
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="antFamiliares" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <Users/>
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="historiaOdon" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <Hospital/>
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="examenRadiografico" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <Bone/>
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="planTratamiento" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <BriefcaseMedical />
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="modificacionesPlanTratamiento" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <RefreshCcwDot />
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="secuenciaPlanTratamiento" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <ListChecks />
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="estudioModelos" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <FileBox />
                             </Icon>
                         </Surface>
                     </TabsTrigger>
                     <TabsTrigger value="periodontodiagrama" className={'p-0'}>
-                        <Surface>
+                        <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
                                 <TableRowsSplit />
                             </Icon>
                         </Surface>
                     </TabsTrigger>
+                    <TabsTrigger value="media" className={'p-0'}>
+                        <Surface className={'rounded-none'}>
+                            <Icon className={'size-8'}>
+                                <Images />
+                            </Icon>
+                        </Surface>
+                    </TabsTrigger>
                 </TabsList>
-                <ScrollArea className={'flex-1 w-full h-full'}>
+                <ScrollArea className={'flex-1 w-full h-[83vh]'}>
                     <HistoriaEditorContext.Provider value={{}}>
                         <TabsContent value="paciente" className={TabTriggerStyle}>
                             <PacienteSection form={pacienteForm}/>
@@ -311,6 +319,9 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
                         </TabsContent>
                         <TabsContent value="periodontodiagrama" className={TabTriggerStyle}>
                             <PeriodontodiagramaSection form={periodontodiagramaForm} periodontograma={historia.historia_odontologica?.periodontodiagrama[0] ?? null}/>
+                        </TabsContent>
+                        <TabsContent value="media" className={TabTriggerStyle}>
+                            <MediaSection media={historia?.historia_odontologica?.anymedia ?? []} historia_id={historia.id} readmode={readMode}/>
                         </TabsContent>
                     </HistoriaEditorContext.Provider>
                 </ScrollArea>
