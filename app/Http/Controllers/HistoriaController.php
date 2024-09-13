@@ -13,6 +13,7 @@ use App\Http\Requests\UpdateAntPersonalesRequest;
 use App\Http\Requests\UpdateEstudioModelos;
 use App\Http\Requests\UpdateExamenRadiografico;
 use App\Http\Requests\UpdateHistoriaOdontologicaRequest;
+use App\Http\Requests\UpdateHistoriaPeriodontalRequest;
 use App\Http\Requests\UpdateHistoriaRequest;
 use App\Http\Requests\UpdateModificacionesPlanTratamiento;
 use App\Http\Requests\UpdatePacienteRequest;
@@ -276,6 +277,37 @@ class HistoriaController extends Controller
             $historia_odon->examen_radiografico->interpretacion_periapicales = $int_periapicales['descripcion']  ?? null;
             $historia_odon->save();
         }
+
+        message('Examen radiografico actualizado exitosamente 👍🏻', Type::Success);
+        return response(null, 200);
+    }
+
+    public function updateHistoriaPeriodontal(Historia $historia, UpdateHistoriaPeriodontalRequest $request)
+    {
+        $data = $request->validated();
+
+        /* @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+
+        $historia_odon->historia_periodontal->higiene_bucal['frecuencia_cepillado'] = $data['higiene_bucal']['frecuencia_cepillado'];
+        $historia_odon->historia_periodontal->higiene_bucal['tipo_cepillo'] = $data['higiene_bucal']['tipo_cepillo'];
+        $historia_odon->historia_periodontal->higiene_bucal['metodo_cepillado'] = $data['higiene_bucal']['metodo_cepillado'];
+        $historia_odon->historia_periodontal->higiene_bucal['metodo_auxiliar']['hilo_dental'] = $data['higiene_bucal']['metodo_auxiliar']['hilo_dental'];
+        $historia_odon->historia_periodontal->higiene_bucal['metodo_auxiliar']['enjuague_bucal'] = $data['higiene_bucal']['metodo_auxiliar']['enjuague_bucal'];
+        $historia_odon->historia_periodontal->higiene_bucal['metodo_auxiliar']['hidroterapia'] = $data['higiene_bucal']['metodo_auxiliar']['hidroterapia'];
+        $historia_odon->historia_periodontal->higiene_bucal['metodo_auxiliar']['cepillo_interdental'] = $data['higiene_bucal']['metodo_auxiliar']['cepillo_interdental'];
+        $historia_odon->historia_periodontal->higiene_bucal['sustancia_reveladora']['descripcion'] = $data['higiene_bucal']['sustancia_reveladora']['descripcion'];
+        $historia_odon->historia_periodontal->higiene_bucal['sustancia_reveladora']['otro'] = $data['higiene_bucal']['sustancia_reveladora']['otro'];
+        $historia_odon->historia_periodontal->higiene_bucal['cepillado_lengua'] = $data['higiene_bucal']['cepillado_lengua'];
+
+        $historia_odon->historia_periodontal->control_higiene_bucal['tecnica_cepillado_ensenada'] = $data['control_higiene_bucal']['tecnica_cepillado_ensenada'];
+        $historia_odon->historia_periodontal->control_higiene_bucal['cepillo_recomendado'] = $data['control_higiene_bucal']['cepillo_recomendado'];
+        $historia_odon->historia_periodontal->control_higiene_bucal['metodos_auxiliares_requeridos'] = $data['control_higiene_bucal']['metodos_auxiliares_requeridos'];
+        $historia_odon->historia_periodontal->control_higiene_bucal['placa_bacteriana_lengua'] = $data['control_higiene_bucal']['placa_bacteriana_lengua'];
+        $historia_odon->historia_periodontal->control_higiene_bucal['control_halitosis'] = $data['control_higiene_bucal']['control_halitosis'];
+        $historia_odon->historia_periodontal->control_higiene_bucal['tratamiento'] = $data['control_higiene_bucal']['tratamiento'];
+
+        $historia_odon->saveOrFail();
 
         message('Examen radiografico actualizado exitosamente 👍🏻', Type::Success);
         return response(null, 200);
