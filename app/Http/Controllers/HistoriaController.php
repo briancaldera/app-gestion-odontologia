@@ -309,7 +309,7 @@ class HistoriaController extends Controller
 
         $historia_odon->saveOrFail();
 
-        message('Examen radiografico actualizado exitosamente 👍🏻', Type::Success);
+        message('Historia periodontal actualizada exitosamente 👍🏻', Type::Success);
         return response(null, 200);
     }
 
@@ -322,7 +322,7 @@ class HistoriaController extends Controller
 
         $historia_odon->addMedia($periodontodiagrama)->toMediaCollection('periodontodiagrama');
 
-        message('Examen radiografico actualizado exitosamente 👍🏻', Type::Success);
+        message('Periodontodiagrama actualizado exitosamente 👍🏻', Type::Success);
         return response(null, 200);
     }
 

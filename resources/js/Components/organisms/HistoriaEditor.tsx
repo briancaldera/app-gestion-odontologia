@@ -14,7 +14,7 @@ import HistoriaOdontologicaSchema, {
     HistoriaOdontologicaDefaults
 } from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
 import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema/Historia/ExamenRadiograficoSchema.ts'
-import {Bone, BriefcaseMedical, FileBox, HeartPulse, Hospital, ListChecks, RefreshCcwDot, Users, Clipboard, TableRowsSplit, Images} from "lucide-react"
+import {Bone, BriefcaseMedical, FileBox, HeartPulse, Hospital, ListChecks, RefreshCcwDot, Users, Clipboard, TableRowsSplit, Images, Table} from "lucide-react"
 import EstudioModelosSection from "@/Components/organisms/historia/EstudioModelosSection";
 import ModificacionesPlanTratamientoSection from '@/Components/organisms/historia/ModificacionesPlanTratamientoSection'
 import SecuenciaPlanTratamientoSection from '@/Components/organisms/historia/SecuenciaTratamientoSection'
@@ -39,6 +39,8 @@ import PeriodontodiagramaSchema from "@/FormSchema/Historia/PeriodontodiagramaSc
 import PeriodontodiagramaSection from "@/Components/organisms/historia/PeriodontodiagramaSection.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import MediaSection from "@/Components/organisms/historia/MediaSection.tsx";
+import HistoriaPeriodontalSection from "@/Components/organisms/historia/HistoriaPeriodontalSection.tsx";
+import {HistoriaPeriodontalDefaults} from "@/FormSchema/Historia/HistoriaPeriodontalSchema.ts";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -50,8 +52,6 @@ type HistoriaEditorProps = {
 }
 
 const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
-
-    console.log(historia)
 
     const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
         resolver: zodResolver(HistoriaSchema),
@@ -277,6 +277,13 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
                             </Icon>
                         </Surface>
                     </TabsTrigger>
+                    <TabsTrigger value="historia-periodontal" className={'p-0'}>
+                        <Surface className={'rounded-none'}>
+                            <Icon className={'size-8'}>
+                                <Table />
+                            </Icon>
+                        </Surface>
+                    </TabsTrigger>
                     <TabsTrigger value="media" className={'p-0'}>
                         <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
@@ -319,6 +326,9 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
                         </TabsContent>
                         <TabsContent value="periodontodiagrama" className={TabTriggerStyle}>
                             <PeriodontodiagramaSection form={periodontodiagramaForm} periodontograma={historia.historia_odontologica?.periodontodiagrama[0] ?? null}/>
+                        </TabsContent>
+                        <TabsContent value="historia-periodontal" className={TabTriggerStyle}>
+                            <HistoriaPeriodontalSection readonly={readMode} historia_id={historia.id} historia_periodontal={historia.historia_odontologica!.historia_periodontal}/>
                         </TabsContent>
                         <TabsContent value="media" className={TabTriggerStyle}>
                             <MediaSection media={historia?.historia_odontologica?.anymedia ?? []} historia_id={historia.id} readmode={readMode}/>

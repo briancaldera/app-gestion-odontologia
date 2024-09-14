@@ -1,5 +1,6 @@
 import {z} from 'zod'
 import EstudioModelosSchema from "@/FormSchema/Historia/EstudioModelosSchema";
+import {b} from "vite/dist/node/types.d-aGj9QkWt";
 
 type HistoriaOdontologica = {
     historia_id: string
@@ -12,10 +13,11 @@ type HistoriaOdontologica = {
     modificaciones_plan_tratamiento: ModificacionTratamiento[]
     secuencia_tratamiento: TratamientoRealizado[]
     examen_radiografico: ExamenRadiografico
+    periodontodiagrama: readonly string[]
+    historia_periodontal: HistoriaPeriodontal
     panoramicas: readonly string[]
     coronales: readonly string[]
     periapicales: readonly string[]
-    periodontodiagrama: readonly string[]
     anymedia: readonly string[]
 }
 
@@ -107,4 +109,32 @@ type ExamenRadiografico = {
     interpretacion_coronales: string | null
 }
 
+type HistoriaPeriodontal = {
+    higiene_bucal: {
+        frecuencia_cepillado: string | null
+        tipo_cepillo: 'D' | 'M' | 'S' | null
+        metodo_cepillado: 'H' | 'V' | 'C' | 'O' | null
+        metodo_auxiliar: {
+            hilo_dental: boolean
+            enjuague_bucal: boolean
+            hidroterapia: boolean
+            cepillo_interdental: boolean
+        },
+        sustancia_reveladora: {
+            descripcion: string | null
+            otro: string | null
+        }
+        cepillado_lengua: boolean
+    }
+    control_higiene_bucal: {
+        tecnica_cepillado_ensenada: string | null
+        cepillo_recomendado: string | null
+        metodos_auxiliares_requeridos: string | null
+        control_halitosis: 'S' | 'N' | 'NR' | null
+        tratamiento: string | null
+        placa_bacteriana_lengua: boolean
+    }
+}
+
+export {type HistoriaPeriodontal}
 export default HistoriaOdontologica

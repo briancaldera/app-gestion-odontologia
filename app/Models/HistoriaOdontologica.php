@@ -169,7 +169,7 @@ JSON,
     "descripcion": null,
     "otro": null
   },
-  "cepillado_lengua": null
+  "cepillado_lengua": false
 },
 "control_higiene_bucal": {
   "tecnica_cepillado_ensenada": null,
