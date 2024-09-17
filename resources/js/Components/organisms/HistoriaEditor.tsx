@@ -41,6 +41,7 @@ import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import MediaSection from "@/Components/organisms/historia/MediaSection.tsx";
 import HistoriaPeriodontalSection from "@/Components/organisms/historia/HistoriaPeriodontalSection.tsx";
 import {HistoriaPeriodontalDefaults} from "@/FormSchema/Historia/HistoriaPeriodontalSchema.ts";
+import ControlPlacaSection from "@/Components/organisms/historia/ControlPlacaSection.tsx";
 
 const TabTriggerStyle = 'p-0 m-0'
 
@@ -284,6 +285,13 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
                             </Icon>
                         </Surface>
                     </TabsTrigger>
+                    <TabsTrigger value="control-placa" className={'p-0'}>
+                        <Surface className={'rounded-none'}>
+                            <Icon className={'size-8'}>
+                                <Table />
+                            </Icon>
+                        </Surface>
+                    </TabsTrigger>
                     <TabsTrigger value="media" className={'p-0'}>
                         <Surface className={'rounded-none'}>
                             <Icon className={'size-8'}>
@@ -329,6 +337,9 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
                         </TabsContent>
                         <TabsContent value="historia-periodontal" className={TabTriggerStyle}>
                             <HistoriaPeriodontalSection readonly={readMode} historia_id={historia.id} historia_periodontal={historia.historia_odontologica!.historia_periodontal}/>
+                        </TabsContent>
+                        <TabsContent value="control-placa" className={TabTriggerStyle}>
+                            <ControlPlacaSection />
                         </TabsContent>
                         <TabsContent value="media" className={TabTriggerStyle}>
                             <MediaSection media={historia?.historia_odontologica?.anymedia ?? []} historia_id={historia.id} readmode={readMode}/>
