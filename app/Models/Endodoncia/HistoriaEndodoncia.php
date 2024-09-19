@@ -2,13 +2,15 @@
 
 namespace App\Models\Endodoncia;
 
+use App\Casts\Endodoncia\Anamnesis;
+use App\ValueObjects\Endodoncia\Anamnesis as AnamnesisValueObject;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property ArrayObject $anamnesis
+ * @property AnamnesisValueObject $anamnesis
 */
 class HistoriaEndodoncia extends Model
 {
@@ -96,7 +98,7 @@ class HistoriaEndodoncia extends Model
     "list": [],
     "resumen_ant_personales": null
   },
-  "enfermedades_familiar": {
+  "enfermedades_familiares": {
     "resumen_ant_familiares": null,
     "examen_comp": null
   }
@@ -165,9 +167,13 @@ class HistoriaEndodoncia extends Model
     "observaciones": null
   },
   "radiografias_tratamiento": {
-  
+
   }
 }
 ]'
+    ];
+
+    protected $casts = [
+        'anamnesis' => Anamnesis::class,
     ];
 }
