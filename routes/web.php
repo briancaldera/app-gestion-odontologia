@@ -108,6 +108,9 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     });
 
+//    Routes for patient
+    Route::resource('pacientes', PacienteController::class);
+
 //    Routes for HCE
     Route::get('/historias/dashboard', [HistoriaController::class, 'dashboard'])->name('historias.dashboard');
     Route::get('/historias', [HistoriaController::class, 'index'])->name('historias.index');
@@ -144,8 +147,6 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show')->can('view', 'historia');
 
     Route::middleware(['role:estudiante'])->group(function () {
-
-//        Route::resource('pacientes', PacienteController::class);
 
 //        Route::get('/historias', function (){
 //
