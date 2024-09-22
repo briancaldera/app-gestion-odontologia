@@ -49,36 +49,6 @@ class Historia extends Model implements StatusHolder
         'created' => HistoriaCreated::class
     ];
 
-    /**
-     * @return string[]
-     */
-    public function getVisible(): array
-    {
-        /* @var User $user */
-        $user = Auth::user();
-
-        if (!isset($user)) {
-            return $this->visible;
-        }
-
-        if ($this->autor_id === $user->id) {
-            return [];
-        }
-
-        if ($user->isAdmin() OR $user->isAdmision()) {
-            return [];
-        }
-
-        return $this->visible;
-    }
-
-    protected $visible = [
-        'id',
-        'paciente_id',
-        'autor_id',
-        'numero',
-    ];
-
     protected function casts()
     {
         return [

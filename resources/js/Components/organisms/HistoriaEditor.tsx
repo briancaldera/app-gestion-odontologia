@@ -92,7 +92,7 @@ const HistoriaEditor = ({historia, readMode = true}: HistoriaEditorProps) => {
         resolver: zodResolver(HistoriaOdontologicaSchema),
         defaultValues: HistoriaOdontologicaDefaults,
         values: {
-            historia_id: historia.historia_odontologica!.historia_id,
+            historia_id: historia.id,
             ant_personales: historia.historia_odontologica!.ant_personales,
             examen_fisico: historia.historia_odontologica!.examen_fisico,
             habitos: historia.historia_odontologica!.habitos,

@@ -21,6 +21,7 @@ use App\Http\Requests\UpdatePeriodontodiagramaRequest;
 use App\Http\Requests\UpdatePlanTratamiento;
 use App\Http\Requests\UpdateSecuenciaTratamiento;
 use App\Http\Requests\UpdateTrastornosRequest;
+use App\Http\Resources\Odontologia\HistoriaResource;
 use App\Models\Historia;
 use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
@@ -86,7 +87,7 @@ class HistoriaController extends Controller
             $historias = Historia::all();
 
             return inertia()->render('Admin/Historias/Index', [
-                'historias' => $historias,
+                'historias' => HistoriaResource::collection($historias),
             ]);
         } elseif ($user->hasRole('admision')) {
 
@@ -97,7 +98,7 @@ class HistoriaController extends Controller
             $historias = $user->historias()->with(['paciente'])->get();
 
             return Inertia::render('Estudiante/Historias/Index', [
-                'historias' => $historias,
+                'historias' => HistoriaResource::collection($historias),
             ]);
         }
     }
@@ -368,15 +369,10 @@ class HistoriaController extends Controller
 
         } elseif ($user->hasRole('estudiante')) {
 
-            $historia->makeVisible(['paciente']);
-            $historia->paciente;
-            $historia->antFamiliares;
-            $historia->antPersonales;
-            $historia->trastornos;
-            $historia->historiaOdontologica;
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
             return Inertia::render('Estudiante/Historias/Show', [
-                'historia' => $historia
+                'historia' => new HistoriaResource($historia),
             ]);
         }
     }
@@ -405,7 +401,7 @@ class HistoriaController extends Controller
             $historia->historiaOdontologica;
 
             return Inertia::render('Estudiante/Historias/Edit', [
-                'historia' => $historia
+                'historia' => new HistoriaResource($historia),
             ]);
         }
     }
