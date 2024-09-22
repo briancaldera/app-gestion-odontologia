@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Group;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class GroupPolicy
 {
@@ -13,9 +12,7 @@ class GroupPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->isAdmin() || $user->isAdmision()) return true;
-
-        if ($user->isEstudiante() || $user->isProfesor()) return true;
+        if ($user->hasPermission('groups-read')) return true;
 
         return false;
     }
@@ -25,13 +22,13 @@ class GroupPolicy
      */
     public function view(User $user, Group $group): bool
     {
-        if ($user->isAdmin() || $user->isAdmision()) return true;
+        if ($user->hasRole(['admin', 'admision'])) return true;
 
-        if ($user->isProfesor() AND $group->owner->id === $user->id) {
+        if ($user->hasRole('profesor') AND $group->owner->id === $user->id) {
             return true;
         }
 
-        if ($user->isEstudiante() AND $group->members->contains('id', $user->id)) {
+        if ($group->members->contains('id', $user->id)) {
             return true;
         };
 
@@ -43,7 +40,7 @@ class GroupPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->isAdmin() || $user->isAdmision()) return true;
+        if ($user->hasRole(['admin', 'admision'])) return true;
 
         return false;
     }
@@ -53,21 +50,21 @@ class GroupPolicy
      */
     public function update(User $user, Group $group): bool
     {
-        if ($user->isAdmin() || $user->isAdmision()) return true;
+        if ($user->hasRole(['admin', 'admision'])) return true;
 
         return false;
     }
 
     public function addMember(User $user, Group $group): bool
     {
-        if ($user->isAdmin() || $user->isAdmision()) return true;
+        if ($user->hasRole(['admin', 'admision'])) return true;
 
         return false;
     }
 
     public function removeMember(User $user, Group $group): bool
     {
-        if ($user->isAdmin() || $user->isAdmision()) return true;
+        if ($user->hasRole(['admin', 'admision'])) return true;
 
         return false;
     }
@@ -77,7 +74,7 @@ class GroupPolicy
      */
     public function delete(User $user, Group $group): bool
     {
-        if ($user->isAdmin() || $user->isAdmision()) return true;
+        if ($user->hasRole(['admin', 'admision'])) return true;
 
         return false;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -29,14 +30,15 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = $request->user();
+        $user = $request->user()?->load(['profile']);
 
-        $user?->profile;
+        $userResource = new UserResource($user);
+        $userResource->withoutWrapping();
 
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $user,
+                'user' => $user ? $userResource : null,
             ],
             'messages' => fn() => $request->session()->pull('messages', []),
         ];

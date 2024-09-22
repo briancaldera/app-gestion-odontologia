@@ -1,4 +1,4 @@
-import {Head, Link, router} from "@inertiajs/react";
+import {Head, Link, router, usePage} from "@inertiajs/react";
 import React from "react";
 import AuthNavbar from "@/Components/organisms/AuthNavbar.tsx";
 import AuthSidebar from "@/Components/organisms/AuthSidebar.jsx"
@@ -13,6 +13,7 @@ export const AuthContext = React.createContext({})
 
 const AuthLayout = ({title, navbar, sidebar, children}) => {
 
+    const {auth: {user}} = usePage().props
     const route = useRoute()
     const [loading, setLoading] = React.useState(false)
     const [isDarkMode, toggleDarkMode] = React.useState(false)
@@ -51,8 +52,10 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
         })
     }
 
+    const can = React.useCallback((permission: string): boolean => (user?.permissions ?? []).some(p => p === permission),[user])
+
     return (
-        <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode}}>
+        <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode, can:can}}>
             <TooltipProvider>
                 <Head title={title}/>
                 <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 h-screen flex flex-col`}>

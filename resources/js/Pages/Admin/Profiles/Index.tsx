@@ -2,27 +2,49 @@ import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import {Card} from "@/shadcn/ui/card";
 import Title from "@/Components/atoms/Title";
 import {DataTable} from "@/Components/molecules/DataTable";
-import { createColumnHelper, ColumnDef, getPaginationRowModel } from '@tanstack/react-table'
+import {ColumnDef, createColumnHelper} from '@tanstack/react-table'
 import User from '@/src/models/User'
-import Profile from "@/src/models/Profile"
-import {ArrowUpDown, MoreHorizontal} from "lucide-react"
+import {ArrowBigLeft, ArrowUpDown, MoreHorizontal} from "lucide-react"
 import {Button} from "@/shadcn/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/shadcn/ui/dropdown-menu"
 import {router} from "@inertiajs/react"
 import {route} from "ziggy-js";
-import {SidebarContent} from "@/Pages/Admin/Dashboard";
+import SidebarMenu, {type MenuItem} from '@/Components/organisms/SidebarMenu.tsx'
 
-const columnHelper = createColumnHelper<Profile>()
+type IndexProps = {
+    users: User[]
+}
 
-const columns: ColumnDef<Profile>[] = [
-    columnHelper.accessor(originalRow => originalRow.cedula, {
+const menu = [
+    {icon: <ArrowBigLeft/>, link: "dashboard", name: "Volver"}
+] satisfies MenuItem[]
+
+const Index = ({users}: IndexProps) => {
+
+    return (
+        <AuthLayout title={'Perfiles'} sidebar={<SidebarMenu menu={menu}/>}>
+            <div className={'p-2 sm:p-12'}>
+                <Card className={'p-12'}>
+                    <Title level={'title-lg'}>Usuarios</Title>
+                    <section>
+                        <DataTable columns={columns} data={users} />
+                    </section>
+                </Card>
+            </div>
+        </AuthLayout>
+    )
+}
+
+const columnHelper = createColumnHelper<User>()
+
+const columns: ColumnDef<User>[] = [
+    columnHelper.accessor(originalRow => originalRow.profile.cedula, {
         meta: { title: 'Cédula'},
         id: 'cedula',
         header: props => {
@@ -38,7 +60,7 @@ const columns: ColumnDef<Profile>[] = [
         }
         ,
     }),
-    columnHelper.accessor(originalRow => originalRow.nombres, {
+    columnHelper.accessor(originalRow => originalRow.profile.nombres, {
         meta: { title: 'Nombres'},
         id: 'nombres' ,
         header: props => {
@@ -53,7 +75,7 @@ const columns: ColumnDef<Profile>[] = [
             )
         }
     }),
-    columnHelper.accessor(originalRow => originalRow.apellidos, {
+    columnHelper.accessor(originalRow => originalRow.profile.apellidos, {
         meta: { title: 'Apellidos'},
         id: 'apellidos' ,
         header: props => {
@@ -68,7 +90,7 @@ const columns: ColumnDef<Profile>[] = [
             )
         }
     }),
-    columnHelper.accessor(originalRow => originalRow.user?.email, {
+    columnHelper.accessor(originalRow => originalRow.email, {
         meta: { title: 'Email'},
         id: 'email' ,
         header: props => {
@@ -83,7 +105,7 @@ const columns: ColumnDef<Profile>[] = [
             )
         }
     }),
-    columnHelper.accessor(originalRow => originalRow.user?.name, {
+    columnHelper.accessor(originalRow => originalRow.name, {
         meta: { title: 'Usuario'},
         id: 'name' ,
         header: props => {
@@ -101,7 +123,7 @@ const columns: ColumnDef<Profile>[] = [
     columnHelper.display({
         id: 'actions',
         cell: props => {
-            const profile = props.row.original
+            const user = props.row.original
 
             return (
                 <DropdownMenu>
@@ -114,7 +136,7 @@ const columns: ColumnDef<Profile>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Opciones</DropdownMenuLabel>
                         <DropdownMenuItem
-                            onClick={() => router.visit(route('profile.show', {profile: profile.user_id}))}
+                            onClick={() => router.visit(route('profile.show', {profile: user.id}))}
                         >
                             Ver perfil
                         </DropdownMenuItem>
@@ -125,25 +147,5 @@ const columns: ColumnDef<Profile>[] = [
         },
     })
 ]
-
-interface IndexProps {
-    profiles: Profile[]
-}
-
-const Index = ({profiles}: IndexProps) => {
-
-    return (
-        <AuthLayout title={'Perfiles'} sidebar={<SidebarContent />}>
-            <div className={'p-2 sm:p-12'}>
-                <Card className={'p-12'}>
-                    <Title level={'title-lg'}>Usuarios</Title>
-                    <section>
-                        <DataTable columns={columns} data={profiles} />
-                    </section>
-                </Card>
-            </div>
-        </AuthLayout>
-    )
-}
 
 export default Index

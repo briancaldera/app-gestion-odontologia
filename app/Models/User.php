@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\HasRole;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -13,27 +12,27 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Metadata\Api\Groups;
+use Laratrust\Contracts\LaratrustUser;
+use Laratrust\Traits\HasRolesAndPermissions;
 
 /**
- * @property int $role the role for the user
  * @property string $id
  * @property string $name
  * @property string $email
  * @property string $email_verified_at
  * @property string $password
  */
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, LaratrustUser
 {
-    use HasFactory, Notifiable, HasUuids, HasRole;
+    use HasFactory, Notifiable, HasUuids;
+    use HasRolesAndPermissions;
 
     /**
      * The model's default values for attributes.
      *
      * @var array
      */
-    protected $attributes = [
-        'role' => 3,
-    ];
+    protected $attributes = [];
 
     /**
      * The attributes that are mass assignable.
@@ -44,34 +43,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-    ];
-
-    /**
-     * @return string[]
-     */
-    public function getVisible(): array
-    {
-        /* @var User $user*/
-        $user = Auth::user();
-
-        if (!isset($user)) {
-            return $this->visible;
-        }
-
-        if ($user->id === $this->id) {
-            return [];
-        }
-
-        if ($user->isAdmin() OR $user->isAdmision()) {
-            return [];
-        }
-
-        return $this->visible;
-    }
-
-    protected $visible = [
-        'id',
-        'name'
     ];
 
     /**

@@ -6,6 +6,8 @@ use App\Exceptions\InvalidMemberException;
 use App\Exceptions\MemberAlreadyExistsException;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
+use App\Http\Resources\GroupResource;
+use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\User;
 use App\Services\GroupService;
@@ -24,20 +26,20 @@ class GroupController extends Controller
     {
         $user = $request->user();
 
-        if ($user->isAdmin()) {
+        if ($user->hasRole('admin')) {
             $groups = Group::with(['owner.profile'])->get();
 
-            $profesores = User::where('role', '2')->get();
+            $profesores = User::whereHasRole('profesor')->get();
             return Inertia::render('Admin/Groups/Index', [
-                'groups' => $groups,
-                'profesores' => $profesores
+                'groups' => GroupResource::collection($groups),
+                'profesores' => UserResource::collection($profesores),
             ]);
-        } elseif ($user->isEstudiante()) {
+        } elseif ($user->hasRole('estudiante')) {
 
             $groups = $user->groups()->load(['owner.profile'])->makeVisible('owner');
             $groups->each(fn (Group $group) => $group->owner->makeVisible('profile'));
             return Inertia::render('Estudiante/Groups/Index', [
-                'groups' => $groups,
+                'groups' => GroupResource::collection($groups),
             ]);
         }
     }
@@ -68,18 +70,18 @@ class GroupController extends Controller
     {
         $user = $request->user();
 
-        if ($user->isAdmin()) {
+        if ($user->hasRole('admin')) {
 
             $group->owner->profile;
             $group->members->each(fn (User $user) => $user->profile);
 
-            $students = User::where('role', '3')->with('profile')->get()->reject(fn (User $user) => $group->members->contains('id', $user->id));
+            $students = User::whereHasRole('estudiante')->with('profile')->get()->reject(fn (User $user) => $group->members->contains('id', $user->id));
 
             return Inertia::render('Admin/Groups/Show', [
-                'group' => $group,
-                'students' => $students,
+                'group' => new GroupResource($group),
+                'students' => UserResource::collection($students),
             ]);
-        } elseif ($user->isEstudiante()) {
+        } elseif ($user->hasRole('estudiante')) {
 
             $group->owner->profile;
             $group->owner->makeVisible(['profile']);
@@ -88,7 +90,7 @@ class GroupController extends Controller
             $historias = $user->historias()->where('status', 'abierta')->orWhere('status', 'correccion')->with(['paciente'])->get();
 
             return Inertia::render('Estudiante/Groups/Show', [
-                'group' => $group,
+                'group' => new GroupResource($group),
                 'historias' => $historias,
             ]);
         }

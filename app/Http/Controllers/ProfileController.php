@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\StoreProfileRequest;
+use App\Http\Resources\ProfileResource;
+use App\Http\Resources\UserResource;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -26,16 +28,11 @@ class ProfileController extends Controller
     {
         /* @var User $user */
         $user = $request->user();
-        if ($user->isAdmin()) {
-            $profiles = Profile::with('user')->get();
-            $profiles->makeVisible(['cedula', 'user', 'user_id']);
-            $profiles->transform(function (Profile $profile, int $key) {
-                $profile->user->makeVisible(['email']);
-                return $profile;
-            });
+        if ($user->hasRole('admin')) {
+            $users = User::with(['profile'])->get();
 
             return Inertia::render('Admin/Profiles/Index', [
-                'profiles' => $profiles
+                'users' => UserResource::collection($users),
             ]);
         }
         abort(403);
@@ -45,7 +42,7 @@ class ProfileController extends Controller
     {
         /* @var User $user */
         $user = $request->user();
-        if ($user->isAdmin()) {
+        if ($user->hasRole('admin')) {
             $profile->setVisible(['nombres',
                 'apellidos',
                 'fecha_nacimiento',
@@ -62,7 +59,7 @@ class ProfileController extends Controller
                     'user' => $profile->user,
                 ]
             );
-        } else if ($user->isAdmision()) {
+        } else if ($user->hasRole('admision')) {
             abort(403);
         }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CorreccionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\NotificationsController;
@@ -37,31 +38,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
 Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
-    Route::get('/dashboard', function (Request $request) {
-        $user = $request->user();
-
-        if ($user->isAdmin()) {
-            // TODO move this to a proper service... like a StatisticsService
-            $usersCount = User::count();
-            $historiasCount = Historia::count();
-            $estudiantesCount = User::where('role', 3)->count();
-            $profesoresCount = User::where('role', 2)->count();
-            return Inertia::render('Admin/Dashboard', [
-                'usersCount' => $usersCount,
-                'historiasCount' => $historiasCount,
-                'estudiantesCount' => $estudiantesCount,
-                'profesoresCount' => $profesoresCount,
-            ]);
-        } elseif ($user->isAdmision()) {
-            return response(null, 404);
-        } elseif ($user->isProfesor()) {
-            return response(null, 404);
-        } elseif ($user->isEstudiante()) {
-            return Inertia::render('Estudiante/Dashboard');
-        } else {
-            return response(null, 403);
-        }
-    })->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     // Notifications routes
     Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.index');

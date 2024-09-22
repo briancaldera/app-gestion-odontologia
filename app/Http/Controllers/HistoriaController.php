@@ -31,7 +31,6 @@ use App\Services\HistoriaService;
 use App\Services\RadiografiaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Arr;
 use Inertia\Inertia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Type;
@@ -54,7 +53,7 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
-        if ($user->isAdmin()) {
+        if ($user->hasRole('admin')) {
 
             $statistics = [
                 'created_HCE' => Historia::count(),
@@ -63,11 +62,11 @@ class HistoriaController extends Controller
             return inertia()->render('Admin/Historias/Dashboard', [
                 'statistics' => $statistics
             ]);
-        } elseif ($user->isAdmision()) {
+        } elseif ($user->hasRole('admision')) {
 
-        } elseif ($user->isProfesor()) {
+        } elseif ($user->hasRole('profesor')) {
 
-        } elseif ($user->isEstudiante()) {
+        } elseif ($user->hasRole('estudiante')) {
             return Inertia::render('Estudiante/Historias/Dashboard', [
 
             ]);
@@ -82,18 +81,18 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
-        if ($user->isAdmin()) {
+        if ($user->hasRole('admin')) {
 
             $historias = Historia::all();
 
             return inertia()->render('Admin/Historias/Index', [
                 'historias' => $historias,
             ]);
-        } elseif ($user->isAdmision()) {
+        } elseif ($user->hasRole('admision')) {
 
-        } elseif ($user->isProfesor()) {
+        } elseif ($user->hasRole('profesor')) {
 
-        } elseif ($user->isEstudiante()) {
+        } elseif ($user->hasRole('estudiante')) {
 
             $historias = $user->historias()->with(['paciente'])->get();
 
@@ -361,13 +360,13 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
-        if ($user->isAdmin()) {
+        if ($user->hasRole('admin')) {
 
-        } elseif ($user->isAdmision()) {
+        } elseif ($user->hasRole('admision')) {
 
-        } elseif ($user->isProfesor()) {
+        } elseif ($user->hasRole('profesor')) {
 
-        } elseif ($user->isEstudiante()) {
+        } elseif ($user->hasRole('estudiante')) {
 
             $historia->makeVisible(['paciente']);
             $historia->paciente;
@@ -390,13 +389,13 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
-        if ($user->isAdmin()) {
+        if ($user->hasRole('admin')) {
 
-        } elseif ($user->isAdmision()) {
+        } elseif ($user->hasRole('admision')) {
 
-        } elseif ($user->isProfesor()) {
+        } elseif ($user->hasRole('profesor')) {
 
-        } elseif ($user->isEstudiante()) {
+        } elseif ($user->hasRole('estudiante')) {
 
             $historia->makeVisible(['paciente']);
             $historia->paciente;

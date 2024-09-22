@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\Profile;
+use App\Models\Role;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,39 +16,53 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            RoleSeeder::class
-        ]);
+        $this->call([LaratrustSeeder::class]);
 
-        // User::factory(10)->create();
+//        $admin = Role::create([
+//            'name' => 'admin',
+//            'display_name' => 'Administrador',
+//        ]);
+//
+//
+//        /** @var Role $estudiante */
+//        $estudiante = Role::create([
+//            'name' => 'estudiante',
+//            'display_name' => 'Estudiante',
+//        ]);
+//
+//        $crearHistoria = Permission::create([
+//            'name' => 'crear-historia',
+//            'display_name' => 'Crear historia', // optional
+//            'description' => 'Crear historia regular de adulto', // optional
+//        ]);
+//
+//        $estudiante->givePermission($crearHistoria);
 
-        User::factory()->has(Profile::factory())->create([
-            'name' => 'Estudiante',
-            'role' => 3,
-            'email' => 'estudiante@example.com'
-        ]);
+//        // User::factory(10)->create();
+//
 
-        User::factory()->has(Profile::factory())->create([
-            'name' => 'Profesor',
-            'role' => 2,
-            'email' => 'profesor@example.com'
-        ]);
-
-        User::factory()->has(Profile::factory())->create([
-            'name' => 'Admision',
-            'role' => 1,
-            'email' => 'admision@example.com'
-        ]);
-
-        User::factory()->has(Profile::factory())->create([
+        $admin = User::factory()->has(Profile::factory())->create([
             'name' => 'Administracion',
-            'role' => 0,
             'email' => 'admin@example.com'
         ]);
+        $admin->addRole('admin');
 
-//        User::factory()->create([
-//            'name' => 'Test User',
-//            'email' => 'test@example.com',
-//        ]);
+        $admision = User::factory()->has(Profile::factory())->create([
+            'name' => 'Admision',
+            'email' => 'admision@example.com'
+        ]);
+        $admision->addRole('admision');
+
+        $profesor = User::factory()->has(Profile::factory())->create([
+            'name' => 'Profesor',
+            'email' => 'profesor@example.com'
+        ]);
+        $profesor->addRole('profesor');
+
+        $estudianteUser = User::factory()->has(Profile::factory())->create([
+            'name' => 'Estudiante',
+            'email' => 'estudiante@example.com'
+        ]);
+        $estudianteUser->addRole('estudiante');
     }
 }

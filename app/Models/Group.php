@@ -35,32 +35,6 @@ class Group extends Model
         'members' => '[]',
     ];
 
-    /**
-     * @return string[]
-     */
-    public function getVisible(): array
-    {
-        /* @var User $user*/
-        $user = Auth::user();
-
-        if (!isset($user)) {
-            return $this->visible;
-        }
-
-        if ($user->isAdmin() OR $user->isAdmision()) {
-            return [];
-        }
-
-        return $this->visible;
-    }
-
-    protected $visible = [
-        'id',
-        'owner',
-        'name',
-        'created_at',
-    ];
-
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id', 'id');
