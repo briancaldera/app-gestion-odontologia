@@ -14,19 +14,23 @@ return [
     'roles_structure' => [
         'admin' => [
             'users' => 'r,r-private,u,d',
+            'pacientes' => 'r,r-private,u,d',
             'historias' => 'r,u,d',
             'groups' => 'c,r,r-private,u,d,add-users,remove-users,list-users'
         ],
         'admision' => [
             'users' => 'r',
+            'pacientes' => 'r',
             'historias' => 'r,u,d',
         ],
         'profesor' => [
             'users' => 'r',
+            'pacientes' => 'r',
             'historias' => 'r',
             'groups' => 'r,r-private,u,list-users',
         ],
         'estudiante' => [
+            'pacientes' => 'c,r,u',
             'historias' => 'c,r,u',
             'groups' => 'r',
         ],
