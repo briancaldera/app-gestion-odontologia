@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
                             </SelectTrigger>
                             <SelectContent>
                                 {
-                                    columns.every(col => 'id' in col) && columns.filter(col => col.id !== 'actions').filter(col => col.id !== '').map((column) => {
+                                    columns.every(col => 'id' in col) && columns.filter(col => col.meta?.searchable).filter(col => col.id !== '').map(column => {
 
                                         return (
                                             <SelectItem key={column.id}

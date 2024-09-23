@@ -13,7 +13,7 @@ class PacientePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasPermission('pacientes-read');
     }
 
     /**

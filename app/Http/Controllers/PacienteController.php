@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePacienteRequest;
 use App\Http\Requests\UpdatePacienteRequest;
+use App\Http\Resources\PacienteResource;
+use App\Models\Historia;
 use App\Models\Paciente;
+use App\Models\User;
 use App\Services\PacienteService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,6 +27,20 @@ class PacienteController extends Controller
     public function index()
     {
 
+        /** @var User $user */
+        $user = auth()->user();
+
+        $user->can('viewAny', Paciente::class);
+
+        if ($user->hasPermission('pacientes-index-all')) {
+            $pacientes = Paciente::all();
+        } else {
+            $pacientes = $user->historias->map(fn(Historia $historia) => $historia->paciente) ?? [];
+        }
+
+        return Inertia::render('Estudiante/Pacientes/Index', [
+            'pacientes' => PacienteResource::collection($pacientes)
+        ]);
     }
 
     /**
@@ -31,7 +48,7 @@ class PacienteController extends Controller
      */
     public function create()
     {
-        //
+        return to_route('dashboard');
     }
 
     /**
@@ -49,7 +66,11 @@ class PacienteController extends Controller
      */
     public function show(Paciente $paciente)
     {
-        return $paciente;
+
+
+        return Inertia::render('Estudiante/Pacientes/Show', [
+            'paciente' => new PacienteResource($paciente),
+        ]);
     }
 
     /**
