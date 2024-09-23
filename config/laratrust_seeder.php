@@ -14,7 +14,7 @@ return [
     'roles_structure' => [
         'admin' => [
             'users' => 'r,r-private,u,d',
-            'pacientes' => 'r,r-private,u,d',
+            'pacientes' => 'i,r,r-private,u,d',
             'historias' => 'r,u,d',
             'groups' => 'c,r,r-private,u,d,add-users,remove-users,list-users'
         ],
@@ -37,6 +37,7 @@ return [
     ],
 
     'permissions_map' => [
+        'i' => 'index-all',
         'c' => 'create',
         'r' => 'read',
         'u' => 'update',
@@ -47,3 +48,8 @@ return [
         'list-users' => 'list-users'
     ],
 ];
+
+// Actions
+// users:index-all,create,read,write,delete,read-private-info
+// pacientes:index-all,create,read,write,delete,read-private-info
+
