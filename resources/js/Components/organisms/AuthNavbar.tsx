@@ -1,8 +1,8 @@
-import {router, usePage} from "@inertiajs/react";
+import {Link, router, usePage} from "@inertiajs/react";
 import Avatar from "@/Components/atoms/Avatar.jsx";
 import {route, useRoute} from 'ziggy-js'
 import Dropdown from "@/Components/molecules/Dropdown.jsx";
-import React from "react";
+import React, {Fragment} from "react";
 import Switch from "@/Components/atoms/Switch.jsx";
 import {MoonIcon, SunIcon} from "@heroicons/react/24/outline"
 import {AuthContext} from "@/Layouts/AuthLayout.js";
@@ -15,7 +15,7 @@ import {
     DropdownMenuTrigger,
 } from '@/shadcn/ui/dropdown-menu'
 import {Icon} from "@/Components/atoms/Icon";
-import {Bell, EllipsisVertical, Users} from 'lucide-react'
+import {Bell, EllipsisVertical, Users, House} from 'lucide-react'
 import {ScrollArea} from '@/shadcn/ui/scroll-area'
 import Title from "@/Components/atoms/Title";
 import Label from "@/Components/atoms/Label";
@@ -25,12 +25,25 @@ import {Axios} from "axios";
 import {Popover, PopoverContent, PopoverTrigger} from '@/shadcn/ui/popover'
 import Heading from "@/Components/atoms/Heading";
 import User from "@/src/models/User";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/shadcn/ui/breadcrumb"
+
 
 declare const axios: Axios
 
 const AuthNavbar = () => {
     return (
-        <div className={'flex sm:flex-row-reverse h-full'}>
+        <div className={'flex-1 flex h-full'}>
+            {/*breadcrumbs*/}
+            <div className={'px-8 flex-1 flex items-center'}>
+                <Breadcrumbs/>
+            </div>
             {/*auth section*/}
             <AuthSection/>
         </div>
@@ -249,6 +262,53 @@ const DefaultNotification = ({notification, now}: {notification: Notification, n
                 </div>
             </div>
         </div>
+    )
+}
+
+const Breadcrumbs = () => {
+
+    const url = usePage().url
+    const urlArray = url.split('/').filter(segment => segment !== 'dashboard' && segment !== '')
+    const breadcrumbStack = []
+
+    console.log(urlArray)
+
+    // second level
+    const level2: {name: string, link: string}[] = [
+        {name: 'Pacientes', link: route('pacientes.index') },
+        {name: 'Historias', link: route('historias.index') },
+        {name: 'Grupos', link: route('groups.index') },
+    ]
+
+    if (urlArray[0]) {
+        const element = level2.find(element => element.name.toLowerCase() === urlArray[0])
+        element && breadcrumbStack.push((
+            <Fragment key={element.link}>
+                <BreadcrumbSeparator/>
+                <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                        <Link href={element.link}>
+                            {element.name}
+                        </Link>
+                    </BreadcrumbLink>
+                </BreadcrumbItem>
+            </Fragment>
+        ))
+    }
+
+
+    return (
+        <Breadcrumb>
+            <BreadcrumbList>
+                <BreadcrumbItem>
+                    <BreadcrumbLink asChild><Link href={route('dashboard')}><Icon><House/></Icon></Link></BreadcrumbLink>
+                </BreadcrumbItem>
+                {
+                    breadcrumbStack
+                }
+            </BreadcrumbList>
+        </Breadcrumb>
+
     )
 }
 
