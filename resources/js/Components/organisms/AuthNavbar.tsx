@@ -15,7 +15,7 @@ import {
     DropdownMenuTrigger,
 } from '@/shadcn/ui/dropdown-menu'
 import {Icon} from "@/Components/atoms/Icon";
-import {Bell, EllipsisVertical, Users, House} from 'lucide-react'
+import {Bell, EllipsisVertical, Users, House, Search} from 'lucide-react'
 import {ScrollArea} from '@/shadcn/ui/scroll-area'
 import Title from "@/Components/atoms/Title";
 import Label from "@/Components/atoms/Label";
@@ -33,6 +33,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/shadcn/ui/breadcrumb"
+import {Input} from "@/shadcn/ui/input.tsx";
 
 
 declare const axios: Axios
@@ -41,8 +42,14 @@ const AuthNavbar = () => {
     return (
         <div className={'flex-1 flex h-full'}>
             {/*breadcrumbs*/}
-            <div className={'px-8 flex-1 flex items-center'}>
+            <div className={'px-8 flex-1 flex items-center justify-between'}>
                 <Breadcrumbs/>
+                <div className={'w-80 flex items-center gap-2 border rounded-lg pr-2'}>
+                    <Input className={'border-0'} placeholder={'Buscar...'}/>
+                    <Icon className={'flex-none'}>
+                        <Search/>
+                    </Icon>
+                </div>
             </div>
             {/*auth section*/}
             <AuthSection/>
@@ -270,8 +277,6 @@ const Breadcrumbs = () => {
     const url = usePage().url
     const urlArray = url.split('/').filter(segment => segment !== 'dashboard' && segment !== '')
     const breadcrumbStack = []
-
-    console.log(urlArray)
 
     // second level
     const level2: {name: string, link: string}[] = [
