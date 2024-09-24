@@ -11,7 +11,7 @@ const DARK_MODE_KEY = 'dark_mode'
 
 export const AuthContext = React.createContext({})
 
-const AuthLayout = ({title, navbar, sidebar, children}) => {
+const AuthLayout = ({title, sidebar, children}) => {
 
     const {auth: {user}} = usePage().props
     const route = useRoute()
@@ -61,7 +61,7 @@ const AuthLayout = ({title, navbar, sidebar, children}) => {
                 <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 h-screen flex flex-col`}>
                     <nav
                         className={'z-50 fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 lg:ps-72 flex justify-end'}>
-                        {navbar || <AuthNavbar/>}
+                        <AuthNavbar/>
                     </nav>
                     <aside className={
                         ' /*mobile*/ bg-indigo-600 fixed z-50 max-lg:inset-x-0 max-lg:h-16 bottom-0' +

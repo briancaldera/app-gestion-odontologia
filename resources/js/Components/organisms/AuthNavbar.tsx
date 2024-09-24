@@ -44,12 +44,7 @@ const AuthNavbar = () => {
             {/*breadcrumbs*/}
             <div className={'px-8 flex-1 flex items-center justify-between'}>
                 <Breadcrumbs/>
-                <div className={'w-80 flex items-center gap-2 border rounded-lg pr-2'}>
-                    <Input className={'border-0'} placeholder={'Buscar...'}/>
-                    <Icon className={'flex-none'}>
-                        <Search/>
-                    </Icon>
-                </div>
+                <SearchBar/>
             </div>
             {/*auth section*/}
             <AuthSection/>
@@ -283,6 +278,7 @@ const Breadcrumbs = () => {
         {name: 'Pacientes', link: route('pacientes.index') },
         {name: 'Historias', link: route('historias.index') },
         {name: 'Grupos', link: route('groups.index') },
+        {name: 'Mi Perfil', link: route('profile.edit') },
     ]
 
     if (urlArray[0]) {
@@ -314,6 +310,19 @@ const Breadcrumbs = () => {
             </BreadcrumbList>
         </Breadcrumb>
 
+    )
+}
+
+const SearchBar = () => {
+    const [searchTerm, setSearchTerm] = React.useState('')
+
+    return (
+        <div className={'w-80 flex items-center gap-2 border rounded-lg pr-2'}>
+            <Input className={'border-0'} placeholder={'Buscar...'} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+            <Icon className={'flex-none'}>
+                <Search/>
+            </Icon>
+        </div>
     )
 }
 
