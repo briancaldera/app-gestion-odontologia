@@ -1,4 +1,4 @@
-import BaseLayout from "@/Layouts/BaseLayout.jsx";
+import BaseLayout from "@/Layouts/BaseLayout.tsx";
 import Navbar from "@/Components/organisms/Navbar.jsx";
 
 const Home = ({auth}) => {

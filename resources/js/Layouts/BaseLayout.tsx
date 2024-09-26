@@ -2,6 +2,8 @@ import {CssVarsProvider, StyledEngineProvider} from '@mui/joy/styles';
 import {enqueueSnackbar, SnackbarProvider} from 'notistack'
 import {usePage} from '@inertiajs/react'
 import React from "react";
+import {Toaster} from "@/shadcn/ui/sonner.tsx";
+import {toast} from "sonner";
 
 const BaseContext = React.createContext({
     can: (permission) => {
@@ -13,7 +15,26 @@ const BaseLayout = ({children}) => {
     const {user} = usePage().props.auth
 
     React.useEffect(() => {
-        messages.forEach(message => enqueueSnackbar(message.content, {variant: message.type}))
+        messages.forEach(message => {
+            switch (message.type) {
+                case 'success':
+                    toast.success(message.content)
+                    break
+                case 'info':
+                    toast.info(message.content)
+                    break
+                case 'error':
+                    toast.error(message.content)
+                    break
+                case 'warning':
+                    toast.warning(message.content)
+                    break
+                case 'default':
+                default:
+                    toast.message(message.content)
+                    break
+            }
+        })
     })
 
     const can = React.useCallback((permission) => (user?.permissions ?? []).some(p => p === permission), [user])
@@ -23,13 +44,8 @@ const BaseLayout = ({children}) => {
             <StyledEngineProvider injectFirst>
                 <CssVarsProvider>
                     {/*<CssBaseline/>*/}
-
-                    <SnackbarProvider anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}>
-                        {children}
-                    </SnackbarProvider>
+                    {children}
+                    <Toaster/>
                 </CssVarsProvider>
             </StyledEngineProvider>
         </BaseContext.Provider>

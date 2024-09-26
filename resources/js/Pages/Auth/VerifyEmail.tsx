@@ -5,7 +5,7 @@ import Logo from "@/Components/atoms/Logo.jsx";
 import {Text} from "@/Components/atoms/Text.jsx";
 import Title from "@/Components/atoms/Title.jsx";
 import {Button} from "@/Components/molecules/Button.jsx";
-import BaseLayout from "@/Layouts/BaseLayout.jsx";
+import BaseLayout from "@/Layouts/BaseLayout.tsx";
 import {useRoute} from "ziggy-js"
 
 const VerifyEmail = ({status}) => {

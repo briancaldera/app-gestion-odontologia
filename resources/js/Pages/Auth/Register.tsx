@@ -1,5 +1,5 @@
 import GuestLayout from '@/Layouts/GuestLayout';
-import BaseLayout from "@/Layouts/BaseLayout.jsx";
+import BaseLayout from "@/Layouts/BaseLayout.tsx";
 import RegisterForm from "@/Components/organisms/RegisterForm.jsx";
 
 const Register = () => {

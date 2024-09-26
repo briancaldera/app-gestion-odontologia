@@ -1,4 +1,4 @@
-import BaseLayout from "@/Layouts/BaseLayout.jsx";
+import BaseLayout from "@/Layouts/BaseLayout.tsx";
 import GuestLayout from "@/Layouts/GuestLayout.jsx";
 import Surface from "@/Components/atoms/Surface.jsx";
 import Heading from "@/Components/atoms/Heading.jsx";

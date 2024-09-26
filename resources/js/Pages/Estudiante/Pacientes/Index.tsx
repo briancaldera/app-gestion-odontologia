@@ -1,7 +1,6 @@
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import Paciente from "@/src/models/Paciente.ts";
 import React from "react";
-import {BaseContext} from "@/Layouts/BaseLayout";
 import Surface from "@/Components/atoms/Surface";
 import {Link} from "@inertiajs/react";
 import {route} from "ziggy-js";
@@ -14,6 +13,7 @@ import {Button} from "@/shadcn/ui/button.tsx";
 import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {DataTable} from "@/Components/molecules/DataTable.tsx";
+import {usePermission} from "@/src/Utils/Utils.ts";
 
 type IndexProps = {
     pacientes: Paciente[]
@@ -21,7 +21,7 @@ type IndexProps = {
 
 const Index = ({pacientes}: IndexProps) => {
 
-    const {can} = React.useContext(BaseContext)
+    const {can} = usePermission()
 
     return (
         <AuthLayout title={'Pacientes'} sidebar={<SidebarMenu menu={menu}/>}>
