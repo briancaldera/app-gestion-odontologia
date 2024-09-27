@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('historia_odontologicas', function (Blueprint $table) {
-            $table->id();
-            $table->foreignUuid('historia_id')->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('historia_id')->references('id')->on('historias')->cascadeOnUpdate()->cascadeOnDelete();
             $table->text('ant_personales')->nullable();
             $table->jsonb('portador');
             $table->jsonb('habitos');
@@ -24,6 +23,8 @@ return new class extends Migration
             $table->jsonb('secuencia_tratamiento');
             $table->jsonb('examen_radiografico');
             $table->jsonb('historia_periodontal');
+
+            $table->primary('historia_id');
         });
     }
 

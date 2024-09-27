@@ -33,6 +33,11 @@ class HistoriaOdontologica extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
+    protected $primaryKey = 'historia_id';
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected $table = 'historia_odontologicas';
+
     public $timestamps = false;
 
     protected $attributes = [
