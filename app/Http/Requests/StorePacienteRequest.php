@@ -33,9 +33,9 @@ class StorePacienteRequest extends FormRequest
             'peso' => ['required', 'numeric', 'min:0', 'max:300','decimal:0,2'],
             'fecha_nacimiento' => ['required', 'date', 'before:today'],
             'ocupacion' => ['required', 'string', 'between:0, 50'],
-            'direccion' => ['string', 'between:3, 100'],
+            'direccion' => ['required', 'string', 'between:3, 100'],
             'telefono' => ['nullable', 'string', 'between:0, 15', 'regex:/^[\d]{4}-[\d]{7}$/'],
-            'foto' => ['sometimes', 'nullable', 'image', 'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000', 'min:50', 'max:2000'],
+            'foto' => ['nullable', 'image', 'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000', 'min:50', 'max:2000'],
             'motivo_consulta' => ['required', 'string', 'max:1000'],
             'enfermedad_actual' => ['nullable', 'string', 'max:1000'],
         ];

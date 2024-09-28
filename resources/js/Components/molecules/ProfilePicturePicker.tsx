@@ -47,4 +47,5 @@ const ProfilePicturePicker = ({src, onDrop, className}: ProfilePicturePickerProp
     )
 }
 
+export {pictureFileFormats}
 export default ProfilePicturePicker

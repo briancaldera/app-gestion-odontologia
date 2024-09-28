@@ -2,13 +2,16 @@ import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import Paciente from "@/src/models/Paciente.ts";
 import React from "react";
 import {usePermission} from "@/src/Utils/Utils.ts";
-import {EllipsisVertical} from "lucide-react";
+import {EllipsisVertical, User} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import Title from "@/Components/atoms/Title";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {Separator} from "@/shadcn/ui/separator.tsx";
 import Label from "@/Components/atoms/Label";
 import {format, formatDistanceToNow} from 'date-fns'
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import Image from "@/Components/atoms/Image.tsx";
+import {Icon} from "@/Components/atoms/Icon";
 
 type ShowProps = {
     paciente: Paciente
@@ -18,11 +21,13 @@ const Show = ({paciente}: ShowProps) => {
 
     const can = usePermission()
 
+    console.log(paciente)
+
     return (
         <AuthLayout title={`Paciente - ${paciente.nombre} ${paciente.apellido}`}>
-            <div className={'h-full'}>
+            <ScrollArea className={'h-full bg-white'}>
                 <PacienteInfoSection paciente={paciente}/>
-            </div>
+            </ScrollArea>
         </AuthLayout>
     )
 }
@@ -31,12 +36,23 @@ const tabTriggerStyle = 'py-2.5 rounded-none ring-0 shadow-none px-12 text-slate
 
 const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
     return (
-        <div className={'h-full bg-white flex flex-col'}>
-            <div className={'h-36 grid grid-cols-4 px-6'}>
+        <div className={'h-full flex flex-col'}>
+            <div className={'grid grid-cols-4 px-6 py-6'}>
                 <div className={'col-span-2 flex gap-2 py-3'}>
                     {/*image*/}
-                    <div className={'rounded-full aspect-square shadow-inner'}>
-
+                    <div className={'size-28 rounded-full shadow-inner overflow-hidden'}>
+                        {
+                            paciente.foto ?
+                                (
+                                    <Image src={paciente.foto} className={'w-full h-auto object-contain aspect-square'}/>
+                                ) : (
+                                    <div className={'h-full flex justify-center items-center'}>
+                                        <Icon className={'text-slate-200 size-fit'}>
+                                            <User className={'size-16'}/>
+                                        </Icon>
+                                    </div>
+                                )
+                        }
                     </div>
                     <div className={'flex flex-col'}>
                         <Title level={'h3'}>{`${paciente.nombre} ${paciente.apellido}`}</Title>
@@ -135,7 +151,17 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
 
                 <div className={'space-y-2'}>
                     <Title className={'font-semibold text-neutral-400'}>Peso</Title>
-                    <Title className={'font-semibold'}>{paciente?.peso ?? 'No autorizado para ver'} Kg</Title>
+                    <Title className={'font-semibold'}>{paciente?.peso + ' Kg' ?? 'No autorizado para ver'}</Title>
+                </div>
+
+                <div className={'space-y-2'}>
+                    <Title className={'font-semibold text-neutral-400'}>Motivo de consulta</Title>
+                    <Title className={'font-semibold'}>{paciente.motivo_consulta}</Title>
+                </div>
+
+                <div className={'space-y-2'}>
+                    <Title className={'font-semibold text-neutral-400'}>Enfermedad actual</Title>
+                    <Title className={'font-semibold'}>{paciente.enfermedad_actual}</Title>
                 </div>
 
             </section>

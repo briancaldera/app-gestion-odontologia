@@ -35,7 +35,7 @@ class PacienteController extends Controller
         if ($user->hasPermission('pacientes-index-all')) {
             $pacientes = Paciente::all();
         } else {
-            $pacientes = $user->historias->map(fn(Historia $historia) => $historia->paciente) ?? [];
+            $pacientes = Paciente::where('assigned_to', $user->id)->get();
         }
 
         return Inertia::render('Estudiante/Pacientes/Index', [
@@ -48,6 +48,13 @@ class PacienteController extends Controller
      */
     public function create()
     {
+        $user = auth()->user();
+
+        if ($user->hasPermission('pacientes-create')) {
+            return Inertia::render('Estudiante/Pacientes/Create');
+        }
+
+        message('No estas autorizado a registrar pacientes', \Type::Error);
         return to_route('dashboard');
     }
 
@@ -57,8 +64,9 @@ class PacienteController extends Controller
     public function store(StorePacienteRequest $request)
     {
         $validated = $request->validated();
-        $this->pacienteService->storePaciente($validated);
-        return response('OK', 201);
+        $newPaciente = $this->pacienteService->storePaciente($validated);
+        message('Paciente creado.', \Type::Success);
+        return to_route('pacientes.show', ['paciente' => $newPaciente->id]);
     }
 
     /**

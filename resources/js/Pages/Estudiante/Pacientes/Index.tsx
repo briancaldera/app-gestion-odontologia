@@ -21,7 +21,7 @@ type IndexProps = {
 
 const Index = ({pacientes}: IndexProps) => {
 
-    const {can} = usePermission()
+    const can = usePermission()
 
     return (
         <AuthLayout title={'Pacientes'} sidebar={<SidebarMenu menu={menu}/>}>

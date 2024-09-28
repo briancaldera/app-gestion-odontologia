@@ -15,7 +15,7 @@ class PacienteResource extends JsonResource
     public function toArray(Request $request): array
     {
         $user = $request->user();
-        $canReadPrivate = $user->hasPermission('pacientes-read-private-info') || $user->historias->contains('paciente_id', $this->id);
+        $canReadPrivate = $user->hasPermission('pacientes-read-private-info') || $this->assigned_to === $user->id;
 
         return [
             'id' => $this->id,
@@ -30,9 +30,13 @@ class PacienteResource extends JsonResource
                 'ocupacion' => $this->ocupacion,
                 'direccion' => $this->direccion,
                 'telefono' => $this->telefono,
-                'foto_url' => $this->foto_url,
+                'motivo_consulta' => $this->motivo_consulta,
+                'enfermedad_actual' => $this->enfermedad_actual,
+                'foto' => $this->foto,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
+                'registered_by' => $this->registered_by,
+                'assigned_to' => $this->assigned_to,
             ]),
         ];
     }

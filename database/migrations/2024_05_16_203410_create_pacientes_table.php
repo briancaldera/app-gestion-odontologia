@@ -22,8 +22,11 @@ return new class extends Migration
             $table->date('fecha_nacimiento');
             $table->string('ocupacion');
             $table->text('direccion');
-            $table->string('telefono');
-            $table->string('foto_url')->nullable();
+            $table->string('telefono')->nullable();
+            $table->text('motivo_consulta');
+            $table->text('enfermedad_actual')->nullable();
+            $table->foreignUuid('registered_by')->references('id')->on('users')->restrictOnUpdate()->restrictOnDelete();
+            $table->foreignUuid('assigned_to')->references('id')->on('users')->restrictOnUpdate()->restrictOnDelete();
             $table->timestamps();
         });
     }

@@ -2,7 +2,6 @@ type Paciente = Readonly<{
     id: string
     nombre: string
     apellido: string
-    foto_url: string | null
 
     cedula?: string
     edad?: number
@@ -11,7 +10,12 @@ type Paciente = Readonly<{
     fecha_nacimiento?: string
     ocupacion?: string
     direccion?: string
-    telefono?: string
+    telefono?: string | null
+    motivo_consulta?: string
+    enfermedad_actual?: string | null
+    foto?: string | null
+    registered_by?: string
+    assigned_to?: string
     created_at?: string
     updated_at?: string
 }>

@@ -62,6 +62,11 @@ return [
             'url'    => env('APP_URL').'/media',
         ],
 
+        'pacientes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/pacientes'),
+        ],
+
         'historia' => [
             'driver' => 'local',
             'root' => storage_path('app/historias'),

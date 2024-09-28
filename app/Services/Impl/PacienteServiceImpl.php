@@ -3,6 +3,7 @@
 namespace App\Services\Impl;
 
 use App\Models\Paciente;
+use App\Models\User;
 use App\Services\PacienteService;
 use Illuminate\Http\UploadedFile;
 
@@ -12,14 +13,33 @@ class PacienteServiceImpl implements PacienteService
 
     public function storePaciente(array $data): Paciente
     {
-        if ($data['foto'] ?? false) {
-            $foto_url = $this->savePhotoToFilesystem($data['foto']);
+        /** @var User $user */
+        $user = auth()->user();
+        $data = (object) $data;
+
+        $newPaciente = new Paciente();
+        $newPaciente->cedula = $data->cedula;
+        $newPaciente->nombre = $data->nombre;
+        $newPaciente->apellido = $data->apellido;
+        $newPaciente->edad = $data->edad;
+        $newPaciente->sexo = $data->sexo;
+        $newPaciente->peso = $data->peso;
+        $newPaciente->fecha_nacimiento = $data->fecha_nacimiento;
+        $newPaciente->ocupacion = $data->ocupacion;
+        $newPaciente->direccion = $data->direccion;
+        $newPaciente->telefono = $data->telefono;
+        $newPaciente->motivo_consulta = $data->motivo_consulta;
+        $newPaciente->enfermedad_actual = $data->enfermedad_actual;
+        $newPaciente->registered_by = $user->id;
+        $newPaciente->assigned_to = $user->id;
+
+        $newPaciente->save();
+
+        if (isset($data->foto)) {
+            $newPaciente->addMedia($data->foto)->toMediaCollection('foto');
         }
 
-        return Paciente::create([
-            ...$data,
-            'foto_url' => $foto_url ?? null,
-        ]);
+        return $newPaciente;
     }
 
     public function updatePaciente(Paciente $paciente, $data): Paciente
