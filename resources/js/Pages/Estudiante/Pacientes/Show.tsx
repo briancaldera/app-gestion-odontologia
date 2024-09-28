@@ -11,7 +11,7 @@ import Label from "@/Components/atoms/Label";
 import {format, formatDistanceToNow} from 'date-fns'
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import Image from "@/Components/atoms/Image.tsx";
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 
 type ShowProps = {
     paciente: Paciente

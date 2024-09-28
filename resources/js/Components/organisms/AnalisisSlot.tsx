@@ -15,7 +15,7 @@ import {faker} from "@faker-js/faker";
 import Textarea from '@/Components/atoms/Textarea'
 import {OutlinedButton} from "@/Components/molecules/OutlinedButton";
 import React from "react";
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import {Trash} from "lucide-react"
 import Title from "@/Components/atoms/Title";
 import Dropzone from "react-dropzone";

@@ -1,7 +1,7 @@
 import React from "react";
 import {Card} from "@/shadcn/ui/card";
 import {Text} from "@/Components/atoms/Text";
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 
 interface StatisticsCardProps {
     title: string,

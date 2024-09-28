@@ -1,7 +1,7 @@
 import {Dialog, DialogContent, DialogTrigger,} from '@/shadcn/ui/dialog'
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,} from "@/shadcn/ui/carousel"
 import {Fullscreen} from 'lucide-react'
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import React from "react";
 import {ScrollArea} from "@/shadcn/ui/scroll-area";
 import {Text} from "@/Components/atoms/Text";

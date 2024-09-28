@@ -14,7 +14,7 @@ import {Button} from "@/shadcn/ui/button";
 import {MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
 import Title from "@/Components/atoms/Title";
 import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover";
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import Heading from "@/Components/atoms/Heading";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import DatePicker from "@/Components/molecules/DatePicker";

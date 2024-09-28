@@ -20,7 +20,7 @@ import {route, useRoute} from "ziggy-js";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils";
 import {Input} from "@/shadcn/ui/input";
 import User from "@/src/models/User";
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import {cn} from "@/lib/utils";
 import {formatDate} from 'date-fns'
 import {

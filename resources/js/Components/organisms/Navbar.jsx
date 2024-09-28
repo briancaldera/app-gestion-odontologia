@@ -1,6 +1,6 @@
 import Logo from "@/Components/atoms/Logo.jsx"
 import {Bars3Icon, EllipsisHorizontalIcon, EllipsisVerticalIcon} from "@heroicons/react/24/outline"
-import {Icon} from "@/Components/atoms/Icon.jsx";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import React from "react";
 import {Link} from "@inertiajs/react"
 import NavLink from "@/Components/atoms/NavLink.jsx";

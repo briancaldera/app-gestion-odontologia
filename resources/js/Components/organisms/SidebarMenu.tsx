@@ -1,6 +1,6 @@
 import {useRoute} from "ziggy-js";
 import {Link} from "@inertiajs/react";
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import Title from "@/Components/atoms/Title";
 import React from "react";
 

@@ -1,7 +1,7 @@
 import Surface from '@/Components/atoms/Surface'
 import {UserCircleIcon} from '@heroicons/react/24/outline'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import {useForm} from "react-hook-form"
 import {undefined, z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";

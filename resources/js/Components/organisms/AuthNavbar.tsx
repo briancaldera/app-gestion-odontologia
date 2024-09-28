@@ -14,7 +14,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/shadcn/ui/dropdown-menu'
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import {Bell, EllipsisVertical, Users, House, Search} from 'lucide-react'
 import {ScrollArea} from '@/shadcn/ui/scroll-area'
 import Title from "@/Components/atoms/Title";

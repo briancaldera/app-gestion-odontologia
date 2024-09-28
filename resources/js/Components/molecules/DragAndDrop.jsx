@@ -1,5 +1,5 @@
 import {Text} from "@/Components/atoms/Text.jsx";
-import {Icon} from "@/Components/atoms/Icon.jsx";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import DocumentIcon from "@heroicons/react/24/outline/DocumentArrowDownIcon.js"
 import Dropzone from "react-dropzone";
 import React from "react";

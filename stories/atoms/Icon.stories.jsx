@@ -1,4 +1,4 @@
-import {Icon} from "@/Components/atoms/Icon.jsx";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import {fn} from "@storybook/test"
 import { AcademicCapIcon } from '@heroicons/react/24/outline'
 import React from "react";

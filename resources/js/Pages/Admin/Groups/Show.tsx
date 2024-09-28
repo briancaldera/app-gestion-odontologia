@@ -20,7 +20,7 @@ import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {enqueueSnackbar} from "notistack";
 import {route} from "ziggy-js";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/shadcn/ui/tooltip";
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import App from "@inertiajs/react/types/App";
 
 

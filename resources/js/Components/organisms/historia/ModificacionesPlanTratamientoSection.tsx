@@ -5,7 +5,7 @@ import React from "react";
 import Surface from "@/Components/atoms/Surface";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover";
-import {Icon} from "@/Components/atoms/Icon";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 import {MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
 import Heading from "@/Components/atoms/Heading";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
