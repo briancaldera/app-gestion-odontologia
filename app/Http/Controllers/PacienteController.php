@@ -74,7 +74,7 @@ class PacienteController extends Controller
      */
     public function show(Paciente $paciente)
     {
-
+        $paciente->load(['medicoTratante']);
 
         return Inertia::render('Estudiante/Pacientes/Show', [
             'paciente' => new PacienteResource($paciente),
@@ -86,7 +86,17 @@ class PacienteController extends Controller
      */
     public function edit(Paciente $paciente)
     {
-        //
+        $user = auth()->user();
+
+        if ($user->hasPermission('pacientes-update')) {
+            $paciente->load(['medicoTratante.profile']);
+            return Inertia::render('Estudiante/Pacientes/Edit', [
+                'paciente' => new PacienteResource($paciente),
+            ]);
+        }
+
+        message('No estas autorizado para actualizar pacientes.', \Type::Error);
+        return to_route('pacientes.index');
     }
 
     /**
@@ -96,7 +106,23 @@ class PacienteController extends Controller
     {
         $data = $request->validated();
         $this->pacienteService->updatePaciente($paciente, $data);
-        return response()->noContent();
+        message('Paciente actualizado exitosamente.', \Type::Success);
+        return response(null, 200);
+    }
+
+    public function getFoto(Paciente $paciente, string $id)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->can('view', $paciente)) {
+
+            $foto = $paciente->getFirstMedia('foto');
+
+            if ($foto->uuid === $id) return response()->file($foto->getPath());
+        }
+
+        return response(null, 404);
     }
 
     /**

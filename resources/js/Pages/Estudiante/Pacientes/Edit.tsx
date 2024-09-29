@@ -1,49 +1,85 @@
+import Paciente from "@/src/models/Paciente.ts";
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
-import {useForm} from "react-hook-form";
-import {z} from 'zod'
-import {zodResolver} from "@hookform/resolvers/zod";
-import {PacienteDefaults, PacienteSchema} from '@/FormSchema/Pacientes/CreateSchema.ts'
-import {Button} from "@/shadcn/ui/button.tsx";
-import Title from "@/Components/atoms/Title";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
-import {Link, usePage} from "@inertiajs/react";
-import {Input} from "@/shadcn/ui/input.tsx";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/shadcn/ui/select.tsx";
-import {Text} from "@/Components/atoms/Text";
-import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover.tsx";
-import {Calendar} from "@/shadcn/ui/calendar.tsx";
-import {cn} from "@/lib/utils.ts";
-import {format} from "date-fns";
-import {CalendarIcon, Stethoscope} from "lucide-react";
-import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.tsx";
-import {toast} from "sonner";
-import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
-import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
-import User from "@/src/models/User.ts";
-import {route} from "ziggy-js";
-import {Separator} from "@/shadcn/ui/separator.tsx";
-import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import React from "react";
+import {usePage} from "@inertiajs/react";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
+import {PacienteSchema} from "@/FormSchema/Pacientes/CreateSchema.ts";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {route} from "ziggy-js";
+import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
+import {toast} from "sonner";
+import Title from "@/Components/atoms/Title";
+import {Button} from "@/shadcn/ui/button.tsx";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
+import {CalendarIcon, Stethoscope} from "lucide-react";
+import {Text} from "@/Components/atoms/Text";
+import {Input} from "@/shadcn/ui/input.tsx";
+import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover.tsx";
+import {cn} from "@/lib/utils.ts";
+import {format} from "date-fns";
+import {Calendar} from "@/shadcn/ui/calendar.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/shadcn/ui/select.tsx";
+import {Separator} from "@/shadcn/ui/separator.tsx";
+import {Textarea} from "@/shadcn/ui/textarea.tsx";
+import {Icon} from "@/Components/atoms/Icon.tsx";
+import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
+import {pick} from 'lodash'
+import Dropzone from "react-dropzone";
+import {pictureFileFormats} from "@/Components/molecules/ProfilePicturePicker.tsx";
+import Image from "@/Components/atoms/Image.tsx";
 
-const Create = () => {
+type EditProps = {
+    paciente: Paciente
+}
+
+const EditPacienteSchema = PacienteSchema.omit({cedula: true})
+
+const Edit = ({paciente}: EditProps) => {
 
     const {auth} = usePage().props
     const {router, isProcessing} = useInertiaSubmit()
 
-
     const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
         resolver: zodResolver(PacienteSchema),
-        defaultValues: PacienteDefaults,
+        defaultValues: {
+            apellido: paciente.apellido,
+            cedula: paciente.cedula,
+            direccion: paciente.direccion,
+            edad: paciente.edad,
+            enfermedad_actual: paciente.enfermedad_actual ?? '',
+            fecha_nacimiento: paciente.fecha_nacimiento,
+            motivo_consulta: paciente.motivo_consulta,
+            nombre: paciente.nombre,
+            ocupacion: paciente.ocupacion,
+            peso: paciente.peso,
+            sexo: paciente.sexo,
+            telefono: paciente.telefono ?? ''
+        },
     })
 
     const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
-        const endpoint = route('pacientes.store')
 
-        router.post(endpoint, values, {
+        const dirtyFields = Object.keys(pacienteForm.formState.dirtyFields)
+
+        // console.log(pick(values, dirtyFields))
+        // return
+        const endpoint = route('pacientes.update', {paciente: paciente.id})
+
+        const data = {
+            _method: 'patch',
+            ...values
+        }
+
+        router.post(endpoint, data, {
             onError: errors => {
                 mapServerErrorsToFields(pacienteForm, errors);
                 console.log(errors)
+            },
+            onSuccess: page => {
+                router.reload({only: ['paciente']})
             }
         })
     }
@@ -55,7 +91,7 @@ const Create = () => {
     }
 
     return (
-        <AuthLayout title={'Pacientes - Registrar nuevo paciente'}>
+        <AuthLayout title={'Pacientes - Editar'}>
             <ScrollArea className={'h-full bg-white'}>
                 <Form {...pacienteForm}>
                     <form onSubmit={pacienteForm.handleSubmit(handleSubmit)}
@@ -65,8 +101,14 @@ const Create = () => {
                                 <Title level={'h3'}>Crear paciente</Title>
                             </div>
                             <div className={'flex gap-3'}>
-                                <Button type={'button'} variant={'outline'} asChild><Link
-                                    href={route('pacientes.index')}>Cancelar</Link></Button>
+                                <Button type={'button'} variant={'outline'} onClick={() => {
+                                    if (pacienteForm.formState.isDirty) {
+                                        const res = confirm('Existen cambios sin guardar. ¿Deseas abandonar la edición?')
+                                        if (res) router.visit(route('pacientes.show', {paciente: paciente.id}))
+                                    } else {
+                                        router.visit(route('pacientes.show', {paciente: paciente.id}))
+                                    }
+                                }}>Cancelar</Button>
                                 <Button type={'submit'} className={'bg-indigo-500'}
                                         disabled={!pacienteForm.formState.isDirty || isProcessing}>Guardar</Button>
                             </div>
@@ -74,43 +116,72 @@ const Create = () => {
 
                         <section className={'grid grid-cols-1 sm:grid-cols-4 flex-1 gap-12'}>
                             <div className={'col-span-1'}>
-                                <div className={'bg-slate-100 rounded-lg aspect-square p-2'}>
-                                    <FormField render={({field}) => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <ProfilePicturePicker src={field.value} onDrop={handleDropFile}
-                                                                      className={'w-full h-auto'}/>
-                                            </FormControl>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={'foto'} control={pacienteForm.control}/>
-                                    {/*<FormField render={({field}) => (*/}
-                                    {/*    <FormItem className={'h-full flex'}>*/}
 
-                                    {/*        <FormControl>*/}
-                                    {/*            <Dropzone onDropAccepted={(_ ,event) => field.onChange(event)} maxFiles={1} minSize={5000} disabled={field.disabled} accept={pictureFileFormats}>*/}
-                                    {/*                {*/}
-                                    {/*                    ({getRootProps, getInputProps}) => (*/}
-                                    {/*                        <section className={'border-2 border-slate-300 border-dashed basis-full flex flex-col justify-center items-center'} {...getRootProps()}>*/}
-                                    {/*                            <input {...getInputProps()} />*/}
-                                    {/*                            <ImageIcon className={'size-20 md:size-12 text-slate-300'}/>*/}
-                                    {/*                            <Text className={'text-indigo-500 font-bold'}>Sube una foto</Text>*/}
-                                    {/*                            <Image src={field.value} className={'w-full h-auto'}/>*/}
-                                    {/*                        </section>*/}
-                                    {/*                    )*/}
-                                    {/*                }*/}
-                                    {/*            </Dropzone>*/}
-                                    {/*        </FormControl>*/}
-                                    {/*        <FormMessage/>*/}
-                                    {/*    </FormItem>*/}
-                                    {/*)} name={'foto'} control={pacienteForm.control}/>*/}
-                                </div>
+
+
+
+                                <FormField render={({field}) => (
+                                    <FormItem>
+                                        <Avatar className={'w-full h-auto shadow-inner rounded-none'}>
+                                            <Image src={field.value}/>
+                                            <AvatarFallback>
+                                                <Avatar className={'w-full h-auto shadow-inner rounded-none'}>
+                                                    <AvatarImage src={paciente.foto}/>
+                                                    <AvatarFallback></AvatarFallback>
+                                                </Avatar>
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <FormControl>
+                                            <Input type={'file'} name={field.name} onChange={field.onChange}/>
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )} name={'foto'} control={pacienteForm.control}/>
+
+                                {/*<FormField render={({field}) => (<FormItem>*/}
+
+                                {/*    <FormControl>*/}
+                                {/*        <Input type={'file'} {...field} accept={'image/png,image/jpeg'}/>*/}
+                                {/*        /!*<Dropzone disabled={field.disabled} name={field.name} onDrop={(acceptedFiles: File[]) => {*!/*/}
+                                {/*        /!*    if (acceptedFiles.length === 0) toast.error('Debes elegir al menos 1 archivo')*!/*/}
+                                {/*        /!*    if (acceptedFiles.length > 1) toast.error('Debes elegir solo 1 archivo')*!/*/}
+
+                                {/*        /!*    const file = acceptedFiles[0]*!/*/}
+
+                                {/*        /!*    pacienteForm.setValue('foto', file, {*!/*/}
+                                {/*        /!*        shouldDirty: true,*!/*/}
+                                {/*        /!*        shouldTouch: true,*!/*/}
+                                {/*        /!*        shouldValidate: true*!/*/}
+                                {/*        /!*    })*!/*/}
+                                {/*        /!*}} accept={pictureFileFormats} maxFiles={1}>*!/*/}
+                                {/*        /!*    {({getRootProps, getInputProps}) => (*!/*/}
+                                {/*        /!*        <div className={'bg-slate-100 rounded-lg aspect-square'} {...getRootProps()}>*!/*/}
+                                {/*        /!*            <Avatar*!/*/}
+                                {/*        /!*                className={'w-full h-auto shadow-inner rounded-none'}>*!/*/}
+                                {/*        /!*                <Image src={field.value ?? paciente.foto} name={field.name}/>*!/*/}
+                                {/*        /!*                <AvatarFallback>*!/*/}
+                                {/*        /!*                    Sin foto*!/*/}
+                                {/*        /!*                </AvatarFallback>*!/*/}
+                                {/*        /!*            </Avatar>*!/*/}
+                                {/*        /!*            <input {...getInputProps()} name={field.name}/>*!/*/}
+                                {/*        /!*        </div>*!/*/}
+                                {/*        /!*    )}*!/*/}
+                                {/*        /!*</Dropzone>*!/*/}
+
+                                {/*    </FormControl>*/}
+                                {/*    <FormMessage/>*/}
+                                {/*</FormItem>)*/}
+                                {/*} name={'foto'} control={pacienteForm.control}/>*/}
+
                                 <div className={'p-6'}>
 
                                     <Title>Asignado a</Title>
                                     <div className={'flex gap-2'}>
-                                        <Stethoscope className={'size-10'}/>
-                                        <Text>{`${(auth.user as User).profile.nombres} ${(auth.user as User).profile.apellidos}`}
+                                        <Icon>
+                                            <Stethoscope className={'size-6'}/>
+                                        </Icon>
+                                        <Text>
+                                            {`${paciente.medico_tratante?.profile?.nombres} ${paciente.medico_tratante?.profile?.apellidos}`}
                                         </Text>
                                     </div>
                                 </div>
@@ -301,7 +372,7 @@ const Create = () => {
                                             <FormLabel>Enfermedad actual <span
                                                 className={'text-slate-400'}>(Opcional)</span></FormLabel>
                                             <FormControl>
-                                            <Textarea
+                                                <Textarea
                                                     placeholder={'Indica cualquier enfermedad que padezca el paciente al momento de la consulta'} {...field}/>
                                             </FormControl>
                                             <FormMessage/>
@@ -319,4 +390,4 @@ const Create = () => {
     )
 }
 
-export default Create
+export default Edit

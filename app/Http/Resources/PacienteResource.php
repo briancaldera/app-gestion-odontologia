@@ -37,6 +37,7 @@ class PacienteResource extends JsonResource
                 'updated_at' => $this->updated_at,
                 'registered_by' => $this->registered_by,
                 'assigned_to' => $this->assigned_to,
+                'medico_tratante' => new UserResource($this->whenLoaded('medicoTratante')),
             ]),
         ];
     }

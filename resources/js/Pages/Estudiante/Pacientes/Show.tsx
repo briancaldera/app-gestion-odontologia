@@ -12,16 +12,22 @@ import {format, formatDistanceToNow} from 'date-fns'
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import Image from "@/Components/atoms/Image.tsx";
 import {Icon} from "@/Components/atoms/Icon.tsx";
+import {
+    DropdownMenu,
+    DropdownMenuContent, DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/shadcn/ui/dropdown-menu.tsx'
+import {Text} from "@/Components/atoms/Text";
+import {Link} from "@inertiajs/react";
 
 type ShowProps = {
     paciente: Paciente
 }
 
 const Show = ({paciente}: ShowProps) => {
-
-    const can = usePermission()
-
-    console.log(paciente)
 
     return (
         <AuthLayout title={`Paciente - ${paciente.nombre} ${paciente.apellido}`}>
@@ -35,6 +41,9 @@ const Show = ({paciente}: ShowProps) => {
 const tabTriggerStyle = 'py-2.5 rounded-none ring-0 shadow-none px-12 text-slate-400 data-[state=active]:text-indigo-500 border-b-2 border-b-slate-200 data-[state=active]:border-b-indigo-500'
 
 const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
+
+    const can = usePermission()
+
     return (
         <div className={'h-full flex flex-col'}>
             <div className={'grid grid-cols-4 px-6 py-6'}>
@@ -62,7 +71,22 @@ const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
                 <div className={'col-start-4 py-3'}>
                     <div className={'flex justify-end items-center gap-3'}>
                         <Button className={'bg-indigo-500'}>Crear Historia</Button>
-                        <Button variant={'outline'}><EllipsisVertical/></Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant={'outline'}><EllipsisVertical/></Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align={"end"}>
+                                { can('pacientes-update') &&
+                                    <DropdownMenuItem asChild>
+                                        <Link href={route('pacientes.edit', {paciente: paciente.id})}>
+                                            <Text>
+                                                Editar
+                                            </Text>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                }
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
 

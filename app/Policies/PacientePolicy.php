@@ -8,6 +8,15 @@ use Illuminate\Auth\Access\Response;
 
 class PacientePolicy
 {
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -21,7 +30,9 @@ class PacientePolicy
      */
     public function view(User $user, Paciente $paciente): bool
     {
-        //
+        if ($user->hasPermission('pacientes-read') AND $paciente->assigned_to === $user->id) return true;
+
+        return false;
     }
 
     /**
@@ -37,13 +48,7 @@ class PacientePolicy
      */
     public function update(User $user, Paciente $paciente): bool
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        if ($user->isEstudiante() AND $paciente->historia->autor_id === $user->id) {
-            return true;
-        }
+        if ($user->hasPermission('pacientes-update') AND $paciente->assigned_to === $user->id) return true;
 
         return false;
     }

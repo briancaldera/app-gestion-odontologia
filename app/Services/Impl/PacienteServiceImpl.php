@@ -44,11 +44,26 @@ class PacienteServiceImpl implements PacienteService
 
     public function updatePaciente(Paciente $paciente, $data): Paciente
     {
-        if ($data['foto'] ?? false) {
-            $data['foto_url'] = $this->savePhotoToFilesystem($data['foto']);
-        }
+        $data = (object) $data;
 
-        $paciente->updateOrFail($data);
+        $paciente->cedula = $data->cedula;
+        $paciente->nombre = $data->nombre;
+        $paciente->apellido = $data->apellido;
+        $paciente->edad = $data->edad;
+        $paciente->sexo = $data->sexo;
+        $paciente->peso = $data->peso;
+        $paciente->fecha_nacimiento = $data->fecha_nacimiento;
+        $paciente->ocupacion = $data->ocupacion;
+        $paciente->direccion = $data->direccion;
+        $paciente->telefono = $data->telefono;
+        $paciente->motivo_consulta = $data->motivo_consulta;
+        $paciente->enfermedad_actual = $data->enfermedad_actual;
+
+        $paciente->save();
+
+        if (isset($data->foto)) {
+            $paciente->addMedia($data->foto)->toMediaCollection('foto');
+        }
 
         return $paciente;
     }

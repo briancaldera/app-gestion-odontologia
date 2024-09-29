@@ -87,6 +87,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
 //    Routes for patient
     Route::resource('pacientes', PacienteController::class);
+    Route::get('/pacientes/{paciente}/foto/{id}', [PacienteController::class, 'getFoto']);
 
 //    Routes for HCE
     Route::get('/historias/dashboard', [HistoriaController::class, 'dashboard'])->name('historias.dashboard');
@@ -94,7 +95,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/historias/crear', [HistoriaController::class, 'create'])->name('historias.create')->can('create', Historia::class);
     Route::post('/historias/store', [HistoriaController::class, 'store'])->name('historias.store')->can('create', Historia::class);
     Route::get('/historias/{historia}/editar', [HistoriaController::class, 'edit'])->name('historias.edit')->can('update', 'historia');
-    Route::patch('/pacientes/{paciente}', [HistoriaController::class, 'updatePaciente'])->name('pacientes.update')->can('update', 'paciente');
+//    Route::patch('/pacientes/{paciente}', [HistoriaController::class, 'updatePaciente'])->name('pacientes.update')->can('update', 'paciente');
     Route::patch('/historias/{historia}/antfamiliares/update', [HistoriaController::class, 'updateAntFamiliares'])->name('historias.antfamiliares.update')->can('update', 'historia');
     Route::patch('/historias/{historia}/antpersonales/update', [HistoriaController::class, 'updateAntPersonales'])->name('historias.antpersonales.update')->can('update', 'historia');
     Route::patch('/historias/{historia}/odontologica/update', [HistoriaController::class, 'updateHistoriaOdontologica'])->name('historias.odontologica.update')->can('update', 'historia');

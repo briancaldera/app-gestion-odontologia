@@ -1,3 +1,5 @@
+import User from "@/src/models/User.ts";
+
 type Paciente = Readonly<{
     id: string
     nombre: string
@@ -18,6 +20,7 @@ type Paciente = Readonly<{
     assigned_to?: string
     created_at?: string
     updated_at?: string
+    medico_tratante?: User
 }>
 
 type Sex = 'F' | 'M' | 'NI'

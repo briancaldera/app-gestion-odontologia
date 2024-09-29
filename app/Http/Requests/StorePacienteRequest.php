@@ -29,7 +29,7 @@ class StorePacienteRequest extends FormRequest
             'nombre' => ['required', 'string', 'between:2, 50'],
             'apellido' => ['required', 'string', 'between:2, 50'],
             'edad' => ['required', 'numeric', 'integer', 'min:0', 'max:150'],
-            'sexo' => ['required', 'string', 'between:1,2', 'regex:/[M|F|NI]/'],
+            'sexo' => ['required', 'string', 'between:1,2', 'regex:/M|F|NI/'],
             'peso' => ['required', 'numeric', 'min:0', 'max:300','decimal:0,2'],
             'fecha_nacimiento' => ['required', 'date', 'before:today'],
             'ocupacion' => ['required', 'string', 'between:0, 50'],
