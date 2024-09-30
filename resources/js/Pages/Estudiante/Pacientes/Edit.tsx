@@ -79,6 +79,7 @@ const Edit = ({paciente}: EditProps) => {
                 console.log(errors)
             },
             onSuccess: page => {
+                pacienteForm.reset(values)
                 router.reload({only: ['paciente']})
             }
         })
@@ -98,7 +99,7 @@ const Edit = ({paciente}: EditProps) => {
                           className={'h-full flex flex-col pl-6 pr-6 lg:pl-48 lg:pr-40'}>
                         <div className={'flex justify-between items-center pt-8 pb-10'}>
                             <div>
-                                <Title level={'h3'}>Crear paciente</Title>
+                                <Title level={'h3'}>Editar paciente</Title>
                             </div>
                             <div className={'flex gap-3'}>
                                 <Button type={'button'} variant={'outline'} onClick={() => {
