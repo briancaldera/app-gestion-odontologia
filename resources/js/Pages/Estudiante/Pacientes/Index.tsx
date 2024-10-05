@@ -8,12 +8,19 @@ import Avatar from "@/Components/atoms/Avatar";
 import {Text} from "@/Components/atoms/Text";
 import Title from "@/Components/atoms/Title";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
-import {ArrowBigLeft, Plus, UserRoundX} from 'lucide-react'
+import {ArrowBigLeft, Plug2, Plus, UserRoundX} from 'lucide-react'
 import {Button} from "@/shadcn/ui/button.tsx";
 import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {DataTable} from "@/Components/molecules/DataTable.tsx";
 import {usePermission} from "@/src/Utils/Utils.ts";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/shadcn/ui/alert-dialog.tsx";
 
 type IndexProps = {
     pacientes: Paciente[]
@@ -52,7 +59,34 @@ const Index = ({pacientes}: IndexProps) => {
                         </Surface>
                     ) : (
                         <Surface className={'h-full flex flex-col p-6 gap-y-6'}>
-                            <Title level={'h3'}>Pacientes</Title>
+                            <div className={'flex items-baseline justify-between'}>
+                                <Title level={'h3'}>Pacientes</Title>
+                                <div>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger>
+                                            <Button><Plus className={'mr-2'}/>Crear nuevo paciente</Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>
+                                                    Crear nuevo paciente
+                                                </AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Estas seguro que deseas crear un nuevo paciente? Solo puedes crear una cantidad limitada de pacientes.
+                                                </AlertDialogDescription>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                    <AlertDialogAction asChild>
+                                                        <Link href={route('pacientes.create')}>
+                                                            Continuar
+                                                        </Link>
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogHeader>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </div>
+                            </div>
                             {
                                 pacientes.length !== 0 ? (
                                     <ScrollArea className={'basis-full'}>
