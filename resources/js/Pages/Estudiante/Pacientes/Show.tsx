@@ -241,7 +241,7 @@ const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
                     <ScrollArea className={'flex-1'}>
                         <div className={'flex flex-col gap-y-3 py-2'}>
 
-                            <HistoriaItem historia={paciente.historia}/>
+                            <HistoriaItem paciente={paciente}/>
 
 
                         </div>
@@ -267,7 +267,9 @@ const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
     )
 }
 
-const HistoriaItem = ({historia}: {historia?: Historia | null}) => {
+const HistoriaItem = ({paciente}: {paciente?: Paciente | null}) => {
+
+    const historia = paciente?.historia
 
     return (
         <div className={`group h-32 border bg-${historia ? 'sky' : 'slate'}-100 border-${historia ? 'sky' : 'slate'}-400 rounded-lg p-3 flex flex-col`}>
@@ -276,8 +278,15 @@ const HistoriaItem = ({historia}: {historia?: Historia | null}) => {
             </div>
             {
                 historia ? (
-                    <div>
-                        Historia creada
+                    <div className={'flex-1 flex justify-center items-center gap-x-3'}>
+                        <Text>
+                            Historia regular creada
+                        </Text>
+                        <Button asChild>
+                            <Link href={route('historias.show', {historia: historia.id})} >
+                                Ver historia
+                            </Link>
+                        </Button>
                     </div>
                 ) : (
                     <div className={'flex-1 flex justify-center items-center gap-x-3'}>
@@ -285,7 +294,7 @@ const HistoriaItem = ({historia}: {historia?: Historia | null}) => {
                             No hay historia regular creada
                         </Text>
                         <Button asChild>
-                            <Link href={route('historias.create')}>
+                            <Link href={route('historias.store')} method={'post'} data={{paciente_id: paciente?.id}} as={'button'}>
                                 Crear historia
                             </Link>
                         </Button>

@@ -27,10 +27,14 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel, DropdownMenuSeparator,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
 import {router} from "@inertiajs/react";
+import {Tooltip, TooltipContent, TooltipTrigger,} from "@/shadcn/ui/tooltip"
+import {Text} from "@/Components/atoms/Text";
+
 
 interface IndexProps {
     readonly groups: Group[]
@@ -39,6 +43,7 @@ interface IndexProps {
 const Index = ({groups, profesores}: IndexProps) => {
 
     const [openCreateGroupDialog, setOpenCreateGroupDialog] = React.useState<boolean>(false)
+    console.log(groups)
 
     return (
         <AuthLayout title={'Grupos'} sidebar={<SidebarMenu menu={menu}/>}>
@@ -148,7 +153,7 @@ const CreateGroupDialog = ({
                                                     </Button>
                                                 </FormControl>
                                             </PopoverTrigger>
-                                            <PopoverContent className={'w-[200px] p-0'}>
+                                            <PopoverContent className={'p-0'}>
                                                 <Command>
                                                     <CommandInput placeholder={'Seleccione usuario...'}/>
                                                     <CommandList>
@@ -161,13 +166,24 @@ const CreateGroupDialog = ({
                                                                         key={user.id}
                                                                         onSelect={() => form.setValue('owner', user.id)}
                                                                     >
+                                                                        <Tooltip>
+                                                                            <TooltipTrigger>
                                                                         <Check className={cn(
-                                                                            "mr-2 h-4 w-4",
+                                                                            "mr-2 h-4 w-4 inline",
                                                                             user.id === field.value
                                                                                 ? "opacity-100"
                                                                                 : "opacity-0"
                                                                         )}/>
-                                                                        {user.email}
+                                                                                <Text level={'body-xs'} className={'inline'}>
+                                                                                    {user.email}
+                                                                                </Text>
+                                                                            </TooltipTrigger>
+                                                                            <TooltipContent>
+                                                                                <div>
+                                                                                    <Text>{`${user.profile?.nombres} ${user.profile?.apellidos}`}</Text>
+                                                                                </div>
+                                                                            </TooltipContent>
+                                                                        </Tooltip>
                                                                     </CommandItem>
                                                                 ))
                                                             }

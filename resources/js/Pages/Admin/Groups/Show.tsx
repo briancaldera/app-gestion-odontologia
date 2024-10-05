@@ -22,6 +22,7 @@ import {route} from "ziggy-js";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/shadcn/ui/tooltip";
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import App from "@inertiajs/react/types/App";
+import {toast} from "sonner";
 
 
 interface ShowProps {
@@ -30,6 +31,8 @@ interface ShowProps {
 }
 
 const Show = ({group, students}: ShowProps) => {
+
+    console.log(group)
     return (
         <AuthLayout title={'Grupo'} sidebar={<SidebarMenu menu={menu}/>}>
             <div className={'p-6'}>
@@ -128,12 +131,15 @@ const AddMemberDialog = ({group, students, open, onOpenChange}: {
 
             router.patch(endpoint, values, {
 
-                onError: errors => {enqueueSnackbar('No se pudieron agregar los usuarios seleccionados.', {variant: "error"})},
-                onSuccess: page => router.reload()
+                onError: errors => {toast.error('No se pudieron agregar los usuarios seleccionados')},
+                onSuccess: page => {
+                    onOpenChange(false)
+                    router.reload()
+                }
             })
         } catch (e: Error) {
             console.error(e)
-            enqueueSnackbar('No se pudieron agregar los usuarios seleccionados.', {variant: "error"})
+            toast.error('No se pudieron agregar los usuarios seleccionados')
         }
 
     }
@@ -145,7 +151,7 @@ const AddMemberDialog = ({group, students, open, onOpenChange}: {
                     <DialogTitle>Agregar nuevos miembros</DialogTitle>
                     <DialogDescription>Selecciona usuarios que desees agregar al grupo.</DialogDescription>
                     <div>
-                        <SelectionDataTable columns={AddMembersColumns} data={students} onSubmitSelected={(members) => onSubmitNewMembers(members)}/>
+                        <SelectionDataTable columns={AddMembersColumns} data={students} onSubmitSelected={(members) => onSubmitNewMembers(members)} searchable={true}/>
                     </div>
                 </DialogHeader>
             </DialogContent>
@@ -177,12 +183,15 @@ const RemoveMemberDialog = ({group, open, onOpenChange}: {
             const endpoint = route('groups.removeMembers', {group: group.id})
 
             router.patch(endpoint, {...values}, {
-                onError: errors => {enqueueSnackbar('No se removieron los usuarios seleccionados.', {variant: "error"})},
-                onSuccess: page => router.reload()
+                onError: errors => {toast.error('No se removieron los usuarios seleccionados')},
+                onSuccess: page => {
+                    onOpenChange(false)
+                    router.reload()
+                }
             })
         } catch (e: Error) {
             console.error(e)
-            enqueueSnackbar('No se removieron los usuarios seleccionados.', {variant: "error"})
+            toast.error('No se removieron los usuarios seleccionados')
         }
     }
 
@@ -230,22 +239,42 @@ const AddMembersColumns: ColumnDef<User>[] = [
         ),
     },
     columnHelper.accessor((row: User) => row.profile?.cedula, {
+        meta: {
+            title: 'Cédula',
+            searchable: true,
+        },
         id: 'cedula',
         header: 'Cédula',
     }),
     columnHelper.accessor((row: User) => row.name, {
+        meta: {
+            title: 'Usuario',
+            searchable: true,
+        },
         id: 'username',
         header: 'Usuario',
     }),
     columnHelper.accessor((row: User) => row.email, {
+        meta: {
+            title: 'Correo Electrónico',
+            searchable: true,
+        },
         id: 'email',
         header: 'Correo Electrónico',
     }),
     columnHelper.accessor((row: User) => row.profile?.nombres, {
+        meta: {
+            title: 'Nombre',
+            searchable: true,
+        },
         id: 'firstName',
         header: 'Nombre',
     }),
     columnHelper.accessor((row: User) => row.profile?.apellidos, {
+        meta: {
+            title: 'Apellido',
+            searchable: true,
+        },
         id: 'lastName',
         header: 'Apellido',
     }),

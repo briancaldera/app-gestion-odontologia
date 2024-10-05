@@ -9,16 +9,19 @@ import {
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/shadcn/ui/table";
 import React from "react";
 import {Button} from "@/shadcn/ui/button";
+import {Input} from "@/shadcn/ui/input.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/shadcn/ui/select.tsx";
 
 interface SelectionDataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[],
     onSubmitSelected: (rows: TData[]) => void,
+    searchable?: boolean
 }
 
 function SelectionDataTable<TData, TValue>({
                                              columns,
-                                             data,
+                                             data, searchable = false,
                                                onSubmitSelected,
                                          }: SelectionDataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -48,8 +51,46 @@ function SelectionDataTable<TData, TValue>({
         },
     })
 
+    const [filter, setFilter] = React.useState<string>(() => columns[0]?.id ?? '')
+
+    const onFilterChange = (value) => {
+        table.getColumn(filter)?.setFilterValue('')
+        setFilter(value)
+    }
+
     return (
         <div>
+            {
+                (searchable) && (
+                    <div className="flex items-center py-4 gap-2">
+                        <Input
+                            placeholder="Buscar por"
+                            value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
+                            onChange={(event) =>
+                                table.getColumn(filter)?.setFilterValue(event.target.value)
+                            }
+                            className="max-w-sm"
+                        />
+
+                        <Select onValueChange={onFilterChange} defaultValue={columns[0].id}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Por defecto"/>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {
+                                    columns.every(col => 'id' in col) && columns.filter(col => col.meta?.searchable).filter(col => col.id !== '').map(column => {
+
+                                        return (
+                                            <SelectItem key={column.id}
+                                                        value={column.id}>{column.meta?.title ?? column.id}</SelectItem>
+                                        )
+                                    })
+                                }
+                            </SelectContent>
+                        </Select>
+                    </div>
+                )
+            }
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
@@ -95,9 +136,28 @@ function SelectionDataTable<TData, TValue>({
                 </Table>
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
+
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    Anterior
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                >
+                    Siguiente
+                </Button>
+
                 <Button
                     onClick={() => onSubmitSelected(table.getFilteredSelectedRowModel().rows.map(row => row.original))}
                     disabled={table.getFilteredSelectedRowModel().rows.length === 0}
+                    size="sm"
                 >
                     Aceptar
                 </Button>

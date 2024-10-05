@@ -19,27 +19,24 @@ type IndexProps = {
 
 const Index = ({groups}: IndexProps) => {
 
+    console.log(groups)
     return (
         <AuthLayout title={'Grupos'} sidebar={<SidebarMenu menu={menu}/>}>
-            <div className={'p-6 grid grid-cols-4 grid-rows-2 gap-6 h-[800px]'}>
-                <Surface className={'p-6 col-span-4 lg:col-span-3 row-span-2 flex flex-col gap-4'}>
-                    <Heading level={'h3'}>Grupos</Heading>
+            <ScrollArea className={'bg-white h-full'}>
 
-                    <ScrollArea className={'basis-full'}>
-                        <div className={'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pr-3'}>
-                            {groups.map(group => (<GroupItem key={group.id} group={group}/>))}
-                        </div>
-                    </ScrollArea>
+                <div className={'p-6 grid grid-cols-4 grid-rows-2 gap-6 basis-full'}>
+                    <Surface className={'p-6 col-span-4 lg:col-span-3 row-span-2 flex flex-col gap-4'}>
+                        <Heading level={'h3'}>Grupos</Heading>
 
-                </Surface>
-                <Surface className={'col-span-4 lg:col-span-1'}>
+                        <ScrollArea className={'basis-full'}>
+                            <div className={'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pr-3'}>
+                                {groups.map(group => (<GroupItem key={group.id} group={group}/>))}
+                            </div>
+                        </ScrollArea>
 
-                </Surface>
-
-                <Surface className={'col-span-4 lg:col-span-1'}>
-
-                </Surface>
-            </div>
+                    </Surface>
+                </div>
+            </ScrollArea>
         </AuthLayout>
     )
 }
