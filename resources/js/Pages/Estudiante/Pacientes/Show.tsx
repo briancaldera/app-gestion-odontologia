@@ -2,7 +2,7 @@ import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import Paciente from "@/src/models/Paciente.ts";
 import React from "react";
 import {usePermission} from "@/src/Utils/Utils.ts";
-import {EllipsisVertical, User} from "lucide-react";
+import {EllipsisVertical, FolderOpen, History, User} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import Title from "@/Components/atoms/Title";
 import {Button} from "@/shadcn/ui/button.tsx";
@@ -22,12 +22,16 @@ import {
 } from '@/shadcn/ui/dropdown-menu.tsx'
 import {Text} from "@/Components/atoms/Text";
 import {Link} from "@inertiajs/react";
+import Historia from "@/src/models/Historia.ts";
+import {route} from "ziggy-js";
 
 type ShowProps = {
     paciente: Paciente
 }
 
 const Show = ({paciente}: ShowProps) => {
+
+    console.log(paciente)
 
     return (
         <AuthLayout title={`Paciente - ${paciente.nombre} ${paciente.apellido}`}>
@@ -102,7 +106,7 @@ const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
                         <InformationSection paciente={paciente}/>
                     </TabsContent>
                     <TabsContent value={'historias'}>
-                        <HistoriasSection/>
+                        <HistoriasSection paciente={paciente}/>
                     </TabsContent>
                 </Tabs>
             </div>
@@ -221,9 +225,73 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
     )
 }
 
-const HistoriasSection = () => {
+const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
     return (
-        <div>
+        <div className={'h-[50vw] px-4 rounded-lg'}>
+            <div className={'flex h-full border'}>
+                <div className={'basis-1/3 p-4 flex flex-col'}>
+
+                    <div className={'inline-flex gap-2'}>
+                        <Icon>
+                            <FolderOpen/>
+                        </Icon>
+                        <Title level={'title-lg'}>Historias</Title>
+                    </div>
+
+                    <ScrollArea className={'flex-1'}>
+                        <div className={'flex flex-col gap-y-3 py-2'}>
+
+                            <HistoriaItem historia={paciente.historia}/>
+
+
+                        </div>
+                    </ScrollArea>
+
+                </div>
+
+                <div className={'basis-2/3 bg-slate-100 p-4 flex flex-col'}>
+                    <div className={'inline-flex gap-2'}>
+                        <Icon>
+                            <History/>
+                        </Icon>
+                        <Title level={'title-lg'}>Línea de tiempo</Title>
+                    </div>
+
+                    <div className={'flex-1 bg-indigo-500'}>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const HistoriaItem = ({historia}: {historia?: Historia | null}) => {
+
+    return (
+        <div className={`group h-32 border bg-${historia ? 'sky' : 'slate'}-100 border-${historia ? 'sky' : 'slate'}-400 rounded-lg p-3 flex flex-col`}>
+            <div>
+                <Title>Historia regular</Title>
+            </div>
+            {
+                historia ? (
+                    <div>
+                        Historia creada
+                    </div>
+                ) : (
+                    <div className={'flex-1 flex justify-center items-center gap-x-3'}>
+                        <Text>
+                            No hay historia regular creada
+                        </Text>
+                        <Button asChild>
+                            <Link href={route('historias.create')}>
+                                Crear historia
+                            </Link>
+                        </Button>
+                    </div>
+                )
+            }
 
         </div>
     )

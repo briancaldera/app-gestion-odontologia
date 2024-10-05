@@ -74,7 +74,7 @@ class PacienteController extends Controller
      */
     public function show(Paciente $paciente)
     {
-        $paciente->load(['medicoTratante']);
+        $paciente->load(['medicoTratante', 'historia']);
 
         return Inertia::render('Estudiante/Pacientes/Show', [
             'paciente' => new PacienteResource($paciente),
