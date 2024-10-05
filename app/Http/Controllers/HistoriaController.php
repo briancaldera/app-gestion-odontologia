@@ -127,6 +127,24 @@ class HistoriaController extends Controller
         ]);
     }
 
+    public function store2(Paciente $paciente, Request $request)
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        if ($paciente->assigned_to !== $user->id) {
+            message('No estas autorizado para crear un historia a esta paciente', Type::Error);
+            message('Debes estar asignado como medico tratante', Type::Info);
+        }
+
+        $historia = $this->historiaService->addHistoria($paciente, $user);
+
+        message('Paciente creado exitosamente. A continuacion podrá editar la historia asignada.');
+        return to_route('historias.edit', [
+            'historia' => $historia->id
+        ]);
+    }
+
     public function updatePaciente(Paciente $paciente, UpdatePacienteRequest $request)
     {
         $data = $request->validated();
