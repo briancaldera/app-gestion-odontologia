@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 
 /**
@@ -19,7 +20,7 @@ use Illuminate\Support\Collection;
  * @property string $group_id
  * @property string $name
  * @property string $description
- * @property string $homework
+ * @property Collection $homework
  */
 class Assignment extends Model
 {
@@ -43,7 +44,10 @@ class Assignment extends Model
     protected function homework(): Attribute
     {
         return Attribute::make(
-            get: fn (array $values) => collect($values)->map(fn (array $homework) => new Homework($homework['user_id'], $homework['documents'], $homework['created_at'])),
+            get: function (string $values) {
+                $array = json_decode($values, true);
+                return collect($array)->map(fn (array $homework) => new Homework($homework['user_id'], $homework['documents'], $homework['created_at']));
+            },
             set: fn (Collection $values) => $values->map(fn (Homework $homework) => [
                 'user_id' => $homework->user_id,
                 'documents' => $homework->documents,
@@ -51,10 +55,6 @@ class Assignment extends Model
             ])
         );
     }
-
-    protected $casts = [
-        'homework' => AsArrayObject::class
-    ];
 
     public function group(): BelongsTo
     {

@@ -6,11 +6,16 @@ use App\Exceptions\InvalidMemberException;
 use App\Exceptions\MemberAlreadyExistsException;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
+use App\Http\Resources\Group\AssignmentResource;
 use App\Http\Resources\GroupResource;
+use App\Http\Resources\Odontologia\HistoriaResource;
 use App\Http\Resources\UserResource;
 use App\Models\Group;
+use App\Models\Historia;
 use App\Models\User;
 use App\Services\GroupService;
+use App\Status;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -26,18 +31,17 @@ class GroupController extends Controller
     {
         $user = $request->user();
 
-        if ($user->hasRole('admin')) {
+        if ($user->hasPermission('groups-index-all')) {
             $groups = Group::with(['owner.profile'])->get();
+            $profesores = User::whereHasRole('profesor')->with(['profile'])->get();
 
-            $profesores = User::whereHasRole('profesor')->get();
             return Inertia::render('Admin/Groups/Index', [
                 'groups' => GroupResource::collection($groups),
                 'profesores' => UserResource::collection($profesores),
             ]);
-        } elseif ($user->hasRole('estudiante')) {
+        } else {
+            $groups = Group::with(['owner.profile'])->whereJsonContains('members', $user->id)->orWhere('owner_id')->get();
 
-            $groups = $user->groups()->load(['owner.profile'])->makeVisible('owner');
-            $groups->each(fn (Group $group) => $group->owner->makeVisible('profile'));
             return Inertia::render('Estudiante/Groups/Index', [
                 'groups' => GroupResource::collection($groups),
             ]);
@@ -60,6 +64,8 @@ class GroupController extends Controller
         $data = $request->validated();
         $owner = User::find($data['owner']);
         $this->groupService->createGroup($data['name'], $owner);
+
+        message('Grupo creado exitosamente', \Type::Success);
         return response(null, 200);
     }
 
@@ -71,9 +77,8 @@ class GroupController extends Controller
         $user = $request->user();
 
         if ($user->hasRole('admin')) {
-
-            $group->owner->profile;
-            $group->members->each(fn (User $user) => $user->profile);
+            $group->load(['owner.profile']);
+            $group->members->each(fn (User $user) => $user->load(['profile']));
 
             $students = User::whereHasRole('estudiante')->with('profile')->get()->reject(fn (User $user) => $group->members->contains('id', $user->id));
 
@@ -81,17 +86,13 @@ class GroupController extends Controller
                 'group' => new GroupResource($group),
                 'students' => UserResource::collection($students),
             ]);
-        } elseif ($user->hasRole('estudiante')) {
+        } else {
 
-            $group->owner->profile;
-            $group->owner->makeVisible(['profile']);
-            $group->owner->profile->makeVisible(['nombres', 'apellidos']);
-
-            $historias = $user->historias()->where('status', 'abierta')->orWhere('status', 'correccion')->with(['paciente'])->get();
+            $group->load('assignments');
 
             return Inertia::render('Estudiante/Groups/Show', [
                 'group' => new GroupResource($group),
-                'historias' => $historias,
+                'historias' => HistoriaResource::collection([]),
             ]);
         }
     }
@@ -151,6 +152,86 @@ class GroupController extends Controller
             return response('Invalid member', 400);
         }
         message('Miembros removidos del grupo exitosamente', \Type::Success);
+        return response(null, 200);
+    }
+
+    public function showAssignment(Group $group, Group\Assignment $assignment)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->hasPermission('groups-create-homeworks')) {
+            $historias = $user->historias()->with(['paciente'])->get()->reject(fn (Historia $historia) => $historia->isLocked());
+        } else {
+            $historias = [];
+        }
+
+        return Inertia::render('Estudiante/Groups/Assignments/Show', [
+            'assignment' => new AssignmentResource($assignment),
+            'historias' => HistoriaResource::collection($historias),
+        ]);
+    }
+
+    public function storeAssignment(Group $group, Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:10000'],
+        ]);
+
+        $this->groupService->addAssignment($group, $data);
+
+        message('Asignación creada exitosamente', \Type::Success);
+        return response(null, 200);
+    }
+
+    public function storeHomework(Group $group, Group\Assignment $assignment, Request $request)
+    {
+        $data = $request->validate([
+            'documents' => ['required', 'min:1', 'max:1'],
+            'documents.*' => ['array:id,type'],
+            'documents.*.id' => ['required', 'required', 'string'],
+            'documents.*.type' => ['required', 'string'],
+        ]);
+
+        /** @var User $user */
+        $user = $request->user();
+        $documents = collect($data['documents']);
+
+        $hra = $documents->filter(fn ($document) => $document['type'] === 'HRA');
+
+        if ($hra->count() > 0) {
+            // get ids
+            $HRA_ids = $hra->pluck('id');
+
+            // Query database for Historias with given ID
+            /** @var Collection<Historia> $historias_regulares_adulto */
+            $historias_regulares_adulto = Historia::whereIn('id', $HRA_ids)->get();
+
+            // check each HCE to belong to the current user, so user could not turn in other's HCEs
+            // also check the HCE is open, so users can only turn in open HCEs
+            $historias_regulares_adulto->each(function (Historia $hce) use ($user) {
+                if ($hce->autor_id !== $user->id) throw new \Exception('No puede entregar la historia de otro usuario como tarea propia');
+                if ($hce->isLocked()) throw new \Exception('No puede entregar una historia que ya se encuentra cerrada o entregada');
+            });
+
+            // set status to ENTREGADA (turned in)
+            $historias_regulares_adulto->each(fn (Historia $historia) => $historia->setStatus(Status::ENTREGADA));
+
+            $docs = $historias_regulares_adulto->map(fn (Historia $historia) => [
+                'id' => $historia->id,
+                'type' => 'HRA'
+            ])->toArray();
+
+            $data = [
+                'documents' => $docs,
+            ];
+
+            $this->groupService->addHomeworkToAssignment($assignment, $data);
+        }
+
+        message('Tarea entregada exitosamente', \Type::Success);
+        message('Recibiras una notificación si tu docente deja correcciones', \Type::Info);
         return response(null, 200);
     }
 

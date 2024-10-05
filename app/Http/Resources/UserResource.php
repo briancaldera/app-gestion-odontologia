@@ -15,7 +15,7 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         $user = $request->user();
-        $canReadPrivate = $user->hasPermission('users-read-private-info') || $this->id === $user->id;
+        $canReadPrivate = $user->hasPermission('users-read-private') || $this->id === $user->id;
 
         return [
             'id' => $this->id,

@@ -64,5 +64,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'estudiante@example.com'
         ]);
         $estudianteUser->addRole('estudiante');
+
+        $admins = User::factory()->has(Profile::factory())->count(3)->createMany()->each(fn(User $user) => $user->addRole('admin'));
+        $admision = User::factory()->has(Profile::factory())->count(5)->createMany()->each(fn(User $user) => $user->addRole('admision'));
+        $profesores = User::factory()->has(Profile::factory())->count(10)->createMany()->each(fn(User $user) => $user->addRole('profesor'));
+        $users = User::factory()->has(Profile::factory())->count(50)->createMany()->each(fn(User $user) => $user->addRole('estudiante'));
+
     }
 }

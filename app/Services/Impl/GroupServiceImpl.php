@@ -5,10 +5,13 @@ namespace App\Services\Impl;
 use App\Exceptions\InvalidMemberException;
 use App\Exceptions\MemberAlreadyExistsException;
 use App\Models\Group;
+use App\Models\Group\Assignment;
 use App\Models\User;
 use App\Notifications\UserAddedToGroup;
 use App\Services\GroupService;
+use App\ValueObjects\Group\Homework;
 use Exception;
+use Illuminate\Support\Str;
 
 class GroupServiceImpl implements GroupService
 {
@@ -47,6 +50,49 @@ class GroupServiceImpl implements GroupService
 
         $group->members = $group->members->reject(fn (User $member) => $member->id === $user->id);
         $group->save();
+    }
+
+    public function addAssignment(Group $group, array $data): Assignment
+    {
+        $data = (object) $data;
+
+        $assignment = $group->assignments()->create([
+            'name' => $data->name,
+            'description' => $data->description,
+        ]);
+
+        return $assignment;
+    }
+
+    public function updateAssignment(Assignment $assignment, array $data)
+    {
+        $assignment->update($data);
+
+        return $assignment;
+    }
+
+    public function addHomeworkToAssignment(Assignment $assignment, array $data)
+    {
+        $data = (object) $data;
+        $user = auth()->user();
+        $created_at = now();
+        $documents = $data->documents;
+
+        $homework = new Homework($user->id, $documents, $created_at->toISOString());
+
+        $assignment->homework = $assignment->homework->push($homework);
+        $assignment->save();
+    }
+
+    public function addClassworkToAssignment(Group $group, string $assignmentId, array $data)
+    {
+        $data = (object) $data;
+
+        $classwork = [
+            'user' => $data->user_id,
+
+            'created_at' => now()
+        ];
     }
 
     public function deleteGroup(Group $group): void

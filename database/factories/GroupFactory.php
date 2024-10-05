@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,8 @@ class GroupFactory extends Factory
         $faker = fake('es_VE');
 
         return [
-            'name' => $faker->text(),
+            'name' => $faker->text(30),
+            'owner_id' => User::factory(),
         ];
     }
 }

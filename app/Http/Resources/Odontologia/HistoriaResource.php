@@ -17,7 +17,7 @@ class HistoriaResource extends JsonResource
     public function toArray(Request $request): array
     {
         $user = $request->user();
-        $canReadPrivate = $user->hasPermission('historias-read-private-info') || $this->autor_id === $user->id;
+        $canReadPrivate = $user->hasPermission('historias-read-private') || $this->autor_id === $user->id;
 
         return [
             'id' => $this->id,

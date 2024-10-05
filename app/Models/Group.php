@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\AsCollection;
+use App\Models\Group\Assignment;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * @property string $id
@@ -23,6 +23,9 @@ class Group extends Model
 {
     use HasFactory, HasUlids;
 
+    protected $primaryKey = 'id';
+    protected $keyType = 'string';
+    protected $table = 'groups';
     public $incrementing = false;
 
     protected $fillable = [
@@ -43,8 +46,8 @@ class Group extends Model
     protected function members(): Attribute
     {
         return Attribute::make(
-            /** @var Collection<string> $members */
-            /** @returns Collection<User> */
+        /** @var Collection<string> $members */
+        /** @returns Collection<User> */
             get: function (string $members): Collection {
                 $arr = json_decode($members);
                 $collection = collect($arr);
@@ -57,4 +60,29 @@ class Group extends Model
             }
         );
     }
+
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class);
+    }
+
+    public static array $permissions = [
+        'index-all',
+        'create',
+        'read',
+        'read-private',
+        'update',
+        'delete',
+        'index-users',
+        'add-users',
+        'remove-users',
+        'create-assignments',
+        'update-assignments',
+        'delete-assignments',
+        'index-all-homeworks',
+        'create-homeworks',
+        'read-homeworks',
+        'update-homeworks',
+        'delete-homeworks',
+    ];
 }

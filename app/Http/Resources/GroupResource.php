@@ -17,10 +17,11 @@ class GroupResource extends JsonResource
         $user = $request->user();
         return [
             'id' => $this->id,
-            'owner' => $this->owner_id,
+            'owner' => new UserResource($this->whenLoaded('owner')),
             'name' => $this->name,
-            'members' => $this->when($user->hasPermission('groups-list-users'), $this->members),
-            $this->mergeWhen($user->hasPermission('groups-read-private-info'), [
+            'members' => $this->when($user->hasPermission('groups-index-users'), $this->members->toArray()),
+            'assignments' => $this->whenLoaded('assignments'),
+            $this->mergeWhen($user->hasPermission('groups-read-private'), [
                 'updated_at' => $this->updated_at,
                 'created_at' => $this->created_at
             ]),

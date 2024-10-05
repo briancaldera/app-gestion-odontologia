@@ -18,7 +18,7 @@ class ProfileResource extends JsonResource
             'nombres' => $this->nombres,
             'apellidos' => $this->apellidos,
             'picture_url' => $this->picture_url,
-            $this->mergeWhen($request->user()->hasPermission('users-read-private-info') || $this->user_id === $request->user()->id, [
+            $this->mergeWhen($request->user()->hasPermission('users-read-private') || $this->user_id === $request->user()->id, [
                 'fecha_nacimiento' => $this->fecha_nacimiento,
                 'telefono' => $this->telefono,
                 'direccion' => $this->direccion,
