@@ -18,8 +18,6 @@ use Illuminate\Support\Facades\Auth;
  * @property string $id the UUID
  * @property string $paciente_id the patient model related to the medical record
  * @property string $numero the id assigned by admision
- * @property string $motivo_consulta the reason for the consultation
- * @property string $enfermedad_actual current disease
  * @property string $autor_id the author for the medical record
  * @property Status $status the status
  * @property Correccion $correcciones
@@ -34,14 +32,10 @@ class Historia extends Model implements StatusHolder
 
     protected $attributes = [
         'numero' => null,
-        'motivo_consulta' => '',
-        'enfermedad_actual' => '',
     ];
 
     protected $fillable = [
         'status',
-        'motivo_consulta',
-        'enfermedad_actual',
         'autor_id',
     ];
 

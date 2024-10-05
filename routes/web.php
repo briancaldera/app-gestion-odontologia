@@ -51,15 +51,22 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
         Route::delete('/{historia}/correcciones/{correccion}', [CorreccionController::class, 'destroy'])->name('correcciones.destroy');
     });
 
-    Route::prefix('grupos')->name('groups.')->group(function () {
-        Route::get('/index', [GroupController::class, 'index'])->name('index')->can('viewAny', Group::class);
-        Route::get('/{group}', [GroupController::class, 'show'])->name('show')->can('view', 'group');
-        Route::post('', [GroupController::class, 'store'])->name('store')->can('create', Group::class);
-        Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy')->can('delete', 'group');
+    Route::resource('groups', GroupController::class);
+    Route::patch('/grupos/{group}/add', [GroupController::class, 'addMembers'])->name('groups.addMembers')->can('addMember', 'group');
+    Route::patch('/grupos/{group}/remove', [GroupController::class, 'removeMembers'])->name('groups.removeMembers')->can('removeMember', 'group');
+    Route::post('/grupos/{group}/agregarTarea', [GroupController::class, 'storeAssignment'])->name('groups.assignments.store');
+    Route::get('/grupos/{group}/asignaciones/{assignment}', [GroupController::class, 'showAssignment'])->name('groups.assignments.show');
+    Route::post('/grupos/{group}/asignaciones/{assignment}/homework', [GroupController::class, 'storeHomework'])->name('groups.assignments.homeworks.store');
+//    Route::prefix('grupos')->name('groups.')->group(function () {
+//        Route::get('/index', [GroupController::class, 'index'])->name('index')->can('viewAny', Group::class);
+//        Route::get('/{group}', [GroupController::class, 'show'])->name('show')->can('view', 'group');
+//        Route::post('', [GroupController::class, 'store'])->name('store')->can('create', Group::class);
+//        Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy')->can('delete', 'group');
+//        Route::patch('/{group}/add', [GroupController::class, 'addMembers'])->name('addMembers')->can('addMember', 'group');
+//        Route::patch('/{group}/remove', [GroupController::class, 'removeMembers'])->name('removeMembers')->can('removeMember', 'group');
+//
 
-        Route::patch('/{group}/add', [GroupController::class, 'addMembers'])->name('addMembers')->can('addMember', 'group');
-        Route::patch('/{group}/remove', [GroupController::class, 'removeMembers'])->name('removeMembers')->can('removeMember', 'group');
-    });
+//    });
 
     // Routes for admin
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -93,7 +100,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/historias/dashboard', [HistoriaController::class, 'dashboard'])->name('historias.dashboard');
     Route::get('/historias', [HistoriaController::class, 'index'])->name('historias.index');
     Route::get('/historias/crear', [HistoriaController::class, 'create'])->name('historias.create')->can('create', Historia::class);
-    Route::post('/historias/store', [HistoriaController::class, 'store'])->name('historias.store')->can('create', Historia::class);
+    Route::post('/historias/store', [HistoriaController::class, 'store2'])->name('historias.store')->can('create', Historia::class);
     Route::get('/historias/{historia}/editar', [HistoriaController::class, 'edit'])->name('historias.edit')->can('update', 'historia');
 //    Route::patch('/pacientes/{paciente}', [HistoriaController::class, 'updatePaciente'])->name('pacientes.update')->can('update', 'paciente');
     Route::patch('/historias/{historia}/antfamiliares/update', [HistoriaController::class, 'updateAntFamiliares'])->name('historias.antfamiliares.update')->can('update', 'historia');

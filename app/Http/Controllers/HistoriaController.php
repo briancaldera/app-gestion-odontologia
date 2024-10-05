@@ -127,8 +127,15 @@ class HistoriaController extends Controller
         ]);
     }
 
-    public function store2(Paciente $paciente, Request $request)
+    public function store2(Request $request)
     {
+        $data = $request->validate([
+            'paciente_id' => ['required', 'uuid', 'exists:'.Paciente::class.',id'],
+        ]);
+
+        /** @var Paciente $paciente */
+        $paciente = Paciente::find($data['paciente_id']);
+
         /** @var User $user */
         $user = $request->user();
 
@@ -138,8 +145,9 @@ class HistoriaController extends Controller
         }
 
         $historia = $this->historiaService->addHistoria($paciente, $user);
+        $paciente->touch();
 
-        message('Paciente creado exitosamente. A continuacion podrá editar la historia asignada.');
+        message('Historia creada exitosamente. A continuacion podrá editar la historia asignada');
         return to_route('historias.edit', [
             'historia' => $historia->id
         ]);
