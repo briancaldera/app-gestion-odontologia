@@ -1,11 +1,11 @@
 import {Head, Link, router, usePage} from "@inertiajs/react";
 import React from "react";
 import AuthNavbar from "@/Components/organisms/AuthNavbar.tsx";
-import AuthSidebar from "@/Components/organisms/AuthSidebar.jsx"
 import Loader from "@/Components/atoms/Loader.tsx";
 import Logo from "@/Components/atoms/Logo.jsx";
 import {useRoute} from 'ziggy-js'
 import {TooltipProvider} from "@/Components/atoms/Tooltip"
+import SidebarMenu from "@/Components/organisms/SidebarMenu.tsx";
 
 const DARK_MODE_KEY = 'dark_mode'
 
@@ -75,7 +75,7 @@ const AuthLayout = ({title, sidebar, children}) => {
                                 </Link>
                             </div>
                         </div>
-                        {sidebar || <AuthSidebar/>}
+                        <SidebarMenu/>
                         <div className={'z-50 absolute bottom-0 left-0 p-4'} hidden={!loading}>
                             <Loader/>
                         </div>

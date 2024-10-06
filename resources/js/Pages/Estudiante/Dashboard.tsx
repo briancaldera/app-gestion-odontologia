@@ -15,7 +15,7 @@ const Dashboard = ({auth}) => {
 
 
     return (
-        <AuthLayout title={'Resumen'} sidebar={(<SidebarMenu menu={menu}/>)}>
+        <AuthLayout title={'Resumen'}>
             <div className={"p-6"}>
 
 
