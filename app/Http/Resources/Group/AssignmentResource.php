@@ -21,7 +21,6 @@ class AssignmentResource extends JsonResource
         $group = $this->group;
 
         $canReadPrivate = $user->hasPermission('groups-read-private') || $user->id === $this->group->owner_id;
-        $homeworkTurnedInByUser = $this->homework->filter(fn ($homework) => $homework->user_id === $user->id);
         $userIsMember = $group->members->some(fn (User $member) => $member->id === $user->id);
 
             return [
@@ -29,9 +28,12 @@ class AssignmentResource extends JsonResource
                 'group_id' => $this->group_id,
                 'name' => $this->when($userIsMember || $canReadPrivate, $this->name),
                 'description' => $this->when($userIsMember || $canReadPrivate, $this->description),
-                'homework' => $this->when($canReadPrivate || $homeworkTurnedInByUser->count() > 0, function () use ($canReadPrivate, $homeworkTurnedInByUser) {
-                    if ($canReadPrivate) return $this->homework;
-                    return $homeworkTurnedInByUser;
+                'homeworks' => $this->whenLoaded('homeworks', function () use($canReadPrivate, $user) {
+                    if ($canReadPrivate) {
+                        return $this->homeworks()->with(['user' => ['profile:user_id,nombres,apellidos']])->get();
+                    } else {
+                        return $this->homeworks()->where('user_id', $user->id)->get();
+                    }
                 }),
             ];
     }

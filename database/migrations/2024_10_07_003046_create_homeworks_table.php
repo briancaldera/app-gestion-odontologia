@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assignments', function (Blueprint $table) {
+        Schema::create('homeworks', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('group_id')->references('id')->on('groups')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('name');
-            $table->text('description');
-
+            $table->foreignUlid('assignment_id')->references('id')->on('assignments')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->jsonb('documents');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assignments');
+        Schema::dropIfExists('homework');
     }
 };

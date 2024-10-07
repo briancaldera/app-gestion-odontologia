@@ -6,10 +6,10 @@ use App\Exceptions\InvalidMemberException;
 use App\Exceptions\MemberAlreadyExistsException;
 use App\Models\Group;
 use App\Models\Group\Assignment;
+use App\Models\Group\Homework;
 use App\Models\User;
 use App\Notifications\UserAddedToGroup;
 use App\Services\GroupService;
-use App\ValueObjects\Group\Homework;
 use Exception;
 use Illuminate\Support\Str;
 
@@ -75,24 +75,11 @@ class GroupServiceImpl implements GroupService
     {
         $data = (object) $data;
         $user = auth()->user();
-        $created_at = now();
-        $documents = $data->documents;
 
-        $homework = new Homework($user->id, $documents, $created_at->toISOString());
-
-        $assignment->homework = $assignment->homework->push($homework);
-        $assignment->save();
-    }
-
-    public function addClassworkToAssignment(Group $group, string $assignmentId, array $data)
-    {
-        $data = (object) $data;
-
-        $classwork = [
-            'user' => $data->user_id,
-
-            'created_at' => now()
-        ];
+        $assignment->homeworks()->create([
+            'user_id' => $user->id,
+            'documents' => $data->documents,
+        ]);
     }
 
     public function deleteGroup(Group $group): void

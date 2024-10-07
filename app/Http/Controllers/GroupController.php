@@ -159,6 +159,7 @@ class GroupController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
+        $assignment->load(['homeworks']);
 
         if ($user->hasPermission('groups-create-homeworks')) {
             $historias = $user->historias()->with(['paciente'])->get()->reject(fn (Historia $historia) => $historia->isLocked());
