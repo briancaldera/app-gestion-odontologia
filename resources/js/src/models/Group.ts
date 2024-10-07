@@ -15,15 +15,20 @@ type Assignment = {
     group_id: string
     name: string
     description: string
-    homework: Homework[]
+    homeworks: Homework[]
     created_at: string
     updated_at: string
 }
 
 type Homework = {
+    id: string
     user_id: string
+    assignment_id: string
+    user?: User
+    assignment?: Assignment
     documents: Document[]
     created_at: string
+    updated_at: string
 }
 
 type Document = {

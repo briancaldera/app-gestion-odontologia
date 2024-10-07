@@ -26,10 +26,9 @@ import {route} from "ziggy-js";
 import {Form, FormField, FormItem, FormMessage} from "@/shadcn/ui/form.tsx";
 import Historia from "@/src/models/Historia.ts";
 import CreateHomeworkSchema from "@/FormSchema/Grupos/CreateHomeworkSchema.ts";
-import {usePage} from "@inertiajs/react";
+import {Link, usePage} from "@inertiajs/react";
 import {format} from 'date-fns'
 import {Tabs, TabsContent, TabsList} from '@/shadcn/ui/tabs.tsx'
-import {Skeleton} from "@/shadcn/ui/skeleton.tsx";
 
 const faker = fakerES_MX
 
@@ -40,7 +39,7 @@ type ShowProps = {
 
 const Show = ({assignment, historias}: ShowProps) => {
 
-    console.log(assignment.homework)
+    console.log(assignment.homeworks)
 
     const can = usePermission()
 
@@ -77,7 +76,7 @@ const Show = ({assignment, historias}: ShowProps) => {
                                         </TabsList>
                                     </TabsList>
                                     <TabsContent value={'homeworks'}>
-                                        <HomeworksTab homeworks={assignment.homework}/>
+                                        <HomeworksTab homeworks={assignment.homeworks}/>
                                     </TabsContent>
                                 </Tabs>
                             </div>
@@ -102,7 +101,7 @@ const TurnInHomeworkCard = ({assignment, historias}: { assignment: Assignment, h
     const {auth: {user}} = usePage().props
 
     const [openDialog, setOpenDialog] = React.useState<boolean>(false)
-    const myHomework = assignment.homework?.filter(homework => homework.user_id === user.id) ?? []
+    const myHomework = assignment.homeworks?.filter(homework => homework.user_id === user.id) ?? []
 
     return (
         <>
@@ -217,7 +216,8 @@ const TurnInHomeworkDialog = ({assignment, historias, open, onOpenChange}: {
                                                 <div>
                                                     {
                                                         historias.map(historia => (
-                                                            <HistoriaItem historia={historia} onClick={handleHistoriaClick}
+                                                            <HistoriaItem historia={historia}
+                                                                          onClick={handleHistoriaClick}
                                                                           isSelected={assignmentForm.getValues().documents.some(selection => selection.id === selection.id)}/>))
                                                     }
                                                 </div>
@@ -257,9 +257,14 @@ const TurnInHomeworkDialog = ({assignment, historias, open, onOpenChange}: {
     )
 }
 
-const HistoriaItem = ({historia, isSelected, onClick = () => {}}: { historia: Historia, isSelected: boolean, onClick: (historia: Historia) => void }) => {
+const HistoriaItem = ({
+                          historia, isSelected, onClick = () => {
+    }
+                      }: { historia: Historia, isSelected: boolean, onClick: (historia: Historia) => void }) => {
     return (
-        <div key={historia.id} className={`group h-32 p-2 border rounded-lg cursor-pointer ${isSelected && 'bg-emerald-100'}`} onClick={() => onClick(historia)}>
+        <div key={historia.id}
+             className={`group h-32 p-2 border rounded-lg cursor-pointer ${isSelected && 'bg-emerald-100'}`}
+             onClick={() => onClick(historia)}>
             <Text>
                 {`Paciente: ${historia.paciente?.nombre} ${historia.paciente?.apellido}`}
             </Text>
@@ -267,28 +272,54 @@ const HistoriaItem = ({historia, isSelected, onClick = () => {}}: { historia: Hi
     )
 }
 
-const HomeworksTab = ({homeworks}: {homeworks: Homework[]}) => {
+const HomeworksTab = ({homeworks}: { homeworks: Homework[] }) => {
 
     return (
-        <div className={'grid grid-cols-4'}>
+        <div className={'grid grid-cols-4 gap-2'}>
             {
                 homeworks.map(homework => (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>
-                                <div className={'flex gap-3'}>
-                                    <Skeleton className={'size-8 rounded-full flex-none'}/>
-                                    <Skeleton className={'h-4 w-full'}/>
-                                </div>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-
-                        </CardContent>
-                    </Card>
-                ) )
+                    <HomeworkItem key={homework.id} homework={homework}/>
+                ))
             }
         </div>
+    )
+}
+
+const HomeworkItem = ({homework}: { homework: Homework }) => {
+
+    const firstResource = homework.documents[0]
+
+    let resourceLink: string = ''
+
+    switch (firstResource.type) {
+        case 'HRA':
+            resourceLink = route('historias.show', {historia: firstResource.id})
+            break
+        default:
+            throw new Error('Tipo de recurso no encontrado')
+    }
+
+    return (
+        <Link href={resourceLink}>
+            <Card>
+                <CardHeader>
+                    <CardTitle>
+                        <div className={'flex flex-col'}>
+                            <Text>{`${homework.user?.profile?.nombres}`}</Text>
+                            <Text>{`${homework.user?.profile?.apellidos}`}</Text>
+                        </div>
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+
+                </CardContent>
+                <CardFooter>
+                    <div>
+                        <Text>Entregado en: {format(homework.created_at, 'Pp')}</Text>
+                    </div>
+                </CardFooter>
+            </Card>
+        </Link>
     )
 }
 

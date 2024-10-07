@@ -4,6 +4,9 @@ namespace App\Http\Resources\Odontologia;
 
 use App\Http\Resources\PacienteResource;
 use App\Http\Resources\UserResource;
+use App\Models\Group;
+use App\Models\Group\Assignment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,13 +19,21 @@ class HistoriaResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        /** @var User $user */
         $user = $request->user();
+
+        $isRelatedThroughGroup = $user->hasRole('profesor') && $user->groups()->
+        some(fn(Group $group) => $group->assignments->
+        some(fn(Assignment $assignment) => $assignment->homeworks->
+        some(fn(Group\Homework $homework) => $homework->documents->
+        some(fn (array $document)  => $document['id'] === $this->id))));
+
         $canReadPrivate = $user->hasPermission('historias-read-private') || $this->autor_id === $user->id;
 
         return [
             'id' => $this->id,
             'paciente_id' => $this->paciente_id,
-            $this->mergeWhen($canReadPrivate, [
+            $this->mergeWhen($canReadPrivate || $isRelatedThroughGroup, [
                 'status' => $this->status,
                 'autor_id' => $this->autor_id,
                 'numero' => $this->numero,

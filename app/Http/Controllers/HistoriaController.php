@@ -392,7 +392,11 @@ class HistoriaController extends Controller
         } elseif ($user->hasRole('admision')) {
 
         } elseif ($user->hasRole('profesor')) {
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
+            return Inertia::render('Estudiante/Historias/Show', [
+                'historia' => new HistoriaResource($historia),
+            ]);
         } elseif ($user->hasRole('estudiante')) {
 
             $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
