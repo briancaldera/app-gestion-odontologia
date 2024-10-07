@@ -1,8 +1,8 @@
-import {type Assignment} from "@/src/models/Group.ts";
+import {type Assignment, Homework} from "@/src/models/Group.ts";
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import {mapServerErrorsToFields, usePermission} from "@/src/Utils/Utils.ts";
-import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 import React from "react";
 import Title from "@/Components/atoms/Title";
@@ -26,6 +26,10 @@ import {route} from "ziggy-js";
 import {Form, FormField, FormItem, FormMessage} from "@/shadcn/ui/form.tsx";
 import Historia from "@/src/models/Historia.ts";
 import CreateHomeworkSchema from "@/FormSchema/Grupos/CreateHomeworkSchema.ts";
+import {usePage} from "@inertiajs/react";
+import {format} from 'date-fns'
+import {Tabs, TabsContent, TabsList} from '@/shadcn/ui/tabs.tsx'
+import {Skeleton} from "@/shadcn/ui/skeleton.tsx";
 
 const faker = fakerES_MX
 
@@ -35,6 +39,8 @@ type ShowProps = {
 }
 
 const Show = ({assignment, historias}: ShowProps) => {
+
+    console.log(assignment.homework)
 
     const can = usePermission()
 
@@ -60,6 +66,23 @@ const Show = ({assignment, historias}: ShowProps) => {
                         </div>
 
                     </div>
+
+                    {
+                        can('groups-index-all-homeworks') && (
+                            <div>
+                                <Tabs defaultValue={'homeworks'}>
+                                    <TabsList className={'w-full grid-cols-1'}>
+                                        <TabsList value={'homeworks'}>
+                                            Tarea entregada
+                                        </TabsList>
+                                    </TabsList>
+                                    <TabsContent value={'homeworks'}>
+                                        <HomeworksTab homeworks={assignment.homework}/>
+                                    </TabsContent>
+                                </Tabs>
+                            </div>
+                        )
+                    }
                 </div>
                 <div className={'col-span-1 col-start-4 flex flex-col'}>
                     {
@@ -76,7 +99,10 @@ const Show = ({assignment, historias}: ShowProps) => {
 
 const TurnInHomeworkCard = ({assignment, historias}: { assignment: Assignment, historias: Historia[] }) => {
 
+    const {auth: {user}} = usePage().props
+
     const [openDialog, setOpenDialog] = React.useState<boolean>(false)
+    const myHomework = assignment.homework?.filter(homework => homework.user_id === user.id) ?? []
 
     return (
         <>
@@ -93,7 +119,13 @@ const TurnInHomeworkCard = ({assignment, historias}: { assignment: Assignment, h
 
                 </div>
                 <CardFooter>
-                    <Button onClick={() => setOpenDialog(true)} className={'w-full'}>Entregar</Button>
+                    {
+                        myHomework.length > 0 ? (
+                            <div>Documento entregado en {format(myHomework[0].created_at, 'Pp')}</div>
+                        ) : (
+                            <Button onClick={() => setOpenDialog(true)} className={'w-full'}>Entregar</Button>
+                        )
+                    }
                 </CardFooter>
             </Card>
 
@@ -231,6 +263,31 @@ const HistoriaItem = ({historia, isSelected, onClick = () => {}}: { historia: Hi
             <Text>
                 {`Paciente: ${historia.paciente?.nombre} ${historia.paciente?.apellido}`}
             </Text>
+        </div>
+    )
+}
+
+const HomeworksTab = ({homeworks}: {homeworks: Homework[]}) => {
+
+    return (
+        <div className={'grid grid-cols-4'}>
+            {
+                homeworks.map(homework => (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>
+                                <div className={'flex gap-3'}>
+                                    <Skeleton className={'size-8 rounded-full flex-none'}/>
+                                    <Skeleton className={'h-4 w-full'}/>
+                                </div>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+
+                        </CardContent>
+                    </Card>
+                ) )
+            }
         </div>
     )
 }

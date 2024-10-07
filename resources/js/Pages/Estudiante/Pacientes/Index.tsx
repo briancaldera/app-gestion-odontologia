@@ -63,7 +63,7 @@ const Index = ({pacientes}: IndexProps) => {
                                 <Title level={'h3'}>Pacientes</Title>
                                 <div>
                                     <AlertDialog>
-                                        <AlertDialogTrigger>
+                                        <AlertDialogTrigger asChild>
                                             <Button><Plus className={'mr-2'}/>Crear nuevo paciente</Button>
                                         </AlertDialogTrigger>
                                         <AlertDialogContent>
