@@ -13,6 +13,8 @@ import {Button} from "@/shadcn/ui/button";
 import React from "react";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
+import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {exampleMessage} from "@/src/corrections/corrections.ts";
 
 type AntecedentesMedicosPersonalesSectionProps = {
     form: UseFormReturn<z.infer<typeof AntPersonalesSchema>>
@@ -36,6 +38,9 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
             }
         })
     }
+
+    const correctionsModel = exampleMessage
+
     return (
 
         <Surface className={'w-full px-6 min-h-screen'}>
@@ -45,6 +50,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
 
+                    <CorrectionsBlock model={correctionsModel} name={'trastornos'}>
                     <section className={'my-6'}>
                         <header>
                             <Title level={'title-md'}>Trastornos</Title>
@@ -97,6 +103,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
 
 
                     </section>
+                    </CorrectionsBlock>
 
                     <section className={'my-6'}>
                         <header>
