@@ -3,18 +3,24 @@ import type Historia from "@/src/models/Historia.ts";
 import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
 import {ArrowBigLeft} from 'lucide-react'
 import HistoriaEditor from "@/Components/organisms/HistoriaEditor.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import {Homework} from "@/src/models/Group.ts";
 
 type ShowProps = {
     historia: Historia
+    homework?: Homework
 }
 
-const Show = ({historia}: ShowProps) => {
+const Show = ({historia, homework}: ShowProps) => {
     // Show my marvelous HCE here
     return (
         <AuthLayout title={`Paciente: ${historia.paciente?.nombre} ${historia.paciente?.apellido}`} sidebar={<SidebarMenu menu={menu}/>}>
-            <div className={'p-6'}>
-                <HistoriaEditor historia={historia} readMode={false}/>
-            </div>
+            <ScrollArea className={'h-full'}>
+                <div className={'p-6'}>
+                    {/*TODO set readmode to true*/}
+                    <HistoriaEditor historia={historia} readMode={false} homework={homework}/>
+                </div>
+            </ScrollArea>
         </AuthLayout>
     )
 }
