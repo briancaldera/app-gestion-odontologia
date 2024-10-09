@@ -82,6 +82,32 @@ class GroupServiceImpl implements GroupService
         ]);
     }
 
+    public function addCorrectionsToDocument(Homework $homework, array $data): Homework
+    {
+        $data = collect($data);
+
+        $doc_id = $data['id'];
+        $doc_type = $data['type'];
+
+        $corrections = collect(['sections' => $data['corrections']]);
+
+        $documents = $homework->documents;
+
+        $updated_documents = $documents->map(function (array $document) use ($doc_id, $doc_type, $corrections) {
+            if ($document['type'] === $doc_type AND $document['id'] === $doc_id) {
+                $old_corrections = collect($document['corrections']['sections']);
+                $updated_corrections = $old_corrections->merge($corrections['sections']);
+                $document['corrections']['sections'] = $updated_corrections;
+            }
+            return $document;
+        });
+
+        $homework->documents = $updated_documents;
+        $homework->save();
+
+        return $homework;
+    }
+
     public function deleteGroup(Group $group): void
     {
         $group->deleteOrFail();

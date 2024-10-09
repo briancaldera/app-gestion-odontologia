@@ -15,4 +15,5 @@ interface GroupService
     public function addAssignment(Group $group, array $data): Assignment;
     public function updateAssignment(Assignment $assignment, array $data);
     public function addHomeworkToAssignment(Assignment $assignment, array $data);
+    public function addCorrectionsToDocument(Group\Homework $homework, array $data): Group\Homework;
 }

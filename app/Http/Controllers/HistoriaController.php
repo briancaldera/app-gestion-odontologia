@@ -22,6 +22,7 @@ use App\Http\Requests\UpdatePlanTratamiento;
 use App\Http\Requests\UpdateSecuenciaTratamiento;
 use App\Http\Requests\UpdateTrastornosRequest;
 use App\Http\Resources\Odontologia\HistoriaResource;
+use App\Models\Group\Homework;
 use App\Models\Historia;
 use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
@@ -387,6 +388,18 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
+        if ($request->has('homework')) {
+            $homework_id = $request->validate(['homework' => ['ulid', 'exists:'.Homework::class.',id']]);
+
+            /** @var Homework $homework */
+            $homework = Homework::with(['assignment:id,group_id' => ['group:id']])->find($homework_id)->first();
+
+            $document = $homework->documents->firstWhere('id', $historia->id);
+
+            $corrections = $document['corrections'];
+
+        }
+
         if ($user->hasRole('admin')) {
 
         } elseif ($user->hasRole('admision')) {
@@ -396,6 +409,8 @@ class HistoriaController extends Controller
 
             return Inertia::render('Estudiante/Historias/Show', [
                 'historia' => new HistoriaResource($historia),
+                'corrections' => $corrections ?? null,
+                'homework' => $homework,
             ]);
         } elseif ($user->hasRole('estudiante')) {
 
@@ -403,6 +418,7 @@ class HistoriaController extends Controller
 
             return Inertia::render('Estudiante/Historias/Show', [
                 'historia' => new HistoriaResource($historia),
+                'corrections' => $corrections ?? null
             ]);
         }
     }

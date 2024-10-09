@@ -11,12 +11,14 @@ use App\Http\Resources\GroupResource;
 use App\Http\Resources\Odontologia\HistoriaResource;
 use App\Http\Resources\UserResource;
 use App\Models\Group;
+use App\Models\Group\Assignment;
 use App\Models\Historia;
 use App\Models\User;
 use App\Services\GroupService;
 use App\Status;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class GroupController extends Controller
@@ -221,7 +223,11 @@ class GroupController extends Controller
 
             $docs = $historias_regulares_adulto->map(fn (Historia $historia) => [
                 'id' => $historia->id,
-                'type' => 'HRA'
+                'type' => 'HRA',
+                'corrections' => /** @lang JSON */ '{
+"sections": {}
+}',
+
             ])->toArray();
 
             $data = [
@@ -233,6 +239,20 @@ class GroupController extends Controller
 
         message('Tarea entregada exitosamente', \Type::Success);
         message('Recibiras una notificación si tu docente deja correcciones', \Type::Info);
+        return response(null, 200);
+    }
+
+    public function addCorrectionsToDocument(Group $group, Assignment $assignment, Group\Homework $homework, Request $request)
+    {
+        $data = $request->validate([
+            'id' => ['required', 'string'],
+            'type' => ['required', 'string', Rule::in(['HRA'])],
+            'corrections' => ['required', 'array', 'min:0'],
+            'corrections.*' => ['required', 'string', 'max:1000']
+        ]);
+
+        $this->groupService->addCorrectionsToDocument($homework, $data);
+        message('Correcciones agregadas', \Type::Success);
         return response(null, 200);
     }
 

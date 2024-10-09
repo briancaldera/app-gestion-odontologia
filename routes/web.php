@@ -57,6 +57,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::post('/grupos/{group}/agregarTarea', [GroupController::class, 'storeAssignment'])->name('groups.assignments.store');
     Route::get('/grupos/{group}/asignaciones/{assignment}', [GroupController::class, 'showAssignment'])->name('groups.assignments.show');
     Route::post('/grupos/{group}/asignaciones/{assignment}/homework', [GroupController::class, 'storeHomework'])->name('groups.assignments.homeworks.store');
+    Route::post('/grupos/{group}/asignaciones/{assignment}/homework/{homework}', [GroupController::class, 'addCorrectionsToDocument'])->name('groups.assignments.homeworks.corrections');
 //    Route::prefix('grupos')->name('groups.')->group(function () {
 //        Route::get('/index', [GroupController::class, 'index'])->name('index')->can('viewAny', Group::class);
 //        Route::get('/{group}', [GroupController::class, 'show'])->name('show')->can('view', 'group');
