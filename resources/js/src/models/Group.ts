@@ -34,6 +34,11 @@ type Homework = {
 type Document = {
     id: string
     type: string
+    corrections: Corrections
+}
+
+type Corrections = {
+    sections: Record<string, string>
 }
 
 export {type Assignment, type Homework, type Document}
