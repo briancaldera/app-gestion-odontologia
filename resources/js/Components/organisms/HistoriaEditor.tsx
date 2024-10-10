@@ -76,15 +76,20 @@ import {Homework} from "@/src/models/Group.ts";
 
 const TabTriggerStyle = 'p-0 m-0'
 
-const HistoriaEditorContext = React.createContext<{ homework?: Homework }>({})
+type HistoriaEditorContextType = {
+    homework?: Homework
+    canCreateCorrections: boolean
+}
+const HistoriaEditorContext = React.createContext<HistoriaEditorContextType>({canCreateCorrections: false})
 
 type HistoriaEditorProps = {
     historia: Historia
     readMode: boolean
     homework?: Homework
+    canCreateCorrections: boolean
 }
 
-const HistoriaEditor = ({historia, homework, readMode = true}: HistoriaEditorProps) => {
+const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrections}: HistoriaEditorProps) => {
 
     const [showSidebar, setShowSidebar] = React.useState<boolean>(false)
 
@@ -232,7 +237,7 @@ const HistoriaEditor = ({historia, homework, readMode = true}: HistoriaEditorPro
 
     return (
         <div className={'h-full'}>
-            <HistoriaEditorContext.Provider value={{homework: homework}}>
+            <HistoriaEditorContext.Provider value={{homework: homework, canCreateCorrections: canCreateCorrections}}>
                 <Menubar className={'mb-2'}>
                     <MenubarMenu>
                         <MenubarTrigger>Vista</MenubarTrigger>
@@ -402,7 +407,7 @@ const HistoriaEditor = ({historia, homework, readMode = true}: HistoriaEditorPro
                     {
                         showSidebar && (
 
-                            <div className={'basis-1/4 p-2 bg-white'}>
+                            <div className={'basis-1/4 p-2 bg-white'} id={'historiaEditorSidebar'}>
 
                             </div>
                         )

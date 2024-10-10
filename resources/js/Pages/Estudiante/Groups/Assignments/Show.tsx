@@ -8,7 +8,7 @@ import React from "react";
 import Title from "@/Components/atoms/Title";
 import {Loader2, NotebookPen} from "lucide-react";
 import {Text} from "@/Components/atoms/Text";
-import {fakerES_MX} from '@faker-js/faker'
+import {faker} from '@faker-js/faker'
 import {Separator} from "@/shadcn/ui/separator.tsx";
 import {
     Dialog,
@@ -30,16 +30,12 @@ import {Link, usePage} from "@inertiajs/react";
 import {format} from 'date-fns'
 import {Tabs, TabsContent, TabsList} from '@/shadcn/ui/tabs.tsx'
 
-const faker = fakerES_MX
-
 type ShowProps = {
     assignment: Assignment,
     historias: Historia[]
 }
 
 const Show = ({assignment, historias}: ShowProps) => {
-
-    console.log(assignment.homeworks)
 
     const can = usePermission()
 
@@ -293,7 +289,9 @@ const HomeworkItem = ({homework}: { homework: Homework }) => {
 
     switch (firstResource.type) {
         case 'HRA':
-            resourceLink = route('historias.show', {historia: firstResource.id})
+            resourceLink = route('historias.show', {historia: firstResource.id, _query: {
+                    homework: homework.id
+                }})
             break
         default:
             throw new Error('Tipo de recurso no encontrado')

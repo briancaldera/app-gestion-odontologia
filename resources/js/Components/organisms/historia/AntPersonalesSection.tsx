@@ -14,13 +14,22 @@ import React from "react";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
-import {exampleMessage} from "@/src/corrections/corrections.ts";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
+import {toast} from "sonner";
 
 type AntecedentesMedicosPersonalesSectionProps = {
     form: UseFormReturn<z.infer<typeof AntPersonalesSchema>>
 }
 
 const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersonalesSectionProps) => {
+
+    const historia_id = form.getValues().historia_id
+
+    const {homework, canCreateCorrections} = React.useContext(HistoriaEditorContext)
+
+    const correctionsModel = homework?.documents.find(document => document.id === historia_id).corrections
 
     const route = useRoute()
     const { isProcessing, router} = useInertiaSubmit()
@@ -39,7 +48,30 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
         })
     }
 
-    const correctionsModel = exampleMessage
+    const handleSubmitCorrections = (values: Record<string, string>) => {
+        const endpoint = route('groups.assignments.homeworks.corrections', {
+            group:homework?.assignment?.group_id,
+            assignment: homework?.assignment_id,
+            homework: homework?.id,
+        })
+
+        const data = {
+            id: historia_id,
+            type: 'HRA',
+            corrections: {
+                ...values
+            }
+        }
+
+        router.post(endpoint, data, {
+            onError: errors => {
+                toast.error('No se pudo agregar las correcciones. ' + errors)
+            },
+            onSuccess: page => {
+
+            }
+        })
+    }
 
     return (
 
@@ -50,7 +82,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
 
-                    <CorrectionsBlock model={correctionsModel} name={'trastornos'}>
+                    <CorrectionsBlock model={correctionsModel} name={'trastornos'} canCreateCorrections={canCreateCorrections} onSubmitCorrections={handleSubmitCorrections}>
                     <section className={'my-6'}>
                         <header>
                             <Title level={'title-md'}>Trastornos</Title>
