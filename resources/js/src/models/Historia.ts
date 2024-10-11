@@ -28,4 +28,5 @@ enum Status {
     CERRADA = 'cerrada',
 }
 
+export {Status}
 export default Historia
