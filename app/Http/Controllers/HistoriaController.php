@@ -388,6 +388,8 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
+        $homework = null;
+
         if ($request->has('homework')) {
             $homework_id = $request->validate(['homework' => ['ulid', 'exists:'.Homework::class.',id']]);
 
@@ -418,7 +420,7 @@ class HistoriaController extends Controller
 
             return Inertia::render('Estudiante/Historias/Show', [
                 'historia' => new HistoriaResource($historia),
-                'corrections' => $corrections ?? null
+                'homework' => $homework,
             ]);
         }
     }
@@ -431,6 +433,20 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
+        $homework = null;
+
+        if ($request->has('homework')) {
+            $homework_id = $request->validate(['homework' => ['ulid', 'exists:'.Homework::class.',id']]);
+
+            /** @var Homework $homework */
+            $homework = Homework::with(['assignment:id,group_id' => ['group:id']])->find($homework_id)->first();
+
+            $document = $homework->documents->firstWhere('id', $historia->id);
+
+            $corrections = $document['corrections'];
+
+        }
+
         if ($user->hasRole('admin')) {
 
         } elseif ($user->hasRole('admision')) {
@@ -439,15 +455,11 @@ class HistoriaController extends Controller
 
         } elseif ($user->hasRole('estudiante')) {
 
-            $historia->makeVisible(['paciente']);
-            $historia->paciente;
-            $historia->antFamiliares;
-            $historia->antPersonales;
-            $historia->trastornos;
-            $historia->historiaOdontologica;
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
             return Inertia::render('Estudiante/Historias/Edit', [
                 'historia' => new HistoriaResource($historia),
+                'homework' => $homework,
             ]);
         }
     }

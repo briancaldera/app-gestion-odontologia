@@ -63,9 +63,14 @@ class HistoriaPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Historia $historia): bool
+    public function update(User $user, Historia $historia): bool|Response
     {
-        if ($user->hasRole('estudiante') AND $historia->autor_id === $user->id AND $historia->isOpen()) {
+        if ($user->hasRole('estudiante') AND $historia->autor_id === $user->id) {
+
+            if (!$historia->isOpen()) {
+                return Response::deny('La historia no se encuentra abierta para modificaciones.');
+            }
+
             return true;
         }
 

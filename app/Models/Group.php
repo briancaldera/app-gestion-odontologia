@@ -84,5 +84,6 @@ class Group extends Model
         'read-homeworks',
         'update-homeworks',
         'delete-homeworks',
+        'create-corrections'
     ];
 }
