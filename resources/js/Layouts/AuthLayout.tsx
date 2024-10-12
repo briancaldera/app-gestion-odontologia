@@ -21,7 +21,7 @@ const AuthLayout = ({title, sidebar, children}) => {
     React.useEffect(() => {
         let darkMode = window.localStorage.getItem(DARK_MODE_KEY)
 
-        if (darkMode) {
+        if (darkMode == null) {
             darkMode = 'false'
             window.localStorage.setItem(DARK_MODE_KEY, darkMode)
         }
@@ -52,7 +52,7 @@ const AuthLayout = ({title, sidebar, children}) => {
         })
     }
 
-    const can = React.useCallback((permission: string): boolean => (user?.permissions ?? []).some(p => p === permission),[user])
+    const can = React.useCallback((permission: string): boolean => (user?.permissions ?? []).some(p => p === permission),[user]) // todo remove this
 
     return (
         <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode, can:can}}>
