@@ -1,9 +1,7 @@
 import {Link, router, usePage} from "@inertiajs/react";
 import Avatar from "@/Components/atoms/Avatar.jsx";
 import {route, useRoute} from 'ziggy-js'
-import Dropdown from "@/Components/molecules/Dropdown.jsx";
 import React, {Fragment} from "react";
-import Switch from "@/Components/atoms/Switch.jsx";
 import {MoonIcon, SunIcon} from "@heroicons/react/24/outline"
 import {AuthContext} from "@/Layouts/AuthLayout.js";
 import {
@@ -15,7 +13,7 @@ import {
     DropdownMenuTrigger,
 } from '@/shadcn/ui/dropdown-menu'
 import {Icon} from "@/Components/atoms/Icon.tsx";
-import {Bell, EllipsisVertical, Users, House, Search} from 'lucide-react'
+import {Bell, ChevronDown, ChevronUp, EllipsisVertical, House, Search, Users} from 'lucide-react'
 import {ScrollArea} from '@/shadcn/ui/scroll-area'
 import Title from "@/Components/atoms/Title";
 import Label from "@/Components/atoms/Label";
@@ -25,16 +23,10 @@ import {Axios} from "axios";
 import {Popover, PopoverContent, PopoverTrigger} from '@/shadcn/ui/popover'
 import Heading from "@/Components/atoms/Heading";
 import User from "@/src/models/User";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/shadcn/ui/breadcrumb"
+import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator,} from "@/shadcn/ui/breadcrumb"
 import {Input} from "@/shadcn/ui/input.tsx";
-
+import {Separator} from "@/shadcn/ui/separator.tsx";
+import { Switch } from "@/shadcn/ui/switch"
 
 declare const axios: Axios
 
@@ -53,6 +45,8 @@ const AuthNavbar = () => {
 }
 
 const AuthSection = () => {
+
+    const [openAuthDropdown, setOpenAuthDropdown] = React.useState<boolean>(false)
 
     const {isDarkMode, toggleDarkMode} = React.useContext(AuthContext)
     const {auth: {user}}: {auth: {user: User}} = usePage().props
@@ -84,7 +78,10 @@ const AuthSection = () => {
     }, [])
 
     return (
-        <div className={'h-full flex justify-center items-center px-8 gap-4 relative'}>
+        <div className={'h-full flex justify-center items-center px-8 gap-4 relative py-4'}>
+
+            <Separator orientation={'vertical'}/>
+
             <Popover>
                 <PopoverTrigger>
                     <div className={'relative rounded-full p-2'}>
@@ -104,29 +101,45 @@ const AuthSection = () => {
                     <NotificationsSection notifications={notifications}/>
                 </PopoverContent>
             </Popover>
-            <Dropdown.Container>
-                <Dropdown.Trigger>
-                    <Avatar picture={user.profile?.picture_url}/>
-                </Dropdown.Trigger>
 
-                <Dropdown>
+            <Separator orientation={'vertical'}/>
+
+            <DropdownMenu open={openAuthDropdown} onOpenChange={setOpenAuthDropdown}>
+                <DropdownMenuTrigger>
+                    <div className={'flex gap-x-3 items-center'}>
+                        <Avatar picture={user.profile?.picture_url}/>
+                        <div className={'flex flex-col'}>
+                            <Text level={'body-xs'}>@{user.name}</Text>
+                            <Text level={'body-xs'} className={'text-slate-400 font-medium line-clamp-1 truncate capitalize'}>{user.role}</Text>
+                        </div>
+                        <Icon>
+                            {
+                                openAuthDropdown ? <ChevronUp/> : <ChevronDown/>
+                            }
+                        </Icon>
+                    </div>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent>
                     <DropdownMenuLabel>
                         <Heading level={'h6'} className={'line-clamp-1 truncate'}>@{user.name}</Heading>
                         <Label className={'text-slate-400 font-medium line-clamp-1 truncate'}>{user.profile?.nombres}</Label>
                         <Label className={'text-slate-400 font-medium line-clamp-1 truncate'}>{user.profile?.apellidos}</Label>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <Dropdown.Option href={route("profile.edit")}>Perfil</Dropdown.Option>
-                    <Dropdown.StaticOption>
-                        <div className={"flex justify-between items-center gap-4"}>
-                            Modo Oscuro
-                            <Switch checked={isDarkMode} onClick={() => toggleDarkMode(value => !value)}  iconOn={<MoonIcon/>} iconOff={<SunIcon/>}/>
-                        </div>
-                    </Dropdown.StaticOption>
+                    <DropdownMenuItem asChild><Link href={route("profile.edit")}>Perfil</Link></DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => e.stopPropagation()} className={"flex justify-between items-center gap-4"}>
+                        Modo Oscuro
+                        <Switch checked={isDarkMode} onCheckedChange={() => toggleDarkMode(value => !value)}>
+                            {
+                                isDarkMode ? (<MoonIcon/>) : (<SunIcon/>)
+                            }
+                        </Switch>
+                    </DropdownMenuItem>
                     <hr/>
-                    <Dropdown.Option onClick={handleLogout}>Cerrar Sesión</Dropdown.Option>
-                </Dropdown>
-            </Dropdown.Container>
+                    <DropdownMenuItem onClick={handleLogout}>Cerrar Sesión</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </div>
     )
 }
@@ -234,7 +247,6 @@ const DefaultNotification = ({notification, now}: {notification: Notification, n
                                     </div>
                                 )
                             }
-
                         </div>
                     </div>
                     <div className={'basis-4/5 pt-2'}>
@@ -317,11 +329,11 @@ const SearchBar = () => {
     const [searchTerm, setSearchTerm] = React.useState('')
 
     return (
-        <div className={'w-80 flex items-center gap-2 border rounded-lg pr-2'}>
-            <Input className={'border-0'} placeholder={'Buscar...'} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+        <div className={'w-80 flex items-center gap-2 border rounded-full pr-2 bg-indigo-50 px-2'}>
             <Icon className={'flex-none'}>
                 <Search/>
             </Icon>
+            <Input className={'border-0 bg-transparent rounded-full'} placeholder={'Buscar...'} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
         </div>
     )
 }
