@@ -1,11 +1,10 @@
 import Surface from '@/Components/atoms/Surface'
-import {UserCircleIcon} from '@heroicons/react/24/outline'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import {useForm} from "react-hook-form"
-import {undefined, z} from 'zod'
+import {z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
-import React, {useRef} from "react";
+import React from "react";
 import PacienteSchema, {PacienteDefaults} from "@/FormSchema/Historia/PacienteSchema";
 import AntPersonalesSchema, {AntPersonalesDefaults} from "@/FormSchema/Historia/AntPersonalesSchema";
 import AntFamiliaresSchema, {AntFamiliaresDefaults} from "@/FormSchema/Historia/AntFamiliaresSchema";
@@ -17,17 +16,17 @@ import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema
 import {
     Bone,
     BriefcaseMedical,
+    Clipboard,
     FileBox,
     HeartPulse,
     Hospital,
+    Images,
     ListChecks,
     RefreshCcwDot,
-    Users,
-    Clipboard,
-    TableRowsSplit,
-    Images,
     Table,
-    Menu, UserCircle
+    TableRowsSplit,
+    UserCircle,
+    Users
 } from "lucide-react"
 import EstudioModelosSection from "@/Components/organisms/historia/EstudioModelosSection";
 import ModificacionesPlanTratamientoSection from '@/Components/organisms/historia/ModificacionesPlanTratamientoSection'
@@ -54,29 +53,15 @@ import PeriodontodiagramaSection from "@/Components/organisms/historia/Periodont
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import MediaSection from "@/Components/organisms/historia/MediaSection.tsx";
 import HistoriaPeriodontalSection from "@/Components/organisms/historia/HistoriaPeriodontalSection.tsx";
-import {HistoriaPeriodontalDefaults} from "@/FormSchema/Historia/HistoriaPeriodontalSchema.ts";
 import ControlPlacaSection from "@/Components/organisms/historia/ControlPlacaSection.tsx";
-import {
-    Menubar,
-    MenubarCheckboxItem,
-    MenubarContent,
-    MenubarItem,
-    MenubarMenu,
-    MenubarRadioGroup,
-    MenubarRadioItem,
-    MenubarSeparator,
-    MenubarShortcut,
-    MenubarSub,
-    MenubarSubContent,
-    MenubarSubTrigger,
-    MenubarTrigger,
-} from "@/shadcn/ui/menubar"
+import {Menubar, MenubarCheckboxItem, MenubarContent, MenubarMenu, MenubarTrigger,} from "@/shadcn/ui/menubar"
 import {Homework} from "@/src/models/Group.ts";
 
 
 const TabTriggerStyle = 'p-0 m-0'
 
 type HistoriaEditorContextType = {
+    historia?: Historia
     homework?: Homework
     canCreateCorrections: boolean
 }
@@ -236,8 +221,9 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
     })
 
     return (
-        <div className={'h-full'}>
-            <HistoriaEditorContext.Provider value={{homework: homework, canCreateCorrections: canCreateCorrections}}>
+        <HistoriaEditorContext.Provider
+            value={{historia: historia, homework: homework, canCreateCorrections: canCreateCorrections}}>
+            <div className={'h-full'}>
                 <Menubar className={'mb-2'}>
                     <MenubarMenu>
                         <MenubarTrigger>Vista</MenubarTrigger>
@@ -413,8 +399,8 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                         )
                     }
                 </div>
-            </HistoriaEditorContext.Provider>
-        </div>
+            </div>
+        </HistoriaEditorContext.Provider>
     )
 }
 

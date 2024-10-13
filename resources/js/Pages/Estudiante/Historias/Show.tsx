@@ -1,7 +1,7 @@
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import type Historia from "@/src/models/Historia.ts";
 import {Status} from "@/src/models/Historia.ts";
-import {Lock, LockOpen, PencilLine} from 'lucide-react'
+import {KeyRound, LoaderCircle, Lock, LockOpen, PencilLine} from 'lucide-react'
 import HistoriaEditor from "@/Components/organisms/HistoriaEditor.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import {Homework} from "@/src/models/Group.ts";
@@ -10,6 +10,21 @@ import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/shadcn/ui/hover-c
 import {Button} from "@/shadcn/ui/button.tsx";
 import {Link, usePage} from "@inertiajs/react";
 import User from "@/src/models/User.ts";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTrigger
+} from "@/shadcn/ui/dialog.tsx";
+import {z} from 'zod'
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
+import {RadioGroup, RadioGroupItem} from "@/shadcn/ui/radio-group.tsx";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
+import React from "react";
 
 type ShowProps = {
     historia: Historia
@@ -18,7 +33,7 @@ type ShowProps = {
 
 const Show = ({historia, homework}: ShowProps) => {
 
-    const {auth: {user}} = usePage().props as {auth: {user: User}}
+    const {auth: {user}} = usePage().props as { auth: { user: User } }
 
     const can = usePermission()
 
@@ -37,7 +52,7 @@ const Show = ({historia, homework}: ShowProps) => {
                     {/*Sidebar for additional actions/options*/}
                     <div className={'basis-16 flex flex-col px-2 gap-y-1'}>
                         {
-                             canUpdateHistoria && (
+                            canUpdateHistoria && (
                                 <Button className={'w-full aspect-square h-auto'} asChild>
                                     <Link href={route('historias.edit', {historia: historia.id})}>
                                         <PencilLine/>
@@ -46,6 +61,9 @@ const Show = ({historia, homework}: ShowProps) => {
                             )
                         }
                         <StatusCard historia={historia}/>
+                        {
+                            true && (<UpdateStatusDialog/>) // todo check groups-create-corrections permission here
+                        }
                     </div>
                 </div>
             </ScrollArea>
@@ -76,18 +94,106 @@ const StatusCard = ({historia}: { historia: Historia }) => {
     return (
         <HoverCard>
             <HoverCardTrigger>
-                <div className={`flex justify-center items-center aspect-square border border-${cardColor}-300 rounded-lg bg-${cardColor}-200`}>
+                <div
+                    className={`flex justify-center items-center aspect-square border border-${cardColor}-300 rounded-lg bg-${cardColor}-200`}>
                     {
-                        isOpen ? (<LockOpen className={`text-${cardColor}-800`}/>) : (
-                            <Lock className={`text-${cardColor}-800`}/>)
+                        isOpen ? (<LockOpen/>) : (<Lock/>)
                     }
                 </div>
             </HoverCardTrigger>
             <HoverCardContent align={"end"} side={"left"}>
                 <div>Informacion:</div>
+            {/*    // todo add info here*/}
             </HoverCardContent>
         </HoverCard>
     )
 }
+
+const UpdateStatusDialog = ({}) => {
+
+    const [openDialog, setOpenDialog] = React.useState<boolean>(false)
+
+    const {isProcessing, router} = useInertiaSubmit()
+
+    const form = useForm<z.infer<typeof UpdateStatusSchema>>({
+        resolver: zodResolver(UpdateStatusSchema)
+    })
+
+    const handleSubmit = (values: z.infer<typeof UpdateStatusSchema>) => {
+        // todo submit here
+    }
+
+    const handleOpenChange = (open: boolean) => {
+        if (open) form.reset()
+        setOpenDialog(open)
+    }
+
+    return (
+        <Dialog open={openDialog} onOpenChange={handleOpenChange}>
+            <DialogTrigger asChild>
+                <Button className={'w-full aspect-square h-auto'} variant={'outline'}>
+                    <KeyRound/>
+                </Button>
+            </DialogTrigger>
+            <DialogContent className={'max-w-2xl'}>
+                <DialogHeader>
+                    <DialogHeader>
+                        Cambiar status de la historia
+                    </DialogHeader>
+                    <DialogDescription>
+                        A continuación, podrá seleccionar el nuevo estado de la historia. Si desea habilitar la historia
+                        para correcciones, seleccione como nuevo estado "Corrección".
+                        Por el contrario, si desea cerrar definitivamente y archivar la historia, seleccione como estado
+                        "Cerrado". Considere que una vez cierre definitivamente la historia,
+                        esta no podrá volver a editarse.
+                    </DialogDescription>
+                </DialogHeader>
+                <div>
+                    <Form {...form}>
+                        <form id={'updateStatusDialog'} onSubmit={form.handleSubmit(handleSubmit)}>
+
+                            <FormField render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Nuevo status:
+                                    </FormLabel>
+                                    <FormControl>
+                                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value}
+                                                    className="flex flex-col space-y-1">
+                                            <FormItem className="flex items-center space-x-3 space-y-0">
+                                                <FormControl>
+                                                    <RadioGroupItem value="correccion"/>
+                                                </FormControl>
+                                                <FormLabel><LockOpen className={'inline mr-2'}/>Corrección</FormLabel>
+                                            </FormItem>
+                                            <FormItem className="flex items-center space-x-3 space-y-0">
+                                                <FormControl>
+                                                    <RadioGroupItem value="cerrada"/>
+                                                </FormControl>
+                                                <FormLabel><Lock className={'inline mr-2'}/>Cerrada</FormLabel>
+                                            </FormItem>
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )} name={'new_status'} control={form.control}/>
+                        </form>
+                    </Form>
+                </div>
+                <DialogFooter>
+                    <Button variant={"outline"} onClick={() => handleOpenChange(false)}>Cancelar</Button>
+                    <Button type={"submit"} form={'updateStatusDialog'} disabled={!form.formState.isDirty || isProcessing}>
+                        {isProcessing && <LoaderCircle className={'mr-2 animate-spin'}/>}
+                        Cambiar
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+const UpdateStatusSchema = z.object({
+    new_status: z.enum(['correccion', 'cerrada'], {required_error: 'Debe seleccionar una opción'})
+})
 
 export default Show

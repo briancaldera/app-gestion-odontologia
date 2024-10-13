@@ -15,8 +15,6 @@ import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
-import {Simulate} from "react-dom/test-utils";
-import error = Simulate.error;
 import {toast} from "sonner";
 
 type AntecedentesMedicosPersonalesSectionProps = {
@@ -25,14 +23,12 @@ type AntecedentesMedicosPersonalesSectionProps = {
 
 const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersonalesSectionProps) => {
 
-    const historia_id = form.getValues().historia_id
+    const {historia, homework, canCreateCorrections} = React.useContext(HistoriaEditorContext)
 
-    const {homework, canCreateCorrections} = React.useContext(HistoriaEditorContext)
-
-    const correctionsModel = homework?.documents.find(document => document.id === historia_id).corrections
+    const correctionsModel = homework?.documents.find((document) => document.id === historia?.id).corrections
 
     const route = useRoute()
-    const { isProcessing, router} = useInertiaSubmit()
+    const {isProcessing, router} = useInertiaSubmit()
 
     const handleSubmit = (values: z.infer<typeof AntPersonalesSchema>) => {
 
@@ -48,7 +44,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
         })
     }
 
-    const handleSubmitCorrections = (values: Record<string, string>) => {
+    const handleSubmitCorrections = (values: {section: string, content: string}) => {
         const endpoint = route('groups.assignments.homeworks.corrections', {
             group:homework?.assignment?.group_id,
             assignment: homework?.assignment_id,
@@ -56,19 +52,18 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
         })
 
         const data = {
-            id: historia_id,
+            document_id: historia?.id,
             type: 'HRA',
-            corrections: {
-                ...values
-            }
+            section: values.section,
+            content: values.content,
         }
 
         router.post(endpoint, data, {
             onError: errors => {
-                toast.error('No se pudo agregar las correcciones. ' + errors)
+                toast.error('No se pudo agregar las correcciones')
             },
             onSuccess: page => {
-
+                toast.success('Correcciones agregadas')
             }
         })
     }
@@ -137,6 +132,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                     </section>
                     </CorrectionsBlock>
 
+                    <CorrectionsBlock model={correctionsModel} name={'alergias'} canCreateCorrections={canCreateCorrections} onSubmitCorrections={handleSubmitCorrections}>
                     <section className={'my-6'}>
                         <header>
                             <Title level={'title-md'}>Alergias</Title>
@@ -173,6 +169,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                             )} name={'alergias.descripcion'} control={form.control}/>
                         </div>
                     </section>
+                    </CorrectionsBlock>
 
                     <hr/>
 

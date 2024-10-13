@@ -38,8 +38,15 @@ type Document = {
 }
 
 type Corrections = {
-    sections: Record<string, string>
+    sections: Record<string, Comment[]>
 }
 
-export {type Assignment, type Homework, type Document}
+type Comment = {
+    id: string
+    user_id: string
+    content: string
+    created_at: string
+}
+
+export {type Assignment, type Homework, type Document, type Comment, type Corrections}
 export default Group

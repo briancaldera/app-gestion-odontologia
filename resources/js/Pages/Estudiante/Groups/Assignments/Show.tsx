@@ -212,7 +212,7 @@ const TurnInHomeworkDialog = ({assignment, historias, open, onOpenChange}: {
                                                 <div>
                                                     {
                                                         historias.map(historia => (
-                                                            <HistoriaItem historia={historia}
+                                                            <HistoriaItem historia={historia} key={historia.id}
                                                                           onClick={handleHistoriaClick}
                                                                           isSelected={assignmentForm.getValues().documents.some(selection => selection.id === selection.id)}/>))
                                                     }

@@ -245,10 +245,10 @@ class GroupController extends Controller
     public function addCorrectionsToDocument(Group $group, Assignment $assignment, Group\Homework $homework, Request $request)
     {
         $data = $request->validate([
-            'id' => ['required', 'string'],
+            'document_id' => ['required', 'string'],
             'type' => ['required', 'string', Rule::in(['HRA'])],
-            'corrections' => ['required', 'array', 'min:0'],
-            'corrections.*' => ['required', 'string', 'max:1000']
+            'section' => ['required', 'string'],
+            'content' => ['required', 'string', 'max:1000']
         ]);
 
         $this->groupService->addCorrectionsToDocument($homework, $data);

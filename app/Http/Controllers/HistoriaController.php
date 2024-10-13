@@ -411,7 +411,6 @@ class HistoriaController extends Controller
 
             return Inertia::render('Estudiante/Historias/Show', [
                 'historia' => new HistoriaResource($historia),
-                'corrections' => $corrections ?? null,
                 'homework' => $homework,
             ]);
         } elseif ($user->hasRole('estudiante')) {
