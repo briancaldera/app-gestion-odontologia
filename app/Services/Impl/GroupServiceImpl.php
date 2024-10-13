@@ -84,19 +84,39 @@ class GroupServiceImpl implements GroupService
 
     public function addCorrectionsToDocument(Homework $homework, array $data): Homework
     {
+        /** @var User $user */
+        $user = auth()->user();
+
         $data = collect($data);
 
-        $doc_id = $data['id'];
+        $doc_id = $data['document_id'];
         $doc_type = $data['type'];
-
-        $corrections = collect(['sections' => $data['corrections']]);
+        $section = $data['section'];
+        $content = $data['content'];
 
         $documents = $homework->documents;
 
-        $updated_documents = $documents->map(function (array $document) use ($doc_id, $doc_type, $corrections) {
+        $updated_documents = $documents->map(function (array $document) use ($user, $doc_id, $doc_type, $section, $content) {
             if ($document['type'] === $doc_type AND $document['id'] === $doc_id) {
+                // esto devueve un array asociativo, cada section es un par 'nombre' => array
+                // porque cada seccion puede tener uno o mas comentarios
                 $old_corrections = collect($document['corrections']['sections']);
-                $updated_corrections = $old_corrections->merge($corrections['sections']);
+
+                // get array
+                $section_array = collect($old_corrections[$section] ?? []);
+
+                $newComment = [
+                    'id' => Str::lower((string) Str::ulid()),
+                    'user_id' => $user->id,
+                    'content' => $content,
+                    'created_at' => now(),
+                ];
+
+                $section_array->push($newComment);
+
+                $old_corrections[$section] = $section_array->toArray();
+
+                $updated_corrections = $old_corrections;
                 $document['corrections']['sections'] = $updated_corrections;
             }
             return $document;
