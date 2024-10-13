@@ -42,27 +42,21 @@ class ProfileController extends Controller
     {
         /* @var User $user */
         $user = $request->user();
-        if ($user->hasRole('admin')) {
-            $profile->setVisible(['nombres',
-                'apellidos',
-                'fecha_nacimiento',
-                'telefono',
-                'direccion',
-                'sexo',
-                'cedula',
-                'picture_url',
-                'user']);
-            $profile->user->makeVisible(['role', 'id', 'email', 'email_verified_at',]);
+
+        $profile->load(['user']);
+
+        if ($request->inertia()) {
             return Inertia::render('Admin/Profiles/Show',
                 [
-                    'profile' => $profile,
-                    'user' => $profile->user,
+                    'profile' => new ProfileResource($profile),
+                    'user' => $profile->user, // todo delete this
                 ]
             );
-        } else if ($user->hasRole('admision')) {
-            abort(403);
         }
 
+        return response()->json([
+            'profile' => new ProfileResource($profile),
+        ]);
     }
 
     public function create(): Response|RedirectResponse
