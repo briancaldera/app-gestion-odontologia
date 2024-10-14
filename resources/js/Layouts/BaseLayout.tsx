@@ -5,6 +5,8 @@ import React from "react";
 import {Toaster} from "@/shadcn/ui/sonner.tsx";
 import {toast} from "sonner";
 
+// todo remove context
+// todo remove notistack
 const BaseContext = React.createContext({
     can: (permission) => {
     }
@@ -37,7 +39,7 @@ const BaseLayout = ({children}) => {
         })
     })
 
-    const can = React.useCallback((permission) => (user?.permissions ?? []).some(p => p === permission), [user])
+    const can = React.useCallback((permission) => (user?.permissions ?? []).some(p => p === permission), [user]) // todo remove this
 
     return (
         <BaseContext.Provider value={{can: can}}>
@@ -45,7 +47,7 @@ const BaseLayout = ({children}) => {
                 <CssVarsProvider>
                     {/*<CssBaseline/>*/}
                     {children}
-                    <Toaster/>
+                    <Toaster expand/>
                 </CssVarsProvider>
             </StyledEngineProvider>
         </BaseContext.Provider>
