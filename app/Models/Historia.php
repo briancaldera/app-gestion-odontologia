@@ -84,4 +84,49 @@ class Historia extends Model implements StatusHolder
     {
         return $this->hasOne(Correccion::class);
     }
+
+    public static array $permissions = [
+        'historias' => [
+            'index-all' => [
+                'name' => 'index-all',
+                'display_name' => 'Indexar todas las HRA',
+                'description' => 'Indexar todas las historias regulares de adulto de todos los usuarios'
+            ],
+            'create' => [
+                'name' => 'create',
+                'display_name' => 'Crear HRA',
+                'description' => 'Crear historias regulares de adulto'
+            ],
+            'read' => [
+                'name' => 'read',
+                'display_name' => 'Ver HRA',
+                'description' => 'Ver una historia regular de adulto en particular'
+            ],
+            'read-private' => [
+                'name' => 'read-private',
+                'display_name' => 'Ver información privada',
+                'description' => 'Ver información privada sobre una historia regular de adulto'
+            ],
+            'update' => [
+                'name' => 'update',
+                'display_name' => 'Actualizar HRA',
+                'description' => 'Actualizar una historia regular de adulto'
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'display_name' => 'Eliminar HRA',
+                'description' => 'Eliminar una historia regular de adulto'
+            ],
+            'change-status' => [
+                'name' => 'change-status',
+                'display_name' => 'Actualizar el estado',
+                'description' => 'Actualizar el estado de una historia regular de adulto'
+            ],
+            'assign-id' => [
+                'name' => 'assign-id',
+                'display_name' => 'Asignar número de HRA',
+                'description' => 'Asignar número a una historia regular de adulto'
+            ]
+        ]
+    ];
 }
