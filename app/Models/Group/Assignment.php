@@ -56,4 +56,29 @@ class Assignment extends Model
     {
         return $this->belongsTo(Group::class, 'group_id', 'id');
     }
+
+    public static array $actions = [
+        'assignments' => [
+            'create' => [
+                'name' => 'create',
+                'display_name' => 'Crear asignaciones',
+                'description' => 'Crear nuevas asignaciones en un grupo'
+            ],
+            'read' => [
+                'name' => 'read',
+                'display_name' => 'Ver asignaciones',
+                'description' => 'Ver las asignaciones en un grupo'
+            ],
+            'update' => [
+                'name' => 'update',
+                'display_name' => 'Actualizar asignaciones',
+                'description' => 'Actualizar la información de las asignaciones'
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'display_name' => 'Eliminar asignaciones',
+                'description' => 'Eliminar las asignaciones de un grupo'
+            ],
+        ]
+    ];
 }

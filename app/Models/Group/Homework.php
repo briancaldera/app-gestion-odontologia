@@ -46,4 +46,39 @@ class Homework extends Model
     {
         return $this->belongsTo(Assignment::class, 'assignment_id', 'id');
     }
+
+    public static array $actions = [
+        'homework' => [
+            'index-all' => [
+                'name' => 'index-all',
+                'display_name' => 'Indexar entregas',
+                'description' => 'Indexar todas las entregas hechas por los usuarios'
+            ],
+            'create' => [
+                'name' => 'create',
+                'display_name' => 'Crear entregas',
+                'description' => 'Crear entregas en las asignaciones'
+            ],
+            'read' => [
+                'name' => 'read',
+                'display_name' => 'Ver entregas',
+                'description' => 'Ver la información de las entregas'
+            ],
+            'update' => [
+                'name' => 'update',
+                'display_name' => 'Actualizar entregas',
+                'description' => 'Actualizar la información de una entraga'
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'display_name' => 'Eliminar entregas',
+                'description' => 'Elimina una entrega realizada'
+            ],
+            'create-corrections' => [
+                'name' => 'create-corrections',
+                'display_name' => 'Crear correcciones',
+                'description' => 'Agregar correcciones a una entrega'
+            ],
+        ]
+    ];
 }

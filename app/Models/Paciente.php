@@ -103,4 +103,39 @@ class Paciente extends Model implements HasMedia
     {
         return $this->belongsTo(User::class, 'assigned_to', 'id');
     }
+
+    public static array $actions = [
+        'pacientes' => [
+            'index-all' => [
+                'name' => 'index-all',
+                'display_name' => 'Indexar pacientes',
+                'description' => 'Indexar a todos los pacientes del sistema'
+            ],
+            'create' => [
+                'name' => 'create',
+                'display_name' => 'Crear pacientes',
+                'description' => 'Agregar un nuevo paciente al sistema'
+            ],
+            'read' => [
+                'name' => 'read',
+                'display_name' => 'Ver pacientes',
+                'description' => 'Ver la información de un paciente'
+            ],
+            'read-private' => [
+                'name' => 'read-private',
+                'display_name' => 'Ver información privada',
+                'description' => 'Ver la información privada de un usuario'
+            ],
+            'update' => [
+                'name' => 'update',
+                'display_name' => 'Actualizar pacientes',
+                'description' => 'Actualizar la información de un paciente'
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'display_name' => 'Eliminar pacientes',
+                'description' => 'Eliminar a un paciente del sistema'
+            ],
+        ]
+    ];
 }

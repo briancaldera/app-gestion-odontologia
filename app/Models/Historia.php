@@ -85,7 +85,7 @@ class Historia extends Model implements StatusHolder
         return $this->hasOne(Correccion::class);
     }
 
-    public static array $permissions = [
+    public static array $actions = [
         'historias' => [
             'index-all' => [
                 'name' => 'index-all',
@@ -117,8 +117,8 @@ class Historia extends Model implements StatusHolder
                 'display_name' => 'Eliminar HRA',
                 'description' => 'Eliminar una historia regular de adulto'
             ],
-            'change-status' => [
-                'name' => 'change-status',
+            'update-status' => [
+                'name' => 'update-status',
                 'display_name' => 'Actualizar el estado',
                 'description' => 'Actualizar el estado de una historia regular de adulto'
             ],

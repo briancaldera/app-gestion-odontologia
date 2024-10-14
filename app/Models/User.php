@@ -83,4 +83,44 @@ class User extends Authenticatable implements MustVerifyEmail, LaratrustUser
     {
         return Group::whereJsonContains('members', $this->id)->get();
     }
+
+    public static array $actions = [
+        'users' => [
+            'index-all' => [
+                'name' => 'index-all',
+                'display_name' => 'Indexar usuarios',
+                'description' => 'Indexar a todos los usuarios del sistema'
+            ],
+            'create' => [
+                'name' => 'create',
+                'display_name' => 'Crear usuarios',
+                'description' => 'Crear un nuevo usuario'
+            ],
+            'read' => [
+                'name' => 'read',
+                'display_name' => 'Ver usuario',
+                'description' => 'Ver información de un usuario en particular'
+            ],
+            'read-private' => [
+                'name' => 'read-private',
+                'display_name' => 'Ver información privada',
+                'description' => 'Ver información privada de un usuario en particular'
+            ],
+            'update' => [
+                'name' => 'update',
+                'display_name' => 'Actualizar usuarios',
+                'description' => 'Actualizar la información de un usuario'
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'display_name' => 'Eliminar usuarios',
+                'description' => 'Eliminar un usuario del sistema'
+            ],
+            'add-registry' => [
+                'name' => 'add-registration',
+                'display_name' => 'Agregar registro',
+                'description' => 'Agregar el código de un usuario al sistema para permitir su registro'
+            ]
+        ]
+    ];
 }
