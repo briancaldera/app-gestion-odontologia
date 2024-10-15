@@ -3,6 +3,8 @@
 namespace App\Models\Endodoncia;
 
 use App\Casts\Endodoncia\Anamnesis;
+use App\HasStatus;
+use App\StatusHolder;
 use App\ValueObjects\Endodoncia\Anamnesis as AnamnesisValueObject;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -12,11 +14,15 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property AnamnesisValueObject $anamnesis
 */
-class HistoriaEndodoncia extends Model
+class HistoriaEndodoncia extends Model implements StatusHolder
 {
     use HasFactory;
     use HasUuids;
+    use HasStatus;
 
+    protected $table = 'historia_endodoncias';
+    protected $primaryKey = 'id';
+    protected $keyType = 'string';
     public $incrementing = false;
 
     protected $attributes = [
@@ -175,5 +181,50 @@ class HistoriaEndodoncia extends Model
 
     protected $casts = [
         'anamnesis' => Anamnesis::class,
+    ];
+
+    public static array $actions = [
+        'historias-endodoncia' => [
+            'index-all' => [
+                'name' => 'index-all',
+                'display_name' => 'Indexar todas las HE',
+                'description' => 'Indexar todas las historias de endodoncia de todos los usuarios'
+            ],
+            'create' => [
+                'name' => 'create',
+                'display_name' => 'Crear HE',
+                'description' => 'Crear historias de endodoncia'
+            ],
+            'read' => [
+                'name' => 'read',
+                'display_name' => 'Ver HE',
+                'description' => 'Ver una historia de endodoncia en particular'
+            ],
+            'read-private' => [
+                'name' => 'read-private',
+                'display_name' => 'Ver información privada',
+                'description' => 'Ver información privada sobre una historia de endodoncia'
+            ],
+            'update' => [
+                'name' => 'update',
+                'display_name' => 'Actualizar HE',
+                'description' => 'Actualizar una historia de endodoncia'
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'display_name' => 'Eliminar HE',
+                'description' => 'Eliminar una historia de endodoncia'
+            ],
+            'update-status' => [
+                'name' => 'update-status',
+                'display_name' => 'Actualizar el estado',
+                'description' => 'Actualizar el estado de una historia de endodoncia'
+            ],
+            'assign-id' => [
+                'name' => 'assign-id',
+                'display_name' => 'Asignar número de HE',
+                'description' => 'Asignar número a una historia de endodoncia'
+            ]
+        ]
     ];
 }

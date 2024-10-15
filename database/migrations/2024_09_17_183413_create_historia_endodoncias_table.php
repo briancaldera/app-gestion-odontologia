@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('historia_endodoncias', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id');
             $table->jsonb('anamnesis');
             $table->jsonb('evaluacion_dolor');
             $table->jsonb('secuencia_tratamiento');
