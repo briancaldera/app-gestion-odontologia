@@ -3,10 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Endodoncia\HistoriaEndodoncia;
+use App\Models\Paciente;
+use App\Models\User;
+use App\Services\HistoriaEndodonciaService;
 use Illuminate\Http\Request;
 
 class HistoriaEndodonciaController extends Controller
 {
+    public function __construct(protected HistoriaEndodonciaService $historiaEndodonciaService)
+    {}
+
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +34,27 @@ class HistoriaEndodonciaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'paciente_id' => ['required', 'uuid', 'exists:'.Paciente::class.',id'],
+        ]);
+
+        /** @var Paciente $paciente */
+        $paciente = Paciente::find($data['paciente_id']);
+
+        /** @var User $user */
+        $user = $request->user();
+
+        if ($paciente->assigned_to !== $user->id) {
+            message('No estas autorizado para crear un historia a este paciente', \Type::Error);
+            message('Debes estar asignado como médico tratante', \Type::Info);
+        }
+
+        $historia = $this->historiaEndodonciaService->addHistoria($paciente, $user);
+
+        message('Historia de endodoncia creada exitosamente. A continuación podrá editar la historia asignada');
+        return to_route('historias.edit', [
+            'historia' => $historia->id
+        ]);
     }
 
     /**

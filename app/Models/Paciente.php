@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Endodoncia\HistoriaEndodoncia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -97,6 +98,11 @@ class Paciente extends Model implements HasMedia
     public function historia(): HasOne
     {
         return $this->hasOne(Historia::class);
+    }
+
+    public function historiaEndodoncia(): HasOne
+    {
+        return $this->hasOne(HistoriaEndodoncia::class);
     }
 
     public function medicoTratante(): BelongsTo

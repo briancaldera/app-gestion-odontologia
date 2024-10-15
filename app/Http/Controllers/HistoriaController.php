@@ -143,8 +143,8 @@ class HistoriaController extends Controller
         $user = $request->user();
 
         if ($paciente->assigned_to !== $user->id) {
-            message('No estas autorizado para crear un historia a esta paciente', Type::Error);
-            message('Debes estar asignado como medico tratante', Type::Info);
+            message('No estas autorizado para crear un historia a este paciente', Type::Error);
+            message('Debes estar asignado como médico tratante', Type::Info);
         }
 
         $historia = $this->historiaService->addHistoria($paciente, $user);
