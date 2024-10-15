@@ -177,6 +177,13 @@ class HistoriaServiceImpl implements HistoriaService
         return $examenRadio;
     }
 
+    public function changeStatus(Historia $historia, Status $status): Historia
+    {
+        $historia->setStatus($status);
+
+        return $historia;
+    }
+
     private function savePhotoToFilesystem(UploadedFile $file): string
     {
         $now = now();

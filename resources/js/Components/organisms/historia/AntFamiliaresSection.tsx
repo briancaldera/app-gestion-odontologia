@@ -11,13 +11,16 @@ import AntFamiliaresSchema from "@/FormSchema/Historia/AntFamiliaresSchema";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {Button} from "@/shadcn/ui/button";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 
 type AntFamiliaresSectionProps = {
     form: UseFormReturn<z.infer<typeof AntFamiliaresSchema>>
 }
 
 const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
-    const route = useRoute()
+
+    const {historia, homework, canCreateCorrections, correctionsModel} = React.useContext(HistoriaEditorContext)
 
     const { isProcessing, router } = useInertiaSubmit()
 
@@ -43,6 +46,7 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
 
+                    <CorrectionsBlock model={correctionsModel} name={'alergias'} canCreateCorrections={canCreateCorrections}>
                     <section>
                         <header className={'mb-1.5 mt-5 space-y-1.5'}>
                             <Title level={'title-md'}>Antecedentes Médicos Familiares</Title>
@@ -75,6 +79,7 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
                         </div>
 
                     </section>
+                    </CorrectionsBlock>
 
                     <div className={'flex justify-end mt-2'}>
                         <Button disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>Guardar</Button>

@@ -117,6 +117,8 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::patch('/historias/{historia}/odontologica/periodontodiagrama/update', [HistoriaController::class, 'updatePeriodontodiagrama'])->name('historias.odontologica.periodontodiagramas.update')->can('update', 'historia');
     Route::post('/historias/{historia}/odontologica/media/store', [HistoriaController::class, 'storeOdontologiaMedia'])->name('historias.odontologica.media.store')->can('update', 'historia');
 
+    Route::patch('/historias/{historia}/status/update', [HistoriaController::class, 'changeStatus'])->name('historias.update-status');
+
     // Get panoramicas
     Route::get('/historias/{historia}/odontologica/panoramicas/{id}', [HistoriaController::class, 'getPanoramica'])->name('historias.odontologica.panoramicas')->can('view', 'historia');
     // Get coronales
@@ -127,6 +129,10 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/historias/{historia}/odontologica/periodontodiagrama/{id}', [HistoriaController::class, 'getPeriodontodiagrama'])->name('historias.odontologica.periodontodiagramas')->can('view', 'historia');
     // Get media
     Route::get('/historias/{historia}/odontologica/media/{id}', [HistoriaController::class, 'getMedia'])->name('historias.odontologica.media')->can('view', 'historia');
+
+
+
+
 
 
 

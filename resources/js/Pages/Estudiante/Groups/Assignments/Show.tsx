@@ -63,7 +63,7 @@ const Show = ({assignment, historias}: ShowProps) => {
                     </div>
 
                     {
-                        can('groups-index-all-homeworks') && (
+                        can('homeworks-index-all') && (
                             <div>
                                 <Tabs defaultValue={'homeworks'}>
                                     <TabsList className={'w-full grid-cols-1'}>
@@ -81,7 +81,7 @@ const Show = ({assignment, historias}: ShowProps) => {
                 </div>
                 <div className={'col-span-1 col-start-4 flex flex-col'}>
                     {
-                        can('groups-create-homeworks') && (
+                        can('homeworks-create') && (
                             <TurnInHomeworkCard historias={historias} assignment={assignment}/>
                         )
                     }

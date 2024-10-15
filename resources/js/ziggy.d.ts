@@ -57,6 +57,8 @@ declare module 'ziggy-js' {
         }
     ],
     "groups.index": [],
+    "groups.create": [],
+    "groups.store": [],
     "groups.show": [
         {
             "name": "group",
@@ -64,7 +66,20 @@ declare module 'ziggy-js' {
             "binding": "id"
         }
     ],
-    "groups.store": [],
+    "groups.edit": [
+        {
+            "name": "group",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "groups.update": [
+        {
+            "name": "group",
+            "required": true,
+            "binding": "id"
+        }
+    ],
     "groups.destroy": [
         {
             "name": "group",
@@ -82,6 +97,54 @@ declare module 'ziggy-js' {
     "groups.removeMembers": [
         {
             "name": "group",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "groups.assignments.store": [
+        {
+            "name": "group",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "groups.assignments.show": [
+        {
+            "name": "group",
+            "required": true,
+            "binding": "id"
+        },
+        {
+            "name": "assignment",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "groups.assignments.homeworks.store": [
+        {
+            "name": "group",
+            "required": true,
+            "binding": "id"
+        },
+        {
+            "name": "assignment",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "groups.assignments.homeworks.corrections": [
+        {
+            "name": "group",
+            "required": true,
+            "binding": "id"
+        },
+        {
+            "name": "assignment",
+            "required": true,
+            "binding": "id"
+        },
+        {
+            "name": "homework",
             "required": true,
             "binding": "id"
         }
@@ -199,6 +262,13 @@ declare module 'ziggy-js' {
         }
     ],
     "historias.odontologica.media.store": [
+        {
+            "name": "historia",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "historias.update-status": [
         {
             "name": "historia",
             "required": true,

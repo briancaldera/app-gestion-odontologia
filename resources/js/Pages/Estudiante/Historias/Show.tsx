@@ -5,7 +5,7 @@ import {KeyRound, LoaderCircle, Lock, LockOpen, PencilLine} from 'lucide-react'
 import HistoriaEditor from "@/Components/organisms/HistoriaEditor.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import {Homework} from "@/src/models/Group.ts";
-import {usePermission} from "@/src/Utils/Utils.ts";
+import {mapServerErrorsToFields, usePermission} from "@/src/Utils/Utils.ts";
 import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/shadcn/ui/hover-card.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {Link, usePage} from "@inertiajs/react";
@@ -25,6 +25,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {RadioGroup, RadioGroupItem} from "@/shadcn/ui/radio-group.tsx";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 import React from "react";
+import {route} from "ziggy-js";
 
 type ShowProps = {
     historia: Historia
@@ -37,7 +38,7 @@ const Show = ({historia, homework}: ShowProps) => {
 
     const can = usePermission()
 
-    const canCreateCorrections = can('corrections-create')
+    const canCreateCorrections = can('homeworks-create-corrections')
     const canUpdateHistoria = can('historias-update') && (historia.status === Status.ABIERTA || historia.status === Status.CORRECCION) && historia.autor_id === user?.id
 
     // Show my marvelous HCE here
@@ -62,7 +63,7 @@ const Show = ({historia, homework}: ShowProps) => {
                         }
                         <StatusCard historia={historia}/>
                         {
-                            true && (<UpdateStatusDialog/>) // todo check groups-create-corrections permission here
+                            can('historias-update-status') && (<UpdateStatusDialog historia={historia}/>) // todo check groups-create-corrections permission here
                         }
                     </div>
                 </div>
@@ -109,7 +110,7 @@ const StatusCard = ({historia}: { historia: Historia }) => {
     )
 }
 
-const UpdateStatusDialog = ({}) => {
+const UpdateStatusDialog = ({historia}: {historia: Historia}) => {
 
     const [openDialog, setOpenDialog] = React.useState<boolean>(false)
 
@@ -120,7 +121,18 @@ const UpdateStatusDialog = ({}) => {
     })
 
     const handleSubmit = (values: z.infer<typeof UpdateStatusSchema>) => {
-        // todo submit here
+        const endpoint = route('historias.update-status', {historia: historia.id})
+
+        const data = {
+            status: values.new_status
+        }
+
+        router.patch(endpoint, data, {
+            onError: errors => mapServerErrorsToFields(form, errors),
+            onSuccess: pages => {
+                handleOpenChange(false)
+            }
+        })
     }
 
     const handleOpenChange = (open: boolean) => {

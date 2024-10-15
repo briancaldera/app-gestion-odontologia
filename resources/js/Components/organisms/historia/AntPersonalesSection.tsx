@@ -23,9 +23,8 @@ type AntecedentesMedicosPersonalesSectionProps = {
 
 const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersonalesSectionProps) => {
 
-    const {historia, homework, canCreateCorrections} = React.useContext(HistoriaEditorContext)
-
-    const correctionsModel = homework?.documents.find((document) => document.id === historia?.id).corrections
+    const {historia, homework, canCreateCorrections, correctionsModel} = React.useContext(HistoriaEditorContext)
+    console.log(correctionsModel)
 
     const route = useRoute()
     const {isProcessing, router} = useInertiaSubmit()
@@ -44,30 +43,6 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
         })
     }
 
-    const handleSubmitCorrections = (values: {section: string, content: string}) => {
-        const endpoint = route('groups.assignments.homeworks.corrections', {
-            group:homework?.assignment?.group_id,
-            assignment: homework?.assignment_id,
-            homework: homework?.id,
-        })
-
-        const data = {
-            document_id: historia?.id,
-            type: 'HRA',
-            section: values.section,
-            content: values.content,
-        }
-
-        router.post(endpoint, data, {
-            onError: errors => {
-                toast.error('No se pudo agregar las correcciones')
-            },
-            onSuccess: page => {
-                toast.success('Correcciones agregadas')
-            }
-        })
-    }
-
     return (
 
         <Surface className={'w-full px-6 min-h-screen'}>
@@ -77,7 +52,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
 
-                    <CorrectionsBlock model={correctionsModel} name={'trastornos'} canCreateCorrections={canCreateCorrections} onSubmitCorrections={handleSubmitCorrections}>
+                    <CorrectionsBlock model={correctionsModel} name={'trastornos'} canCreateCorrections={canCreateCorrections}>
                     <section className={'my-6'}>
                         <header>
                             <Title level={'title-md'}>Trastornos</Title>
@@ -132,7 +107,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                     </section>
                     </CorrectionsBlock>
 
-                    <CorrectionsBlock model={correctionsModel} name={'alergias'} canCreateCorrections={canCreateCorrections} onSubmitCorrections={handleSubmitCorrections}>
+                    <CorrectionsBlock model={correctionsModel} name={'alergias'} canCreateCorrections={canCreateCorrections}>
                     <section className={'my-6'}>
                         <header>
                             <Title level={'title-md'}>Alergias</Title>
@@ -173,6 +148,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
 
                     <hr/>
 
+                    <CorrectionsBlock model={correctionsModel} name={'medicamentos'} canCreateCorrections={canCreateCorrections}>
                     <section className={'my-6'}>
                         <header>
                             <Title level={'title-md'}>Medicamentos que toma actualmente (mg y dosis diaria)</Title>
@@ -213,6 +189,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                             }
                         </div>
                     </section>
+                    </CorrectionsBlock>
 
                     <Button type={"submit"} disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>Guardar</Button>
 

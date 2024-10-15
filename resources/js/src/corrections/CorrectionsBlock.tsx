@@ -10,7 +10,7 @@ import {Button} from "@/shadcn/ui/button.tsx";
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover.tsx";
 import {createPortal} from 'react-dom';
-import {Comment, Corrections} from '@/src/models/Group.ts'
+import {Comment} from '@/src/models/Group.ts'
 import {Avatar, AvatarFallback} from "@/shadcn/ui/avatar.tsx";
 import {Text} from "@/Components/atoms/Text";
 import Title from "@/Components/atoms/Title";
@@ -19,25 +19,17 @@ import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import axios from "axios";
 import {Skeleton} from "@/shadcn/ui/skeleton.tsx";
 import Profile from "@/src/models/Profile.ts";
+import {UseCorrectionsReturn} from "@/src/corrections/corrections.ts";
 
 type CorrectionsBlockProps = {
-    model?: Corrections
+    model?: UseCorrectionsReturn
     name: string
     canCreateCorrections: boolean
-    onSubmitCorrections: (values: any) => void
 }
 
-const CorrectionsBlock = ({
-                              model,
-                              name,
-                              onSubmitCorrections,
-                              canCreateCorrections,
-                              children
-                          }: CorrectionsBlockProps) => {
+const CorrectionsBlock = ({model, name, canCreateCorrections, children}: CorrectionsBlockProps) => {
 
-    console.log(model)
-
-    const messages = model?.sections[name]
+    const messages = model?.model?.sections[name] ?? null
 
     const hasCorrections: boolean = messages?.length > 0
 
@@ -56,16 +48,13 @@ const CorrectionsBlock = ({
     })
 
     const handleSubmit = (values: z.infer<typeof AddCorrectionsSchema>) => {
-        const message = {
-            [name]: values.description
-        }
 
         const data = {
             section: name,
             content: values.description
         }
 
-        onSubmitCorrections(data)
+        model?.handleSubmit(data)
 
         setIsCreateCorrectionMode(false)
     }
@@ -145,27 +134,27 @@ const CorrectionsBlock = ({
             <HoverCard open={showCorrections && hasCorrections}>
                 <HoverCardTrigger>
 
-                <div className={'relative inline'}>
-                    {
+                    <div className={'relative inline'}>
+                        {
 
-                        <div className={'absolute top-0 right-0 gap-x-2 flex'}>
-                            {
-                                canCreateCorrections && (
-                                    <PencilLine onClick={() => setIsCreateCorrectionMode(value => !value)}/>
-                                )
-                            }
-                            {
-                                hasCorrections && (
-                                    <TriangleAlert onClick={handleToggleCorrections} className={'text-rose-500'}/>
-                                )
-                            }
+                            <div className={'absolute top-0 right-0 gap-x-2 flex'}>
+                                {
+                                    canCreateCorrections && (
+                                        <PencilLine onClick={() => setIsCreateCorrectionMode(value => !value)}/>
+                                    )
+                                }
+                                {
+                                    hasCorrections && (
+                                        <TriangleAlert onClick={handleToggleCorrections} className={'text-rose-500'}/>
+                                    )
+                                }
+                            </div>
+
+                        }
+                        <div className={showCorrections ? 'outline outline-4 outline-rose-400 rounded-lg' : ''}>
+                            {children}
                         </div>
-
-                    }
-                    <div className={showCorrections ? 'outline outline-4 outline-rose-400 rounded-lg' : ''}>
-                        {children}
                     </div>
-                </div>
                 </HoverCardTrigger>
                 <HoverCardContent className={'w-[30vw]'} align={"start"} side={"top"}>
                     <div>
@@ -218,7 +207,7 @@ const CommentItem = ({comment}: { comment: Comment }) => {
         return () => {
             ignore = true
         }
-        }, [])
+    }, [])
 
     return (
         <div className={'border rounded-lg flex gap-x-3 min-h-32 p-4'}>
@@ -229,7 +218,8 @@ const CommentItem = ({comment}: { comment: Comment }) => {
             </Avatar>
             <div className={'flex flex-col flex-1'}>
                 {
-                    profile ? <Title level={'body-sm'}>{profile.nombres} {profile.apellidos}</Title> : <Skeleton className={'w-full h-[14pt]'}/>
+                    profile ? <Title level={'body-sm'}>{profile.nombres} {profile.apellidos}</Title> :
+                        <Skeleton className={'w-full h-[14pt]'}/>
                 }
                 <Text level={'body-xs'}>{formatRelative(comment.created_at, new Date())}</Text>
                 <div>

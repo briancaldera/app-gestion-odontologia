@@ -10,6 +10,7 @@ use App\Models\HistoriaOdontologica;
 use App\Models\Paciente;
 use App\Models\Trastornos;
 use App\Models\User;
+use App\Status;
 
 interface HistoriaService
 {
@@ -31,4 +32,5 @@ interface HistoriaService
     public function updateSecuenciaTratamiento(Historia $historia, array $data): void;
     public function addExamenRadiografico(HistoriaOdontologica $historiaOdon, array $data): ExamenRadiografico;
     public function updateExamenRadiografico(ExamenRadiografico $examenRadio, array $data): ExamenRadiografico;
+    public function changeStatus(Historia $historia, Status $status): Historia;
 }

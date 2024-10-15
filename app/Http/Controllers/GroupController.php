@@ -163,7 +163,7 @@ class GroupController extends Controller
         $user = auth()->user();
         $assignment->load(['homeworks']);
 
-        if ($user->hasPermission('groups-create-homeworks')) {
+        if ($user->hasPermission('homeworks-create')) {
             $historias = $user->historias()->with(['paciente'])->get()->reject(fn (Historia $historia) => $historia->isLocked());
         } else {
             $historias = [];
@@ -224,10 +224,7 @@ class GroupController extends Controller
             $docs = $historias_regulares_adulto->map(fn (Historia $historia) => [
                 'id' => $historia->id,
                 'type' => 'HRA',
-                'corrections' => /** @lang JSON */ '{
-"sections": {}
-}',
-
+                'corrections' => '{"sections": {}}'
             ])->toArray();
 
             $data = [

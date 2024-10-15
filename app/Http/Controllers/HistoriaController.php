@@ -31,8 +31,10 @@ use App\Models\User;
 use App\Services\CorreccionService;
 use App\Services\HistoriaService;
 use App\Services\RadiografiaService;
+use App\Status;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Type;
@@ -471,6 +473,52 @@ class HistoriaController extends Controller
         $data = $request->validated();
         $this->historiaService->updateHistoria($historia, $data);
         return response()->noContent();
+    }
+
+    public function changeStatus(Historia $historia, Request $request)
+    {
+        $data = $request->validate([
+           'status' => ['required', Rule::enum(Status::class)->except([Status::ENTREGADA])]
+        ]);
+
+        if ($historia->status === Status::CERRADA) {
+            message('La historia ya se encuentra cerrada y no se puede modificar su estado');
+            return response(null, 400);
+        }
+
+        switch ($data['status']) {
+            case Status::ABIERTA->value:
+                $new_status = Status::ABIERTA;
+                break;
+            case Status::CORRECCION->value:
+                $new_status = Status::CORRECCION;
+                break;
+            case Status::CERRADA->value:
+                $new_status = Status::CERRADA;
+                break;
+        }
+
+        $this->historiaService->changeStatus($historia,$new_status);
+
+        message('Estado de la historia cambiado exitosamente', Type::Success);
+
+        $message = '';
+
+        switch ($data['status']) {
+            case Status::ABIERTA->value:
+                $message = 'El nuevo estado es "Abierta"';
+                break;
+            case Status::CORRECCION->value:
+                $message = 'El nuevo estado es "Corrección"';
+                break;
+            case Status::CERRADA->value:
+                $message = 'El nuevo estado es "Cerrada"';
+                break;
+        }
+
+        message($message, Type::Info);
+
+        return response(null, 200);
     }
 
     /**

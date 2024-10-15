@@ -2,7 +2,7 @@ import Surface from '@/Components/atoms/Surface'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import {useForm} from "react-hook-form"
-import {z} from 'zod'
+import {undefined, z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
 import React from "react";
 import PacienteSchema, {PacienteDefaults} from "@/FormSchema/Historia/PacienteSchema";
@@ -56,16 +56,24 @@ import HistoriaPeriodontalSection from "@/Components/organisms/historia/Historia
 import ControlPlacaSection from "@/Components/organisms/historia/ControlPlacaSection.tsx";
 import {Menubar, MenubarCheckboxItem, MenubarContent, MenubarMenu, MenubarTrigger,} from "@/shadcn/ui/menubar"
 import {Homework} from "@/src/models/Group.ts";
+import {useCorrections, UseCorrectionsReturn} from "@/src/corrections/corrections.ts";
+import {toast} from "sonner";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 
 
 const TabTriggerStyle = 'p-0 m-0'
 
 type HistoriaEditorContextType = {
-    historia?: Historia
-    homework?: Homework
+    historia?: Historia | null
+    homework?: Homework | null
     canCreateCorrections: boolean
+    correctionsModel: UseCorrectionsReturn
 }
-const HistoriaEditorContext = React.createContext<HistoriaEditorContextType>({canCreateCorrections: false})
+const HistoriaEditorContext = React.createContext<HistoriaEditorContextType>({
+    correctionsModel: {model: null, handleSubmit: (values) => {}},
+    historia: null,
+    homework: null,
+    canCreateCorrections: false})
 
 type HistoriaEditorProps = {
     historia: Historia
@@ -77,6 +85,36 @@ type HistoriaEditorProps = {
 const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrections}: HistoriaEditorProps) => {
 
     const [showSidebar, setShowSidebar] = React.useState<boolean>(false)
+
+    const corrections = homework?.documents.find((document) => document.id === historia?.id).corrections
+
+    const {isProcessing, router} = useInertiaSubmit()
+
+    const handleSubmitCorrections = (values: {section: string, content: string}) => {
+        const endpoint = route('groups.assignments.homeworks.corrections', {
+            group:homework?.assignment?.group_id,
+            assignment: homework?.assignment_id,
+            homework: homework?.id,
+        })
+
+        const data = {
+            document_id: historia?.id,
+            type: 'HRA',
+            section: values.section,
+            content: values.content,
+        }
+
+        router.post(endpoint, data, {
+            onError: errors => {
+                toast.error('No se pudo agregar las correcciones')
+            },
+            onSuccess: page => {
+                toast.success('Correcciones agregadas')
+            }
+        })
+    }
+
+    const correctionsModel = useCorrections(handleSubmitCorrections, corrections)
 
     const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
         resolver: zodResolver(HistoriaSchema),
@@ -222,7 +260,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
 
     return (
         <HistoriaEditorContext.Provider
-            value={{historia: historia, homework: homework, canCreateCorrections: canCreateCorrections}}>
+            value={{historia: historia, homework: homework, canCreateCorrections: canCreateCorrections, correctionsModel: correctionsModel}}>
             <div className={'h-full'}>
                 <Menubar className={'mb-2'}>
                     <MenubarMenu>

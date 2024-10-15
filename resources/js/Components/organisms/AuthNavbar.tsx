@@ -110,7 +110,7 @@ const AuthSection = () => {
                         <Avatar picture={user.profile?.picture_url}/>
                         <div className={'flex flex-col'}>
                             <Text level={'body-xs'}>@{user.name}</Text>
-                            <Text level={'body-xs'} className={'text-slate-400 font-medium line-clamp-1 truncate capitalize'}>{user.role}</Text>
+                            <Text level={'body-xs'} className={'text-slate-400 font-medium line-clamp-1 truncate capitalize text-left'}>{user.role}</Text>
                         </div>
                         <Icon>
                             {

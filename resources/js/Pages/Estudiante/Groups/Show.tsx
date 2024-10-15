@@ -80,7 +80,7 @@ const Show = ({group, historias}: ShowProps) => {
 
                     <div className={'col-span-1 flex flex-col'}>
                         {
-                            can('groups-create-assignments') && (
+                            can('assignments-create') && (
                                 <CreateAssignmentCard/>
                             )
                         }
