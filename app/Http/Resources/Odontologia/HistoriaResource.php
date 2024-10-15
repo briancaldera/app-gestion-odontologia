@@ -22,7 +22,7 @@ class HistoriaResource extends JsonResource
         /** @var User $user */
         $user = $request->user();
 
-        $isRelatedThroughGroup = $user->hasRole('profesor') && $user->groups()->
+        $isRelatedThroughGroup = $user->hasPermission('homeworks-create-corrections') && $user->groups()->
         some(fn(Group $group) => $group->assignments->
         some(fn(Assignment $assignment) => $assignment->homeworks->
         some(fn(Group\Homework $homework) => $homework->documents->
@@ -45,6 +45,8 @@ class HistoriaResource extends JsonResource
                 'ant_personales' => $this->whenLoaded('antPersonales'),
                 'trastornos' => $this->whenLoaded('trastornos'),
                 'historia_odontologica' => $this->whenLoaded('historiaOdontologica'),
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
             ]),
         ];
     }
