@@ -48,7 +48,7 @@ class Homework extends Model
     }
 
     public static array $actions = [
-        'homework' => [
+        'homeworks' => [
             'index-all' => [
                 'name' => 'index-all',
                 'display_name' => 'Indexar entregas',
