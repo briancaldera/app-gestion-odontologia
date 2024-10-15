@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('historia_endodoncias', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('paciente_id')->references('id')->on('pacientes')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('numero')->nullable();
+            $table->enum('status', ['abierta', 'entregada', 'correccion', 'cerrada']);
+            $table->foreignUuid('autor_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->jsonb('anamnesis');
             $table->jsonb('evaluacion_dolor');
             $table->jsonb('secuencia_tratamiento');
