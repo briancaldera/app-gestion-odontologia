@@ -4,6 +4,8 @@ namespace App\Models\Endodoncia;
 
 use App\Casts\Endodoncia\Anamnesis;
 use App\HasStatus;
+use App\Models\Paciente;
+use App\Models\User;
 use App\Status;
 use App\StatusHolder;
 use App\ValueObjects\Endodoncia\Anamnesis as AnamnesisValueObject;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property AnamnesisValueObject $anamnesis
@@ -169,6 +172,16 @@ JSON,
             'secuencia_tratamiento' => 'collection',
             'fichas_endodonticas' => 'collection'
         ];
+    }
+
+    public function autor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'autor_id', 'id');
+    }
+
+    public function paciente(): BelongsTo
+    {
+        return $this->belongsTo(Paciente::class);
     }
 
     public static array $actions = [

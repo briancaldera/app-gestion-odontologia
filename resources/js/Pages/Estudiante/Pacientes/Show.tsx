@@ -24,6 +24,13 @@ import {Text} from "@/Components/atoms/Text";
 import {Link} from "@inertiajs/react";
 import Historia from "@/src/models/Historia.ts";
 import {route} from "ziggy-js";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/shadcn/ui/alert-dialog.tsx";
 
 type ShowProps = {
     paciente: Paciente
@@ -242,7 +249,7 @@ const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
                         <div className={'flex flex-col gap-y-3 py-2'}>
 
                             <HistoriaItem paciente={paciente}/>
-
+                            <HistoriaEndodonciaItem paciente={paciente}/>
 
                         </div>
                     </ScrollArea>
@@ -280,29 +287,114 @@ const HistoriaItem = ({paciente}: {paciente?: Paciente | null}) => {
                 historia ? (
                     <div className={'flex-1 flex justify-center items-center gap-x-3'}>
                         <Text>
-                            Historia regular creada
+                            Historia clínica creada
                         </Text>
                         <Button asChild>
                             <Link href={route('historias.show', {historia: historia.id})} >
-                                Ver historia
+                                Ver historia clínica
                             </Link>
                         </Button>
                     </div>
                 ) : (
                     <div className={'flex-1 flex justify-center items-center gap-x-3'}>
                         <Text>
-                            No hay historia regular creada
+                            No hay historia clinica creada
                         </Text>
-                        <Button asChild>
-                            <Link href={route('historias.store')} method={'post'} data={{paciente_id: paciente?.id}} as={'button'}>
-                                Crear historia
-                            </Link>
-                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button>
+                                    Crear
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Crear historia clínica
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Estás a punto de crear la historia clínica para este paciente. ¿Deseas continuar?
+                                    </AlertDialogDescription>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Cancelar
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction asChild>
+                                            <Link href={route('historias.store')} method={'post'} data={{paciente_id: paciente?.id}} as={'button'}>
+                                                Crear historia clínica
+                                            </Link>
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogHeader>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 )
             }
 
         </div>
+    )
+}
+
+const HistoriaEndodonciaItem = ({paciente}: {paciente: Paciente}) => {
+
+    const historia = paciente.historia_endodoncia ?? null
+
+    return (
+        <>
+        <div className={`group h-32 border bg-${historia ? 'sky' : 'slate'}-100 border-${historia ? 'sky' : 'slate'}-400 rounded-lg p-3 flex flex-col`}>
+            <div>
+                <Title>Historia de endodoncia</Title>
+            </div>
+            {
+                historia ? (
+                    <div className={'flex-1 flex justify-center items-center gap-x-3'}>
+                        <Text>
+                            Historia de endodoncia creada
+                        </Text>
+                        <Button asChild>
+                            <Link href={route('endodoncia.historias.show', {historia: historia.id})} >
+                                Ver historia de endodoncia
+                            </Link>
+                        </Button>
+                    </div>
+                ) : (
+                    <div className={'flex-1 flex justify-center items-center gap-x-3'}>
+                        <Text>
+                            No hay historia de endodoncia creada
+                        </Text>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button>
+                                    Crear
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Crear historia de endodoncia
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Estás a punto de crear la historia de endodoncia para este paciente. ¿Deseas continuar?
+                                    </AlertDialogDescription>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Cancelar
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction asChild>
+                                            <Link href={route('endodoncia.historias.store')} method={'post'} data={{paciente_id: paciente.id}} as={'button'}>
+                                                Crear historia de endodoncia
+                                            </Link>
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogHeader>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
+                )
+            }
+
+        </div>
+        </>
     )
 }
 

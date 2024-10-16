@@ -73,6 +73,8 @@ class HistoriaEndodonciaController extends Controller
             ]);
         }
 
+        $historia->load(['paciente']);
+
         return Inertia::render('Estudiante/Endodoncia/HistoriasEndodoncia/Show', [
             'historia' => new HistoriaEndodonciaResource($historia)
         ]);
