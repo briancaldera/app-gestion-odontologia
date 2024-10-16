@@ -16,105 +16,106 @@ class Anamnesis implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): AnamnesisValueObject
     {
+        $value_json = json_decode($value, true);
 
         $visita_medico_ultimos_6_meses = [
-            'status' => $attributes['visita_medico_ultimos_6_meses']['status'],
-            'description' => $attributes['visita_medico_ultimos_6_meses']['description'],
+            'status' => $value_json['visita_medico_ultimos_6_meses']['status'],
+            'description' => $value_json['visita_medico_ultimos_6_meses']['description'],
         ];
 
         $bajo_tratamiento_actual = [
-            'status' => $attributes['bajo_tratamiento_actual']['status'],
-            'description' => $attributes['bajo_tratamiento_actual']['description'],
+            'status' => $value_json['bajo_tratamiento_actual']['status'],
+            'description' => $value_json['bajo_tratamiento_actual']['description'],
         ];
 
         $alergia_medicamento = [
-            'status' => $attributes['alergia_medicamento']['status'],
-            'description' => $attributes['alergia_medicamento']['description'],
+            'status' => $value_json['alergia_medicamento']['status'],
+            'description' => $value_json['alergia_medicamento']['description'],
         ];
 
         $alergia_material_dental = [
-            'status' => $attributes['alergia_material_dental']['status'],
-            'description' => $attributes['alergia_material_dental']['description'],
+            'status' => $value_json['alergia_material_dental']['status'],
+            'description' => $value_json['alergia_material_dental']['description'],
         ];
 
         $hospitalizado_alguna_vez = [
-            'status' => $attributes['hospitalizado_alguna_vez']['status'],
-            'description' => $attributes['hospitalizado_alguna_vez']['description'],
+            'status' => $value_json['hospitalizado_alguna_vez']['status'],
+            'description' => $value_json['hospitalizado_alguna_vez']['description'],
         ];
 
         $odontologo_ultimos_6_meses = [
-            'status' => $attributes['odontologo_ultimos_6_meses']['status'],
-            'description' => $attributes['odontologo_ultimos_6_meses']['description'],
+            'status' => $value_json['odontologo_ultimos_6_meses']['status'],
+            'description' => $value_json['odontologo_ultimos_6_meses']['description'],
         ];
 
         $sangrado_al_cepillar = [
-            'status' => $attributes['sangrado_al_cepillar']['status'],
-            'description' => $attributes['sangrado_al_cepillar']['description'],
+            'status' => $value_json['sangrado_al_cepillar']['status'],
+            'description' => $value_json['sangrado_al_cepillar']['description'],
         ];
 
         $abultamiento_diente = [
-            'status' => $attributes['abultamiento_diente']['status'],
-            'description' => $attributes['abultamiento_diente']['description'],
+            'status' => $value_json['abultamiento_diente']['status'],
+            'description' => $value_json['abultamiento_diente']['description'],
         ];
 
         $rechina_aprieta_dientes = [
-            'status' => $attributes['rechina_aprieta_dientes']['status'],
-            'description' => $attributes['rechina_aprieta_dientes']['description'],
+            'status' => $value_json['rechina_aprieta_dientes']['status'],
+            'description' => $value_json['rechina_aprieta_dientes']['description'],
         ];
 
         $dolor_CATM = [
-            'status' => $attributes['dolor_CATM']['status'],
-            'description' => $attributes['dolor_CATM']['description'],
+            'status' => $value_json['dolor_CATM']['status'],
+            'description' => $value_json['dolor_CATM']['description'],
         ];
 
         $sangrado_excesivo_corte = [
-            'status' => $attributes['sangrado_excesivo_corte']['status'],
-            'description' => $attributes['sangrado_excesivo_corte']['description'],
+            'status' => $value_json['sangrado_excesivo_corte']['status'],
+            'description' => $value_json['sangrado_excesivo_corte']['description'],
         ];
 
         $dificultad_cicatrizacion = [
-            'status' => $attributes['dificultad_cicatrizacion']['status'],
-            'description' => $attributes['dificultad_cicatrizacion']['description'],
+            'status' => $value_json['dificultad_cicatrizacion']['status'],
+            'description' => $value_json['dificultad_cicatrizacion']['description'],
         ];
 
         $cigarrillo_tabaco = [
-            'status' => $attributes['cigarrillo_tabaco']['status'],
-            'description' => $attributes['cigarrillo_tabaco']['description'],
+            'status' => $value_json['cigarrillo_tabaco']['status'],
+            'description' => $value_json['cigarrillo_tabaco']['description'],
         ];
 
         $alergia_alimento = [
-            'status' => $attributes['alergia_alimento']['status'],
-            'description' => $attributes['alergia_alimento']['description'],
+            'status' => $value_json['alergia_alimento']['status'],
+            'description' => $value_json['alergia_alimento']['description'],
         ];
 
         $alergia_enlatados = [
-            'status' => $attributes['alergia_enlatados']['status'],
-            'description' => $attributes['alergia_enlatados']['description'],
+            'status' => $value_json['alergia_enlatados']['status'],
+            'description' => $value_json['alergia_enlatados']['description'],
         ];
 
         $alergia_yodo = [
-            'status' => $attributes['alergia_yodo']['status'],
-            'description' => $attributes['alergia_yodo']['description'],
+            'status' => $value_json['alergia_yodo']['status'],
+            'description' => $value_json['alergia_yodo']['description'],
         ];
 
         $reaccion_anestesia = [
-            'status' => $attributes['reaccion_anestesia']['status'],
-            'description' => $attributes['reaccion_anestesia']['description'],
+            'status' => $value_json['reaccion_anestesia']['status'],
+            'description' => $value_json['reaccion_anestesia']['description'],
         ];
 
         $embarazo = [
-            'status' => $attributes['embarazo']['status'],
-            'description' => $attributes['embarazo']['description'],
+            'status' => $value_json['embarazo']['status'],
+            'description' => $value_json['embarazo']['description'],
         ];
 
         $enfermedades = [
-            'list' => $attributes['enfermedades']['list'],
-            'resumen_ant_personales' => $attributes['enfermedades']['resumen_ant_personales'],
+            'list' => $value_json['enfermedades']['list'],
+            'resumen_ant_personales' => $value_json['enfermedades']['resumen_ant_personales'],
         ];
 
         $enfermedades_familiares = [
-            'resumen_ant_familiares' => $attributes['enfermedades_familiares']['resumen_ant_familiares'],
-            'examen_comp' => $attributes['enfermedades_familiares']['examen_comp'],
+            'resumen_ant_familiares' => $value_json['enfermedades_familiares']['resumen_ant_familiares'],
+            'examen_comp' => $value_json['enfermedades_familiares']['examen_comp'],
         ];
 
         return new AnamnesisValueObject(

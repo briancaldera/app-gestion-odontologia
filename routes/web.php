@@ -4,6 +4,7 @@ use App\Http\Controllers\CorreccionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HistoriaController;
+use App\Http\Controllers\HistoriaEndodonciaController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
@@ -71,26 +72,14 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     // Routes for admin
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-
-
-
-
     });
 
     // Routes for admision
     Route::middleware(['role:admision'])->prefix('admision')->name('admision.')->group(function () {
-
-
-
-
     });
 
     // Routes for profesor
     Route::middleware(['role:profesor'])->prefix('profesor')->name('profesor.')->group(function () {
-
-
-
-
     });
 
 //    Routes for patient
@@ -138,35 +127,40 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show')->can('view', 'historia');
 
-    Route::middleware(['role:estudiante'])->group(function () {
-
-//        Route::get('/historias', function (){
-//
-//            return Inertia::render('Estudiante/Historia/Dashboard',[]);
-//        })->name('historia');
-
-        Route::prefix('historias')->name('historias.')->group(function () {
-
-            Route::get('/create', [HistoriaController::class, 'create'])->name('historia.create');
-
-//            Route::post('/{paciente}', [HistoriaController::class, 'store'])->name('store');
-            Route::patch('/{historia}', [HistoriaController::class, 'update'])->name('update');
-
-            Route::post('/{historia}/antfamiliares', [HistoriaController::class, 'storeAntFamiliares'])->name('storeAntFamiliares');
-            Route::patch('/{historia}/antfamiliares', [HistoriaController::class, 'updateAntFamiliares'])->name('updateAntFamiliares');
-
-            Route::post('/{historia}/antpersonales', [HistoriaController::class, 'storeAntPersonales'])->name('storeAntPersonales');
-            Route::patch('/{historia}/antpersonales', [HistoriaController::class, 'updateAntPersonales'])->name('updateAntPersonales');
-
-            Route::post('/{historia}/trastornos', [HistoriaController::class, 'storeTrastornos'])->name('storeTrastornos');
-            Route::patch('/{historia}/trastornos', [HistoriaController::class, 'updateTrastornos'])->name('updateTrastornos');
-
-            Route::post('/{historia}/odontologica', [HistoriaController::class, 'storeHistoriaOdontologica'])->name('storeHistoriaOdontologica');
-            Route::patch('/{historia}/odontologica', [HistoriaController::class, 'updateHistoriaOdontologica'])->name('updateHistoriaOdontologica');
-
-        });
-
+    // Routes for HE
+    Route::prefix('/endodoncia')->name('endodoncia.')->group(function() {
+        Route::resource('historias', HistoriaEndodonciaController::class);
     });
+
+//    Route::middleware(['role:estudiante'])->group(function () {
+//
+////        Route::get('/historias', function (){
+////
+////            return Inertia::render('Estudiante/Historia/Dashboard',[]);
+////        })->name('historia');
+//
+//        Route::prefix('historias')->name('historias.')->group(function () {
+//
+//            Route::get('/create', [HistoriaController::class, 'create'])->name('historia.create');
+//
+////            Route::post('/{paciente}', [HistoriaController::class, 'store'])->name('store');
+//            Route::patch('/{historia}', [HistoriaController::class, 'update'])->name('update');
+//
+//            Route::post('/{historia}/antfamiliares', [HistoriaController::class, 'storeAntFamiliares'])->name('storeAntFamiliares');
+//            Route::patch('/{historia}/antfamiliares', [HistoriaController::class, 'updateAntFamiliares'])->name('updateAntFamiliares');
+//
+//            Route::post('/{historia}/antpersonales', [HistoriaController::class, 'storeAntPersonales'])->name('storeAntPersonales');
+//            Route::patch('/{historia}/antpersonales', [HistoriaController::class, 'updateAntPersonales'])->name('updateAntPersonales');
+//
+//            Route::post('/{historia}/trastornos', [HistoriaController::class, 'storeTrastornos'])->name('storeTrastornos');
+//            Route::patch('/{historia}/trastornos', [HistoriaController::class, 'updateTrastornos'])->name('updateTrastornos');
+//
+//            Route::post('/{historia}/odontologica', [HistoriaController::class, 'storeHistoriaOdontologica'])->name('storeHistoriaOdontologica');
+//            Route::patch('/{historia}/odontologica', [HistoriaController::class, 'updateHistoriaOdontologica'])->name('updateHistoriaOdontologica');
+//
+//        });
+//
+//    });
 
 });
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Odontologia\Endodoncia;
 
+use App\Http\Resources\PacienteResource;
+use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\Group\Assignment;
 use App\Models\User;
@@ -26,7 +28,7 @@ class HistoriaEndodonciaResource extends JsonResource
             some(fn(Group\Homework $homework) => $homework->documents->
             some(fn(array $document) => $document['id'] === $this->id))));
 
-        $canReadPrivate = $user->hasPermission('historias-read-private') || $this->autor_id === $user->id;
+        $canReadPrivate = $user->hasPermission('historias-endodoncia-read-private') || $this->autor_id === $user->id;
 
         return [
             'id' => $this->id,
@@ -38,8 +40,11 @@ class HistoriaEndodonciaResource extends JsonResource
                 'anamnesis' => $this->anamnesis,
                 'evaluacion_dolor' => $this->evaluacion_dolor,
                 'secuencia_tratamiento' => $this->secuencia_tratamiento,
+                'fichas_endodonticas' => $this->fichas_endodonticas,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
+                'autor' => new UserResource($this->whenLoaded('autor')),
+                'paciente' => new PacienteResource($this->whenLoaded('paciente')),
             ]),
         ];
     }

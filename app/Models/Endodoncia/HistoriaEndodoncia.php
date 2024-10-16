@@ -4,6 +4,7 @@ namespace App\Models\Endodoncia;
 
 use App\Casts\Endodoncia\Anamnesis;
 use App\HasStatus;
+use App\Status;
 use App\StatusHolder;
 use App\ValueObjects\Endodoncia\Anamnesis as AnamnesisValueObject;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
@@ -25,80 +26,85 @@ class HistoriaEndodoncia extends Model implements StatusHolder
     protected $keyType = 'string';
     public $incrementing = false;
 
+    protected $fillable = [
+        'status',
+        'autor_id'
+    ];
+
     protected $attributes = [
-        'anamnesis' => /** @lang JSON */
-'{
+        'anamnesis' => <<<'JSON'
+{
   "visita_medico_ultimos_6_meses": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "bajo_tratamiento_actual": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "alergia_medicamento": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "alergia_material_dental": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "hospitalizado_alguna_vez": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "odontologo_ultimos_6_meses": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "sangrado_al_cepillar": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "abultamiento_diente": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "rechina_aprieta_dientes": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "dolor_CATM": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "sangrado_excesivo_corte": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "dificultad_cicatrizacion": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "cigarrillo_tabaco": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "alergia_alimento": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "alergia_enlatados": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "alergia_yodo": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "reaccion_anestesia": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "embarazo": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "enfermedades": {
     "list": [],
@@ -108,16 +114,17 @@ class HistoriaEndodoncia extends Model implements StatusHolder
     "resumen_ant_familiares": null,
     "examen_comp": null
   }
-}',
-        'evaluacion_dolor' => /** @lang JSON */
-            '{
+}
+JSON,
+        'evaluacion_dolor' => <<<'JSON'
+{
   "dolor_presente": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "diente_dolor": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "primeros_sintomas": null,
   "aparicion_sintomas": null,
@@ -128,60 +135,41 @@ class HistoriaEndodoncia extends Model implements StatusHolder
   },
   "alivio_dolor": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "farmaco_alivio_dolor": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "agravo_dolor": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "diente_sensible_al_comer": {
     "sensibilidad": []
   },
   "dolor_al_masticar": {
     "status": null,
-    "descripcion": null
+    "description": null
   },
   "dolor_momento_dia": null
-}',
+}
+JSON,
         'secuencia_tratamiento' => /** @lang JSON */
         '[]',
-        'fichas_endodonticas' => /** @lang JSON */ '[
-{
-  "semestre": null,
-  "diente": null,
-  "sintomas": null,
-  "signos": null,
-  "interpretacion_radiografica": null,
-  "etiologia": [],
-  "pruebas_diagnosticas": {
-    "examen_tejidos_periodontales": [],
-    "pruebas_vitalidad_pulpar": [],
-    "diagnostico_presuntivo": null,
-    "diagnostico_definitivo": null,
-    "morfologia_conducto": [],
-    "tratamiento_conducto": [],
-    "metodo_obturacion": [],
-    "tecnica_preparacion_biomecanica": null,
-    "preparacion_quimica": null,
-    "numero_lima_utilizada": null,
-    "material_obturacion": null,
-    "medicacion_justificacion": null,
-    "observaciones": null
-  },
-  "radiografias_tratamiento": {
-
-  }
-}
-]'
+        'fichas_endodonticas' => /** @lang JSON */ '[]'
     ];
 
-    protected $casts = [
-        'anamnesis' => Anamnesis::class,
-    ];
+    protected function casts()
+    {
+        return [
+            'status' => Status::class,
+            'anamnesis' => Anamnesis::class,
+            'evaluacion_dolor' => 'collection',
+            'secuencia_tratamiento' => 'collection',
+            'fichas_endodonticas' => 'collection'
+        ];
+    }
 
     public static array $actions = [
         'historias-endodoncia' => [

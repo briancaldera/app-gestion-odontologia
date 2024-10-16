@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Endodoncia\HistoriaEndodoncia;
 use App\Models\Group;
 use App\Models\Group\Assignment;
 use App\Models\Group\Homework;
@@ -51,6 +52,7 @@ class DatabaseSeeder extends Seeder
         $groups_permissions = createPermissionsFromActions(Group::$actions);
         $assignments_permissions = createPermissionsFromActions(Assignment::$actions);
         $homeworks_permissions = createPermissionsFromActions(Homework::$actions);
+        $historias_endodoncia_permissions = createPermissionsFromActions(HistoriaEndodoncia::$actions);
 
         function createRolesFromArray(array $roles)
         {
@@ -89,6 +91,7 @@ class DatabaseSeeder extends Seeder
                 'users' => ['index-all', 'read', 'read-private', 'update', 'delete', 'add-registration'],
                 'pacientes' => ['index-all', 'read', 'read-private', 'update', 'delete'],
                 'historias' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
+                'historias-endodoncia' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'groups' => ['index-all', 'create', 'read', 'read-private', 'update', 'delete', 'index-users', 'add-users', 'remove-users'],
                 'assignments' => ['create', 'read', 'update', 'delete'],
                 'homeworks' => ['index-all', 'read', 'update', 'delete', 'create-corrections'],
@@ -97,11 +100,13 @@ class DatabaseSeeder extends Seeder
                 'users' => ['index-all', 'read', 'read-private'],
                 'pacientes' => ['index-all', 'read',],
                 'historias' => ['index-all', 'read', 'read-private', 'assign-id'],
+                'historias-endodoncia' => ['index-all', 'read', 'read-private', 'assign-id'],
             ],
             'profesor' => [
                 'users' => ['read', 'read-private'],
                 'pacientes' => ['index-all', 'read',],
                 'historias' => ['read', 'update-status'],
+                'historias-endodoncia' => ['read', 'update-status'],
                 'groups' => ['read', 'read-private', 'update', 'index-users'],
                 'assignments' => ['create', 'read', 'update', 'delete'],
                 'homeworks' => ['index-all', 'read', 'delete', 'create-corrections'],
@@ -110,6 +115,7 @@ class DatabaseSeeder extends Seeder
                 'users' => ['read'],
                 'pacientes' => ['read', 'create', 'update'],
                 'historias' => ['read', 'create', 'update'],
+                'historias-endodoncia' => ['read', 'create', 'update'],
                 'groups' => ['read'],
                 'assignments' => ['read'],
                 'homeworks' => ['create', 'read', 'update', 'delete'],
@@ -134,7 +140,7 @@ class DatabaseSeeder extends Seeder
             });
         }
 
-        $all_permissions = collect([...$users_permissions, ...$historias_permissions, ...$pacientes_permissions, ...$groups_permissions, ...$assignments_permissions, ...$homeworks_permissions]);
+        $all_permissions = collect([...$users_permissions, ...$historias_permissions, ...$historias_endodoncia_permissions, ...$pacientes_permissions, ...$groups_permissions, ...$assignments_permissions, ...$homeworks_permissions]);
 
         assignPermissionsToRoles($all_permissions, $user_roles, collect($permissions_roles));
 
@@ -165,7 +171,8 @@ class DatabaseSeeder extends Seeder
         $admins = User::factory()->has(Profile::factory())->count(3)->createMany()->each(fn(User $user) => $user->addRole('admin'));
         $admision = User::factory()->has(Profile::factory())->count(5)->createMany()->each(fn(User $user) => $user->addRole('admision'));
         $profesores = User::factory()->has(Profile::factory())->count(10)->createMany()->each(fn(User $user) => $user->addRole('profesor'));
-        $users = User::factory()->has(Profile::factory())->count(50)->createMany()->each(fn(User $user) => $user->addRole('estudiante'));
+        $estudiantes = User::factory()->has(Profile::factory())->count(50)->createMany()->each(fn(User $user) => $user->addRole('estudiante'));
 
+        $paciente = Paciente::factory()->for($estudianteUser, 'medicoTratante')->createOne(['registered_by' => $estudianteUser->id]);
     }
 }

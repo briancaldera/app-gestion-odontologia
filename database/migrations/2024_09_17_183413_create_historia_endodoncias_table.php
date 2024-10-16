@@ -20,6 +20,7 @@ return new class extends Migration
             $table->jsonb('anamnesis');
             $table->jsonb('evaluacion_dolor');
             $table->jsonb('secuencia_tratamiento');
+            $table->jsonb('fichas_endodonticas');
 
             $table->timestamps();
         });
