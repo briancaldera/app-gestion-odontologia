@@ -30,6 +30,11 @@ class Historia extends Model implements StatusHolder
 
     const HISTORIA_DIR = 'historias/';
 
+    protected $table = 'historias';
+    protected $primaryKey = 'id';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $attributes = [
         'numero' => null,
     ];
