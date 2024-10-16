@@ -46,6 +46,27 @@ class DatabaseSeeder extends Seeder
             })->flatten(1);
         }
 
+        $system_actions = [
+            'system' => [
+                'add-users-codes' => [
+                    'name' => 'add-users-codes',
+                    'display_name' => 'Agregar códigos de usuarios',
+                    'description' => 'Agrega códigos de usuarios para permitirlos registrarse en el sistema',
+                ],
+                'update-users-codes' => [
+                    'name' => 'update-users-codes',
+                    'display_name' => 'Actualizar códigos de usuarios',
+                    'description' => 'Actualiza códigos de usuarios que les permiten registrarse en el sistema',
+                ],
+                'remove-users-codes' => [
+                    'name' => 'remove-users-codes',
+                    'display_name' => 'Eliminar códigos de usuarios',
+                    'description' => 'Elimina códigos de usuarios que les permiten registrarse en el sistema',
+                ],
+            ]
+        ];
+
+        $system_permissions = createPermissionsFromActions($system_actions);
         $users_permissions = createPermissionsFromActions(User::$actions);
         $historias_permissions = createPermissionsFromActions(Historia::$actions);
         $pacientes_permissions = createPermissionsFromActions(Paciente::$actions);
@@ -62,6 +83,11 @@ class DatabaseSeeder extends Seeder
         }
 
         $roles_array = [
+//            'root' => [
+//                'name' => 'root',
+//                'display_name' => 'Root',
+//                'description' => 'Superuser'
+//            ],
             'admin' => [
                 'name' => 'admin',
                 'display_name' => 'Administrador',
@@ -88,6 +114,7 @@ class DatabaseSeeder extends Seeder
 
         $permissions_roles = [
             'admin' => [
+                'system' => ['add-users-codes', 'update-users-codes', 'remove-users-codes'],
                 'users' => ['index-all', 'read', 'read-private', 'update', 'delete', 'add-registration'],
                 'pacientes' => ['index-all', 'read', 'read-private', 'update', 'delete'],
                 'historias' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
@@ -140,7 +167,15 @@ class DatabaseSeeder extends Seeder
             });
         }
 
-        $all_permissions = collect([...$users_permissions, ...$historias_permissions, ...$historias_endodoncia_permissions, ...$pacientes_permissions, ...$groups_permissions, ...$assignments_permissions, ...$homeworks_permissions]);
+        $all_permissions = collect([
+            ...$system_permissions,
+            ...$users_permissions,
+            ...$historias_permissions,
+            ...$historias_endodoncia_permissions,
+            ...$pacientes_permissions,
+            ...$groups_permissions,
+            ...$assignments_permissions,
+            ...$homeworks_permissions]);
 
         assignPermissionsToRoles($all_permissions, $user_roles, collect($permissions_roles));
 
