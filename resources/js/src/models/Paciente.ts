@@ -1,5 +1,6 @@
 import User from "@/src/models/User.ts";
 import Historia from "@/src/models/Historia.ts";
+import {HistoriaEndodoncia} from "@/src/models/Endodoncia/HistoriaEndodoncia.ts";
 
 type Paciente = Readonly<{
     id: string
@@ -23,6 +24,7 @@ type Paciente = Readonly<{
     updated_at?: string
     medico_tratante?: User
     historia?: Historia | null
+    historia_endodoncia?: HistoriaEndodoncia | null
 }>
 
 type Sex = 'F' | 'M' | 'NI'
