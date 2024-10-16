@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('user_codes', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
+            $table->foreignId('role_id')->nullable()->references('id')->on('roles')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignUuid('user_id')->unique()->nullable()->references('id')->on('users')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();
         });
