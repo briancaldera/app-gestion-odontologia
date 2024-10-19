@@ -8,6 +8,7 @@ use App\Http\Controllers\HistoriaEndodonciaController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\UserController;
 use App\Models\Group;
 use App\Models\Historia;
 use App\Models\User;
@@ -40,6 +41,11 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+
+    Route::get('/usuarios/codigos', [UserController::class, 'indexCodes'])->name('users.codes.index');
+    Route::post('/usuarios/codigos', [UserController::class, 'storeCode'])->name('users.codes.store');
+    Route::patch('/usuarios/codigos/{userCode}', [UserController::class, 'updateCode'])->name('users.codes.update');
+    Route::delete('/usuarios/codigos/{userCode}', [UserController::class, 'destroyCode'])->name('users.codes.destroy');
 
     // Notifications routes
     Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.index');
