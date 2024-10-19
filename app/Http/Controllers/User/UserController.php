@@ -29,7 +29,7 @@ class UserController extends Controller
             ]);
         }
 
-        return Inertia::render('UserCodes/Show', [
+        return Inertia::render('UserCodes/Index', [
             'userCodes' => $codes,
         ]);
     }
