@@ -1,31 +1,77 @@
-import {Link} from "@inertiajs/react";
+import {Link, usePage} from "@inertiajs/react";
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import Title from "@/Components/atoms/Title";
 import React from "react";
-import {CircleHelp, Info, LayoutDashboard, PersonStanding, Users} from "lucide-react";
+import {CircleHelp, Info, LayoutDashboard, Menu, PersonStanding, User, Users} from "lucide-react";
 import {ClipboardDocumentIcon} from "@heroicons/react/24/outline";
 import {Text} from "@/Components/atoms/Text";
 import {Separator} from "@/shadcn/ui/separator.tsx";
+import {usePermission} from "@/src/Utils/Utils.ts";
+import {UserGroupIcon} from '@heroicons/react/24/outline'
+import {route} from "ziggy-js";
 
 type SidebarProps = {
     readonly menu?: MenuItem[]
 }
 
-const SidebarMenu = ({menu = ClinicaMenu}: SidebarProps) => {
+const SidebarMenu = ({menu}: SidebarProps) => {
+
+    const {auth: {user: {permissions}}} = usePage().props
+
+    const can = usePermission()
+
+    const clinicaMenu: MenuItem[] = []
+    clinicaMenu.push({name: 'Inicio', icon: <LayoutDashboard/>, link: route('dashboard')})
+
+    if ((permissions as string[]).some(permission => permission.startsWith('pacientes'))) {
+        clinicaMenu.push({name: 'Pacientes', icon: <PersonStanding/>, link: route('pacientes.index')})
+    }
+
+    if ((permissions as string[]).includes('historia-index-all')) {
+        clinicaMenu.push({name: 'Historias', icon: <ClipboardDocumentIcon/>, link: route('historias.dashboard')})
+    }
+
+    const escuelaMenu: MenuItem[] = [
+        {name: "Grupos", icon: <UserGroupIcon/>, link: route("groups.index")}
+    ]
+
+    const sistemaMenu: MenuItem[] = [
+        {name: "Usuarios", icon: <User/>, link: route('profile.index')},
+    ]
+
+    const footerMenu: MenuItem[] = [
+        {name: "Ayuda", icon: <CircleHelp/>, link: "/ayuda"},
+        {name: "Información", icon: <Info/>, link: "/informacion"}
+    ] satisfies MenuItem[]
 
     return (
         <div>
             <SidebarMenuGroup>
                 <Text className={'uppercase text-sm font-semibold text-indigo-400 mt-2'}>Clínica</Text>
-                {ClinicaMenu.map((menuItem, _index) => (<SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
+                {clinicaMenu.map((menuItem, _index) => (<SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
             </SidebarMenuGroup>
             <SidebarMenuGroup>
                 <Text className={'uppercase text-sm font-semibold text-indigo-400 mt-2'}>Escuela</Text>
-                {EscuelaMenu.map((menuItem, _index) => (<SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
+                {escuelaMenu.map((menuItem, _index) => (<SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
             </SidebarMenuGroup>
+            {
+                (permissions as string[]).some(permission => permission.startsWith('system')) &&
+                (
+                    <>
+                        <SidebarMenuGroup>
+                            <Text className={'uppercase text-sm font-semibold text-indigo-400 mt-2'}>Sistema</Text>
+                            {
+                                sistemaMenu.map((menuItem, _index) => (
+                                    <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))
+                            }
+                        </SidebarMenuGroup>
+
+                    </>
+                )
+            }
             <Separator className={'bg-indigo-400'}/>
             <SidebarMenuGroup>
-                {FooterMenu.map((menuItem, _index) => (<SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
+                {footerMenu.map((menuItem, _index) => (<SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
             </SidebarMenuGroup>
         </div>
     )
@@ -54,21 +100,6 @@ const SidebarMenuItem = ({menuItem}: { menuItem: MenuItem }) => {
         </Link>
     )
 }
-
-const ClinicaMenu = [
-    {name: 'Inicio', icon: <LayoutDashboard/>, link: route('dashboard')},
-    {name: 'Pacientes', icon: <PersonStanding/>, link: route('pacientes.index')},
-    {name: 'Historias', icon: <ClipboardDocumentIcon/>, link: route('historias.dashboard')},
-] satisfies MenuItem[]
-
-const EscuelaMenu = [
-    {name: "Grupos", icon: <Users/>, link: route("groups.index")}
-] satisfies MenuItem[]
-
-const FooterMenu = [
-    {name: "Ayuda", icon: <CircleHelp/>, link: "/ayuda"},
-    {name: "Información", icon: <Info/>, link: "/informacion"}
-] satisfies MenuItem[]
 
 type MenuItem = Readonly<{
     name: string,

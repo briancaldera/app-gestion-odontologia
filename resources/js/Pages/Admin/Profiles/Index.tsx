@@ -16,27 +16,27 @@ import {
 import {router} from "@inertiajs/react"
 import {route} from "ziggy-js";
 import SidebarMenu, {type MenuItem} from '@/Components/organisms/SidebarMenu.tsx'
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type IndexProps = {
     users: User[]
 }
 
-const menu = [
-    {icon: <ArrowBigLeft/>, link: "dashboard", name: "Volver"}
-] satisfies MenuItem[]
-
 const Index = ({users}: IndexProps) => {
 
     return (
-        <AuthLayout title={'Perfiles'} sidebar={<SidebarMenu menu={menu}/>}>
-            <div className={'p-2 sm:p-12'}>
-                <Card className={'p-12'}>
-                    <Title level={'title-lg'}>Usuarios</Title>
-                    <section>
-                        <DataTable columns={columns} data={users} />
-                    </section>
-                </Card>
-            </div>
+        <AuthLayout title={'Perfiles'}>
+            <ScrollArea className={'h-full'}>
+                <div className={'p-2 sm:p-12'}>
+                    <Card className={'p-12'}>
+                        <Title level={'title-lg'}>Usuarios</Title>
+                        <section>
+                            {/*// todo make table searchable*/}
+                            <DataTable columns={columns} data={users}/>
+                        </section>
+                    </Card>
+                </div>
+            </ScrollArea>
         </AuthLayout>
     )
 }
@@ -45,7 +45,7 @@ const columnHelper = createColumnHelper<User>()
 
 const columns: ColumnDef<User>[] = [
     columnHelper.accessor(originalRow => originalRow.profile.cedula, {
-        meta: { title: 'Cédula'},
+        meta: {title: 'Cédula'},
         id: 'cedula',
         header: props => {
             return (
@@ -54,15 +54,15 @@ const columns: ColumnDef<User>[] = [
                     onClick={() => props.column.toggleSorting(props.column.getIsSorted() === "asc")}
                 >
                     {props.column.columnDef.meta.title}
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             )
         }
         ,
     }),
     columnHelper.accessor(originalRow => originalRow.profile.nombres, {
-        meta: { title: 'Nombres'},
-        id: 'nombres' ,
+        meta: {title: 'Nombres'},
+        id: 'nombres',
         header: props => {
             return (
                 <Button
@@ -70,14 +70,14 @@ const columns: ColumnDef<User>[] = [
                     onClick={() => props.column.toggleSorting(props.column.getIsSorted() === "asc")}
                 >
                     {props.column.columnDef.meta.title}
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             )
         }
     }),
     columnHelper.accessor(originalRow => originalRow.profile.apellidos, {
-        meta: { title: 'Apellidos'},
-        id: 'apellidos' ,
+        meta: {title: 'Apellidos'},
+        id: 'apellidos',
         header: props => {
             return (
                 <Button
@@ -85,14 +85,14 @@ const columns: ColumnDef<User>[] = [
                     onClick={() => props.column.toggleSorting(props.column.getIsSorted() === "asc")}
                 >
                     {props.column.columnDef.meta.title}
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             )
         }
     }),
     columnHelper.accessor(originalRow => originalRow.email, {
-        meta: { title: 'Email'},
-        id: 'email' ,
+        meta: {title: 'Email'},
+        id: 'email',
         header: props => {
             return (
                 <Button
@@ -100,14 +100,14 @@ const columns: ColumnDef<User>[] = [
                     onClick={() => props.column.toggleSorting(props.column.getIsSorted() === "asc")}
                 >
                     {props.column.columnDef.meta.title}
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             )
         }
     }),
     columnHelper.accessor(originalRow => originalRow.name, {
-        meta: { title: 'Usuario'},
-        id: 'name' ,
+        meta: {title: 'Usuario'},
+        id: 'name',
         header: props => {
             return (
                 <Button
@@ -115,7 +115,7 @@ const columns: ColumnDef<User>[] = [
                     onClick={() => props.column.toggleSorting(props.column.getIsSorted() === "asc")}
                 >
                     {props.column.columnDef.meta.title}
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
                 </Button>
             )
         }
@@ -130,7 +130,7 @@ const columns: ColumnDef<User>[] = [
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
                             <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreHorizontal className="h-4 w-4"/>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
