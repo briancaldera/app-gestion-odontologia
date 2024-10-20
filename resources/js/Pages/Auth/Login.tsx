@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import Checkbox from '@/Components/Checkbox';
-import GuestLayout from '@/Layouts/GuestLayout';
+import GuestLayout from '@/Layouts/GuestLayout.tsx';
 import {Link, useForm} from '@inertiajs/react';
 import {useRoute} from 'ziggy-js'
 import Surface from "@/Components/atoms/Surface.jsx";

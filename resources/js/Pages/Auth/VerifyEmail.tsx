@@ -1,4 +1,4 @@
-import GuestLayout from '@/Layouts/GuestLayout';
+import GuestLayout from '@/Layouts/GuestLayout.tsx';
 import {Link, useForm} from '@inertiajs/react';
 import Surface from "@/Components/atoms/Surface.jsx";
 import Logo from "@/Components/atoms/Logo.jsx";

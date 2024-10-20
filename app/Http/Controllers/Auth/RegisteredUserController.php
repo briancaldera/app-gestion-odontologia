@@ -34,17 +34,15 @@ class RegisteredUserController extends Controller
     {
         $body = $request->validate([
             'code' => ['required', 'string', 'max:255'],
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255', 'alpha_num:ascii'],
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // todo check usercode here
-
         if (!UserCode::where('code', $body['code'])->exists()) {
             message('Número de expediente no existe en el sistema. No está autorizado para registrarse', \Type::Warning);
             message('Debe ponerse en contacto con la coordinación o administración de su facultad', \Type::Info);
-            return response(null, 403);
+            return back();
         }
 
         /** @var User $user */

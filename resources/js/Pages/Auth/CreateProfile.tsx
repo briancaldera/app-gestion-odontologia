@@ -1,5 +1,5 @@
 import BaseLayout from "@/Layouts/BaseLayout.tsx";
-import GuestLayout from "@/Layouts/GuestLayout.jsx";
+import GuestLayout from "@/Layouts/GuestLayout.js";
 import Surface from "@/Components/atoms/Surface.jsx";
 import Heading from "@/Components/atoms/Heading.jsx";
 import {useForm} from "@inertiajs/react";

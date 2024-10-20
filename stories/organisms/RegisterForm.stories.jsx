@@ -1,4 +1,4 @@
-import RegisterForm from "@/Components/organisms/RegisterForm.jsx"
+import RegisterForm from "@/Components/organisms/RegisterForm.tsx"
 
 export default {
     title: "organisms/Register Form",

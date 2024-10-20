@@ -1,21 +1,31 @@
 import {CssVarsProvider, StyledEngineProvider} from '@mui/joy/styles';
-import {enqueueSnackbar, SnackbarProvider} from 'notistack'
 import {usePage} from '@inertiajs/react'
 import React from "react";
 import {Toaster} from "@/shadcn/ui/sonner.tsx";
 import {toast} from "sonner";
 
-// todo remove context
-// todo remove notistack
-const BaseContext = React.createContext({
-    can: (permission) => {
-    }
-})
-
 const BaseLayout = ({children}) => {
-    const messages = usePage().props.messages
-    const {user} = usePage().props.auth
+    const messages = usePage().props.messages as Message[]
 
+    useMessage(messages)
+
+    return (
+        <StyledEngineProvider injectFirst>
+            <CssVarsProvider>
+                {/*<CssBaseline/>*/}
+                {children}
+                <Toaster expand/>
+            </CssVarsProvider>
+        </StyledEngineProvider>
+    )
+}
+
+type Message = {
+    type: 'success' | 'info' | 'error' | 'warning' | 'default'
+    content: string
+}
+
+const useMessage = (messages: Message[]) => {
     React.useEffect(() => {
         messages.forEach(message => {
             switch (message.type) {
@@ -38,21 +48,6 @@ const BaseLayout = ({children}) => {
             }
         })
     })
-
-    const can = React.useCallback((permission) => (user?.permissions ?? []).some(p => p === permission), [user]) // todo remove this
-
-    return (
-        <BaseContext.Provider value={{can: can}}>
-            <StyledEngineProvider injectFirst>
-                <CssVarsProvider>
-                    {/*<CssBaseline/>*/}
-                    {children}
-                    <Toaster expand/>
-                </CssVarsProvider>
-            </StyledEngineProvider>
-        </BaseContext.Provider>
-    )
 }
 
-export {BaseContext}
 export default BaseLayout
