@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
-use App\Models\User;
 use App\Models\UserCode;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -23,7 +22,7 @@ class UserController extends Controller
             'updated_at' => $userCode->updated_at,
         ]);
 
-        if (!$request->inertia() AND $request->expectsJson()) {
+        if (!$request->inertia() and $request->expectsJson()) {
             return response()->json([
                 'userCodes' => $codes,
             ]);
@@ -37,8 +36,8 @@ class UserController extends Controller
     public function storeCode(Request $request)
     {
         $data = $request->validate([
-            'code' => ['required', 'string', 'max:255'],
-            'role' => ['required', Rule::in(['admin', 'admision', 'profesor', 'estudiante'])],
+            'code' => ['required', 'string', 'max:255', 'unique:' . UserCode::class . ',code',],
+            'role' => ['required', 'exists:' . Role::class . ',name',],
         ]);
 
         $role = Role::where('name', $data['role'])->first();
