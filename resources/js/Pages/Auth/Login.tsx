@@ -1,15 +1,19 @@
 import React, {useContext, useEffect} from 'react';
-import Checkbox from '@/Components/Checkbox';
 import GuestLayout from '@/Layouts/GuestLayout.tsx';
-import {Link, useForm} from '@inertiajs/react';
-import {useRoute} from 'ziggy-js'
-import Surface from "@/Components/atoms/Surface.jsx";
-import InputField from "@/Components/molecules/InputField.jsx";
-import {Text} from "@/Components/atoms/Text.jsx";
-import Loader from "@/Components/atoms/Loader.tsx";
-import Logo from "@/Components/atoms/Logo.jsx";
-import Heading from "@/Components/atoms/Heading.jsx";
 import {Button} from "@/shadcn/ui/button.js";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
+import {z} from 'zod'
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
+import Logo from "@/Components/atoms/Logo.tsx";
+import Title from "@/Components/atoms/Title";
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
+import {Input} from "@/shadcn/ui/input.tsx";
+import {Eye, EyeOff} from "lucide-react";
+import {Checkbox} from "@/shadcn/ui/checkbox.tsx";
+import {Link} from "@inertiajs/react";
 
 const LoginContext = React.createContext({})
 
@@ -18,8 +22,10 @@ const Login = ({status, canResetPassword}) => {
     return (
         <GuestLayout title={'Iniciar sesión'}>
             <LoginContext.Provider value={{canResetPassword: canResetPassword}}>
-                {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
-                <LoginForm/>
+                <div className={'flex flex-col items-center'}>
+                    <LoginForm/>
+                    {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+                </div>
             </LoginContext.Provider>
         </GuestLayout>
     );
@@ -27,94 +33,126 @@ const Login = ({status, canResetPassword}) => {
 
 const LoginForm = () => {
 
-    const route = useRoute()
+    const {isProcessing, router} = useInertiaSubmit()
+
+    const loginForm = useForm<z.infer<typeof loginSchema>>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "", password: "", remember: false
+        },
+        disabled: isProcessing
+    })
+
+    const handleSubmit = (values: z.infer<typeof loginSchema>) => {
+        const endpoint = route('login')
+
+        const body = {...values}
+
+        router.post(endpoint, body, {
+            onError: errors => mapServerErrorsToFields(loginForm, errors)
+        })
+    }
 
     const {canResetPassword} = useContext(LoginContext)
 
     useEffect(() => {
         return () => {
-            reset('password');
+            loginForm.reset()
         };
     }, []);
 
-    const submit = (e) => {
-        e.preventDefault();
-        post(route('login'));
-    };
-
-    const {data, setData, post, processing, errors, reset} = useForm({
-        email: '',
-        password: '',
-        remember: false,
-    });
-
-    const handleChange = (field) => (({target: {value}}) => setData(field, value))
+    const [showPassword, setShowPassword] = React.useState<boolean>(false)
 
     return (
-        <Surface
-            className={"m-6 w-full overflow-hidden px-6 py-6 sm:max-w-md flex flex-col justify-center items-center"}>
-            {processing ? (<Loader/>) : (<>
+        <Card>
+            <CardHeader>
+                <Logo className={'size-12'}/>
+                <CardTitle>
+                    <Title>Iniciar Sesión</Title>
+                </CardTitle>
+                <CardDescription>
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Form {...loginForm}>
+                    <form id='loginForm' onSubmit={loginForm.handleSubmit(handleSubmit)}>
 
-                    <div className={'size-28 mb-6'}>
-                        <Logo/>
-                    </div>
+                        <FormField render={({field}) => (
+                            <FormItem>
+                                <FormLabel>Correo Electrónico</FormLabel>
+                                <FormControl>
+                                    <Input {...field} autoComplete='email'/>
+                                </FormControl>
+                                <FormMessage/>
+                                <FormDescription>
+                                </FormDescription>
+                            </FormItem>
+                        )} name={'email'} control={loginForm.control}/>
 
-                    <form className={'space-y-4'} onSubmit={submit}>
-                        <Heading level={'h4'}>Iniciar Sesión</Heading>
-                        <InputField
-                            label={'Correo Electrónico'}
-                            id={'email'}
-                            type={'email'}
-                            name={'email'}
-                            value={data.email}
-                            autocomplete={'email'}
-                            onChange={handleChange('email')}
-                            required={true}
-                            error={errors.email}
-                            isFocused={true}
-                        />
+                        <FormField render={({field}) => (
+                            <FormItem>
+                                <FormLabel>Contraseña</FormLabel>
+                                <div className={'flex items-center gap-x-2'}>
+                                    <FormControl>
+                                        <Input {...field} autoComplete='current-password'
+                                               type={showPassword ? 'text' : 'password'}/>
+                                    </FormControl>
+                                    {
+                                        showPassword ? (
+                                            <EyeOff className={'size-6'} onClick={() => setShowPassword(false)}/>
+                                        ) : (
+                                            <Eye className={'size-6'} onClick={() => setShowPassword(true)}/>
+                                        )
+                                    }
+                                </div>
+                                <FormMessage/>
+                                <FormDescription>
+                                </FormDescription>
+                            </FormItem>
+                        )} name={'password'} control={loginForm.control}/>
 
-                        <InputField
-                            label={'Contraseña'}
-                            id={'password'}
-                            type={'password'}
-                            name={'password'}
-                            value={data.password}
-                            autocomplete={'current-password'}
-                            onChange={handleChange('password')}
-                            required={true}
-                            error={errors.password}
-                        />
+                        <FormField render={({field}) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4">
+                                <FormControl>
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <div className="space-y-1 leading-none">
+                                    <FormLabel>
+                                        Mantener sesión
+                                    </FormLabel>
+                                    <FormDescription>
+                                    </FormDescription>
+                                    <FormMessage/>
+                                </div>
+                            </FormItem>
+                        )} name={'remember'} control={loginForm.control}/>
 
-                        <input type={'submit'} hidden={true}/>
-
-                        <label className="flex items-center">
-                            <Checkbox
-                                name="remember"
-                                checked={data.remember}
-                                onChange={(e) => setData('remember', e.target.checked)}
-                            />
-                            <Text level={'body-sm'} className="ms-2">Mantener sesión</Text>
-                        </label>
-
-                        <div className="flex items-center justify-end mt-4 gap-4">
-                            {canResetPassword && (
-                                <Link
-                                    href={route('password.request')}
-                                    className="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                                >
-                                    Olvidó su contraseña?
-                                </Link>
-                            )}
-
-                            <Button className={'basis-3/4'} disabled={processing} type={'button'}
-                                    onClick={submit}>Iniciar sesión</Button>
-                        </div>
                     </form>
-                </>
-            )}
-        </Surface>
+                </Form>
+            </CardContent>
+            <CardFooter className={'justify-end'}>
+                {canResetPassword && (
+                    <Button variant='link' asChild>
+                        <Link
+                            href={route('password.request')}
+                        >
+                            Olvidó su contraseña?
+                        </Link>
+                    </Button>
+                )}
+                <Button form='loginForm' type='submit' disabled={isProcessing}>Iniciar sesión</Button>
+            </CardFooter>
+        </Card>
     )
 }
+
+const loginSchema = z.object({
+    email: z.coerce.string().min(1, {message: 'Campo requerido'}).max(255, {message: 'Máximo 255 caracteres'}).email({message: 'Correo Electrónico inválido'}).toLowerCase(),
+    password: z.coerce.string().min(1, {message: 'Campo requerido'}),
+    remember: z.coerce.boolean(),
+})
 
 export default Login
