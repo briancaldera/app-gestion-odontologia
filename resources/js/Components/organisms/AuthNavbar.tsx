@@ -26,21 +26,23 @@ import User from "@/src/models/User";
 import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator,} from "@/shadcn/ui/breadcrumb"
 import {Input} from "@/shadcn/ui/input.tsx";
 import {Separator} from "@/shadcn/ui/separator.tsx";
-import { Switch } from "@/shadcn/ui/switch"
+import {Switch} from "@/shadcn/ui/switch"
 
 declare const axios: Axios
 
 const AuthNavbar = () => {
     return (
-        <div className={'flex-1 flex h-full'}>
-            {/*breadcrumbs*/}
-            <div className={'px-8 flex-1 flex items-center justify-between'}>
-                <Breadcrumbs/>
-                <SearchBar/>
+        <nav className={'z-40 fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 lg:ps-72 flex justify-end'}>
+            <div className={'flex-1 flex h-full'}>
+                {/*breadcrumbs*/}
+                <div className={'px-8 flex-1 flex items-center justify-between'}>
+                    <Breadcrumbs/>
+                    <SearchBar/>
+                </div>
+                {/*auth section*/}
+                <AuthSection/>
             </div>
-            {/*auth section*/}
-            <AuthSection/>
-        </div>
+        </nav>
     )
 }
 
@@ -49,7 +51,7 @@ const AuthSection = () => {
     const [openAuthDropdown, setOpenAuthDropdown] = React.useState<boolean>(false)
 
     const {isDarkMode, toggleDarkMode} = React.useContext(AuthContext)
-    const {auth: {user}}: {auth: {user: User}} = usePage().props
+    const {auth: {user}}: { auth: { user: User } } = usePage().props
 
     const [notifications, setNotifications] = React.useState<Notification[]>([])
 
@@ -66,7 +68,7 @@ const AuthSection = () => {
         let ignore = false
 
         const fetchNotifications = async () => {
-            const { data, status } = await axios.get(route('notifications.index'))
+            const {data, status} = await axios.get(route('notifications.index'))
             if (!ignore && status === 200) {
                 setNotifications(data)
             }
@@ -74,7 +76,9 @@ const AuthSection = () => {
 
         fetchNotifications()
 
-        return () => { ignore = true}
+        return () => {
+            ignore = true
+        }
     }, [])
 
     return (
@@ -85,12 +89,14 @@ const AuthSection = () => {
             <Popover>
                 <PopoverTrigger>
                     <div className={'relative rounded-full p-2'}>
-                        <Icon onClick={() => {}}>
-                            <Bell />
+                        <Icon onClick={() => {
+                        }}>
+                            <Bell/>
                         </Icon>
                         {
                             hasUnread && (
-                                <div className={'absolute rounded-full bg-red-600 size-2 top-1 right-1 flex items-center justify-center'}>
+                                <div
+                                    className={'absolute rounded-full bg-red-600 size-2 top-1 right-1 flex items-center justify-center'}>
                                 </div>
                             )
                         }
@@ -110,7 +116,8 @@ const AuthSection = () => {
                         <Avatar picture={user.profile?.picture_url}/>
                         <div className={'flex flex-col'}>
                             <Text level={'body-xs'}>@{user.name}</Text>
-                            <Text level={'body-xs'} className={'text-slate-400 font-medium line-clamp-1 truncate capitalize text-left'}>{user.role}</Text>
+                            <Text level={'body-xs'}
+                                  className={'text-slate-400 font-medium line-clamp-1 truncate capitalize text-left'}>{user.role}</Text>
                         </div>
                         <Icon>
                             {
@@ -123,12 +130,15 @@ const AuthSection = () => {
                 <DropdownMenuContent>
                     <DropdownMenuLabel>
                         <Heading level={'h6'} className={'line-clamp-1 truncate'}>@{user.name}</Heading>
-                        <Label className={'text-slate-400 font-medium line-clamp-1 truncate'}>{user.profile?.nombres}</Label>
-                        <Label className={'text-slate-400 font-medium line-clamp-1 truncate'}>{user.profile?.apellidos}</Label>
+                        <Label
+                            className={'text-slate-400 font-medium line-clamp-1 truncate'}>{user.profile?.nombres}</Label>
+                        <Label
+                            className={'text-slate-400 font-medium line-clamp-1 truncate'}>{user.profile?.apellidos}</Label>
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator/>
                     <DropdownMenuItem asChild><Link href={route("profile.edit")}>Perfil</Link></DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => e.stopPropagation()} className={"flex justify-between items-center gap-4"}>
+                    <DropdownMenuItem onClick={(e) => e.stopPropagation()}
+                                      className={"flex justify-between items-center gap-4"}>
                         Modo Oscuro
                         <Switch checked={isDarkMode} onCheckedChange={() => toggleDarkMode(value => !value)}>
                             {
@@ -155,7 +165,7 @@ interface Notification {
     updated_at: string,
 }
 
-const NotificationsSection = ({notifications}: {notifications: Notification[]}) => {
+const NotificationsSection = ({notifications}: { notifications: Notification[] }) => {
 
     const now: Date = React.useMemo(() => new Date(), [])
 
@@ -187,7 +197,7 @@ const NotificationsSection = ({notifications}: {notifications: Notification[]}) 
                         <div>
                             <ScrollArea className={'h-[300px] w-72'}>
                                 {notifications.map((notification, index) => (
-                                    <DefaultNotification notification={notification} key={index} now={now} />
+                                    <DefaultNotification notification={notification} key={index} now={now}/>
                                 ))}
                             </ScrollArea>
                         </div>
@@ -210,9 +220,11 @@ const isReadReducer = (state, action) => {
     }
 }
 
-const DefaultNotification = ({notification, now}: {notification: Notification, now: Date}) => {
+const DefaultNotification = ({notification, now}: { notification: Notification, now: Date }) => {
 
-    const [state, dispatch]: [{isRead: boolean}] = React.useReducer(isReadReducer, {isRead: (notification.read_at !== null)})
+    const [state, dispatch]: [{
+        isRead: boolean
+    }] = React.useReducer(isReadReducer, {isRead: (notification.read_at !== null)})
 
     const onMarkAsRead = async () => {
         const {status} = await axios.patch(route('notifications.markAsRead', {id: notification.id}))
@@ -258,7 +270,7 @@ const DefaultNotification = ({notification, now}: {notification: Notification, n
                         <DropdownMenu>
                             <DropdownMenuTrigger>
                                 <Icon>
-                                    <EllipsisVertical />
+                                    <EllipsisVertical/>
                                 </Icon>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
@@ -286,11 +298,11 @@ const Breadcrumbs = () => {
     const breadcrumbStack = []
 
     // second level
-    const level2: {name: string, link: string}[] = [
-        {name: 'Pacientes', link: route('pacientes.index') },
-        {name: 'Historias', link: route('historias.index') },
-        {name: 'Grupos', link: route('groups.index') },
-        {name: 'Mi Perfil', link: route('profile.edit') },
+    const level2: { name: string, link: string }[] = [
+        {name: 'Pacientes', link: route('pacientes.index')},
+        {name: 'Historias', link: route('historias.index')},
+        {name: 'Grupos', link: route('groups.index')},
+        {name: 'Mi Perfil', link: route('profile.edit')},
     ]
 
     if (urlArray[0]) {
@@ -314,7 +326,8 @@ const Breadcrumbs = () => {
         <Breadcrumb>
             <BreadcrumbList>
                 <BreadcrumbItem>
-                    <BreadcrumbLink asChild><Link href={route('dashboard')}><Icon><House/></Icon></Link></BreadcrumbLink>
+                    <BreadcrumbLink asChild><Link
+                        href={route('dashboard')}><Icon><House/></Icon></Link></BreadcrumbLink>
                 </BreadcrumbItem>
                 {
                     breadcrumbStack
@@ -333,7 +346,8 @@ const SearchBar = () => {
             <Icon className={'flex-none'}>
                 <Search/>
             </Icon>
-            <Input className={'border-0 bg-transparent rounded-full'} placeholder={'Buscar...'} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+            <Input className={'border-0 bg-transparent rounded-full'} placeholder={'Buscar...'} value={searchTerm}
+                   onChange={(e) => setSearchTerm(e.target.value)}/>
         </div>
     )
 }

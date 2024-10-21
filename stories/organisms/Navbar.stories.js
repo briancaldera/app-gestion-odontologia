@@ -1,4 +1,4 @@
-import Navbar from "@/Components/organisms/Navbar.jsx"
+import Navbar from "@/Components/organisms/Navbar.tsx"
 import {faker} from "@faker-js/faker";
 
 export default {

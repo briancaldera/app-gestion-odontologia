@@ -2,7 +2,7 @@ import {Head, Link, router, usePage} from "@inertiajs/react";
 import React from "react";
 import AuthNavbar from "@/Components/organisms/AuthNavbar.tsx";
 import Loader from "@/Components/atoms/Loader.tsx";
-import Logo from "@/Components/atoms/Logo.jsx";
+import Logo from "@/Components/atoms/Logo.js";
 import {useRoute} from 'ziggy-js'
 import {TooltipProvider} from "@/Components/atoms/Tooltip"
 import SidebarMenu from "@/Components/organisms/SidebarMenu.tsx";
@@ -52,35 +52,22 @@ const AuthLayout = ({title, sidebar, children}) => {
         })
     }
 
-    const can = React.useCallback((permission: string): boolean => (user?.permissions ?? []).some(p => p === permission),[user]) // todo remove this
+    const can = React.useCallback((permission: string): boolean => (user?.permissions ?? []).some(p => p === permission), [user]) // todo remove this
+
+    const [isSidebarExpanded, setIsSidebarExpanded] = React.useState<boolean>(true)
 
     return (
-        <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode, can:can}}>
+        <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode, can: can}}>
             <TooltipProvider>
                 <Head title={title}/>
                 <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 h-screen flex flex-col`}>
-                    <nav
-                        className={'z-50 fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 lg:ps-72 flex justify-end'}>
-                        <AuthNavbar/>
-                    </nav>
-                    <aside className={
-                        ' /*mobile*/ bg-indigo-600 fixed z-50 max-lg:inset-x-0 max-lg:h-16 bottom-0' +
-                        ' /*tablet*/ ' +
-                        ' /*laptop*/  lg:inset-y-0 lg:inset-x-px lg:left-0 lg:w-full lg:max-w-72'}>
-                        <div className={'sm:h-20 items-center hidden lg:flex'}>
-                            <div className={'overflow-hidden w-20 ps-6 '}>
-                                <Link href={route('dashboard')}
-                                      className={'grayscale contrast-200 brightness-200'}>
-                                    <Logo/>
-                                </Link>
-                            </div>
-                        </div>
-                        <SidebarMenu/>
-                        <div className={'z-50 absolute bottom-0 left-0 p-4'} hidden={!loading}>
-                            <Loader/>
-                        </div>
-                    </aside>
-                    <main className={'pt-14 sm:pt-20 lg:pb-0 pb-16 lg:pl-72 h-full basis-full flex-none'}>
+                    <SidebarMenu expanded={isSidebarExpanded}/>
+                    <AuthNavbar/>
+                    <div className={'z-50 absolute bottom-0 left-0 p-4'} hidden={!loading}>
+                        <Loader/>
+                    </div>
+                    <main
+                        className={`pt-14 sm:pt-20 lg:pb-0 pb-16 ${isSidebarExpanded ? 'lg:pl-72' : 'lg:pl-28'} h-full basis-full flex-none`}>
                         {children}
                     </main>
                 </div>

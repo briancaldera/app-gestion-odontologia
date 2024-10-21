@@ -1,4 +1,4 @@
-import Logo from "@/Components/atoms/Logo.jsx"
+import Logo from "@/Components/atoms/Logo.tsx"
 
 export default {
     title: 'atoms/Logo',
