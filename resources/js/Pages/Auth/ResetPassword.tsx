@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import GuestLayout from '@/Layouts/GuestLayout.js';
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 import {z} from 'zod'
@@ -36,6 +36,12 @@ const ResetPassword = ({token, email}) => {
             onError: errors => mapServerErrorsToFields(resetPasswordForm, errors)
         })
     }
+
+    useEffect(() => {
+        return () => {
+            resetPasswordForm.reset()
+        };
+    }, []);
 
     const [showPassword, setShowPassword] = React.useState<boolean>(false)
 

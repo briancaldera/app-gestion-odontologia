@@ -1,5 +1,5 @@
 import GuestLayout from '@/Layouts/GuestLayout';
-import {Head, Link} from '@inertiajs/react';
+import {Link} from '@inertiajs/react';
 import {z} from 'zod'
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 import {useForm} from "react-hook-form";
@@ -9,10 +9,10 @@ import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
 import {Input} from "@/shadcn/ui/input.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
-import {Text} from "@/Components/atoms/Text";
 import Title from "@/Components/atoms/Title";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
 import {Loader2} from "lucide-react";
+import {useEffect} from "react";
 
 const ForgotPassword = ({status}) => {
 
@@ -36,9 +36,14 @@ const ForgotPassword = ({status}) => {
         })
     }
 
+    useEffect(() => {
+        return () => {
+            resetPasswordForm.reset()
+        };
+    }, []);
+
     return (
-        <GuestLayout>
-            <Head title="Recuperar contraseña"/>
+        <GuestLayout title={'Recuperar contraseña'}>
             <div className={'absolute top-1 left-1'}>
                 <Button variant='link' asChild>
                     <Link href='/'>Inicio</Link>
@@ -51,9 +56,9 @@ const ForgotPassword = ({status}) => {
                             <Title>Recuperar contraseña</Title>
                         </CardTitle>
                         <CardDescription>
-                            <Text>¿Olvidaste tu contraseña? No hay problema. Simplemente dinos tu dirección de correo
-                                electrónico y te enviaremos un enlace de restablecimiento de contraseña que te permitirá
-                                elegir una nueva.</Text>
+                            ¿Olvidaste tu contraseña? No hay problema. Simplemente dinos tu dirección de correo
+                            electrónico y te enviaremos un enlace de restablecimiento de contraseña que te permitirá
+                            elegir una nueva.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>

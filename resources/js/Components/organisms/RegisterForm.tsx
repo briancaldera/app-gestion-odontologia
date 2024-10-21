@@ -11,7 +11,7 @@ import {Button} from "@/shadcn/ui/button.tsx";
 import {Eye, EyeOff, Loader2} from "lucide-react";
 import {Input} from "@/shadcn/ui/input.tsx";
 import {Text} from "@/Components/atoms/Text";
-import React from "react";
+import React, {useEffect} from "react";
 
 const RegisterForm = () => {
 
@@ -34,6 +34,12 @@ const RegisterForm = () => {
             onError: errors => mapServerErrorsToFields(registerForm, errors)
         })
     }
+
+    useEffect(() => {
+        return () => {
+            registerForm.reset()
+        };
+    }, []);
 
     const [showPassword, setShowPassword] = React.useState<boolean>(false)
 

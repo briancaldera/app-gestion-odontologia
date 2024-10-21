@@ -1,7 +1,7 @@
 import GuestLayout from '@/Layouts/GuestLayout.tsx';
 import {Link, useForm} from '@inertiajs/react';
 import Surface from "@/Components/atoms/Surface.jsx";
-import Logo from "@/Components/atoms/Logo.jsx";
+import Logo from "@/Components/atoms/Logo.js";
 import {Text} from "@/Components/atoms/Text.jsx";
 import Title from "@/Components/atoms/Title.jsx";
 import {Button} from "@/Components/molecules/Button.jsx";
@@ -25,7 +25,7 @@ const VerifyEmail = ({status}) => {
                 <Surface className={"max-w-lg px-6 py-6"}>
 
                     <div className={"flex justify-center h-24 my-4"}>
-                        <Logo/>
+                        <Logo className='size-24'/>
                     </div>
 
                     <div className="mb-4 text-sm text-gray-600 dark:text-gray-400 space-y-2">
