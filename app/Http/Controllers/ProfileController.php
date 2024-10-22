@@ -61,28 +61,37 @@ class ProfileController extends Controller
 
     public function create(): Response|RedirectResponse
     {
-        if (!Auth::user()->profile) {
+        /** @var User $user */
+        $user = request()->user();
+        if ($user->profile()->doesntExist()) {
             return Inertia::render('Auth/CreateProfile');
         }
-        return to_route('dashboard');
+        return redirect()->intended('dashboard');
     }
 
     public function store(StoreProfileRequest $request): RedirectResponse
     {
-        abort_if(isset($request->user()->profile), 400, "El perfil ya ha sido creado.");
+        /** @var User $user */
+        $user = $request->user();
+
+        if ($user->profile()->exists()) {
+            message('El perfil ya ha sido creado', \Type::Error);
+            return back();
+        }
 
         $data = $request->except(['picture']);
 
+        /** @var Profile $profile */
+        $profile = $user->profile()->create($data);
+
         // if picture file present, process it
         if ($request->hasFile('picture')) {
-            $profilePic = $request->file('picture');
+            $pictureFile = $request->file('picture');
 
-            $data["picture_url"] = $this->storeProfilePicture($profilePic);
+            $profile->addMedia($pictureFile)->toMediaCollection('user-profile-picture');
         }
 
-        $request->user()->profile()->create($data);
-
-        message('Usuario creado exitosamente', \Type::Success);
+        message('Perfil de usuario creado exitosamente', \Type::Success);
 
         return to_route('dashboard');
     }
