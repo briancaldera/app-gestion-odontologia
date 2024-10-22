@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('profiles', function (Blueprint $table) {
-            $table->foreignUuid("user_id")->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid("user_id")->primary()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string("nombres");
             $table->string("apellidos");
             $table->date("fecha_nacimiento");
@@ -20,7 +20,6 @@ return new class extends Migration
             $table->text("direccion");
             $table->enum("sexo", ['M', 'F', 'NI']);
             $table->string("cedula")->unique();
-            $table->string("picture_url")->nullable();
             $table->timestamps();
         });
     }

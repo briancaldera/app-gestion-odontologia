@@ -62,6 +62,11 @@ return [
             'url'    => env('APP_URL').'/media',
         ],
 
+        'users-profiles-pictures' => [
+            'driver' => 'local',
+            'root' => storage_path('app/users/profiles/pictures'),
+        ],
+
         'pacientes' => [
             'driver' => 'local',
             'root' => storage_path('app/pacientes'),

@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property string $user_id
@@ -18,11 +22,17 @@ use Illuminate\Support\Facades\Storage;
  * @property string $direccion
  * @property string $sexo
  * @property string $cedula
- * @property string $picture_url
  */
-class Profile extends Model
+class Profile extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
+
+    protected $table = 'profiles';
+    protected $primaryKey = 'user_id';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
 
     protected function direccion(): Attribute
     {
@@ -34,13 +44,16 @@ class Profile extends Model
         return Attribute::set(fn(?string $value) => is_null($value) ? '' : $value);
     }
 
-    protected function pictureUrl(): Attribute
+    protected function picture(): Attribute
     {
-        return Attribute::get(fn(?string $value) => is_null($value) ? $value : Storage::url($value));
+        return new Attribute(
+            get: fn() => $this->getMedia('user-profile-picture')->map(fn(Media $media) => url("profiles/$this->user_id/pictures/$media->uuid"))->first()
+        );
     }
 
-    protected $primaryKey = 'user_id';
-    public $incrementing = false;
+    protected $appends = [
+        'picture'
+    ];
 
     protected $fillable = [
         'nombres',
@@ -50,38 +63,24 @@ class Profile extends Model
         'direccion',
         'sexo',
         'cedula',
-        'picture_url',
     ];
 
     protected $casts = [
         'fecha_nacimiento' => 'date'
     ];
 
-//    public function getVisible(): array
-//    {
-//        /* @var User $user*/
-//        $user = auth()->user();
-//
-//        if (!isset($user)) {
-//            return $this->visible;
-//        }
-//
-//        if ($user->id === $this->id) {
-//            return [];
-//        }
-//
-//        if ($user->isAdmin() OR $user->isAdmision()) {
-//            return [];
-//        }
-//
-//        return $this->visible;
-//    }
-//
-//    protected $visible = [
-//        'nombres',
-//        'apellidos',
-//        'picture_url',
-//    ];
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this
+            ->addMediaConversion('preview')
+            ->fit(Fit::Contain, 300, 300)
+            ->nonQueued();
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('user-profile-picture')->useDisk('users-profiles-pictures')->singleFile();
+    }
 
     public function user(): BelongsTo
     {
