@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use League\Flysystem\WhitespacePathNormalizer;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProfileController extends Controller
 {
@@ -180,6 +181,17 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function getProfilePicture(Profile $profile, string $id)
+    {
+        $file = $profile->getMedia('user-profile-picture')->first(fn(Media $media) => $media->uuid === $id);
+
+        if (isset($file)) {
+            return response()->file($file->getPath());
+        }
+
+        return response(null, 404);
     }
 
     private function storeProfilePicture($file): string

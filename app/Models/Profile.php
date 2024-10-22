@@ -44,7 +44,7 @@ class Profile extends Model implements HasMedia
         return Attribute::set(fn(?string $value) => is_null($value) ? '' : $value);
     }
 
-    protected function picture(): Attribute
+    protected function pictureUrl(): Attribute
     {
         return new Attribute(
             get: fn() => $this->getMedia('user-profile-picture')->map(fn(Media $media) => url("profiles/$this->user_id/pictures/$media->uuid"))->first()
@@ -52,7 +52,7 @@ class Profile extends Model implements HasMedia
     }
 
     protected $appends = [
-        'picture'
+        'picture_url'
     ];
 
     protected $fillable = [

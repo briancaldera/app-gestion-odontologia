@@ -30,12 +30,13 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/profile/index', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/create', [ProfileController::class, 'create'])->name('profile.create')->withoutMiddleware(['profile']);
-    Route::get('/profile/{profile}', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile', [ProfileController::class, 'store'])->name('profile.store')->withoutMiddleware(['profile']);
     Route::patch('/profile/updatePicture', [ProfileController::class, 'updatePicture'])->name('profile.updatePicture');
+    Route::get('/profiles/{profile}/pictures/{id}', [ProfileController::class, 'getProfilePicture'])->name('profile.picture.show');
+    Route::get('/profile/{profile}', [ProfileController::class, 'show'])->name('profile.show');
 });
 
 Route::middleware(['auth', 'verified', 'profile'])->group(function () {
