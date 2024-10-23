@@ -31,7 +31,7 @@ class PacienteController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->can('viewAny', Paciente::class)) {
+        if ($user->cannot('viewAny', Paciente::class)) {
             message('No tienes permisos para ver pacientes', \Type::Info);
             return back();
         }
