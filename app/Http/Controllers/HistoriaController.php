@@ -22,6 +22,7 @@ use App\Http\Requests\UpdatePlanTratamiento;
 use App\Http\Requests\UpdateSecuenciaTratamiento;
 use App\Http\Requests\UpdateTrastornosRequest;
 use App\Http\Resources\Odontologia\HistoriaResource;
+use App\Models\Group;
 use App\Models\Group\Homework;
 use App\Models\Historia;
 use App\Models\HistoriaOdontologica;
@@ -32,6 +33,7 @@ use App\Services\CorreccionService;
 use App\Services\HistoriaService;
 use App\Services\RadiografiaService;
 use App\Status;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rule;
@@ -41,6 +43,8 @@ use Type;
 
 class HistoriaController extends Controller
 {
+    const MAX_HRA_PER_USER = 5;
+
     /**
      * Create a new controller instance.
      */
@@ -57,22 +61,55 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
-        if ($user->hasRole('admin')) {
+        if ($user->cannot('viewAny', Historia::class)) {
+            message('No tienes permiso para ver historias', Type::Info);
+            return back();
+        }
+
+        if ($user->hasPermission('historias-index-all')) {
 
             $statistics = [
                 'created_HCE' => Historia::count(),
             ];
 
-            return inertia()->render('Admin/Historias/Dashboard', [
+            if (!$request->inertia() AND $request->expectsJson()) {
+                return response()->json([
+                    'statistics' => $statistics
+                ]);
+            }
+
+            return inertia()->render('Historias/Dashboard', [
                 'statistics' => $statistics
             ]);
-        } elseif ($user->hasRole('admision')) {
+        } elseif ($user->hasPermission('homeworks-index-all')) {
 
-        } elseif ($user->hasRole('profesor')) {
+            $statistics = [];
 
-        } elseif ($user->hasRole('estudiante')) {
-            return Inertia::render('Estudiante/Historias/Dashboard', [
+            if (!$request->inertia() AND $request->expectsJson()) {
+                return response()->json([
+                    'statistics' => $statistics
+                ]);
+            }
 
+            return Inertia::render('Historias/Dashboard', [
+                'statistics' => $statistics
+            ]);
+        } elseif ($user->hasPermission('historias-read')) {
+
+            $historiasCreadas = Historia::where('autor_id', $user->id)->count();
+
+            $statistics = [
+                'historiasCreadas' => $historiasCreadas
+            ];
+
+            if (!$request->inertia() AND $request->expectsJson()) {
+                return response()->json([
+                    'statistics' => $statistics
+                ]);
+            }
+
+            return Inertia::render('Historias/Dashboard', [
+                'statistics' => $statistics
             ]);
         }
     }
@@ -85,22 +122,30 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
-        if ($user->hasRole('admin')) {
+        if ($user->cannot('viewAny', Historia::class)) {
+            message('No tienes permiso para ver historias', Type::Info);
+            return back();
+        }
+
+        if ($user->hasRole('admin') OR $user->hasRole('admision')) {
 
             $historias = Historia::all();
 
-            return inertia()->render('Admin/Historias/Index', [
+            return inertia()->render('Historias/Index', [
                 'historias' => HistoriaResource::collection($historias),
             ]);
-        } elseif ($user->hasRole('admision')) {
-
         } elseif ($user->hasRole('profesor')) {
+
+            /** @var Collection<Group> $groups */
+            $groups = Group::whereJsonContains('members', $user->id)->get();
+
+            $homeworks = $groups->map(fn (Group $group) => $group->assignments->map(fn (Group\Assignment $assignment) => $assignment->homeworks->map(fn (Homework $homework) => $homework->documents)));
 
         } elseif ($user->hasRole('estudiante')) {
 
             $historias = $user->historias()->with(['paciente'])->get();
 
-            return Inertia::render('Estudiante/Historias/Index', [
+            return Inertia::render('Historias/Index', [
                 'historias' => HistoriaResource::collection($historias),
             ]);
         }
@@ -111,7 +156,21 @@ class HistoriaController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Estudiante/Historias/Create');
+        /** @var User $user */
+        $user = request()->user();
+
+        if ($user->cannot('create', Historia::class)) {
+            message('No tienes permiso para crear historias', Type::Info);
+            return back();
+        }
+
+        if (Paciente::where('assigned_to', $user->id)->count() > 0) {
+            message('Por favor, selecciona el paciente. Luego, selecciona la pestaña de "historia médica" y crea la historia');
+            return to_route('pacientes.index');
+        } else {
+            message('No tienes ningún paciente asignado❗. Por favor, registra un paciente primero');
+            return to_route('pacientes.create');
+        }
     }
 
     public function store(StorePacienteRequest $request)
@@ -132,6 +191,19 @@ class HistoriaController extends Controller
 
     public function store2(Request $request)
     {
+        /** @var User $user */
+        $user = $request->user();
+
+        if ($user->cannot('create', Historia::class)) {
+            message('No tienes permiso para crear historias', Type::Info);
+            return back();
+        }
+
+        if ($user->historias()->count() >= self::MAX_HRA_PER_USER) {
+            message('Ya has creado 5 historias. No puedes crear más historias.', Type::Error);
+            return back();
+        }
+
         $data = $request->validate([
             'paciente_id' => ['required', 'uuid', 'exists:'.Paciente::class.',id'],
         ]);
@@ -139,12 +211,10 @@ class HistoriaController extends Controller
         /** @var Paciente $paciente */
         $paciente = Paciente::find($data['paciente_id']);
 
-        /** @var User $user */
-        $user = $request->user();
-
         if ($paciente->assigned_to !== $user->id) {
             message('No estas autorizado para crear un historia a este paciente', Type::Error);
             message('Debes estar asignado como médico tratante', Type::Info);
+            return back();
         }
 
         $historia = $this->historiaService->addHistoria($paciente, $user);
@@ -154,6 +224,127 @@ class HistoriaController extends Controller
         return to_route('historias.edit', [
             'historia' => $historia->id
         ]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Historia $historia, Request $request)
+    {
+        /* @var User $user */
+        $user = $request->user();
+
+        if ($user->cannot('view', $historia)) {
+            message('No tiene permiso para ver esta historia');
+            return back();
+        }
+
+        $homework = null;
+
+        if ($request->has('homework')) {
+            $homework_id = $request->validate(['homework' => ['ulid', 'exists:'.Homework::class.',id']]);
+
+            /** @var Homework $homework */
+            $homework = Homework::with(['assignment:id,group_id' => ['group:id']])->find($homework_id)->first();
+
+            $document = $homework->documents->firstWhere('id', $historia->id);
+
+            $corrections = $document['corrections'];
+
+        }
+
+        if ($user->hasRole('admin')) {
+
+        } elseif ($user->hasRole('admision')) {
+
+        } elseif ($user->hasRole('profesor')) {
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
+
+            return Inertia::render('Historias/Show', [
+                'historia' => new HistoriaResource($historia),
+                'homework' => $homework,
+            ]);
+        } elseif ($user->hasRole('estudiante')) {
+
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
+
+            return Inertia::render('Historias/Show', [
+                'historia' => new HistoriaResource($historia),
+                'homework' => $homework,
+            ]);
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Historia $historia, Request $request)
+    {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
+        $homework = null;
+
+        if ($request->has('homework')) {
+            $homework_id = $request->validate(['homework' => ['ulid', 'exists:'.Homework::class.',id']]);
+
+            /** @var Homework $homework */
+            $homework = Homework::with(['assignment:id,group_id' => ['group:id']])->find($homework_id)->first();
+
+            $document = $homework->documents->firstWhere('id', $historia->id);
+
+            $corrections = $document['corrections'];
+
+        }
+
+        if ($user->hasRole('admin')) {
+
+        } elseif ($user->hasRole('admision')) {
+
+        } elseif ($user->hasRole('profesor')) {
+
+        } elseif ($user->hasRole('estudiante')) {
+
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
+
+            return Inertia::render('Historias/Edit', [
+                'historia' => new HistoriaResource($historia),
+                'homework' => $homework,
+            ]);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateHistoriaRequest $request, Historia $historia)
+    {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
+        $data = $request->validated();
+        $this->historiaService->updateHistoria($historia, $data);
+        return response()->noContent();
     }
 
     public function updatePaciente(Paciente $paciente, UpdatePacienteRequest $request)
@@ -174,6 +365,19 @@ class HistoriaController extends Controller
 
     public function updateAntFamiliares(Historia $historia, UpdateAntFamiliaresRequest $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         $data = $request->validated();
         $this->historiaService->updateAntFamiliares($historia, $data);
         message('Antecedentes médicos familiares actualizados exitosamente 👍🏻', Type::Success);
@@ -189,6 +393,19 @@ class HistoriaController extends Controller
 
     public function updateAntPersonales(Historia $historia, UpdateAntPersonalesRequest $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         $data = $request->validated();
         $this->historiaService->updateAntPersonales($historia, $data);
         message('Antecedentes médicos personales actualizados exitosamente 👍🏻', Type::Success);
@@ -212,6 +429,19 @@ class HistoriaController extends Controller
 
     public function storeHistoriaOdontologica(StoreHistoriaOdontologicaRequest $request, Historia $historia)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         $data = $request->validated();
         $this->historiaService->addHistoriaOdontologica($historia, $data);
         return response(null, 201);
@@ -219,6 +449,19 @@ class HistoriaController extends Controller
 
     public function updateHistoriaOdontologica(Historia $historia, UpdateHistoriaOdontologicaRequest $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         $data = $request->validated();
         $this->historiaService->updateHistoriaOdontologica($historia, $data);
         message('Historia odontológica actualizada exitosamente 👍🏻', Type::Success);
@@ -227,6 +470,19 @@ class HistoriaController extends Controller
 
     public function updateEstudioModelos(Historia $historia, UpdateEstudioModelos $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         $data = $request->validated();
         $this->historiaService->updateEstudioModelos($historia, $data);
         message('Historia odontológica actualizada exitosamente 👍🏻', Type::Success);
@@ -235,6 +491,19 @@ class HistoriaController extends Controller
 
     public function updatePlanTratamiento(Historia $historia, UpdatePlanTratamiento $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         $data = $request->validated();
         $this->historiaService->updatePlanTratamiento($historia, $data);
         message('Historia odontológica actualizada exitosamente 👍🏻', Type::Success);
@@ -243,6 +512,19 @@ class HistoriaController extends Controller
 
     public function updateModificacionesPlanTratamiento(Historia $historia, UpdateModificacionesPlanTratamiento $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         $data = $request->validated();
         $this->historiaService->updateModificacionesPlanTratamiento($historia, $data);
         message('Historia odontológica actualizada exitosamente 👍🏻', Type::Success);
@@ -251,6 +533,19 @@ class HistoriaController extends Controller
 
     public function updateSecuenciaTratamiento(Historia $historia, UpdateSecuenciaTratamiento $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         $data = $request->validated();
         $this->historiaService->updateSecuenciaTratamiento($historia, $data);
         message('Historia odontológica actualizada exitosamente 👍🏻', Type::Success);
@@ -259,6 +554,19 @@ class HistoriaController extends Controller
 
     public function updateExamenRadiografico(Historia $historia, UpdateExamenRadiografico $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         /* @var HistoriaOdontologica $historia_odon */
         $historia_odon = $historia->historiaOdontologica;
 
@@ -344,6 +652,19 @@ class HistoriaController extends Controller
 
     public function updatePeriodontodiagrama(Historia $historia, UpdatePeriodontodiagramaRequest $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         $periodontodiagrama = $request->validated()['periodontodiagrama'];
 
         /* @var HistoriaOdontologica $historia_odon */
@@ -357,6 +678,19 @@ class HistoriaController extends Controller
 
     public function storeOdontologiaMedia(Historia $historia, StoreOdontologiaMediaRequest $request)
     {
+        /* @var User $user */
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
         /* @var HistoriaOdontologica $historia_odon */
         $historia_odon = $historia->historiaOdontologica;
         $data = $request->validated();
@@ -380,99 +714,6 @@ class HistoriaController extends Controller
         $file = $historia_odo->getMedia('anymedia')->firstOrFail(fn(Media $media) => $media->uuid === $id);
 
         return response()->file($file->getPath());
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Historia $historia, Request $request)
-    {
-        /* @var User $user */
-        $user = $request->user();
-
-        $homework = null;
-
-        if ($request->has('homework')) {
-            $homework_id = $request->validate(['homework' => ['ulid', 'exists:'.Homework::class.',id']]);
-
-            /** @var Homework $homework */
-            $homework = Homework::with(['assignment:id,group_id' => ['group:id']])->find($homework_id)->first();
-
-            $document = $homework->documents->firstWhere('id', $historia->id);
-
-            $corrections = $document['corrections'];
-
-        }
-
-        if ($user->hasRole('admin')) {
-
-        } elseif ($user->hasRole('admision')) {
-
-        } elseif ($user->hasRole('profesor')) {
-            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
-
-            return Inertia::render('Estudiante/Historias/Show', [
-                'historia' => new HistoriaResource($historia),
-                'homework' => $homework,
-            ]);
-        } elseif ($user->hasRole('estudiante')) {
-
-            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
-
-            return Inertia::render('Estudiante/Historias/Show', [
-                'historia' => new HistoriaResource($historia),
-                'homework' => $homework,
-            ]);
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Historia $historia, Request $request)
-    {
-        /* @var User $user */
-        $user = $request->user();
-
-        $homework = null;
-
-        if ($request->has('homework')) {
-            $homework_id = $request->validate(['homework' => ['ulid', 'exists:'.Homework::class.',id']]);
-
-            /** @var Homework $homework */
-            $homework = Homework::with(['assignment:id,group_id' => ['group:id']])->find($homework_id)->first();
-
-            $document = $homework->documents->firstWhere('id', $historia->id);
-
-            $corrections = $document['corrections'];
-
-        }
-
-        if ($user->hasRole('admin')) {
-
-        } elseif ($user->hasRole('admision')) {
-
-        } elseif ($user->hasRole('profesor')) {
-
-        } elseif ($user->hasRole('estudiante')) {
-
-            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
-
-            return Inertia::render('Estudiante/Historias/Edit', [
-                'historia' => new HistoriaResource($historia),
-                'homework' => $homework,
-            ]);
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateHistoriaRequest $request, Historia $historia)
-    {
-        $data = $request->validated();
-        $this->historiaService->updateHistoria($historia, $data);
-        return response()->noContent();
     }
 
     public function changeStatus(Historia $historia, Request $request)
@@ -531,6 +772,14 @@ class HistoriaController extends Controller
 
     public function getPanoramica(Historia $historia, string $id)
     {
+        /* @var User $user */
+        $user = request()->user();
+
+        if ($user->cannot('view', $historia)) {
+            message('No tiene permiso para ver esta historia');
+            return back();
+        }
+
         /* @var HistoriaOdontologica $historia_odo */
         $historia_odo = $historia->historiaOdontologica;
 
@@ -542,6 +791,13 @@ class HistoriaController extends Controller
 
     public function getCoronales(Historia $historia, string $id)
     {
+        $user = request()->user();
+
+        if ($user->cannot('view', $historia)) {
+            message('No tiene permiso para ver esta historia');
+            return back();
+        }
+
         /* @var HistoriaOdontologica $historia_odo */
         $historia_odo = $historia->historiaOdontologica;
 
@@ -553,6 +809,13 @@ class HistoriaController extends Controller
 
     public function getPeriapicales(Historia $historia, string $id)
     {
+        $user = request()->user();
+
+        if ($user->cannot('view', $historia)) {
+            message('No tiene permiso para ver esta historia');
+            return back();
+        }
+
         /* @var HistoriaOdontologica $historia_odo */
         $historia_odo = $historia->historiaOdontologica;
 
@@ -564,6 +827,13 @@ class HistoriaController extends Controller
 
     public function getPeriodontodiagrama(Historia $historia, string $id)
     {
+        $user = request()->user();
+
+        if ($user->cannot('view', $historia)) {
+            message('No tiene permiso para ver esta historia');
+            return back();
+        }
+
         /* @var HistoriaOdontologica $historia_odo */
         $historia_odo = $historia->historiaOdontologica;
 

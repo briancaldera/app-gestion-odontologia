@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Events\HistoriaCreated;
 use App\HasStatus;
+use App\Models\Group\Homework;
 use App\Status;
 use App\StatusHolder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -88,6 +90,11 @@ class Historia extends Model implements StatusHolder
     public function correcciones():HasOne
     {
         return $this->hasOne(Correccion::class);
+    }
+
+    public function scopeHomework(Builder $query): void
+    {
+        $query->select('*')->from('homeworks')->whereJsonContains('documents->id', $this->id);
     }
 
     public static array $actions = [

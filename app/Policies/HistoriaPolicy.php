@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Group;
 use App\Models\Historia;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,13 +14,7 @@ class HistoriaPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRole('admision')) {
-            return true;
-        }
-
-        if ($user->hasRole('admin')) {
-            return true;
-        }
+        if ($user->hasPermission('historias-read')) return true;
 
         return false;
     }
@@ -29,20 +24,16 @@ class HistoriaPolicy
      */
     public function view(User $user, Historia $historia): bool
     {
-        if ($user->hasRole('estudiante') AND $historia->autor_id === $user->id) {
-            return true;
-        }
+        if ($user->hasPermission('historias-read') AND $user->id === $historia->autor_id) return true;
 
-        if ($user->hasRole('profesor')) {
-            return true;
-        }
+        if ($user->hasPermission('historias-read-private')) return true;
 
-        if ($user->hasRole('admision')) {
-            return true;
-        }
-
-        if ($user->hasRole('admin')) {
-            return true;
+        if ($user->hasPermission('homeworks-create-corrections')) {
+            $groups = $user->groups()->where('owner_id', $user->id)->load('assignments.homeworks');
+            $isAHomework = $groups->some(fn(Group $group) => $group->assignments->some(fn (Group\Assignment $assignment) => $assignment->homeworks->some(fn( Group\Homework $homework) => $homework->documents->some(fn ($document) => $document->id === $historia->id))));
+            if ($isAHomework) {
+                return true;
+            }
         }
 
         return false;
@@ -53,7 +44,7 @@ class HistoriaPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRole('estudiante')) {
+        if ($user->hasPermission('historias-create')) {
             return true;
         }
 
@@ -65,22 +56,7 @@ class HistoriaPolicy
      */
     public function update(User $user, Historia $historia): bool|Response
     {
-        if ($user->hasRole('estudiante') AND $historia->autor_id === $user->id) {
-
-            if (!$historia->isOpen()) {
-                return Response::deny('La historia no se encuentra abierta para modificaciones.');
-            }
-
-            return true;
-        }
-
-        if ($user->hasRole('admision')) {
-            return true;
-        }
-
-        if ($user->hasRole('admin')) {
-            return true;
-        }
+        if ($user->hasPermission('historias-update') AND $user->id === $historia->autor_id) return true;
 
         return false;
     }
@@ -90,9 +66,7 @@ class HistoriaPolicy
      */
     public function delete(User $user, Historia $historia): bool
     {
-        if ($user->hasRole('admin')) {
-            return true;
-        }
+        if ($user->hasPermission('historias-delete')) return true;
 
         return false;
     }
@@ -102,9 +76,7 @@ class HistoriaPolicy
      */
     public function restore(User $user, Historia $historia): bool
     {
-        if ($user->hasRole('admin')) {
-            return true;
-        }
+        if ($user->hasPermission('historias-delete')) return true;
 
         return false;
     }
@@ -114,9 +86,7 @@ class HistoriaPolicy
      */
     public function forceDelete(User $user, Historia $historia): bool
     {
-        if ($user->hasRole('admin')) {
-            return true;
-        }
+        if ($user->hasPermission('historias-delete')) return true;
 
         return false;
     }
