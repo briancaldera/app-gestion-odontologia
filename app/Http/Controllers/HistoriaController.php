@@ -217,6 +217,11 @@ class HistoriaController extends Controller
             return back();
         }
 
+        if ($user->cannot('update', $paciente)) {
+            message('No tienes permiso para modificar este paciente', Type::Info);
+            return back();
+        }
+
         $historia = $this->historiaService->addHistoria($paciente, $user);
         $paciente->touch();
 

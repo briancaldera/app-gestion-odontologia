@@ -22,15 +22,9 @@ class GroupPolicy
      */
     public function view(User $user, Group $group): bool
     {
-        if ($user->hasRole(['admin', 'admision'])) return true;
+        if ($user->hasPermission('groups-read') AND $group->members->some(fn (User $member) => $member->id === $user->id)) return true;
 
-        if ($user->hasRole('profesor') AND $group->owner->id === $user->id) {
-            return true;
-        }
-
-        if ($group->members->contains('id', $user->id)) {
-            return true;
-        };
+        if ($user->hasPermission('groups-read-private')) return true;
 
         return false;
     }
@@ -40,7 +34,7 @@ class GroupPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRole(['admin', 'admision'])) return true;
+        if ($user->hasPermission('groups-create')) return true;
 
         return false;
     }
@@ -50,21 +44,21 @@ class GroupPolicy
      */
     public function update(User $user, Group $group): bool
     {
-        if ($user->hasRole(['admin', 'admision'])) return true;
+        if ($user->hasPermission('groups-update')) return true;
 
         return false;
     }
 
     public function addMember(User $user, Group $group): bool
     {
-        if ($user->hasRole(['admin', 'admision'])) return true;
+        if ($user->hasPermission('groups-create')) return true;
 
         return false;
     }
 
     public function removeMember(User $user, Group $group): bool
     {
-        if ($user->hasRole(['admin', 'admision'])) return true;
+        if ($user->hasPermission('groups-create')) return true;
 
         return false;
     }
@@ -74,7 +68,7 @@ class GroupPolicy
      */
     public function delete(User $user, Group $group): bool
     {
-        if ($user->hasRole(['admin', 'admision'])) return true;
+        if ($user->hasPermission('groups-delete')) return true;
 
         return false;
     }
@@ -84,7 +78,9 @@ class GroupPolicy
      */
     public function restore(User $user, Group $group): bool
     {
-        //
+        if ($user->hasPermission('groups-delete')) return true;
+
+        return false;
     }
 
     /**
@@ -92,6 +88,8 @@ class GroupPolicy
      */
     public function forceDelete(User $user, Group $group): bool
     {
-        //
+        if ($user->hasPermission('groups-delete')) return true;
+
+        return false;
     }
 }

@@ -14,7 +14,7 @@ const BaseLayout = ({children}) => {
             <CssVarsProvider>
                 {/*<CssBaseline/>*/}
                 {children}
-                <Toaster expand/>
+                <Toaster expand duration={10000}/>
             </CssVarsProvider>
         </StyledEngineProvider>
     )

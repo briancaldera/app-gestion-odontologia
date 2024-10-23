@@ -120,7 +120,7 @@ class DatabaseSeeder extends Seeder
                 'historias' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'historias-endodoncia' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'groups' => ['index-all', 'create', 'read', 'read-private', 'update', 'delete', 'index-users', 'add-users', 'remove-users'],
-                'assignments' => ['create', 'read', 'update', 'delete'],
+                'assignments' => ['create', 'read', 'read-private', 'update', 'delete'],
                 'homeworks' => ['index-all', 'read', 'update', 'delete', 'create-corrections'],
             ],
             'admision' => [
@@ -134,7 +134,7 @@ class DatabaseSeeder extends Seeder
                 'pacientes' => ['index-all', 'read',],
                 'historias' => ['read', 'update-status'],
                 'historias-endodoncia' => ['read', 'update-status'],
-                'groups' => ['read', 'read-private', 'update', 'index-users'],
+                'groups' => ['read', 'update', 'index-users'],
                 'assignments' => ['create', 'read', 'update', 'delete'],
                 'homeworks' => ['index-all', 'read', 'delete', 'create-corrections'],
             ],

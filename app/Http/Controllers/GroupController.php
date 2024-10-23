@@ -31,20 +31,26 @@ class GroupController extends Controller
      */
     public function index(Request $request)
     {
+        /** @var User $user */
         $user = $request->user();
+
+        if ($user->cannot('viewAny', Group::class)) {
+            message('No tienes permisos para ver grupos', \Type::Info);
+            return back();
+        }
 
         if ($user->hasPermission('groups-index-all')) {
             $groups = Group::with(['owner.profile'])->get();
             $profesores = User::whereHasRole('profesor')->with(['profile'])->get();
 
-            return Inertia::render('Admin/Groups/Index', [
+            return Inertia::render('Groups/Index', [
                 'groups' => GroupResource::collection($groups),
                 'profesores' => UserResource::collection($profesores),
             ]);
         } else {
             $groups = Group::with(['owner.profile'])->whereJsonContains('members', $user->id)->orWhere('owner_id')->get();
 
-            return Inertia::render('Estudiante/Groups/Index', [
+            return Inertia::render('Groups/Index', [
                 'groups' => GroupResource::collection($groups),
             ]);
         }
@@ -63,6 +69,13 @@ class GroupController extends Controller
      */
     public function store(StoreGroupRequest $request)
     {
+        $user = $request->user();
+
+        if ($user->cannot('create', Group::class)) {
+            message('No tienes permisos para crear grupos', \Type::Info);
+            return back();
+        }
+
         $data = $request->validated();
         $owner = User::find($data['owner']);
         $this->groupService->createGroup($data['name'], $owner);
@@ -77,6 +90,11 @@ class GroupController extends Controller
     public function show(Group $group, Request $request)
     {
         $user = $request->user();
+
+        if ($user->cannot('view', $group)) {
+            message('No puede ver este grupo', \Type::Info);
+            return back();
+        }
 
         if ($user->hasRole('admin')) {
             $group->load(['owner.profile']);
@@ -117,6 +135,13 @@ class GroupController extends Controller
 
     public function addMembers(Group $group, Request $request)
     {
+        $user = $request->user();
+
+        if ($user->cannot('addMember', $group)) {
+            message('No puedes agregar miembros a este grupo', \Type::Info);
+            return back();
+        }
+
         $data = $request->validate([
             'group_id' => ['required', 'ulid', 'exists:' . Group::class . ',id'],
             'new_members' => ['required', 'array'],
@@ -139,6 +164,13 @@ class GroupController extends Controller
 
     public function removeMembers(Group $group, Request $request)
     {
+        $user = $request->user();
+
+        if ($user->cannot('removeMember', $group)) {
+            message('No puedes remover miembros de este grupo', \Type::Info);
+            return back();
+        }
+
         $data = $request->validate([
             'group_id' => ['required', 'ulid', 'exists:' . Group::class . ',id'],
             'members' => ['required', 'array'],

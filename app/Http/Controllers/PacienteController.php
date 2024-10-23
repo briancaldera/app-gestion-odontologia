@@ -28,11 +28,13 @@ class PacienteController extends Controller
      */
     public function index()
     {
-
         /** @var User $user */
         $user = auth()->user();
 
-        $user->can('viewAny', Paciente::class);
+        if ($user->can('viewAny', Paciente::class)) {
+            message('No tienes permisos para ver pacientes', \Type::Info);
+            return back();
+        }
 
         if ($user->hasPermission('pacientes-index-all')) {
             $pacientes = Paciente::all();
