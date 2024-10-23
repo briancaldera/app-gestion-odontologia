@@ -5,22 +5,24 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePacienteRequest;
 use App\Http\Requests\UpdatePacienteRequest;
 use App\Http\Resources\PacienteResource;
-use App\Models\Historia;
 use App\Models\Paciente;
 use App\Models\User;
 use App\Services\PacienteService;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Inertia\Inertia;
 
 class PacienteController extends Controller
 {
+    const MAX_PACIENTES_ASSIGNED_PER_USER = 5;
+
     /**
      * Create a new controller instance.
      */
     public function __construct(
         protected PacienteService $pacienteService,
-    ) {}
+    )
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -38,7 +40,7 @@ class PacienteController extends Controller
             $pacientes = Paciente::where('assigned_to', $user->id)->get();
         }
 
-        return Inertia::render('Estudiante/Pacientes/Index', [
+        return Inertia::render('Pacientes/Index', [
             'pacientes' => PacienteResource::collection($pacientes)
         ]);
     }
@@ -48,14 +50,21 @@ class PacienteController extends Controller
      */
     public function create()
     {
+        /** @var User $user */
         $user = auth()->user();
 
-        if ($user->hasPermission('pacientes-create')) {
-            return Inertia::render('Estudiante/Pacientes/Create');
+        if ($user->cannot('create', Paciente::class)) {
+            message('No estas autorizado para registrar pacientes', \Type::Info);
+            return back();
         }
 
-        message('No estas autorizado a registrar pacientes', \Type::Error);
-        return to_route('dashboard');
+        if (Paciente::query()->where('assigned_to', $user->id)->count() >= 5) {
+            message('Ya tienes 5 o más pacientes asignados. No puedes registrar más pacientes', \Type::Error);
+            return back();
+        }
+
+        message('Recuerda que solo puedes tener hasta ' . self::MAX_PACIENTES_ASSIGNED_PER_USER . ' pacientes asignados', \Type::Info);
+        return Inertia::render('Pacientes/Create');
     }
 
     /**
@@ -63,9 +72,22 @@ class PacienteController extends Controller
      */
     public function store(StorePacienteRequest $request)
     {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->cannot('create', Paciente::class)) {
+            message('No estas autorizado para registrar pacientes', \Type::Info);
+            return back();
+        }
+
+        if (Paciente::query()->where('assigned_to', $user->id)->count() >= 5) {
+            message('Ya tienes 5 o más pacientes asignados. No puedes registrar más pacientes', \Type::Error);
+            return back();
+        }
+
         $validated = $request->validated();
         $newPaciente = $this->pacienteService->storePaciente($validated);
-        message('Paciente creado.', \Type::Success);
+        message('Paciente creado', \Type::Success);
         return to_route('pacientes.show', ['paciente' => $newPaciente->id]);
     }
 
@@ -74,9 +96,17 @@ class PacienteController extends Controller
      */
     public function show(Paciente $paciente)
     {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->cannot('view', $paciente)) {
+            message('No tienes permiso para ver este paciente', \Type::Info);
+            return back();
+        }
+
         $paciente->load(['medicoTratante', 'historia', 'historiaEndodoncia']);
 
-        return Inertia::render('Estudiante/Pacientes/Show', [
+        return Inertia::render('Pacientes/Show', [
             'paciente' => new PacienteResource($paciente),
         ]);
     }
@@ -86,27 +116,36 @@ class PacienteController extends Controller
      */
     public function edit(Paciente $paciente)
     {
+        /** @var User $user */
         $user = auth()->user();
 
-        if ($user->hasPermission('pacientes-update')) {
-            $paciente->load(['medicoTratante.profile']);
-            return Inertia::render('Estudiante/Pacientes/Edit', [
-                'paciente' => new PacienteResource($paciente),
-            ]);
+        if ($user->cannot('update', $paciente)) {
+            message('No estas autorizado para modificar este paciente', \Type::Info);
+            return back();
         }
 
-        message('No estas autorizado para actualizar pacientes.', \Type::Error);
-        return to_route('pacientes.index');
+        $paciente->load(['medicoTratante.profile']);
+        return Inertia::render('Pacientes/Edit', [
+            'paciente' => new PacienteResource($paciente),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePacienteRequest $request, Paciente $paciente): Response
+    public function update(UpdatePacienteRequest $request, Paciente $paciente)
     {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->cannot('update', $paciente)) {
+            message('No estas autorizado para modificar este paciente', \Type::Info);
+            return back();
+        }
+
         $data = $request->validated();
         $this->pacienteService->updatePaciente($paciente, $data);
-        message('Paciente actualizado exitosamente.', \Type::Success);
+        message('Paciente actualizado exitosamente', \Type::Success);
         return response(null, 200);
     }
 
@@ -115,12 +154,14 @@ class PacienteController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->can('view', $paciente)) {
-
-            $foto = $paciente->getFirstMedia('foto');
-
-            if ($foto->uuid === $id) return response()->file($foto->getPath());
+        if ($user->cannot('view', $paciente)) {
+            return response(null, 404);
         }
+
+
+        $foto = $paciente->getFirstMedia('foto');
+
+        if ($foto->uuid === $id) return response()->file($foto->getPath());
 
         return response(null, 404);
     }
@@ -128,7 +169,8 @@ class PacienteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Paciente $paciente)
+    public
+    function destroy(Paciente $paciente)
     {
         //
     }

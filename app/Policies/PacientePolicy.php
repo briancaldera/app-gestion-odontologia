@@ -8,21 +8,14 @@ use Illuminate\Auth\Access\Response;
 
 class PacientePolicy
 {
-    public function before(User $user, string $ability): bool|null
-    {
-        if ($user->hasRole('admin')) {
-            return true;
-        }
-
-        return null;
-    }
-
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('pacientes-read');
+        if ($user->hasPermission('pacientes-read')) return true;
+
+        return false;
     }
 
     /**
@@ -32,6 +25,8 @@ class PacientePolicy
     {
         if ($user->hasPermission('pacientes-read') AND $paciente->assigned_to === $user->id) return true;
 
+        if ($user->hasPermission('pacientes-read-private')) return true;
+
         return false;
     }
 
@@ -40,7 +35,11 @@ class PacientePolicy
      */
     public function create(User $user): bool
     {
-        //
+        if ($user->hasPermission('pacientes-create')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -48,7 +47,7 @@ class PacientePolicy
      */
     public function update(User $user, Paciente $paciente): bool
     {
-        if ($user->hasPermission('pacientes-update') AND $paciente->assigned_to === $user->id) return true;
+        if ($user->hasPermission('pacientes-update') AND $user->id === $paciente->assigned_to) return true;
 
         return false;
     }
@@ -58,7 +57,9 @@ class PacientePolicy
      */
     public function delete(User $user, Paciente $paciente): bool
     {
-        //
+        if ($user->hasPermission('pacientes-delete')) return true;
+
+        return false;
     }
 
     /**
@@ -66,7 +67,9 @@ class PacientePolicy
      */
     public function restore(User $user, Paciente $paciente): bool
     {
-        //
+        if ($user->hasPermission('pacientes-delete')) return true;
+
+        return false;
     }
 
     /**
@@ -74,6 +77,8 @@ class PacientePolicy
      */
     public function forceDelete(User $user, Paciente $paciente): bool
     {
-        //
+        if ($user->hasPermission('pacientes-delete')) return true;
+
+        return false;
     }
 }
