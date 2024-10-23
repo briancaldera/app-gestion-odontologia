@@ -4,36 +4,32 @@ import {useRoute} from "ziggy-js";
 import {z} from "zod";
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
-import Field from "@/Components/molecules/Field";
-import DatePicker from "@/Components/molecules/DatePicker";
-import {Button} from "@/shadcn/ui/button";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
+import Field from "@/Components/molecules/Field.tsx";
+import DatePicker from "@/Components/molecules/DatePicker.tsx";
+import {Button} from "@/shadcn/ui/button.tsx";
 import {useForm} from 'react-hook-form'
-import PacienteSchema, {PacienteDefaults, PacienteFake} from "@/FormSchema/Historia/PacienteSchema";
+import PacienteSchema, {PacienteDefaults, PacienteFake} from "@/FormSchema/Historia/PacienteSchema.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
-import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/shadcn/ui/select'
-import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu";
+import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/shadcn/ui/select.tsx'
+import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
 import {ArrowBigLeft} from 'lucide-react'
-import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
-import {mapServerErrorsToFields} from "@/src/Utils/Utils";
-import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema";
-import {Textarea} from "@/shadcn/ui/textarea";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
+import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
+import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema.ts";
+import {Textarea} from "@/shadcn/ui/textarea.tsx";
 
 const Create = () => {
 
     return (
-        <AuthLayout title={'Crear historia'} sidebar={<SidebarMenu menu={menu}/>}>
+        <AuthLayout title={'Crear historia'}>
             <div className={'p-12'}>
                 <PacienteSection />
             </div>
         </AuthLayout>
     )
 }
-
-const menu: readonly MenuItem[] = [
-    {icon: <ArrowBigLeft/>, link: "historias.dashboard", name: "Volver"}
-] satisfies MenuItem[]
 
 const PacienteSection = () => {
 

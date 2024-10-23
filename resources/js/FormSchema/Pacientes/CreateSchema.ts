@@ -1,4 +1,4 @@
-import {z} from 'zod'
+import {undefined, z} from 'zod'
 
 const MAX_PICTURE_SIZE = 2 * 1000 * 1000 // 2 MB
 const MIN_PICTURE_SIZE = 5 * 1000 // 5 KB
@@ -82,7 +82,8 @@ const PacienteDefaults = {
     ocupacion: '',
     telefono: '',
     enfermedad_actual: '',
-    motivo_consulta: ""
+    motivo_consulta: "",
+    foto: null
 } satisfies z.infer<typeof PacienteSchema>
 
 export {PacienteSchema, PacienteDefaults}

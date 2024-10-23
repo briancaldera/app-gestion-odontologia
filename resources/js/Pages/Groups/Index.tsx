@@ -1,72 +1,129 @@
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
-import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu";
-import {DataTable} from "@/Components/molecules/DataTable";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import {mapServerErrorsToFields, usePermission} from "@/src/Utils/Utils.ts";
+import Group from "@/src/models/Group.ts";
+import User from "@/src/models/User.ts";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
-import Group from "@/src/models/Group";
-import Surface from "@/Components/atoms/Surface";
-import {z} from "zod";
-import {ArrowBigLeft, Check, ChevronsUpDown, MoreHorizontal, Trash2} from 'lucide-react'
-import Title from "@/Components/atoms/Title";
-import {Button} from "@/shadcn/ui/button";
-import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,} from "@/shadcn/ui/dialog"
-import React from "react";
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
-import {useForm} from 'react-hook-form'
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/shadcn/ui/command"
-import {Popover, PopoverContent, PopoverTrigger,} from "@/shadcn/ui/popover"
-import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
+import {formatDate} from "date-fns";
+import {Link, router} from "@inertiajs/react";
 import {route, useRoute} from "ziggy-js";
-import {mapServerErrorsToFields} from "@/src/Utils/Utils";
-import {Input} from "@/shadcn/ui/input";
-import User from "@/src/models/User";
-import {Icon} from "@/Components/atoms/Icon.tsx";
-import {cn} from "@/lib/utils";
-import {formatDate} from 'date-fns'
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
+    DropdownMenuLabel, DropdownMenuSeparator,
     DropdownMenuTrigger
-} from "@/shadcn/ui/dropdown-menu";
-import {router} from "@inertiajs/react";
-import {Tooltip, TooltipContent, TooltipTrigger,} from "@/shadcn/ui/tooltip"
+} from "@/shadcn/ui/dropdown-menu.tsx";
+import {Button} from "@/shadcn/ui/button.tsx";
+import {Check, ChevronsUpDown, MoreHorizontal, Trash2} from "lucide-react";
+import React from "react";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/shadcn/ui/dialog.tsx";
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
+import {Input} from "@/shadcn/ui/input.tsx";
+import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover.tsx";
+import {cn} from "@/lib/utils.ts";
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/shadcn/ui/command.tsx";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/shadcn/ui/tooltip.tsx";
 import {Text} from "@/Components/atoms/Text";
+import Surface from "@/Components/atoms/Surface";
+import Heading from "@/Components/atoms/Heading";
+import Title from "@/Components/atoms/Title";
+import {Avatar} from "@mui/joy";
+import {DataTable} from "@/Components/molecules/DataTable.tsx";
+import {Icon} from "@/Components/atoms/Icon.tsx";
 
-
-interface IndexProps {
-    readonly groups: Group[]
+type IndexProps = {
+    groups: Group[]
+    profesores: User[]
 }
 
-const Index = ({groups, profesores}: IndexProps) => {
+const Index = ({groups, profesores}) => {
+    const can = usePermission()
 
     const [openCreateGroupDialog, setOpenCreateGroupDialog] = React.useState<boolean>(false)
-    console.log(groups)
 
+    if (can('groups-index-all')) {
+        return (
+            <AuthLayout title='Grupos'>
+                <ScrollArea className='h-full'>
+                    <div className={'p-6 grid grid-cols-4 grid-rows-3 gap-6'}>
+                        <Surface className={'col-span-3 row-span-2 h-[700px]'}>
+                            <DataTable columns={columns} data={groups} searchable={true}/>
+                        </Surface>
+                        <Surface className={'col-span-1 p-6'}>
+                            <section>
+                                <CreateGroupDialog show={openCreateGroupDialog} onOpenChange={setOpenCreateGroupDialog}
+                                                   professors={profesores}/>
+                                <Title>Crear nuevo grupo</Title>
+
+                                <div>
+                                    <Button type={'button'} onClick={() => setOpenCreateGroupDialog(true)}>Crear nuevo
+                                        grupo</Button>
+                                </div>
+                            </section>
+                        </Surface>
+                    </div>
+                </ScrollArea>
+            </AuthLayout>
+        )
+    } else {
+        return (
+            <AuthLayout title='Grupos'>
+                <ScrollArea className='h-full'>
+                    <div className={'p-6 grid grid-cols-4 grid-rows-2 gap-6 basis-full'}>
+                        <Surface className={'p-6 col-span-4 lg:col-span-3 row-span-2 flex flex-col gap-4'}>
+                            <Heading level={'h3'}>Grupos</Heading>
+
+                            <ScrollArea className={'basis-full'}>
+                                <div className={'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pr-3'}>
+                                    {groups.map(group => (<GroupItem key={group.id} group={group}/>))}
+                                </div>
+                            </ScrollArea>
+
+                        </Surface>
+                    </div>
+
+                </ScrollArea>
+            </AuthLayout>
+        )
+    }
+}
+
+const GroupItem = ({group}: { group: Group }) => {
     return (
-        <AuthLayout title={'Grupos'} sidebar={<SidebarMenu menu={menu}/>}>
-            <div className={'p-6 grid grid-cols-4 grid-rows-3 gap-6'}>
-                <Surface className={'col-span-3 row-span-2 h-[700px]'}>
-                    <DataTable columns={columns} data={groups} searchable={true}/>
-                </Surface>
-                <Surface className={'col-span-1 p-6'}>
-                    <section>
-                        <CreateGroupDialog show={openCreateGroupDialog} onOpenChange={setOpenCreateGroupDialog}
-                                           professors={profesores}/>
-                        <Title>Crear nuevo grupo</Title>
+        <Link href={route('groups.show', {group: group.id})}>
+            <div className={'aspect-square border border-gray-300 rounded-lg overflow-hidden flex flex-col bg-white'}>
+                <div className={'basis-2/5 bg-gradient-to-r from-sky-500 to-indigo-500 relative flex flex-col p-4'}>
+                    <Title level={'title-lg'} className={'text-white dark:text-white truncate'}>{group.name}</Title>
+                    <Text level={'body-sm'}
+                          className={'text-white dark:text-white truncate'}>{group.owner.profile?.nombres}</Text>
+                </div>
+                <div className={'relative'}>
+                    <div
+                        className={'origin-center rounded-full bg-white w-1/4 aspect-square absolute right-2/3 -translate-y-1/2 overflow-hidden bg-sky-200 flex justify-center items-center'}>
+                        <Avatar src={group.owner.profile?.picture_url}
+                                className={'text-white text-4xl font-bold size-full bg-transparent border-white border-4'}>{group.owner.profile?.nombres[0] ?? ''}</Avatar>
+                    </div>
+                </div>
+                <div className={'basis-3/5 flex flex-col'}>
+                    <div className={'basis-2/3'}>
 
-                        <div>
-                            <Button type={'button'} onClick={() => setOpenCreateGroupDialog(true)}>Crear nuevo
-                                grupo</Button>
-                        </div>
-                    </section>
-                </Surface>
+                    </div>
+
+
+                    <div className={'basis-1/3 border border-x-0 border-b-0 border-gray-300'}>
+
+                    </div>
+                </div>
             </div>
-        </AuthLayout>
+        </Link>
     )
 }
+
 
 const CreateGroupFormSchema = z.object({
     name: z.coerce.string().min(3, {message: 'Mínimo 3 caracteres'}).max(50, {message: 'Máximo 50 caracteres'}),
@@ -168,12 +225,12 @@ const CreateGroupDialog = ({
                                                                     >
                                                                         <Tooltip>
                                                                             <TooltipTrigger>
-                                                                        <Check className={cn(
-                                                                            "mr-2 h-4 w-4 inline",
-                                                                            user.id === field.value
-                                                                                ? "opacity-100"
-                                                                                : "opacity-0"
-                                                                        )}/>
+                                                                                <Check className={cn(
+                                                                                    "mr-2 h-4 w-4 inline",
+                                                                                    user.id === field.value
+                                                                                        ? "opacity-100"
+                                                                                        : "opacity-0"
+                                                                                )}/>
                                                                                 <Text level={'body-xs'} className={'inline'}>
                                                                                     {user.email}
                                                                                 </Text>
@@ -215,10 +272,6 @@ const CreateGroupDialog = ({
         </Dialog>
     )
 }
-
-const menu = [
-    {icon: <ArrowBigLeft/>, link: "dashboard", name: "Volver"}
-] satisfies MenuItem[]
 
 const columnHelper = createColumnHelper<Group>()
 
@@ -287,7 +340,7 @@ const columns: ColumnDef<Group>[] = [
                         </DropdownMenuItem>
                         <DropdownMenuSeparator/>
                         <DropdownMenuItem className={'text-rose-600'}
-                            onClick={() => onDeleteGroup(props.row.original.id)}
+                                          onClick={() => onDeleteGroup(props.row.original.id)}
                         >
                             <Icon className={'me-1'}>
                                 <Trash2 className={'text-rose-600 size-5'}/>

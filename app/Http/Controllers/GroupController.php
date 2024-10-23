@@ -102,7 +102,7 @@ class GroupController extends Controller
 
             $students = User::whereHasRole('estudiante')->with('profile')->get()->reject(fn (User $user) => $group->members->contains('id', $user->id));
 
-            return Inertia::render('Admin/Groups/Show', [
+            return Inertia::render('Groups/Show', [
                 'group' => new GroupResource($group),
                 'students' => UserResource::collection($students),
             ]);
@@ -110,7 +110,7 @@ class GroupController extends Controller
 
             $group->load('assignments');
 
-            return Inertia::render('Estudiante/Groups/Show', [
+            return Inertia::render('Groups/Show', [
                 'group' => new GroupResource($group),
                 'historias' => HistoriaResource::collection([]),
             ]);
@@ -201,7 +201,7 @@ class GroupController extends Controller
             $historias = [];
         }
 
-        return Inertia::render('Estudiante/Groups/Assignments/Show', [
+        return Inertia::render('Groups/Assignments/Show', [
             'assignment' => new AssignmentResource($assignment),
             'historias' => HistoriaResource::collection($historias),
         ]);

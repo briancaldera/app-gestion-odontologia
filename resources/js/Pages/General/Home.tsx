@@ -1,5 +1,4 @@
-import BaseLayout from "@/Layouts/BaseLayout.tsx";
-import Navbar from "@/Components/organisms/Navbar.jsx";
+import Navbar from "@/Components/organisms/Navbar.js";
 
 const Home = ({auth}) => {
     return (
@@ -8,7 +7,5 @@ const Home = ({auth}) => {
         </div>
     )
 }
-
-Home.layout = page => <BaseLayout children={page}/>
 
 export default Home

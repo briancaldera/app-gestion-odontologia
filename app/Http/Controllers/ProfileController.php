@@ -32,7 +32,7 @@ class ProfileController extends Controller
         if ($user->hasRole('admin')) {
             $users = User::with(['profile'])->get();
 
-            return Inertia::render('Admin/Profiles/Index', [
+            return Inertia::render('Profiles/Index', [
                 'users' => UserResource::collection($users),
             ]);
         }
@@ -47,7 +47,7 @@ class ProfileController extends Controller
         $profile->load(['user']);
 
         if ($request->inertia()) {
-            return Inertia::render('Admin/Profiles/Show',
+            return Inertia::render('Profiles/Show',
                 [
                     'profile' => new ProfileResource($profile),
                     'user' => $profile->user, // todo delete this

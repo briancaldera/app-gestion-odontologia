@@ -1,5 +1,5 @@
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
-import {Card} from "@/shadcn/ui/card";
+import {Card} from "@/shadcn/ui/card.tsx";
 import Avatar from "@/Components/atoms/Avatar";
 import Title from "@/Components/atoms/Title";
 import {Text} from "@/Components/atoms/Text";

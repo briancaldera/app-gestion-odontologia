@@ -34,9 +34,7 @@ const SidebarMenu = ({
         clinicaMenu.push({name: 'Pacientes', icon: <PersonStanding/>, link: route('pacientes.index')})
     }
 
-    if ((permissions as string[]).includes('historias-index-all')) {
-        clinicaMenu.push({name: 'Historias', icon: <ClipboardDocumentIcon/>, link: route('historias.dashboard')})
-    }
+    clinicaMenu.push({name: 'Historias', icon: <ClipboardDocumentIcon/>, link: route('historias.dashboard')})
 
     const escuelaMenu: MenuItem[] = [
         {name: "Grupos", icon: <UserGroupIcon/>, link: route("groups.index")}

@@ -1,18 +1,18 @@
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
-import {Card} from "@/shadcn/ui/card";
+import {Card} from "@/shadcn/ui/card.tsx";
 import Title from "@/Components/atoms/Title";
-import {DataTable} from "@/Components/molecules/DataTable";
+import {DataTable} from "@/Components/molecules/DataTable.tsx";
 import {ColumnDef, createColumnHelper} from '@tanstack/react-table'
-import User from '@/src/models/User'
+import User from '@/src/models/User.ts'
 import {ArrowBigLeft, ArrowUpDown, MoreHorizontal} from "lucide-react"
-import {Button} from "@/shadcn/ui/button";
+import {Button} from "@/shadcn/ui/button.tsx";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuTrigger,
-} from "@/shadcn/ui/dropdown-menu"
+} from "@/shadcn/ui/dropdown-menu.tsx"
 import {router} from "@inertiajs/react"
 import {route} from "ziggy-js";
 import SidebarMenu, {type MenuItem} from '@/Components/organisms/SidebarMenu.tsx'

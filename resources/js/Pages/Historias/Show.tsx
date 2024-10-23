@@ -104,7 +104,7 @@ const StatusCard = ({historia}: { historia: Historia }) => {
             </HoverCardTrigger>
             <HoverCardContent align={"end"} side={"left"}>
                 <div>Informacion:</div>
-            {/*    // todo add info here*/}
+                {/*    // todo add info here*/}
             </HoverCardContent>
         </HoverCard>
     )

@@ -3,7 +3,7 @@ import Paciente from "@/src/models/Paciente.ts";
 import React from "react";
 import {usePermission} from "@/src/Utils/Utils.ts";
 import {EllipsisVertical, FolderOpen, History, User} from "lucide-react";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs.tsx"
 import Title from "@/Components/atoms/Title";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {Separator} from "@/shadcn/ui/separator.tsx";

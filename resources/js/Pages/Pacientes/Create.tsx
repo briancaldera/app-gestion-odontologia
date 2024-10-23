@@ -74,12 +74,12 @@ const Create = () => {
 
                         <section className={'grid grid-cols-1 sm:grid-cols-4 flex-1 gap-12'}>
                             <div className={'col-span-1'}>
-                                <div className={'bg-slate-100 rounded-lg aspect-square p-2'}>
+                                <div>
                                     <FormField render={({field}) => (
-                                        <FormItem>
+                                        <FormItem className={'bg-slate-100 rounded-lg aspect-square p-2 flex justify-center items-center'}>
                                             <FormControl>
                                                 <ProfilePicturePicker src={field.value} onDrop={handleDropFile}
-                                                                      className={'w-full h-auto'}/>
+                                                                      className={'size-32'}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
