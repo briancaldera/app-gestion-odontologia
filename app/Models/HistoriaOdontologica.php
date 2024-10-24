@@ -199,6 +199,7 @@ JSON,
     ];
 
     protected $appends = [
+        'consentimiento',
         'panoramicas',
         'coronales',
         'periapicales',
@@ -231,6 +232,7 @@ JSON,
 
     public function registerMediaCollections(): void
     {
+        $this->addMediaCollection('consentimiento')->useDisk('historia-odontologica-consentimiento');
         $this->addMediaCollection('panoramicas')->useDisk('panoramicas');
         $this->addMediaCollection('coronales')->useDisk('coronales');
         $this->addMediaCollection('periapicales')->useDisk('periapicales');
@@ -241,6 +243,13 @@ JSON,
     public function historia(): BelongsTo
     {
         return $this->belongsTo(Historia::class);
+    }
+
+    protected function consentimiento(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('consentimiento')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/consentimiento/$media->uuid"))->first()
+        );
     }
 
     protected function panoramicas(): Attribute

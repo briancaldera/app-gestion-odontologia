@@ -711,6 +711,56 @@ class HistoriaController extends Controller
         return response(null, '200');
     }
 
+    public function updateConsentimiento(Request $request, Historia $historia)
+    {
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
+        /** @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+
+        $prevConse = $historia_odon->getFirstMedia('consentimiento');
+        if (isset($prevConse)) {
+            message('Ya existe un consentimiento y no puede ser actualizado', Type::Error);
+            return back();
+        }
+
+        $data = $request->validate([
+            'consentimiento' => ['required', 'image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000']
+        ]);
+        $file = $data['consentimiento'];
+
+        $historia_odon->addMedia($file)->toMediaCollection('consentimiento');
+
+        message('Archivo anexado a la historia exitosamente');
+        return response(null, '200');
+    }
+
+    public function getConsentimiento(Historia $historia, string $id)
+    {
+        $user = request()->user();
+
+        if ($user->cannot('view', $historia)) {
+            return response(null, 404);
+        }
+
+        /* @var HistoriaOdontologica $historia_odo */
+        $historia_odo = $historia->historiaOdontologica;
+
+        $consentimiento = $historia_odo->getMedia('consentimiento')->first(fn(Media $media) => $media->uuid === $id);
+
+        return response()->file($consentimiento->getPath());
+    }
+
     public function getMedia(Historia $historia, string $id)
     {
         /* @var HistoriaOdontologica $historia_odo */

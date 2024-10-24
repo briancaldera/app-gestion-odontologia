@@ -91,6 +91,9 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     Route::patch('/historias/{historia}/status/update', [HistoriaController::class, 'changeStatus'])->name('historias.update-status');
 
+    // Consentimiento
+    Route::patch('/historias/{historia}/odontologica/consentimiento/update', [HistoriaController::class, 'updateConsentimiento'])->name('historias.odontologica.consentimiento.update');
+    Route::get('/historias/{historia}/odontologica/consentimiento/{id}', [HistoriaController::class, 'getConsentimiento'])->name('historias.odontologica.consentimiento.show');
     // Get panoramicas
     Route::get('/historias/{historia}/odontologica/panoramicas/{id}', [HistoriaController::class, 'getPanoramica'])->name('historias.odontologica.panoramicas');
     // Get coronales
