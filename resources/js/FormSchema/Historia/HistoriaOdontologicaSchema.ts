@@ -1,20 +1,5 @@
 import {z} from "zod";
 
-const Habitos: readonly string[] = [
-    'fumar',
-    'alcohol',
-    'drogas',
-    'onicofagia',
-    'deglusion_atip',
-    'bruxismo',
-    'bruxomania',
-    'queilofagia',
-    'palillos',
-    'respirador_bucal',
-    'succion_digital',
-    'otros'
-]
-
 const HabitoSchema = z.boolean()
 
 const MAX_TEXT_LENGTH: number = 10000
@@ -22,57 +7,58 @@ const MAX_TEXT_LENGTH: number = 10000
 const AntOdontologicosPersonalesSchema = z.string().max(MAX_TEXT_LENGTH).nullable()
 
 const PortadorSchema = z.object({
-    ortodoncia: z.boolean(),
-    protesis: z.boolean(),
+    ortodoncia: z.boolean().describe('Ortodoncia'),
+    protesis: z.boolean().describe('Prótesis'),
 })
 
+// todo refactor this to array
 const HabitosSchema = z.object({
-    fumar: HabitoSchema,
-    alcohol: HabitoSchema,
-    drogas: HabitoSchema,
-    onicofagia: HabitoSchema,
-    deglusion_atip: HabitoSchema,
-    bruxismo: HabitoSchema,
-    bruxomania: HabitoSchema,
-    queilofagia: HabitoSchema,
-    palillos: HabitoSchema,
-    respirador_bucal: HabitoSchema,
-    succion_digital: HabitoSchema,
-    otros: HabitoSchema,
-    descripcion: z.string().max(MAX_TEXT_LENGTH).nullable()
+    fumar: HabitoSchema.describe('Fuma'),
+    alcohol: HabitoSchema.describe('Consume alcohol'),
+    drogas: HabitoSchema.describe('Consume drogas'),
+    onicofagia: HabitoSchema.describe('Onicogafia'),
+    deglusion_atip: HabitoSchema.describe('Deglusión atípica'),
+    bruxismo: HabitoSchema.describe('Bruxismo'),
+    bruxomania: HabitoSchema.describe('Bruxomania'),
+    queilofagia: HabitoSchema.describe('Queilofagia'),
+    palillos: HabitoSchema.describe('Uso de palillos'),
+    respirador_bucal: HabitoSchema.describe('Respirador bucal'),
+    succion_digital: HabitoSchema.describe('Succión digital'),
+    otros: HabitoSchema.describe('Otros'),
+    descripcion: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Descripción')
 })
 
 const SignosVitalesSchema = z.object({
     tension_arterial: z.object({
-        sistole: z.coerce.number().int().min(0),
-        diastole: z.coerce.number().int().min(0),
+        sistole: z.coerce.number().int().min(0).describe('Sistólica'),
+        diastole: z.coerce.number().int().min(0).describe('Diastólica'),
     }),
-    pulso: z.coerce.number().int().min(0),
-    respiracion: z.coerce.number().int().min(0),
-    temperatura: z.coerce.number().min(0)
+    pulso: z.coerce.number().int().min(0).describe('Pulso'),
+    respiracion: z.coerce.number().int().min(0).describe('Respiración'),
+    temperatura: z.coerce.number().min(0).describe('Temperatura')
 })
 
 const ExamenExtraoralSchema = z.object({
-    cabeza: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    cara: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    simetria_facial: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    piel: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    lesiones_extraorales: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    palpacion_ganglios: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    articulacion_temporomandibular: z.string().max(MAX_TEXT_LENGTH).nullable(),
+    cabeza: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Cabeza'),
+    cara: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Cara'),
+    simetria_facial: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Simetría Facial'),
+    piel: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Piel'),
+    lesiones_extraorales: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Lesiones Extraorales'),
+    palpacion_ganglios: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Palpación de ganglios'),
+    articulacion_temporomandibular: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Articulación Temporomandibular'),
 })
 
 const ExamenIntraoralSchema = z.object({
-    labios: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    mejillas: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    frenillos: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    piso_boca: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    lengua_tipo: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    paladar_duro_blando: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    encias: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    dientes: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    discromias: z.string().max(MAX_TEXT_LENGTH).nullable(),
-    maxilares: z.string().max(MAX_TEXT_LENGTH).nullable(),
+    labios: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Labios'),
+    mejillas: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Mejillas'),
+    frenillos: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Frenillos'),
+    piso_boca: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Piso de la boca'),
+    lengua_tipo: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Lengua (tipo)'),
+    paladar_duro_blando: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Paladar duro y blanco'),
+    encias: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Encías'),
+    dientes: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Dientes'),
+    discromias: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Discromías dentarias'),
+    maxilares: z.string().max(MAX_TEXT_LENGTH).nullable().describe('Maxilares'),
 })
 
 const ExamenFisicoSchema = z.object({
@@ -145,5 +131,5 @@ const HistoriaOdontologicaDefaults = {
     }
 } satisfies z.infer<typeof HistoriaOdontologicaSchema> as const
 
-export {HistoriaOdontologicaDefaults}
+export {HistoriaOdontologicaDefaults, ExamenFisicoSchema, AntOdontologicosPersonalesSchema, HabitosSchema, PortadorSchema}
 export default HistoriaOdontologicaSchema
