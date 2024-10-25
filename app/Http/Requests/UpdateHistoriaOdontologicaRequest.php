@@ -24,7 +24,6 @@ class UpdateHistoriaOdontologicaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
             'ant_personales' => ['sometimes', 'nullable', 'string', 'max:255'],
 
             'portador' => ['required', 'array:ortodoncia,protesis'],

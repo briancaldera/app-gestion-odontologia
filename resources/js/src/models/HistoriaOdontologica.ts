@@ -7,6 +7,7 @@ type HistoriaOdontologica = {
     ant_personales: string
     habitos: Habitos
     portador: Portador
+    consentimiento: string | null
     examen_fisico: ExamenFisico
     estudio_modelos: z.infer<typeof EstudioModelosSchema>
     plan_tratamiento: Tratamiento[]

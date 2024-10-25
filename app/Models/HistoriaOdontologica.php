@@ -188,6 +188,7 @@ JSON,
     ];
 
     protected $fillable = [
+        'ant_personales',
         'habitos',
         'portador',
         'examen_fisico',

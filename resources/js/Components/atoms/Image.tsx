@@ -1,7 +1,7 @@
 import React, {ClassAttributes} from "react";
 
 type ImageProps = {
-    src: string | File
+    src: string | File | null
 }
 
 const Image = ({
@@ -19,8 +19,7 @@ const Image = ({
 
     React.useEffect(() => {
         return () => {
-            if (src instanceof File)
-                URL.revokeObjectURL(preview)
+            // if (src instanceof File) URL.revokeObjectURL(preview)
         }
     }, [])
 
