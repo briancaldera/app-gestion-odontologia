@@ -26,8 +26,8 @@ class UpdateHistoriaOdontologicaRequest extends FormRequest
         return [
             'ant_personales' => ['sometimes', 'nullable', 'string', 'max:255'],
 
-            'portador' => ['required', 'array:ortodoncia,protesis'],
-            'portador.*' => ['required', 'boolean'],
+            'portador' => ['sometimes', 'array:ortodoncia,protesis'],
+            'portador.*' => ['sometimes', 'boolean'],
 
             'habitos' => ['sometimes', 'required', 'array'],
             'habitos.*' => ['sometimes', 'boolean'],

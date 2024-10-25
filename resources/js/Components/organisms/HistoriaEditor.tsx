@@ -64,7 +64,7 @@ import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 const TabTriggerStyle = 'p-0 m-0'
 
 type HistoriaEditorContextType = {
-    historia?: Historia | null
+    historia: Historia
     homework?: Homework | null
     canCreateCorrections: boolean
     correctionsModel: UseCorrectionsReturn
@@ -284,13 +284,6 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
-                            <TabsTrigger value="historia" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Clipboard/>
-                                    </Icon>
-                                </Surface>
-                            </TabsTrigger>
                             <TabsTrigger value="antPersonales" className={'p-0'}>
                                 <Surface className={'rounded-none'}>
                                     <Icon className={'size-8'}>
@@ -380,9 +373,6 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
 
                             <TabsContent value="paciente" className={TabTriggerStyle}>
                                 <PacienteSection form={pacienteForm}/>
-                            </TabsContent>
-                            <TabsContent value="historia" className={TabTriggerStyle}>
-                                <HistoriaSection form={historiaForm} historia_id={historia?.id ?? ''}/>
                             </TabsContent>
                             <TabsContent value="antPersonales" className={TabTriggerStyle}>
                                 <AntPersonalesSection form={antPersonalesForm}/>

@@ -22,7 +22,7 @@ const AntecedentesOdontologicosPersonales = () => {
     const {isProcessing, router} = useInertiaSubmit()
     const {historia} = useContext(HistoriaEditorContext)
     const {ant_personales, habitos, portador} = historia.historia_odontologica!
-    
+
     const antOdonPerForm = useForm<z.infer<typeof antecedentesOdontologicosPersonalesSchema>>({
         resolver: zodResolver(antecedentesOdontologicosPersonalesSchema),
         defaultValues: {
