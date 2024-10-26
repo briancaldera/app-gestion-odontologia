@@ -1,6 +1,5 @@
 import {z} from 'zod'
-import EstudioModelosSchema from "@/FormSchema/Historia/EstudioModelosSchema";
-import {b} from "vite/dist/node/types.d-aGj9QkWt";
+import {estudioModelosSchema} from "@/FormSchema/Historia/EstudioModelosSchema";
 
 type HistoriaOdontologica = {
     historia_id: string
@@ -9,7 +8,7 @@ type HistoriaOdontologica = {
     portador: Portador
     consentimiento: string | null
     examen_fisico: ExamenFisico
-    estudio_modelos: z.infer<typeof EstudioModelosSchema>
+    estudio_modelos: z.infer<typeof estudioModelosSchema>
     plan_tratamiento: Tratamiento[]
     modificaciones_plan_tratamiento: ModificacionTratamiento[]
     secuencia_tratamiento: TratamientoRealizado[]

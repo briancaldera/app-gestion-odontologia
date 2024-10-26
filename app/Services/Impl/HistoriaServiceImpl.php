@@ -137,10 +137,42 @@ class HistoriaServiceImpl implements HistoriaService
 
     public function updateEstudioModelos(Historia $historia, array $data): void
     {
-        $estudio_modelos = $data['estudio_modelos'];
-        $historia_odon = $historia->historiaOdontologica()->updateOrCreate(['historia_id' => $historia->id], [
-            'estudio_modelos' => $estudio_modelos
-        ]);
+        /** @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+
+        $estudio_modelos = collect($data);
+
+        if ($estudio_modelos->has(['maxilar_sup'])) {
+            $historia_odon->estudio_modelos->maxilar_sup = $estudio_modelos['maxilar_sup'];
+        }
+
+        if ($estudio_modelos->has(['maxilar_inf'])) {
+            $historia_odon->estudio_modelos->maxilar_inf = $estudio_modelos['maxilar_inf'];
+        }
+
+        if ($estudio_modelos->has(['modelos_oclusion'])) {
+            $historia_odon->estudio_modelos->modelos_oclusion = $estudio_modelos['modelos_oclusion'];
+        }
+
+        if ($estudio_modelos->has(['examenes_comp'])) {
+            $historia_odon->estudio_modelos->examenes_comp = $estudio_modelos['examenes_comp'];
+        }
+
+        if ($estudio_modelos->has(['interconsultas'])) {
+            $historia_odon->estudio_modelos->interconsultas = $estudio_modelos['interconsultas'];
+        }
+
+        if ($estudio_modelos->has(['diagnostico'])) {
+            $historia_odon->estudio_modelos->diagnostico = $estudio_modelos['diagnostico'];
+        }
+
+        if ($estudio_modelos->has(['pronostico'])) {
+            $historia_odon->estudio_modelos->pronostico = $estudio_modelos['pronostico'];
+        }
+
+        if ($historia_odon->isDirty('estudio_modelos')) {
+            $historia_odon->save();
+        }
     }
 
     public function updatePlanTratamiento(Historia $historia, array $data): void

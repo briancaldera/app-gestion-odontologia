@@ -101,45 +101,45 @@ JSON,
 JSON,
         'estudio_modelos' => <<<'JSON'
 {
-        "examenes_comp": "",
+        "examenes_comp": null,
         "interconsultas": {
-            "cirugia": false, "endodoncia": false, "ortodoncia": false, "periodoncia": false, "protesis": false, "descripcion": ""
+            "cirugia": false, "endodoncia": false, "ortodoncia": false, "periodoncia": false, "protesis": false, "descripcion": null
         },
         "maxilar_sup": {
-            "tipo_arco": "",
-            "forma_arco": "",
-            "simetria_arco": "",
-            "paladar": "",
-            "maloclusion": "",
-            "dientes_ausentes": "",
-            "facetas_desgaste": "",
-            "diastemas": "",
-            "anomalia": ""
+            "tipo_arco": null,
+            "forma_arco": null,
+            "simetria_arco": null,
+            "paladar": null,
+            "maloclusion": null,
+            "dientes_ausentes": null,
+            "facetas_desgaste": null,
+            "diastemas": null,
+            "anomalia": null
         },
         "maxilar_inf": {
-            "tipo_arco": "",
-            "forma_arco": "",
-            "simetria_arco": "",
-            "piso_boca": "",
-            "maloclusion": "",
-            "dientes_ausentes": "",
-            "facetas_desgaste": "",
-            "diastemas": "",
-            "anomalia": ""
+            "tipo_arco": null,
+            "forma_arco": null,
+            "simetria_arco": null,
+            "piso_boca": null,
+            "maloclusion": null,
+            "dientes_ausentes": null,
+            "facetas_desgaste": null,
+            "diastemas": null,
+            "anomalia": null
         },
         "modelos_oclusion": {
-            "linea_media": "",
-            "sobresalte": "",
-            "sobrepase": "",
-            "relacion_canina": "",
-            "relacion_molar": "",
-            "mordida_anterior": "",
-            "mordida_posterior": "",
-            "curva_compensacion": "",
-            "plano_oclusal": ""
+            "linea_media": null,
+            "sobresalte": null,
+            "sobrepase": null,
+            "relacion_canina": null,
+            "relacion_molar": null,
+            "mordida_anterior": null,
+            "mordida_posterior": null,
+            "curva_compensacion": null,
+            "plano_oclusal": null
         },
-        "diagnostico": "",
-        "pronostico": ""
+        "diagnostico": null,
+        "pronostico": null
     }
 JSON,
         'plan_tratamiento' => '[]',

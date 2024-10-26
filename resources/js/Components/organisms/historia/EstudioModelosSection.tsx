@@ -11,6 +11,7 @@ import {Button} from "@/shadcn/ui/button";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {useRoute} from "ziggy-js";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
+import MaxSupInfOclu from "@/Components/organisms/historia/partials/MaxSupInfOclu.tsx";
 
 
 type EstudioModelosSectionProps = {
@@ -41,89 +42,12 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
         <Surface className={'w-full px-6 min-h-screen'}>
             <Title level={'title-lg'}>Estudio de Modelos</Title>
 
+            <MaxSupInfOclu/>
+
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onHandleSubmit)}>
 
                     <section className={'my-6 relative'}>
-
-                        <section>
-
-                            {/*TODO Fix with subgrid row-span-10 and delete negative margin*/}
-                            <div className={'grid grid-cols-3 grid-rows-10 gap-4 items-end -mt-20'}>
-
-                                <Title>Maxilar Superior</Title>
-
-                                <Title>Maxilar Inferior (Mandíbula)</Title>
-
-                                <Title>Modelos de Oclusión</Title>
-
-                                <div className={'grid row-span-9 grid-rows-subgrid border p-2 rounded-lg'}>
-                                    {
-                                        Object.keys(EstudioModelosSchema.shape.estudio_modelos.shape.maxilar_sup.shape).map(item => {
-                                            return (
-                                                <FormField key={item} render={({field}) => (
-                                                    <FormItem>
-                                                        <FormLabel
-                                                            className={'capitalize'}>{item.replaceAll('_', ' ')}</FormLabel>
-                                                        <FormControl>
-                                                            <Textarea className={'resize-none'} {...field}/>
-                                                        </FormControl>
-                                                        <FormMessage/>
-                                                    </FormItem>
-                                                )} name={`estudio_modelos.maxilar_sup.${item}`} control={form.control}/>
-                                            )
-                                        })
-                                    }
-                                </div>
-
-
-                                <div className={'grid row-span-9 grid-rows-subgrid border p-2 rounded-lg'}>
-
-                                    {
-                                        Object.keys(EstudioModelosSchema.shape.estudio_modelos.shape.maxilar_inf.shape).map(item => {
-                                            return (
-                                                <FormField key={item} render={({field}) => (
-                                                    <FormItem>
-                                                        <FormLabel
-                                                            className={'capitalize'}>{item.replaceAll('_', ' ')}</FormLabel>
-                                                        <FormControl>
-                                                            <Textarea className={'resize-none'} {...field}/>
-                                                        </FormControl>
-                                                        <FormMessage/>
-                                                    </FormItem>
-                                                )} name={`estudio_modelos.maxilar_inf.${item}`} control={form.control}/>
-                                            )
-                                        })
-                                    }
-                                </div>
-
-                                <div className={'grid row-span-9 grid-rows-subgrid border p-2 rounded-lg'}>
-
-
-                                    {
-                                        Object.keys(EstudioModelosSchema.shape.estudio_modelos.shape.modelos_oclusion.shape).map(item => {
-                                            return (
-                                                <FormField key={item} render={({field}) => (
-                                                    <FormItem>
-                                                        <FormLabel
-                                                            className={'capitalize'}>{item.replaceAll('_', ' ')}</FormLabel>
-                                                        <FormControl>
-                                                            <Textarea className={'resize-none'} {...field}/>
-                                                        </FormControl>
-                                                        <FormMessage/>
-                                                    </FormItem>
-                                                )} name={`estudio_modelos.modelos_oclusion.${item}`}
-                                                           control={form.control}/>
-                                            )
-                                        })
-                                    }
-
-                                </div>
-
-                            </div>
-
-                        </section>
-
 
                         <section>
                             <FormField render={({field}) => (
