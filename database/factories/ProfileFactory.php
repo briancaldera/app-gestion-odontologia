@@ -27,7 +27,6 @@ class ProfileFactory extends Factory
             'direccion' => $faker->address(),
             'sexo' => $faker->randomElement(['F', 'M', 'NI']),
             'cedula' => $faker->nationalId(),
-            'picture_url' => null,
         ];
     }
 

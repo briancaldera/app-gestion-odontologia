@@ -56,6 +56,7 @@ class Trastornos extends Model
         'ginecologicos',
         'urologicos',
         'infectocontagiosa',
+        'descripcion'
     ];
 
     protected function casts()

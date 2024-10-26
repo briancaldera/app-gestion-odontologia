@@ -1,13 +1,23 @@
-import { z } from 'zod'
-import TrastornosSchema from "@/FormSchema/Historia/TrastornosSchema";
+import {z} from 'zod'
+import {trastornosSchema} from "@/FormSchema/Historia/TrastornosSchema";
 
 type AntPersonales = {
-    readonly historia_id: string
-    readonly medicamentos: object
-    readonly alergias: object
+    historia_id: string
+    medicamentos: Medicamentos
+    alergias: Alergias
     trastornos: Trastornos
 }
 
-export type Trastornos = z.infer<typeof TrastornosSchema>
+type Alergias = {
+    tipo: readonly string[]
+    descripcion: string
+}
+
+type Medicamentos = {
+    tipo: readonly string[]
+    dosis: string
+}
+
+export type Trastornos = z.infer<typeof trastornosSchema>
 
 export default AntPersonales
