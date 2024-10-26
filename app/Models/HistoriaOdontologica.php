@@ -103,7 +103,8 @@ JSON,
 {
         "examenes_comp": null,
         "interconsultas": {
-            "cirugia": false, "endodoncia": false, "ortodoncia": false, "periodoncia": false, "protesis": false, "descripcion": null
+          "list": [],
+          "descripcion": null
         },
         "maxilar_sup": {
             "tipo_arco": null,

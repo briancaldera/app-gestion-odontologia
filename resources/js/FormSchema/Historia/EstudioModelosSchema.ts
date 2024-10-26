@@ -3,10 +3,11 @@ import {z} from "zod";
 const MAX_TEXT_LENGTH: number = 10000
 const stringField = z.string().max(MAX_TEXT_LENGTH)
 
-const DiagnosticoSchema = z.string().max(MAX_TEXT_LENGTH).nullable()
+const DiagnosticoSchema = z.string().max(MAX_TEXT_LENGTH)
 
-const PronosticoSchema = z.string().max(MAX_TEXT_LENGTH).nullable()
+const PronosticoSchema = z.string().max(MAX_TEXT_LENGTH)
 
+const ExamenesComplementariosSchema = z.string().max(MAX_TEXT_LENGTH)
 
 const MaxilarSupSchema = z.object({
     tipo_arco: stringField.describe('Tipo de arco'),
@@ -44,8 +45,6 @@ const ModelosOclusionSchema = z.object({
     plano_oclusal: stringField.describe('Plano oclusal'),
 })
 
-const ExamenesComplementariosSchema = z.string().max(10000).nullable()
-
 const InterconsultasSchema = z.object({
     cirugia: z.boolean(),
     periodoncia: z.boolean(),
@@ -54,6 +53,24 @@ const InterconsultasSchema = z.object({
     ortodoncia: z.boolean(),
     descripcion: stringField,
 })
+
+const interconsultasSchema = z.object({
+    list: z.array(z.string()),
+    descripcion: stringField,
+})
+
+type InterconsultasItem = {
+    id : string
+    label: string
+}
+
+const interconsultasItems: InterconsultasItem[] = [
+    {id: 'cirugia', label: 'Cirugía'},
+    {id: 'periodoncia', label: 'Periodoncia'},
+    {id: 'endodoncia', label: 'Endodoncia'},
+    {id: 'protesis', label: 'Prótesis'},
+    {id: 'ortodoncia', label: 'Ortodoncia'},
+] satisfies InterconsultasItem[]
 
 const EstudioModelosSchema = z.object({
     historia_id: z.string().nullish(),
@@ -73,7 +90,7 @@ const estudioModelosSchema = z.object({
     maxilar_inf: MaxilarInfSchema,
     modelos_oclusion: ModelosOclusionSchema,
     examenes_comp: ExamenesComplementariosSchema,
-    interconsultas: InterconsultasSchema,
+    interconsultas: interconsultasSchema,
     diagnostico: DiagnosticoSchema,
     pronostico: PronosticoSchema,
 })
@@ -123,5 +140,5 @@ const EstudioModelosDefaults = {
     }
 } satisfies z.infer<typeof EstudioModelosSchema>
 
-export {EstudioModelosDefaults, estudioModelosSchema}
+export {EstudioModelosDefaults, estudioModelosSchema, interconsultasSchema, interconsultasItems}
 export default EstudioModelosSchema
