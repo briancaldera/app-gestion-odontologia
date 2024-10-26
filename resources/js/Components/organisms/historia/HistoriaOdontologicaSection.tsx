@@ -7,10 +7,10 @@ import Title from "@/Components/atoms/Title";
 import React from "react";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils";
-import ConsetimientoMedico from "@/Components/organisms/historia/components/ConsetimientoMedico.tsx";
+import ConsetimientoMedico from "@/Components/organisms/historia/partials/ConsetimientoMedico.tsx";
 import AntecedentesOdontologicosPersonales
-    from "@/Components/organisms/historia/components/AntecedentesOdontologicosPersonales.tsx";
-import ExamenFisico from "@/Components/organisms/historia/components/ExamenFisico.tsx";
+    from "@/Components/organisms/historia/partials/AntecedentesOdontologicosPersonales.tsx";
+import ExamenFisico from "@/Components/organisms/historia/partials/ExamenFisico.tsx";
 
 type HistoriaOdontologicaSectionProps = {
     form: UseFormReturn<z.infer<typeof HistoriaOdontologicaSchema>>

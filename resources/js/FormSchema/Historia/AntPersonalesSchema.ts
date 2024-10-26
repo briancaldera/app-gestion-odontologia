@@ -24,6 +24,46 @@ const MedicamentoSchema = z.object({
         return false
     }, {message: 'El campo dosis no puede contener valor si no aplica', path: ['dosis_diaria']})
 
+type AlergiaItem = {
+    id: string
+    label: string
+}
+
+const alergiaItems: readonly AlergiaItem[] = [
+    {id: 'antibioticos', label: 'Antibióticos'},
+    {id: 'analgesicos', label: 'Analgésicos'},
+    {id: 'anestesicos', label: 'Anestésicos'},
+    {id: 'yodo', label: 'Yodo'},
+    {id: 'otros', label: 'Otros'},
+] satisfies AlergiaItem[]
+
+type MedicamentoItem = AlergiaItem
+
+const medicamentoItems: readonly MedicamentoItem[] = [
+    {id: 'hipertensivos', label: 'Hipertensivos'},
+    {id: 'analgesicos', label: 'Analgésicos'},
+    {id: 'esteroides', label: 'Esteroides'},
+    {id: 'antidepresivos', label: 'Antidepresivos'},
+    {id: 'anticonceptivos', label: 'Anticonceptivos'},
+    {id: 'hipogicemiante', label: 'Hipogicemiante'},
+    {id: 'anticonvulsivos', label: 'Anticonvulsivos'},
+    {id: 'sildenafil', label: 'Sildenafil'},
+    {id: 'acidoacetilicidico', label: 'Acidoacetilicídico'},
+    {id: 'anticoagulante', label: 'Anticoagulante'},
+    {id: 'bifosfanato', label: 'Bifosfanato'},
+    {id: 'otros', label: 'Otros'},
+] satisfies MedicamentoItem[]
+
+const alergiaSchema = z.object({
+    tipo: z.array(z.string()),
+    descripcion: z.string().max(MAX_TEXT_LENGTH)
+})
+
+const medicamentoSchema = z.object({
+    tipo: z.array(z.string()),
+    dosis: z.string().max(MAX_TEXT_LENGTH)
+})
+
 const AlergiaSchema = z.boolean()
 
 const AntPersonalesSchema = z.object({
@@ -119,4 +159,5 @@ export const AntPersonalesDefaults = {
     },
 } satisfies z.infer<typeof AntPersonalesSchema> as const
 
+export {alergiaItems, alergiaSchema, medicamentoSchema, medicamentoItems}
 export default AntPersonalesSchema

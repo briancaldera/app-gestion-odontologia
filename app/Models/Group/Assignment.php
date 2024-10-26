@@ -69,6 +69,11 @@ class Assignment extends Model
                 'display_name' => 'Ver asignaciones',
                 'description' => 'Ver las asignaciones en un grupo'
             ],
+            'read-private' => [
+                'name' => 'read-private',
+                'display_name' => 'Ver información privada',
+                'description' => 'Ver información privada de las asignaciones en un grupo'
+            ],
             'update' => [
                 'name' => 'update',
                 'display_name' => 'Actualizar asignaciones',

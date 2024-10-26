@@ -76,7 +76,7 @@ const Trastornos = () => {
 
         router.patch(endpoint, body, {
             onError: errors => {
-                mapServerErrorsToFields(trastornosForm, errors)
+                mapServerErrorsToFields(trastornosForm, {...errors.trastornos})
             },
             onSuccess: _page => {
                 trastornosForm.reset(values)

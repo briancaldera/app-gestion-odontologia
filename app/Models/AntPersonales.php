@@ -19,12 +19,24 @@ class AntPersonales extends Model
 
     public $timestamps = false;
 
+    protected $table = 'ant_personales';
     protected $primaryKey = 'historia_id';
+    protected $keyType = 'string';
     public $incrementing = false;
 
     protected $attributes = [
-        'medicamentos' => '{}',
-        'alergias' => '{}'
+        'medicamentos' => <<<'JSON'
+{
+"tipo": [],
+"dosis": null
+}
+JSON,
+        'alergias' => <<<'JSON'
+{
+"tipo": [],
+"descripcion": null
+}
+JSON,
     ];
 
     protected $fillable = [
