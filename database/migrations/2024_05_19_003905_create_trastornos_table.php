@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->jsonb('ginecologicos');
             $table->jsonb('urologicos');
             $table->jsonb('infectocontagiosa');
+            $table->text('descripcion')->nullable();
         });
     }
 

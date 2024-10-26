@@ -27,20 +27,22 @@ class Trastornos extends Model
 
     public $timestamps = false;
 
+    protected $table = 'trastornos';
     protected $primaryKey = 'historia_id';
+    protected $keyType = 'string';
     public $incrementing = false;
 
     protected $attributes = [
-        'cardiovasculares' => '{}',
-        'hematologicos' => '{}',
-        'respiratorios' => '{}',
-        'endocrinos' => '{}',
-        'gastrointestinales' => '{}',
-        'neurologicos' => '{}',
-        'oseos' => '{}',
-        'ginecologicos' => '{}',
-        'urologicos' => '{}',
-        'infectocontagiosa' => '{}',
+        'cardiovasculares' => '[]',
+        'hematologicos' => '[]',
+        'respiratorios' => '[]',
+        'endocrinos' => '[]',
+        'gastrointestinales' => '[]',
+        'neurologicos' => '[]',
+        'oseos' => '[]',
+        'ginecologicos' => '[]',
+        'urologicos' => '[]',
+        'infectocontagiosa' => '[]',
     ];
 
     protected $fillable = [
@@ -59,16 +61,16 @@ class Trastornos extends Model
     protected function casts()
     {
         return [
-            'cardiovasculares' => AsArrayObject::class,
-            'hematologicos' => AsArrayObject::class,
-            'respiratorios' => AsArrayObject::class,
-            'endocrinos' => AsArrayObject::class,
-            'gastrointestinales' => AsArrayObject::class,
-            'neurologicos' => AsArrayObject::class,
-            'oseos' => AsArrayObject::class,
-            'ginecologicos' => AsArrayObject::class,
-            'urologicos' => AsArrayObject::class,
-            'infectocontagiosa' => AsArrayObject::class,
+            'cardiovasculares' => 'collection',
+            'hematologicos' => 'collection',
+            'respiratorios' => 'collection',
+            'endocrinos' => 'collection',
+            'gastrointestinales' => 'collection',
+            'neurologicos' => 'collection',
+            'oseos' => 'collection',
+            'ginecologicos' => 'collection',
+            'urologicos' => 'collection',
+            'infectocontagiosa' => 'collection',
         ];
     }
 

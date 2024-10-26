@@ -2,17 +2,161 @@ import {z} from 'zod'
 
 const MAX_TEXT_SIZE = 1000
 
-const tCardiovasculares: readonly string[] = ['disnea', 'cansancio', 'vertigo', 'palpitaciones', 'taquicardia', 'bradicardia', 'varices', 'infarto_miocardio', 'angina_pecho', 'hipertension', 'endocarditis', 'otros']
-const tHematologicos: readonly string[] = ['palidez', 'ictericia', 'anemia', 'hemorragias', 'hematoma', 'equimosis', 'petequias', 'dengue', 'hemofilia', 'otros']
-const tRespiratorios: readonly string[] = ['ciaonosis', 'hemoptisis', 'esputos', 'enfisema_pulmonar', 'asma', 'asfixia', 'tos_frecuente', 'rinitis', 'sonido_anormal', 'inf_respiratorias', 'otros']
-const tEndocrinos: readonly string[] = ['poliuria', 'polidipsia', 'polifagia', 'variacion_peso', 'irritabilidad', 'sudoracion_excesiva', 'diabetes', 'intolerancia_frio', 'hipoglicemia', 'hipertiroidismo', 'adenopatia', 'hipotiroidismo', 'otros']
-const tGastrointestinales: readonly string[] = ['diarrea', 'flatulencia', 'acidez', 'nauseas', 'vomitos', 'ulceras', 'dolor_estomacal', 'gastritis', 'parasitos', 'reflujo_gastrico', 'gastroenteritis', 'colon_irritable', 'cirrosis_hepatica', 'estrenimiento', 'otros']
-const tNeurologicos: readonly string[] = ['convulsiones', 'temblor', 'tic', 'epilepsia', 'cefalea', 'depresion', 'dislexia', 'parkinson', 'alzheimer', 'ecv', 'bulimia', 'anorexia', 'sindrome_down', 'retardo_mental', 'otros']
-const tOseos: readonly string[] = ['deformidades', 'fracturas', 'escleroticas_azules', 'artritis', 'dificultad_movimiento', 'osteoporosis', 'osteomelitis', 'otros']
-const tGinecologicos: readonly string[] = ['embarazo', 'menstruacion', 'abortos', 'menopausia', 'otros']
-const tUrologicos: readonly string[] = ['insuficiencia_renal', 'colico_nefritico', 'cancer_prostata', 'andropausia', 'otros']
-const tInfectocontagiosa: readonly string[] = ['parotiditis', 'tuberculosis', 'vih_sida', 'blenorragia', 'sifilis', 'herpes', 'hepatitis_abc', 'influenza', 'vhp', 'rubeola', 'varicela', 'sarampion', 'covid', 'otros']
+type TrastornoItem = {
+    id: string
+    label: string
+}
 
+const cardiovasculares: readonly TrastornoItem[] = [
+    {id: 'disnea', label: 'Disnea'},
+    {id: 'cansancio', label: 'Cansancio'},
+    {id: 'vertigo', label: 'Vertigo'},
+    {id: 'palpitaciones', label: 'Palpitaciones'},
+    {id: 'taquicardia', label: 'Taquicardia'},
+    {id: 'bradicardia', label: 'Bradicardia'},
+    {id: 'varices', label: 'Várices'},
+    {id: 'infarto_miocardio', label: 'Infarto al miocardio'},
+    {id: 'angina_pecho', label: 'Angina de pecho'},
+    {id: 'hipertension', label: 'Hipertensión'},
+    {id: 'endocarditis', label: 'Endocarditis'},
+    {id: 'otros', label: 'Otros'},
+] satisfies TrastornoItem[]
+
+const hematologicos: readonly TrastornoItem[] = [
+    {id: 'palidez', label: 'Palidez'},
+    {id: 'ictericia', label: 'Ictericia'},
+    {id: 'anemia', label: 'Anemia'},
+    {id: 'hemorragias', label: 'Hemorragias'},
+    {id: 'hematoma', label: 'Hematoma'},
+    {id: 'equimosis', label: 'Equimosis'},
+    {id: 'petequias', label: 'Petequias'},
+    {id: 'dengue', label: 'Dengue'},
+    {id: 'hemofilia', label: 'Hemofilia'},
+    {id: 'otros', label: 'Otros'},
+] satisfies TrastornoItem[]
+
+const respiratorios: readonly TrastornoItem[] = [
+    {id: 'ciaonosis', label: 'Ciaonosis'},
+    {id: 'hemoptisis', label: 'Hemoptisis'},
+    {id: 'esputos', label: 'Esputos'},
+    {id: 'enfisema_pulmonar', label: 'Enfisema pulmonar'},
+    {id: 'asma', label: 'Asma'},
+    {id: 'asfixia', label: 'Asfixia'},
+    {id: 'tos_frecuente', label: 'Tos frecuente'},
+    {id: 'rinitis', label: 'Rinitis'},
+    {id: 'sonido_anormal', label: 'Sonido anormal'},
+    {id: 'inf_respiratorias', label: 'Infecciones respiratorias'},
+    {id: 'otros', label: 'Otros'},
+] satisfies TrastornoItem[]
+
+const endocrinos: readonly TrastornoItem[] = [
+    {id: 'poliuria', label: 'Poliuria'},
+    {id: 'polidipsia', label: 'Polidipsia'},
+    {id: 'polifagia', label: 'Polifagia'},
+    {id: 'variacion_peso', label: 'Variación de peso'},
+    {id: 'irritabilidad', label: 'Irritabilidad'},
+    {id: 'sudoracion_excesiva', label: 'Sudoración excesiva'},
+    {id: 'diabetes', label: 'Diabetes'},
+    {id: 'intolerancia_frio', label: 'Intolerancia al frío'},
+    {id: 'hipoglicemia', label: 'Hipoglicemia'},
+    {id: 'hipertiroidismo', label: 'Hipertiroidismo'},
+    {id: 'adenopatia', label: 'Adenopatía'},
+    {id: 'hipotiroidismo', label: 'Hipotiroidismo'},
+    {id: 'otros', label: 'Otros'},
+] satisfies TrastornoItem[]
+
+const gastrointestinales: readonly TrastornoItem[] = [
+    {id: 'diarrea', label: 'Diarrea'},
+    {id: 'flatulencia', label: 'Flatulencia'},
+    {id: 'acidez', label: 'Acidez'},
+    {id: 'nauseas', label: 'Nauseas'},
+    {id: 'vomitos', label: 'Vómitos'},
+    {id: 'ulceras', label: 'Úlceras'},
+    {id: 'dolor_estomacal', label: 'Dolor estomacal'},
+    {id: 'gastritis', label: 'Gastritis'},
+    {id: 'parasitos', label: 'Parásitos'},
+    {id: 'reflujo_gastrico', label: 'Reflujo gástrico'},
+    {id: 'gastroenteritis', label: 'Gastroenteritis'},
+    {id: 'colon_irritable', label: 'Colon Irritable'},
+    {id: 'cirrosis_hepatica', label: 'Cirrosis Hepática'},
+    {id: 'estrenimiento', label: 'Estreñimiento'},
+    {id: 'otros', label: 'Otros'},
+] satisfies TrastornoItem[]
+
+const neurologicos: readonly TrastornoItem[] = [
+    {id: 'convulsiones', label: 'Convulsiones'},
+    {id: 'temblor', label: 'Temblor'},
+    {id: 'tic', label: 'Tic'},
+    {id: 'epilepsia', label: 'Epilepsia'},
+    {id: 'cefalea', label: 'Cefálea'},
+    {id: 'depresion', label: 'Depresión'},
+    {id: 'dislexia', label: 'Dislexia'},
+    {id: 'parkinson', label: 'Parkinson'},
+    {id: 'alzheimer', label: 'Alzheimer'},
+    {id: 'ecv', label: 'ECV'},
+    {id: 'bulimia', label: 'Bulimia'},
+    {id: 'anorexia', label: 'Anorexia'},
+    {id: 'sindrome_down', label: 'Síndrome de Down'},
+    {id: 'retardo_mental', label: 'Retardo mental'},
+    {id: 'otros', label: 'Otros'},] satisfies TrastornoItem[]
+
+const oseos: readonly TrastornoItem[] = [
+    {id: 'deformidades', label: 'Deformidades'},
+    {id: 'fracturas', label: 'Fracturas'},
+    {id: 'escleroticas_azules', label: 'Escleroticas azules'},
+    {id: 'artritis', label: 'Artritis'},
+    {id: 'dificultad_movimiento', label: 'Dificultad de movimiento'},
+    {id: 'osteoporosis', label: 'Osteoporosis'},
+    {id: 'osteomelitis', label: 'Osteomelitis'},
+    {id: 'otros', label: 'Otros'},
+] satisfies TrastornoItem[]
+
+const ginecologicos: readonly TrastornoItem[] = [
+    {id: 'embarazo', label: 'Embarazo'},
+    {id: 'menstruacion', label: 'Menstruación'},
+    {id: 'abortos', label: 'Abortos'},
+    {id: 'menopausia', label: 'Menopausia'},
+    {id: 'otros', label: 'Otros'},
+] satisfies TrastornoItem[]
+
+const urologicos: readonly TrastornoItem[] = [
+    {id: 'insuficiencia_renal', label: 'Insuficiencia renal'},
+    {id: 'colico_nefritico', label: 'Cólico nefrítico'},
+    {id: 'cancer_prostata', label: 'Cáncer de próstata'},
+    {id: 'andropausia', label: 'Andropausia'},
+    {id: 'otros', label: 'Otros'},
+] satisfies TrastornoItem[]
+
+const infectocontagiosa: readonly TrastornoItem[] = [
+    {id: 'parotiditis', label: 'Paroditis'},
+    {id: 'tuberculosis', label: 'Tuberculosis'},
+    {id: 'vih_sida', label: 'VIH/SIDA'},
+    {id: 'blenorragia', label: 'Blenorragia'},
+    {id: 'sifilis', label: 'Sífilis'},
+    {id: 'herpes', label: 'Herpes'},
+    {id: 'hepatitis_abc', label: 'Hepatitis A-B-C'},
+    {id: 'influenza', label: 'Influenza'},
+    {id: 'vhp', label: 'VHP'},
+    {id: 'rubeola', label: 'Rubeola'},
+    {id: 'varicela', label: 'Varicela'},
+    {id: 'sarampion', label: 'Sarampión'},
+    {id: 'covid', label: 'Covid'},
+    {id: 'otros', label: 'Otros'},
+] satisfies TrastornoItem[]
+
+const trastornosSchema = z.object({
+    cardiovasculares: z.array(z.string()),
+    hematologicos: z.array(z.string()),
+    respiratorios: z.array(z.string()),
+    endocrinos: z.array(z.string()),
+    gastrointestinales: z.array(z.string()),
+    neurologicos: z.array(z.string()),
+    oseos: z.array(z.string()),
+    ginecologicos: z.array(z.string()),
+    urologicos: z.array(z.string()),
+    infectocontagiosa: z.array(z.string()),
+    descripcion: z.string().max(MAX_TEXT_SIZE).nullable()
+})
 
 const toTrastornoObject = (trastorno: string) => {
     return {[trastorno]: z.boolean()}
@@ -298,4 +442,18 @@ export const TrastornosDefaults = {
     }
 } satisfies z.infer<typeof TrastornosSchema> as const
 
+export {
+    trastornosSchema,
+    cardiovasculares,
+    hematologicos,
+    respiratorios,
+    endocrinos,
+    gastrointestinales,
+    neurologicos,
+    oseos,
+    ginecologicos,
+    urologicos,
+    infectocontagiosa,
+    type TrastornoItem
+}
 export default TrastornosSchema
