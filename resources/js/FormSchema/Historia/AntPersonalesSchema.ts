@@ -40,7 +40,7 @@ const alergiaItems: readonly AlergiaItem[] = [
 type MedicamentoItem = AlergiaItem
 
 const medicamentoItems: readonly MedicamentoItem[] = [
-    {id: 'hipertensivos', label: 'Hipertensivos'},
+    {id: 'antihipertensivos', label: 'Antihipertensivos'},
     {id: 'analgesicos', label: 'Analgésicos'},
     {id: 'esteroides', label: 'Esteroides'},
     {id: 'antidepresivos', label: 'Antidepresivos'},
