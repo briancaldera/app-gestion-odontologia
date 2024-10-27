@@ -41,9 +41,8 @@ const RadiografiaSchema = z.object({
 }, )
 
 const DescripcionSchema = z
-    .string({required_error: 'Descripción es requerida'})
+    .string()
     .max(MAX_ANALISIS_LENGTH, {message: 'Máximo 1000 caracteres'})
-    .optional()
 
 const ExamenRadiograficoSchema = z
     .object({
@@ -55,6 +54,27 @@ const ExamenRadiograficoSchema = z
                 mandibular: DescripcionSchema,
                 dento_alveolar_sup: DescripcionSchema,
                 dento_alveolar_inf: DescripcionSchema,
+            }),
+            imagenes: PanoramicasSchema
+        }),
+        interpretacion_periapicales: z.object({
+            descripcion: DescripcionSchema,
+            imagenes: PeriapicalesSchema,
+        }),
+        interpretacion_coronales: z.object({
+            descripcion: DescripcionSchema,
+            imagenes: CoronalesSchema,
+        }),
+    })
+
+const examenRadiograficoSchema = z.object({
+        interpretacion_panoramica: z.object({
+            descripcion: z.object({
+                nasomaxilar: DescripcionSchema.describe('Nasomaxilar'),
+                ATM: DescripcionSchema.describe('ATM'),
+                mandibular: DescripcionSchema.describe('Mandibular'),
+                dento_alveolar_sup: DescripcionSchema.describe('Dento-Alveolar Superior'),
+                dento_alveolar_inf: DescripcionSchema.describe('Dento-Alveolar Inferior'),
             }),
             imagenes: PanoramicasSchema
         }),
@@ -90,7 +110,7 @@ const ExamenRadiograficoDefaults = {
     }
 } satisfies z.infer<typeof ExamenRadiograficoSchema>
 
-export {MAX_PICTURES_PER_RADIOGRAFIA, RadiografiaSchema, ExamenRadiograficoDefaults}
+export {MAX_PICTURES_PER_RADIOGRAFIA, RadiografiaSchema, ExamenRadiograficoDefaults, examenRadiograficoSchema}
 export default ExamenRadiograficoSchema
 
 
