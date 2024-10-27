@@ -72,7 +72,7 @@ class HistoriaController extends Controller
                 'created_HCE' => Historia::count(),
             ];
 
-            if (!$request->inertia() AND $request->expectsJson()) {
+            if (!$request->inertia() and $request->expectsJson()) {
                 return response()->json([
                     'statistics' => $statistics
                 ]);
@@ -85,7 +85,7 @@ class HistoriaController extends Controller
 
             $statistics = [];
 
-            if (!$request->inertia() AND $request->expectsJson()) {
+            if (!$request->inertia() and $request->expectsJson()) {
                 return response()->json([
                     'statistics' => $statistics
                 ]);
@@ -102,7 +102,7 @@ class HistoriaController extends Controller
                 'historiasCreadas' => $historiasCreadas
             ];
 
-            if (!$request->inertia() AND $request->expectsJson()) {
+            if (!$request->inertia() and $request->expectsJson()) {
                 return response()->json([
                     'statistics' => $statistics
                 ]);
@@ -127,7 +127,7 @@ class HistoriaController extends Controller
             return back();
         }
 
-        if ($user->hasRole('admin') OR $user->hasRole('admision')) {
+        if ($user->hasRole('admin') or $user->hasRole('admision')) {
 
             $historias = Historia::all();
 
@@ -139,7 +139,7 @@ class HistoriaController extends Controller
             /** @var Collection<Group> $groups */
             $groups = Group::whereJsonContains('members', $user->id)->get();
 
-            $homeworks = $groups->map(fn (Group $group) => $group->assignments->map(fn (Group\Assignment $assignment) => $assignment->homeworks->map(fn (Homework $homework) => $homework->documents)));
+            $homeworks = $groups->map(fn(Group $group) => $group->assignments->map(fn(Group\Assignment $assignment) => $assignment->homeworks->map(fn(Homework $homework) => $homework->documents)));
 
         } elseif ($user->hasRole('estudiante')) {
 
@@ -205,7 +205,7 @@ class HistoriaController extends Controller
         }
 
         $data = $request->validate([
-            'paciente_id' => ['required', 'uuid', 'exists:'.Paciente::class.',id'],
+            'paciente_id' => ['required', 'uuid', 'exists:' . Paciente::class . ',id'],
         ]);
 
         /** @var Paciente $paciente */
@@ -247,7 +247,7 @@ class HistoriaController extends Controller
         $homework = null;
 
         if ($request->has('homework')) {
-            $homework_id = $request->validate(['homework' => ['ulid', 'exists:'.Homework::class.',id']]);
+            $homework_id = $request->validate(['homework' => ['ulid', 'exists:' . Homework::class . ',id']]);
 
             /** @var Homework $homework */
             $homework = Homework::with(['assignment:id,group_id' => ['group:id']])->find($homework_id)->first();
@@ -301,7 +301,7 @@ class HistoriaController extends Controller
         $homework = null;
 
         if ($request->has('homework')) {
-            $homework_id = $request->validate(['homework' => ['ulid', 'exists:'.Homework::class.',id']]);
+            $homework_id = $request->validate(['homework' => ['ulid', 'exists:' . Homework::class . ',id']]);
 
             /** @var Homework $homework */
             $homework = Homework::with(['assignment:id,group_id' => ['group:id']])->find($homework_id)->first();
@@ -581,16 +581,16 @@ class HistoriaController extends Controller
 
             $descripcion = $int_panoramica['descripcion'];
 
-            if (isset($int_panoramica['imagenes']) AND count($int_panoramica['imagenes']) !== 0) {
+            if (isset($int_panoramica['imagenes']) and count($int_panoramica['imagenes']) !== 0) {
                 $imagenes = collect($int_panoramica['imagenes']);
                 $imagenes->each(fn(UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('panoramicas'));
             }
 
-            $historia_odon->examen_radiografico->interpretacion_panoramica['nasomaxilar'] = $descripcion['nasomaxilar'] ?? null;
-            $historia_odon->examen_radiografico->interpretacion_panoramica['ATM'] = $descripcion['ATM']  ?? null;
-            $historia_odon->examen_radiografico->interpretacion_panoramica['mandibular'] = $descripcion['mandibular']  ?? null;
-            $historia_odon->examen_radiografico->interpretacion_panoramica['dento_alveolar_sup'] = $descripcion['dento_alveolar_sup']  ?? null;
-            $historia_odon->examen_radiografico->interpretacion_panoramica['dento_alveolar_inf'] = $descripcion['dento_alveolar_inf']  ?? null;
+            $historia_odon->examen_radiografico->interpretacion_panoramica['nasomaxilar'] = $descripcion['nasomaxilar'];
+            $historia_odon->examen_radiografico->interpretacion_panoramica['ATM'] = $descripcion['ATM'];
+            $historia_odon->examen_radiografico->interpretacion_panoramica['mandibular'] = $descripcion['mandibular'];
+            $historia_odon->examen_radiografico->interpretacion_panoramica['dento_alveolar_sup'] = $descripcion['dento_alveolar_sup'];
+            $historia_odon->examen_radiografico->interpretacion_panoramica['dento_alveolar_inf'] = $descripcion['dento_alveolar_inf'];
             $historia_odon->save();
         }
 
@@ -598,12 +598,12 @@ class HistoriaController extends Controller
 
             $int_coronales = $request->safe()->only(['interpretacion_coronales'])['interpretacion_coronales'];
 
-            if (isset($int_coronales['imagenes']) AND count($int_coronales['imagenes']) !== 0) {
-            $imagenes = collect($int_coronales['imagenes']);
-            $imagenes->each(fn(UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('coronales'));
+            if (isset($int_coronales['imagenes']) and count($int_coronales['imagenes']) !== 0) {
+                $imagenes = collect($int_coronales['imagenes']);
+                $imagenes->each(fn(UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('coronales'));
             }
 
-            $historia_odon->examen_radiografico->interpretacion_coronales = $int_coronales['descripcion']  ?? null;
+            $historia_odon->examen_radiografico->interpretacion_coronales = $int_coronales['descripcion'] ?? null;
             $historia_odon->save();
         }
 
@@ -611,12 +611,12 @@ class HistoriaController extends Controller
 
             $int_periapicales = $request->safe()->only(['interpretacion_periapicales'])['interpretacion_periapicales'];
 
-            if (isset($int_periapicales['imagenes']) AND count($int_periapicales['imagenes']) !== 0) {
-            $imagenes = collect($int_periapicales['imagenes']);
-            $imagenes->each(fn(UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('periapicales'));
+            if (isset($int_periapicales['imagenes']) and count($int_periapicales['imagenes']) !== 0) {
+                $imagenes = collect($int_periapicales['imagenes']);
+                $imagenes->each(fn(UploadedFile $file) => $historia_odon->addMedia($file)->toMediaCollection('periapicales'));
             }
 
-            $historia_odon->examen_radiografico->interpretacion_periapicales = $int_periapicales['descripcion']  ?? null;
+            $historia_odon->examen_radiografico->interpretacion_periapicales = $int_periapicales['descripcion'] ?? null;
             $historia_odon->save();
         }
 
@@ -774,7 +774,7 @@ class HistoriaController extends Controller
     public function changeStatus(Historia $historia, Request $request)
     {
         $data = $request->validate([
-           'status' => ['required', Rule::enum(Status::class)->except([Status::ENTREGADA])]
+            'status' => ['required', Rule::enum(Status::class)->except([Status::ENTREGADA])]
         ]);
 
         if ($historia->status === Status::CERRADA) {
@@ -794,7 +794,7 @@ class HistoriaController extends Controller
                 break;
         }
 
-        $this->historiaService->changeStatus($historia,$new_status);
+        $this->historiaService->changeStatus($historia, $new_status);
 
         message('Estado de la historia cambiado exitosamente', Type::Success);
 

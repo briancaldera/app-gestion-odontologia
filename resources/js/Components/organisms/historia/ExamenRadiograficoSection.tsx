@@ -14,6 +14,8 @@ import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 import HistoriaOdontologica from "@/src/models/HistoriaOdontologica.ts";
+import InterpretacionPanoramica from "@/Components/organisms/historia/partials/InterpretacionPanoramica.tsx";
+import InterpretacionPeriapicales from "@/Components/organisms/historia/partials/InterpretacionPeriapicales.tsx";
 
 type ExamenRadiograficoSectionProps = {
     historiaOdontologica: HistoriaOdontologica
@@ -34,7 +36,7 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
         const data = {
             _method: 'patch',
             ...values
-        } satisfies z.infer<typeof ExamenRadiograficoSchema> & {_method: 'patch'}
+        } satisfies z.infer<typeof ExamenRadiograficoSchema> & { _method: 'patch' }
 
         router.post(endpoint, data, {
             onError: errors => mapServerErrorsToFields(form, errors),
@@ -86,110 +88,12 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
 
             <Title level={'title-lg'}>Examen Radiografico</Title>
 
+            <InterpretacionPanoramica/>
+
+            <InterpretacionPeriapicales/>
+
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
-
-                    <section className={'my-6'}>
-                        <header className={'mb-1.5 mt-5 space-y-1'}>
-                            <Title level={'title-md'}>Interpretación panorámica</Title>
-                        </header>
-
-                        <div className={'px-14'}>
-                            <Carousel>
-                                <CarouselContent className={'h-[700px] bg-neutral-950'}>
-                                    {
-                                        historiaOdontologica.panoramicas.map((url: string) => (
-                                            <CarouselItem key={url} className={'flex items-center bg-neutral-950'}>
-                                                <Image src={url} className={'w-full h-auto flex-none'}/>
-                                            </CarouselItem>
-                                        ))
-                                    }
-                                    {
-                                        form.getValues().interpretacion_panoramica.imagenes.map((file: File) => (
-                                            <CarouselItem key={file.name} className={'flex items-center'}>
-                                                <Image src={file} className={'w-full h-auto flex-none'}/>
-                                            </CarouselItem>
-                                        ))
-                                    }
-                                </CarouselContent>
-                                <CarouselPrevious/>
-                                <CarouselNext/>
-                            </Carousel>
-                        </div>
-
-
-                        <div className={'my-2'}>
-                            <DragAndDrop maxFiles={5} handleDrop={handleDropPanoramica}/>
-                        </div>
-
-                        <FormField render={({field}) => (
-                            <FormItem>
-                                <FormMessage />
-                            </FormItem>
-                        )} name={'interpretacion_panoramica.imagenes'} control={form.control} />
-
-
-                        <div className={'grid sm:grid-cols-2 gap-4'}>
-                            {
-                                Object.keys(ExamenRadiograficoSchema.shape.interpretacion_panoramica.shape.descripcion.shape).map((interpretacion: string) => (
-                                    <FormField key={interpretacion} render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel>{interpretacion}</FormLabel>
-                                            <FormControl>
-                                                <Textarea value={field.value} onChange={field.onChange}/>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} name={`interpretacion_panoramica.descripcion.${interpretacion}`} control={form.control} />
-                                ))
-                            }
-                        </div>
-                    </section>
-
-                    <section className={'my-6'}>
-                        <header className={'mb-1.5 mt-5 space-y-1'}>
-                            <Title level={'title-md'}>Interpretación radiográfica periapicales</Title>
-                            <Text level={'body-md'}>(Corona, Raíz, Hueso y Espacio Ligamento Periodontal)</Text>
-                        </header>
-
-                        <div className={'px-14'}>
-                            <Carousel>
-                                <CarouselContent className={'h-[700px] bg-neutral-950'}>
-                                    {
-                                        historiaOdontologica.periapicales.map((url: string) => (
-                                            <CarouselItem key={url} className={'flex items-center bg-neutral-950'}>
-                                                <Image src={url} className={'w-full h-auto flex-none'}/>
-                                            </CarouselItem>
-                                        ))
-                                    }
-                                    {
-                                        form.getValues().interpretacion_periapicales.imagenes.map((file: File) => (
-                                            <CarouselItem key={file.name} className={'flex items-center'}>
-                                                <Image src={file} className={'w-full h-auto flex-none'}/>
-                                            </CarouselItem>
-                                        ))
-                                    }
-                                </CarouselContent>
-                                <CarouselPrevious/>
-                                <CarouselNext/>
-                            </Carousel>
-                        </div>
-
-                        <div>
-                            <DragAndDrop maxFiles={10} handleDrop={handleDropPeriapicales}/>
-                        </div>
-
-                        <FormField render={({field}) => (
-                            <FormItem>
-                                <FormLabel>Descripcion</FormLabel>
-                                <FormControl>
-                                    <Textarea {...field} className={'h-48'}/>
-                                </FormControl>
-                                <FormMessage/>
-                            </FormItem>
-                        )} name={'interpretacion_periapicales.descripcion'} control={form.control}/>
-
-                    </section>
 
                     <section className={'my-6'}>
                         <header className={'mb-1.5 mt-5 space-y-1'}>
@@ -236,7 +140,8 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
                     </section>
 
                     <div className={'flex justify-end gap-3'}>
-                        <Button disabled={isProcessing || !form.formState.isDirty || form.formState.disabled} type={'submit'}>Guardar</Button>
+                        <Button disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}
+                                type={'submit'}>Guardar</Button>
                     </div>
                 </form>
             </Form>

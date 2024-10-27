@@ -20,7 +20,7 @@ const Image = ({src, className, ...props}: ImageProps & ClassAttributes<HTMLImag
     }, [])
 
     return (
-        <img src={preview} alt={''} className={cn('object-contain', className)} {...props}/>
+        <img src={preview} alt={''} className={cn('', className)} {...props}/>
     )
 }
 
