@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAntFamiliaresRequest;
 use App\Http\Requests\StoreAntPersonalesRequest;
+use App\Http\Requests\StoreControlPlaca;
 use App\Http\Requests\StoreHistoriaOdontologicaRequest;
 use App\Http\Requests\StoreOdontologiaMediaRequest;
 use App\Http\Requests\StorePacienteRequest;
@@ -760,6 +761,42 @@ class HistoriaController extends Controller
         $consentimiento = $historia_odo->getMedia('consentimiento')->first(fn(Media $media) => $media->uuid === $id);
 
         return response()->file($consentimiento->getPath());
+    }
+
+    public function storeControlPlaca(Historia $historia, StoreControlPlaca $storeControlPlaca)
+    {
+        $user = request()->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
+        $data = $storeControlPlaca->validated();
+
+        $new_control_placa = [
+            'fecha' => now(),
+            'modelo' => $data,
+        ];
+
+        /** @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+
+        $control_placa_collection = collect($historia_odon->historia_periodontal->control_placa);
+
+        $control_placa_collection->push($new_control_placa);
+
+        $historia_odon->historia_periodontal->control_placa = $control_placa_collection->toArray();
+
+        $historia_odon->save();
+
+        message('Control de placa agregado');
+        return response(null, '200');
     }
 
     public function getMedia(Historia $historia, string $id)

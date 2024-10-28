@@ -178,7 +178,8 @@ JSON,
       "placa_bacteriana_lengua": false,
       "control_halitosis": null,
       "tratamiento": null
-    }
+    },
+    "control_placa": []
 }
 JSON,
     ];

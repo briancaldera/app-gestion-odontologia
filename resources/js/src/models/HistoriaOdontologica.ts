@@ -1,6 +1,7 @@
 import {z} from 'zod'
 import {estudioModelosSchema} from "@/FormSchema/Historia/EstudioModelosSchema";
 import {historiaPeriodontalSchema} from "@/FormSchema/Historia/HistoriaPeriodontalSchema.ts";
+import {DentalPlaqueChartModel} from "@/src/DentalPlaqueChartModel.ts";
 
 type HistoriaOdontologica = {
     historia_id: string
@@ -110,7 +111,15 @@ type ExamenRadiografico = {
     interpretacion_coronales: string | null
 }
 
-type HistoriaPeriodontal = z.infer<typeof historiaPeriodontalSchema>
+type ControlPlaca = {
+    fecha: string
+    modelo: DentalPlaqueChartModel
+}
+
+type HistoriaPeriodontal = z.infer<typeof historiaPeriodontalSchema> & {
+    readonly control_placa: ControlPlaca[]
+}
+
 
 export {type HistoriaPeriodontal}
 export default HistoriaOdontologica
