@@ -1,5 +1,6 @@
 import {z} from 'zod'
 import {estudioModelosSchema} from "@/FormSchema/Historia/EstudioModelosSchema";
+import {historiaPeriodontalSchema} from "@/FormSchema/Historia/HistoriaPeriodontalSchema.ts";
 
 type HistoriaOdontologica = {
     historia_id: string
@@ -109,32 +110,7 @@ type ExamenRadiografico = {
     interpretacion_coronales: string | null
 }
 
-type HistoriaPeriodontal = {
-    higiene_bucal: {
-        frecuencia_cepillado: string | null
-        tipo_cepillo: 'D' | 'M' | 'S' | null
-        metodo_cepillado: 'H' | 'V' | 'C' | 'O' | null
-        metodo_auxiliar: {
-            hilo_dental: boolean
-            enjuague_bucal: boolean
-            hidroterapia: boolean
-            cepillo_interdental: boolean
-        },
-        sustancia_reveladora: {
-            descripcion: string | null
-            otro: string | null
-        }
-        cepillado_lengua: boolean
-    }
-    control_higiene_bucal: {
-        tecnica_cepillado_ensenada: string | null
-        cepillo_recomendado: string | null
-        metodos_auxiliares_requeridos: string | null
-        control_halitosis: 'S' | 'N' | 'NR' | null
-        tratamiento: string | null
-        placa_bacteriana_lengua: boolean
-    }
-}
+type HistoriaPeriodontal = z.infer<typeof historiaPeriodontalSchema>
 
 export {type HistoriaPeriodontal}
 export default HistoriaOdontologica

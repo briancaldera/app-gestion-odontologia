@@ -159,33 +159,28 @@ JSON,
   "interpretacion_coronales": null
 }
 JSON,
-        'historia_periodontal' => /* @lang JSON */
-            '{
-"higiene_bucal": {
-  "frecuencia_cepillado": null,
-  "tipo_cepillo": null,
-  "metodo_cepillado": null,
-  "metodo_auxiliar": {
-    "hilo_dental": false,
-    "enjuague_bucal": false,
-    "hidroterapia": false,
-    "cepillo_interdental": false
-  },
-  "sustancia_reveladora": {
-    "descripcion": null,
-    "otro": null
-  },
-  "cepillado_lengua": false
-},
-"control_higiene_bucal": {
-  "tecnica_cepillado_ensenada": null,
-  "cepillo_recomendado": null,
-  "metodos_auxiliares_requeridos": null,
-  "placa_bacteriana_lengua": false,
-  "control_halitosis": null,
-  "tratamiento": null
+        'historia_periodontal' => <<<'JSON'
+{
+    "higiene_bucal": {
+      "frecuencia_cepillado": null,
+      "tipo_cepillo": [],
+      "metodo_cepillado": [],
+      "metodo_auxiliar": [],
+      "cepillado_lengua": false,
+      "hemorragia_gingival": false,
+      "xerostomia": false,
+      "sialorrea": false
+    },
+    "control_higiene_bucal": {
+      "tecnica_cepillado_ensenada": null,
+      "cepillo_recomendado": null,
+      "metodos_auxiliares_requeridos": null,
+      "placa_bacteriana_lengua": false,
+      "control_halitosis": null,
+      "tratamiento": null
+    }
 }
-}'
+JSON,
     ];
 
     protected $fillable = [
