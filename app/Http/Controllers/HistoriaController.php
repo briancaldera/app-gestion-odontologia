@@ -781,7 +781,7 @@ class HistoriaController extends Controller
 
         $new_control_placa = [
             'fecha' => now(),
-            'modelo' => $data,
+            'modelo' => $data['control_placa'],
         ];
 
         /** @var HistoriaOdontologica $historia_odon */
