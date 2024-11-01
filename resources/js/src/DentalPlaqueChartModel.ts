@@ -200,20 +200,20 @@ const mergeQuadrant: (target: DentalPiece[], source: DentalPiece[]) => DentalPie
 
 const useDentalPlaqueChart: (props?: UseDentalPlaqueChart) => UseDentalPlaqueChartReturn = (props) => {
 
-    const quad_1: DentalPiece[] = React.useMemo(() => JSON.parse(JSON.stringify(quadrant1)), [])
-    const quad_2: DentalPiece[] = React.useMemo(() => JSON.parse(JSON.stringify(quadrant2)), [])
-    const quad_3: DentalPiece[] = React.useMemo(() => JSON.parse(JSON.stringify(quadrant3)), [])
-    const quad_4: DentalPiece[] = React.useMemo(() => JSON.parse(JSON.stringify(quadrant4)), [])
+    // todo move JSON parse inside useState
+    const quad_1: DentalPiece[] = React.useMemo(() => JSON.parse(JSON.stringify(props?.model?.quadrant_1 ?? quadrant1)), [])
+    const quad_2: DentalPiece[] = React.useMemo(() => JSON.parse(JSON.stringify(props?.model?.quadrant_2 ?? quadrant2)), [])
+    const quad_3: DentalPiece[] = React.useMemo(() => JSON.parse(JSON.stringify(props?.model?.quadrant_3 ?? quadrant3)), [])
+    const quad_4: DentalPiece[] = React.useMemo(() => JSON.parse(JSON.stringify(props?.model?.quadrant_4 ?? quadrant4)), [])
 
-    const [group1, setGroup1] = useState<DentalPiece[]>(() => (props?.model) ? mergeQuadrant(quad_1, props.model.quadrant_1) : quad_1);
-    const [group2, setGroup2] = useState<DentalPiece[]>(() => (props?.model) ? mergeQuadrant(quad_2, props.model.quadrant_2) : quad_2);
-    const [group3, setGroup3] = useState<DentalPiece[]>(() => (props?.model) ? mergeQuadrant(quad_3, props.model.quadrant_3) : quad_3);
-    const [group4, setGroup4] = useState<DentalPiece[]>(() => (props?.model) ? mergeQuadrant(quad_4, props.model.quadrant_4) : quad_4);
+    const [group1, setGroup1] = useState<DentalPiece[]>(quad_1);
+    const [group2, setGroup2] = useState<DentalPiece[]>(quad_2);
+    const [group3, setGroup3] = useState<DentalPiece[]>(quad_3);
+    const [group4, setGroup4] = useState<DentalPiece[]>(quad_4);
 
     const getModel: () => DentalPlaqueChartModel = () => {
         return {
             quadrant_1: group1, quadrant_2: group2, quadrant_3: group3, quadrant_4: group4
-
         } satisfies DentalPlaqueChartModel
     }
 

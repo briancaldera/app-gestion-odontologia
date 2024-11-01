@@ -6,11 +6,13 @@ import {UseDentalPlaqueChartReturn} from "@/src/DentalPlaqueChartModel.ts";
 
 type DentalPlaqueChartProps = {
     chart: UseDentalPlaqueChartReturn
+    disabled?: boolean
 }
 
-const DentalPlaqueChart = ({ chart }: DentalPlaqueChartProps) => {
+const DentalPlaqueChart = ({ chart, disabled = false }: DentalPlaqueChartProps) => {
 
     const handleClickSurface: (group: DentalPiece[], id: string, surface: Surface, mark: boolean) => DentalPiece[] = (group, id, surface, mark) => {
+        if (disabled) return group
         return group.map((piece) => {
             if (piece.id === id) {
                 const newTooth: DentalPiece = {...piece}
@@ -23,6 +25,7 @@ const DentalPlaqueChart = ({ chart }: DentalPlaqueChartProps) => {
     }
 
     const handleDiscardPiece: (group: DentalPiece[], id: string) => DentalPiece[] = (group: DentalPiece[], id: string) => {
+        if (disabled) return group
         return group.map(piece => {
             if (piece.id === id) {
                 const newPiece: DentalPiece = {...piece}

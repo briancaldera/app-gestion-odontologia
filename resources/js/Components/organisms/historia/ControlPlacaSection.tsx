@@ -3,22 +3,86 @@ import DentalPlaqueChart from "@/Components/controlplaca/DentalPlaqueChart.tsx";
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
 import {Text} from "@/Components/atoms/Text";
+import {route} from "ziggy-js";
+import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
+import React from "react";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import {Button} from "@/shadcn/ui/button.tsx";
+import {formatDate} from "date-fns";
 
 const ControlPlacaSection = () => {
 
-    const controlPlacaChart1 = useDentalPlaqueChart()
-    const controlPlacaChart2 = useDentalPlaqueChart()
-    const controlPlacaChart3 = useDentalPlaqueChart()
-    const controlPlacaChart4 = useDentalPlaqueChart()
+    const {historia} = React.useContext(HistoriaEditorContext)
+    const {control_placa} = historia.historia_odontologica!.historia_periodontal
+
+    const {isProcessing, router} = useInertiaSubmit()
+
+    const isDisabled = isProcessing
+
+    const handleSubmit = (model: DentalPlaqueChartModel) => {
+
+
+        const endpoint = route('historias.odontologica.periodontal.controlplaca.store', {
+            historia: historia.id
+        })
+
+        const body = {
+            control_placa: model,
+        }
+
+        router.post(endpoint, body, {
+            onSuccess: page => {
+                router.reload()
+            },
+            onError: errors => {
+                console.log(errors)
+            }
+        })
+    }
+
+    const [newControl, setNewControl] = React.useState<boolean>(false)
 
     return (
         <Surface className={'p-6'}>
 
-            <header>
-                <Title level={'h4'}>Control de placa de dental</Title>
-            </header>
+            <Title level={'h4'}>Control de placa de dental</Title>
 
-            <ControlPlacaDiagrama/>
+            <div className={'flex flex-col gap-y-2'}>
+                {
+                    control_placa.length > 0 ? (
+                        control_placa.map((item) =>
+                            <div className={'border p-6 rounded-lg'} key={item.fecha}>
+                                <ControlPlacaDiagrama model={item.modelo} date={item.fecha} key={item.fecha}
+                                                      onClick={() => {
+                                                      }} disabled={true}/>
+
+                                <div className={'col-start-1 col-span-1 border p-6'}>
+
+                                    <Text className={'font-bold'}>Fecha: {formatDate(item.fecha, 'P')}</Text>
+                                </div>
+                            </div>
+                        )
+                    ) : (
+                        !newControl && (
+                            <div className={'flex flex-col justify-center items-center p-6 gap-y-4'}>
+                                <Text>No existe ningún control de placa</Text>
+                                <Button onClick={() => setNewControl(true)}>Crear control de placa</Button>
+                            </div>
+                        )
+                    )
+                }
+
+            </div>
+
+            <div className={'mt-2'}>
+                {
+                    !newControl ? (
+                        <Button onClick={() => setNewControl(true)}>Crear control de placa</Button>
+                    ) : (
+                        <ControlPlacaDiagrama onClick={(model) => handleSubmit(model)}/>
+                    )
+                }
+            </div>
 
 
         </Surface>
@@ -31,7 +95,6 @@ const countPresentDentalPieces = (model: DentalPlaqueChartModel) => {
         model.quadrant_3.filter(piece => piece.present).length +
         model.quadrant_4.filter(piece => piece.present).length
 }
-
 
 
 const countMarkedSurfaces = (model: DentalPlaqueChartModel) => {
@@ -65,20 +128,38 @@ const countMarkedSurfaces = (model: DentalPlaqueChartModel) => {
         }, 0)
 }
 
-const ControlPlacaDiagrama = () => {
+type ControlPlacaDiagramaProps = {
+    model?: DentalPlaqueChartModel,
+    onClick: (model: DentalPlaqueChartModel) => void
+    disabled?: boolean
+}
 
-    const controlPlacaChart = useDentalPlaqueChart()
+const ControlPlacaDiagrama = ({
+                                  model, onClick = () => {
+    }, disabled = false
+                              }: ControlPlacaDiagramaProps) => {
 
-    const presentSurfacesCount = countPresentDentalPieces(controlPlacaChart.getModel()) * 4
+    const chart = useDentalPlaqueChart({model: model})
 
-    const markedSurfacesCount = countMarkedSurfaces(controlPlacaChart.getModel())
+    const dentalPieces: number = countPresentDentalPieces(chart.getModel())
+
+    const presentSurfacesCount: number = dentalPieces * 4
+
+    const markedSurfacesCount: number = countMarkedSurfaces(chart.getModel())
+
+    const plaquePercentage: number = markedSurfacesCount / presentSurfacesCount * 100
 
     return (
         <div>
-            <DentalPlaqueChart chart={controlPlacaChart}/>
+
             <div className={'grid grid-cols-5 border'}>
 
+                <div className={'col-span-full flex justify-center'}>
+                    <DentalPlaqueChart chart={chart} disabled={disabled}/>
+                </div>
+
                 <div className={'p-4 flex justify-center items-center'}>
+                    <Text className={'text-center'}>Número de piezas dentales ({dentalPieces})</Text>
                     <Text className={'text-center'}>Número de superficies (Número de diente x 4)</Text>
                     <Text className={''} level={'h1'} component={'p'}>{presentSurfacesCount}</Text>
                 </div>
@@ -101,12 +182,18 @@ const ControlPlacaDiagrama = () => {
                 <div className={'p-4 flex gap-2 justify-center items-center'}>
                     <Text>%</Text>
                     <Text level={'h1'}>
-                        {}
-                        {(markedSurfacesCount / presentSurfacesCount * 100).toFixed(2)}
+                        {(!Number.isNaN(plaquePercentage) ? plaquePercentage : 0).toFixed(2)}
                     </Text>
                 </div>
             </div>
 
+
+            <div>
+                {
+                    !disabled && <Button onClick={() => onClick(chart.getModel())} type='button'>Guardar</Button>
+                }
+
+            </div>
         </div>
     )
 }
