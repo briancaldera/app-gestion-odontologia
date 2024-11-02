@@ -236,26 +236,28 @@ class Anamnesis implements CastsAttributes
         ];
 
         return [
-            "visita_medico_ultimos_6_meses" => $visita_medico_ultimos_6_meses,
-            "bajo_tratamiento_actual" => $bajo_tratamiento_actual,
-            "alergia_medicamento" => $alergia_medicamento,
-            "alergia_material_dental" => $alergia_material_dental,
-            "hospitalizado_alguna_vez" => $hospitalizado_alguna_vez,
-            "odontologo_ultimos_6_meses" => $odontologo_ultimos_6_meses,
-            "sangrado_al_cepillar" => $sangrado_al_cepillar,
-            "abultamiento_diente" => $abultamiento_diente,
-            "rechina_aprieta_dientes" => $rechina_aprieta_dientes,
-            "dolor_CATM" => $dolor_CATM,
-            "sangrado_excesivo_corte" => $sangrado_excesivo_corte,
-            "dificultad_cicatrizacion" => $dificultad_cicatrizacion,
-            "cigarrillo_tabaco" => $cigarrillo_tabaco,
-            "alergia_alimento" => $alergia_alimento,
-            "alergia_enlatados" => $alergia_enlatados,
-            "alergia_yodo" => $alergia_yodo,
-            "reaccion_anestesia" => $reaccion_anestesia,
-            "embarazo" => $embarazo,
-            "enfermedades" => $enfermedades,
-            "enfermedades_familiares" => $enfermedades_familiares,
+            'anamnesis' => [
+                "visita_medico_ultimos_6_meses" => $visita_medico_ultimos_6_meses,
+                "bajo_tratamiento_actual" => $bajo_tratamiento_actual,
+                "alergia_medicamento" => $alergia_medicamento,
+                "alergia_material_dental" => $alergia_material_dental,
+                "hospitalizado_alguna_vez" => $hospitalizado_alguna_vez,
+                "odontologo_ultimos_6_meses" => $odontologo_ultimos_6_meses,
+                "sangrado_al_cepillar" => $sangrado_al_cepillar,
+                "abultamiento_diente" => $abultamiento_diente,
+                "rechina_aprieta_dientes" => $rechina_aprieta_dientes,
+                "dolor_CATM" => $dolor_CATM,
+                "sangrado_excesivo_corte" => $sangrado_excesivo_corte,
+                "dificultad_cicatrizacion" => $dificultad_cicatrizacion,
+                "cigarrillo_tabaco" => $cigarrillo_tabaco,
+                "alergia_alimento" => $alergia_alimento,
+                "alergia_enlatados" => $alergia_enlatados,
+                "alergia_yodo" => $alergia_yodo,
+                "reaccion_anestesia" => $reaccion_anestesia,
+                "embarazo" => $embarazo,
+                "enfermedades" => $enfermedades,
+                "enfermedades_familiares" => $enfermedades_familiares,
+            ]
         ];
     }
 }
