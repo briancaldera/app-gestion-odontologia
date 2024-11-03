@@ -116,6 +116,36 @@ return [
             'root' => storage_path('app/historias/odontologicas/media'),
             'url'    => env('APP_URL').'/historias/odontologicas/media',
         ],
+
+        'endodoncia-historias-fichas-radiografias-iniciales' => [
+            'driver' => 'local',
+            'root' => storage_path('app/endodoncia/historias/fichas/radiografias/iniciales'),
+            'url'    => env('APP_URL').'/endodoncia/historias/fichas/radiografias/iniciales',
+        ],
+
+        'endodoncia-historias-fichas-radiografias-finales' => [
+            'driver' => 'local',
+            'root' => storage_path('app/endodoncia/historias/fichas/radiografias/finales'),
+            'url'    => env('APP_URL').'/endodoncia/historias/fichas/radiografias/finales',
+        ],
+
+        'endodoncia-historias-fichas-radiografias-conductometrias' => [
+            'driver' => 'local',
+            'root' => storage_path('app/endodoncia/historias/fichas/radiografias/conductometrias'),
+            'url'    => env('APP_URL').'/endodoncia/historias/fichas/radiografias/conductometrias',
+        ],
+
+        'endodoncia-historias-fichas-radiografias-conos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/endodoncia/historias/fichas/radiografias/conos'),
+            'url'    => env('APP_URL').'/endodoncia/historias/fichas/radiografias/conos',
+        ],
+
+        'endodoncia-historias-fichas-radiografias-penachos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/endodoncia/historias/fichas/radiografias/penachos'),
+            'url'    => env('APP_URL').'/endodoncia/historias/fichas/radiografias/penachos',
+        ],
     ],
 
     /*

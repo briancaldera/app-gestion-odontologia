@@ -47,7 +47,7 @@ const Show = ({historia}: ShowProps) => {
             <ScrollArea className={'h-full'}>
                 <div className={'px-6 py-2 pr-0 flex'}>
                     <div className={'basis-full'}>
-                        <HistoriaEndodonciaEditor />
+                        <HistoriaEndodonciaEditor historia={historia} readMode={false} canCreateCorrections={false}/>
                     </div>
                     <div className={'basis-16 flex flex-col px-2 gap-y-1'}>
                         {
