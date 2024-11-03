@@ -14,9 +14,11 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 
 /**
  * @property AnamnesisValueObject $anamnesis
+ * @property Collection $evaluacion_dolor
 */
 class HistoriaEndodoncia extends Model implements StatusHolder
 {
@@ -133,8 +135,8 @@ JSON,
   "aparicion_sintomas": null,
   "intensidad_frecuencia_calidad_dolor": {
     "intensidad": null,
-    "frecuencia": [],
-    "calidad": []
+    "frecuencia": null,
+    "calidad": null
   },
   "alivio_dolor": {
     "status": null,
@@ -148,9 +150,7 @@ JSON,
     "status": null,
     "description": null
   },
-  "diente_sensible_al_comer": {
-    "sensibilidad": []
-  },
+  "diente_sensible_al_comer": [],
   "dolor_al_masticar": {
     "status": null,
     "description": null

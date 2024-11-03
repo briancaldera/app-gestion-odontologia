@@ -112,6 +112,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::prefix('/endodoncia')->name('endodoncia.')->group(function() {
         Route::resource('historias', HistoriaEndodonciaController::class);
         Route::patch('/historias/{historia}/anamnesis', [HistoriaEndodonciaController::class, 'updateAnamnesis'])->name('historias.anamnesis.update');
+        Route::patch('/historias/{historia}/dolor', [HistoriaEndodonciaController::class, 'updateEvaluacionDolor'])->name('historias.dolor.update');
     });
 
 });

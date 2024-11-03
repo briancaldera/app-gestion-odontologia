@@ -2,7 +2,7 @@ import {Status} from "@/src/models/Historia.ts";
 import User from "@/src/models/User.ts";
 import Paciente from "@/src/models/Paciente.ts";
 import {z} from "zod";
-import {anamnesisSchema} from "@/FormSchema/Odontologia/Endodoncia/HistoriaEndodonciaSchema.ts";
+import {anamnesisSchema, evaluacionDolorSchema} from "@/FormSchema/Odontologia/Endodoncia/HistoriaEndodonciaSchema.ts";
 
 type HistoriaEndodoncia = {
     id: string
@@ -14,7 +14,7 @@ type HistoriaEndodoncia = {
     autor?: User
     paciente?: Paciente,
     anamnesis?: z.infer<typeof anamnesisSchema>
-    evaluacion_dolor?: Object
+    evaluacion_dolor?: z.infer<typeof evaluacionDolorSchema>
     secuencia_tratamiento?: Object
 
     created_at?: string

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateAnamnesisRequest;
+use App\Http\Requests\UpdateEvaluacionDolorRequest;
 use App\Http\Resources\Odontologia\Endodoncia\HistoriaEndodonciaResource;
 use App\Models\Endodoncia\HistoriaEndodoncia;
 use App\Models\Group\Homework;
@@ -156,6 +157,19 @@ class HistoriaEndodonciaController extends Controller
         $historia->save();
 
         message('Anamnesis actualizada exitosamente', \Type::Success);
+        return response(null, 200);
+    }
+
+    public function updateEvaluacionDolor(UpdateEvaluacionDolorRequest $request, HistoriaEndodoncia $historia){
+
+        $data = $request->validated();
+
+        $evaluacion_dolor = $data['evaluacion_dolor'];
+
+        $historia->evaluacion_dolor = collect($evaluacion_dolor);
+        $historia->save();
+
+        message('Evaluación del dolor actualizada exitosamente', \Type::Success);
         return response(null, 200);
     }
 

@@ -129,9 +129,28 @@ const consentimientoSchema = z.object({
         .refine((file: File) => file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
 })
 
+type FrecuenciaItem = ListItem
+
+const frecuenciaDolorItems: FrecuenciaItem[] = [
+    {id: "constante", label: "Constante"},
+    {id: "intermitente", label: "Intermitente"},
+    {id: "momentaneo", label: "Momentáneo"},
+    {id: "ocasional", label: "Ocasional"},
+    {id: " ", label: "-"},
+] satisfies FrecuenciaItem[]
+
+type CalidadItem = ListItem
+
+const calidadDolorItems: CalidadItem[] = [
+    {id: "agudo", label: "Agudo"},
+    {id: "sordo", label: "Sordo"},
+    {id: "pulsatil", label: "Pulsátil"},
+    {id: " ", label: "-"},
+] satisfies CalidadItem[]
+
 type Sensibilidad = ListItem
 
-const sensibilidadItems: Sensibilidad[] = [
+const sensibilidadDolorItems: Sensibilidad[] = [
     {id: "calor", label: "Calor"},
     {id: "frio", label: "Frío"},
     {id: "dulces", label: "Dulces"},
@@ -139,38 +158,38 @@ const sensibilidadItems: Sensibilidad[] = [
 
 const evaluacionDolorSchema = z.object({
     dolor_presente: z.object({
-        status: z.boolean(),
+        status: z.enum(['S', 'N', 'D']),
         description: z.string().max(MAX_TEXT_SIZE)
-    }),
+    }).describe('Presenta dolor ahora mismo?'),
     diente_dolor: z.object({
-        status: z.boolean(),
-        description: z.string().max(MAX_TEXT_SIZE)
-    }),
-    primeros_sintomas: z.string().max(MAX_TEXT_SIZE),
-    aparicion_sintomas: z.string().max(MAX_TEXT_SIZE),
+        status: z.enum(['S', 'N', 'D']),
+        description: z.string().max(MAX_TEXT_SIZE).describe('U.D')
+    }).describe('Podría señalar que diente le causa dolor?'),
+    primeros_sintomas: z.string().max(MAX_TEXT_SIZE).describe('Cuándo notó los primeros síntomas?'),
+    aparicion_sintomas: z.string().max(MAX_TEXT_SIZE).describe('Los síntomas aparecieron de forma súbita o gradual?'),
     intensidad_frecuencia_calidad_dolor: z.object({
-        "intensidad": z.number(),
-        "frecuencia": z.enum(['constante', 'intermitente', 'momentaneo', 'ocasional']),
-        "calidad": z.enum(['agudo', 'sordo', 'pulsatil'])
-    }),
+        "intensidad": z.coerce.number().min(0).max(10).describe('Nivel de intensidad (1 leve, 5 moderado, 10 intenso)'),
+        "frecuencia": z.enum(frecuenciaDolorItems.map(item => item.id)).describe('Frecuencia'),
+        "calidad": z.enum(calidadDolorItems.map(item => item.id)).describe('Calidad')
+    }).describe('Intensidad, frecuencia y calidad del dolor'),
     alivio_dolor: z.object({
-        status: z.boolean(),
+        status: z.enum(['S', 'N', 'D']),
         description: z.string().max(MAX_TEXT_SIZE)
-    }),
+    }).describe('Hay algo que alivie el dolor?'),
     farmaco_alivio_dolor: z.object({
-        status: z.boolean(),
+        status: z.enum(['S', 'N', 'D']),
         description: z.string().max(MAX_TEXT_SIZE)
-    }),
+    }).describe('Ha ingerido algún fármaco para aliviar el dolor?'),
     agravo_dolor: z.object({
-        status: z.boolean(),
+        status: z.enum(['S', 'N', 'D']),
         description: z.string().max(MAX_TEXT_SIZE)
-    }),
-    diente_sensible_al_comer: z.array(z.string()),
+    }).describe('Hay algo que agrave el dolor?'),
+    diente_sensible_al_comer: z.array(z.string()).describe('Al comer o beber algo, el diente es sensible a:'),
     dolor_al_masticar: z.object({
-        status: z.boolean(),
+        status: z.enum(['S', 'N', 'D']),
         description: z.string().max(MAX_TEXT_SIZE)
-    }),
-    dolor_momento_dia: z.string().max(MAX_TEXT_SIZE),
+    }).describe('Le duele al morder o masticar alimentos?'),
+    dolor_momento_dia: z.string().max(MAX_TEXT_SIZE).describe('En qué momento del día siente más dolor?'),
 })
 
-export {anamnesisSchema, evaluacionDolorSchema, consentimientoSchema, sensibilidadItems, enfermedadesItems}
+export {anamnesisSchema, evaluacionDolorSchema, consentimientoSchema, sensibilidadDolorItems, frecuenciaDolorItems, calidadDolorItems, enfermedadesItems}
