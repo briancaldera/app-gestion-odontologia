@@ -11,6 +11,7 @@ import {UserCircle} from "lucide-react";
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import AnamnesisSection from "@/Components/organisms/historia-endodoncia/AnamnesisSection.tsx";
 import EvaluacionDolorSection from "@/Components/organisms/historia-endodoncia/EvaluacionDolorSection.tsx";
+import FichasSection from "@/Components/organisms/historia-endodoncia/FichasSection.tsx";
 
 type HistoriaEndodonciaEditorContextType = {historia?: HistoriaEndodoncia}
 
@@ -61,7 +62,7 @@ const HistoriaEndodonciaEditor = ({historia, homework, readMode, canCreateCorrec
         <HistoriaEndodonciaEditorContext.Provider value={{historia: historia}}>
             <div className={'h-full'}>
                 <div className={'flex gap-x-2'}>
-                    <Tabs defaultValue="evaluacionDolor" className={"basis-3/4 flex-auto flex h-full"}
+                    <Tabs defaultValue="fichas" className={"basis-3/4 flex-auto flex h-full"}
                           orientation={'vertical'}>
                         <TabsList className={'flex-none flex flex-col items-end justify-start p-0 sticky top-0'}>
                             <TabsTrigger value="anamnesis" className={'p-0'}>
@@ -78,6 +79,13 @@ const HistoriaEndodonciaEditor = ({historia, homework, readMode, canCreateCorrec
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
+                            <TabsTrigger value="fichas" className={'p-0'}>
+                                <Surface className={'rounded-l-lg rounded-r-none rounded-b-none'}>
+                                    <Icon className={'size-8'}>
+                                        <UserCircle/>
+                                    </Icon>
+                                </Surface>
+                            </TabsTrigger>
                         </TabsList>
 
                         <ScrollArea className={'flex-1 w-full h-[83vh]'}>
@@ -88,6 +96,10 @@ const HistoriaEndodonciaEditor = ({historia, homework, readMode, canCreateCorrec
 
                             <TabsContent value="evaluacionDolor" className='p-0 m-0'>
                                 <EvaluacionDolorSection/>
+                            </TabsContent>
+
+                            <TabsContent value="fichas" className='p-0 m-0'>
+                                <FichasSection/>
                             </TabsContent>
 
                         </ScrollArea>

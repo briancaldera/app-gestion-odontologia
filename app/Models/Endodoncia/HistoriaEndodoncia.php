@@ -161,7 +161,6 @@ JSON,
 JSON,
         'secuencia_tratamiento' => /** @lang JSON */
         '[]',
-        'fichas_endodonticas' => /** @lang JSON */ '[]'
     ];
 
     protected function casts()
@@ -171,7 +170,6 @@ JSON,
             'anamnesis' => Anamnesis::class,
             'evaluacion_dolor' => 'collection',
             'secuencia_tratamiento' => 'collection',
-            'fichas_endodonticas' => 'collection'
         ];
     }
 
@@ -187,7 +185,7 @@ JSON,
 
     public function fichasEndodonticas(): HasMany
     {
-        return $this->hasMany(FichaEndodoncia::class, 'historia_endodoncia_id');
+        return $this->hasMany(FichaEndodoncia::class, 'historia_endodoncia_id', 'id');
     }
 
     public static array $actions = [

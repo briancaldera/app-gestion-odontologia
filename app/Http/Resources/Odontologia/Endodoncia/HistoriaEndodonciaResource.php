@@ -40,7 +40,7 @@ class HistoriaEndodonciaResource extends JsonResource
                 'anamnesis' => $this->anamnesis,
                 'evaluacion_dolor' => $this->evaluacion_dolor,
                 'secuencia_tratamiento' => $this->secuencia_tratamiento,
-                'fichas_endodonticas' => $this->fichas_endodonticas,
+                'fichas_endodonticas' => $this->whenLoaded('fichasEndodonticas'),
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
                 'autor' => new UserResource($this->whenLoaded('autor')),

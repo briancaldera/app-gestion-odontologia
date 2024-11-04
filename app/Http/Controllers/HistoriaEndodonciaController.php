@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateAnamnesisRequest;
 use App\Http\Requests\UpdateEvaluacionDolorRequest;
 use App\Http\Resources\Odontologia\Endodoncia\HistoriaEndodonciaResource;
+use App\Models\Endodoncia\FichaEndodoncia;
 use App\Models\Endodoncia\HistoriaEndodoncia;
 use App\Models\Group\Homework;
 use App\Models\Paciente;
@@ -12,6 +13,7 @@ use App\Models\User;
 use App\Services\HistoriaEndodonciaService;
 use App\ValueObjects\Endodoncia\Anamnesis;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class HistoriaEndodonciaController extends Controller
@@ -69,7 +71,7 @@ class HistoriaEndodonciaController extends Controller
             ]);
         }
 
-        $historia->load(['paciente']);
+        $historia->load(['paciente', 'fichasEndodonticas']);
 
         return Inertia::render('Odontologia/Endodoncia/Historias/Show', [
             'historia' => new HistoriaEndodonciaResource($historia)
@@ -96,6 +98,8 @@ class HistoriaEndodonciaController extends Controller
 
             $corrections = $document['corrections'];
         }
+
+        $historia->load(['paciente', 'fichasEndodonticas']);
 
         return Inertia::render('Odontologia/Endodoncia/Historias/Edit', [
             'historia' => new HistoriaEndodonciaResource($historia),
@@ -160,7 +164,8 @@ class HistoriaEndodonciaController extends Controller
         return response(null, 200);
     }
 
-    public function updateEvaluacionDolor(UpdateEvaluacionDolorRequest $request, HistoriaEndodoncia $historia){
+    public function updateEvaluacionDolor(UpdateEvaluacionDolorRequest $request, HistoriaEndodoncia $historia)
+    {
 
         $data = $request->validated();
 
@@ -170,6 +175,48 @@ class HistoriaEndodonciaController extends Controller
         $historia->save();
 
         message('Evaluación del dolor actualizada exitosamente', \Type::Success);
+        return response(null, 200);
+    }
+
+    public function storeFicha(Request $request, HistoriaEndodoncia $historia)
+    {
+        $data = $request->validate([
+            'diente' => ['required', 'string', 'max:255'],
+            'sintomas' => ['nullable', 'string', 'max:255'],
+            'signos' => ['nullable', 'string', 'max:255'],
+            'interpretacion_radiografica' => ['nullable', 'string', 'max:255'],
+            'etiologia' => ['list'],
+            'etiologia.*' => [Rule::in(['caries', 'traumatismo', 'abrasion', 'rest_profunda', 'recidiva_caries', 'otros',])],
+            'pruebas_diagnosticas' => ['array:examen_tejidos_periodontales,pruebas_vitalidad_pulpar,diagnostico_presuntivo,diagnostico_definitivo,morfologia_conducto,tratamiento_conducto,metodos_obturacion,tecnica_preparacion_biomecanica,preparacion_quimica,numero_lima,material_obturacion,medicacion_justificacion,observaciones'],
+            'pruebas_diagnosticas.*' => ['nullable', 'string', 'max:1000'],
+            'pruebas_diagnosticas.examen_tejidos_periodontales' => ['list'],
+            'pruebas_diagnosticas.examen_tejidos_periodontales.*' => [Rule::in(['palpacion', 'percusion', 'sondaje', 'grado_movilidad',])],
+            'pruebas_diagnosticas.pruebas_vitalidad_pulpar' => ['list'],
+            'pruebas_diagnosticas.pruebas_vitalidad_pulpar.*' => [Rule::in(['electrica', 'termica', 'cavitaria',])],
+            'pruebas_diagnosticas.morfologia_conducto' => ['list'],
+            'pruebas_diagnosticas.morfologia_conducto.*' => [Rule::in(['conducto_abierto', 'foramen_abierto', 'foramen_cerrado', 'calcificacion', 'anomalias',])],
+            'pruebas_diagnosticas.tratamiento_conducto' => ['list'],
+            'pruebas_diagnosticas.tratamiento_conducto.*' => [Rule::in(['biopulpectomia', 'necropulpectomia', 'retratamiento', 'induccion_cierre_apical', 'apiceptomia',])],
+            'pruebas_diagnosticas.metodos_obturacion' => ['list'],
+            'pruebas_diagnosticas.metodos_obturacion.*' => [Rule::in(['cond_lateral', 'cond_vertical', 'mixta', 'otros',])],
+        ]);
+
+        $ficha = new FichaEndodoncia([
+            'diente' => $data['diente'],
+            'data' => [
+                'sintomas' => $data['sintomas'],
+                'signos' => $data['signos'],
+                'interpretacion_radiografica' => $data['interpretacion_radiografica'],
+                'etiologia' => $data['etiologia'],
+            ],
+            'pruebas_diagnosticas' => $data['pruebas_diagnosticas'],
+        ]);
+
+        $ficha->historia_endodoncia_id = $historia->id;
+
+        $ficha->save();
+
+        message('Ficha de endodoncia agregada a la historia', \Type::Success);
         return response(null, 200);
     }
 
