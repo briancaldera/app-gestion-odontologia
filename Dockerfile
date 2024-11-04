@@ -70,6 +70,8 @@ RUN npm run build
 
 RUN php artisan storage:link
 
+RUN chown -R sail: .
+
 EXPOSE 80/tcp
 
 ENTRYPOINT ["start-container"]
