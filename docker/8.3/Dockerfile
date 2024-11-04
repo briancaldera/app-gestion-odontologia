@@ -61,6 +61,9 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
 RUN chmod +x /usr/local/bin/start-container
 
+RUN echo this is a message from inside the container
+RUN ls
+
 EXPOSE 80/tcp
 
-ENTRYPOINT ["start-container"]
+#ENTRYPOINT ["start-container"]
