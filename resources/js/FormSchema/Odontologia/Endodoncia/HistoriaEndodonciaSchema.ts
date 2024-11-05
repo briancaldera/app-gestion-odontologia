@@ -74,7 +74,7 @@ const anamnesisSchema = z.object({
     embarazo: z.object({
         status: z.enum(['S', 'N', 'D']),
         description: z.string().max(MAX_TEXT_SIZE).describe('Semanas de gestación')
-    }).describe('Esta usted embarazada?'),
+    }).describe('Está usted embarazada?'),
     enfermedades: z.object({
         list: z.array(z.string()),
         resumen_ant_personales: z.string().max(MAX_TEXT_SIZE).describe('Resumen de antecedentes personales')

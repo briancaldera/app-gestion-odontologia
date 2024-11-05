@@ -15,7 +15,7 @@ class HistoriaCirugia extends Model
     protected $primaryKey = 'id';
     protected $keyType = 'string';
     public $incrementing = false;
-    
+
     protected $attributes = [
         'anamnesis' => <<<'JSON'
 {
@@ -170,7 +170,7 @@ JSON,
 {
   "ant_personales": null,
   "ant_familiares": null,
-  "ant_familiares_enfermedades": null
+  "ant_familiares_enfermedades": []
 }
 JSON,
         "examen_fisico" => <<<'JSON'
@@ -197,7 +197,7 @@ JSON,
 }
 JSON,
         'observaciones' => null,
-        "estudios_radiograficos" => <<<'JSON'
+        'estudios_radiograficos' => <<<'JSON'
 {
   "panoramica": null,
   "periapical": null,
