@@ -21,8 +21,10 @@ return new class extends Migration
             $table->jsonb('observaciones');
             $table->jsonb('estudios_radiograficos');
             $table->jsonb('secuencia_tratamiento');
-            // todo add author
-
+            $table->foreignUuid('paciente_id')->references('id')->on('pacientes')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('autor_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->enum('status', ['abierta', 'entregada', 'correccion', 'cerrada']);
+            $table->string('numero')->nullable();
             $table->timestamps();
         });
     }
