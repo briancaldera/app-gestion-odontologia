@@ -18,7 +18,7 @@ return new class extends Migration
             $table->jsonb('femenino');
             $table->jsonb('antecedentes');
             $table->jsonb('examen_fisico');
-            $table->jsonb('observaciones');
+            $table->text('observaciones')->nullable();
             $table->jsonb('estudios_radiograficos');
             $table->jsonb('secuencia_tratamiento');
             $table->foreignUuid('paciente_id')->references('id')->on('pacientes')->cascadeOnUpdate()->cascadeOnDelete();

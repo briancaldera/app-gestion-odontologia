@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Odontologia\Cirugia\UpdateHistoriaCirugiaRequest;
+use App\Http\Resources\Odontologia\Cirugia\HistoriaCirugiaResource;
 use App\Models\Cirugia\HistoriaCirugia;
+use App\Models\Paciente;
+use App\Models\User;
+use App\Services\HistoriaCirugiaService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class HistoriaCirugiaController extends Controller
 {
+    public function __construct(protected HistoriaCirugiaService $historiaCirugiaService)
+    {}
+
     /**
      * Display a listing of the resource.
      */
@@ -16,49 +25,88 @@ class HistoriaCirugiaController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        /** @var User $user */
+        $user = $request->user();
+
+        $data = $request->validate([
+            'paciente_id' => ['required', 'uuid', 'exists:' . Paciente::class . ',id'],
+        ]);
+
+        /** @var Paciente $paciente */
+        $paciente = Paciente::find($data['paciente_id']);
+
+        if ($paciente->assigned_to !== $user->id) {
+            message('No estas autorizado para crear un historia a este paciente', Type::Error);
+            message('Debes estar asignado como médico tratante', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $paciente)) {
+            message('No tienes permiso para modificar este paciente', Type::Info);
+            return back();
+        }
+
+        $historia = $this->historiaCirugiaService->createHistoria($paciente, $user);
+
+        message('Historia de cirugia creada exitosamente. A continuacion podrá editar la historia asignada');
+        return to_route('cirugia.historias.edit', [
+            'historia' => $historia->id
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(HistoriaCirugia $historiaCirugia)
+    public function show(HistoriaCirugia $historia)
     {
-        //
+        /** @var Request $request */
+        $request = request();
+        if ($request->inertia() and !$request->expectsJson()) {
+            return Inertia::render('Odontologia/Cirugia/Historias/Show', [
+                'historia' => new HistoriaCirugiaResource($historia)
+            ]);
+        }
+
+        return response()->json([
+            'historia' => new HistoriaCirugiaResource($historia)
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(HistoriaCirugia $historiaCirugia)
+    public function edit(HistoriaCirugia $historia)
     {
-        //
+        return Inertia::render('Odontologia/Cirugia/Historias/Edit', [
+            'historia' => new HistoriaCirugiaResource($historia),
+//            'homework' => $homework,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, HistoriaCirugia $historiaCirugia)
+    public function update(UpdateHistoriaCirugiaRequest $request, HistoriaCirugia $historia)
     {
-        //
+        if ($request->has('anamnesis')) {
+            $anamnesis_data = $request->validated('anamnesis');
+
+            $historia->anamnesis = collect($anamnesis_data);
+            $historia->save();
+
+            message('Anamnesis actualizada exitosamente', \Type::Success);
+            return response(null, 200);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(HistoriaCirugia $historiaCirugia)
+    public function destroy(HistoriaCirugia $historia)
     {
         //
     }

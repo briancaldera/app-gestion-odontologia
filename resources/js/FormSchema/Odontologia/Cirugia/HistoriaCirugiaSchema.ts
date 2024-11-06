@@ -103,6 +103,15 @@ type ListItem = {
     label: string
 }
 
+type ReaccionMedicamentoItem = ListItem
+
+const reaccionMedicamentoItems: readonly ReaccionMedicamentoItem[]= [
+    {id: "no_esteroideos", label: "Analgésicos no esteroideos"},
+    {id: "antibiotico", label: "Antibióticos"},
+    {id: "aspirina", label: "Aspirina"},
+    {id: "otros", label: "Otros"},
+]
+
 type EnfermedadItem = ListItem
 
 const enfermedadItems: readonly EnfermedadItem[] = [
@@ -223,4 +232,4 @@ const estudios_radiograficos = z.object({
     plan_tratamiento: z.string().max(MAX_TEXT_SIZE).describe('Plan de tratamiento'),
 })
 
-export {enfermedadItems, anamnesisSchema, femeninoSchema, antecedentesSchema, habitosSchema}
+export {enfermedadItems, anamnesisSchema, femeninoSchema, antecedentesSchema, habitosSchema, reaccionMedicamentoItems}

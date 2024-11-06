@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Odontologia\Cirugia\HistoriaCirugiaResource;
 use App\Http\Resources\Odontologia\Endodoncia\HistoriaEndodonciaResource;
 use App\Http\Resources\Odontologia\HistoriaResource;
 use Illuminate\Http\Request;
@@ -42,6 +43,7 @@ class PacienteResource extends JsonResource
                 'medico_tratante' => new UserResource($this->whenLoaded('medicoTratante')),
                 'historia' => new HistoriaResource($this->whenLoaded('historia')),
                 'historia_endodoncia' => new HistoriaEndodonciaResource($this->whenLoaded('historiaEndodoncia')),
+                'historia_cirugia' => new HistoriaCirugiaResource($this->whenLoaded('historiaCirugia')),
             ]),
         ];
     }

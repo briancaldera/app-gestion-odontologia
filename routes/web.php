@@ -3,6 +3,7 @@
 use App\Http\Controllers\CorreccionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\HistoriaCirugiaController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\HistoriaEndodonciaController;
 use App\Http\Controllers\NotificationsController;
@@ -115,6 +116,10 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
         Route::patch('/historias/{historia}/dolor', [HistoriaEndodonciaController::class, 'updateEvaluacionDolor'])->name('historias.dolor.update');
     });
 
+    // Routes for HC
+    Route::prefix('/cirugia')->name('cirugia.')->group(function() {
+        Route::resource('historias', HistoriaCirugiaController::class)->except(['create']);
+    });
 });
 
 require __DIR__.'/auth.php';

@@ -16,6 +16,11 @@ class HistoriaCirugia extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
+    protected $fillable = [
+        'status',
+        'autor_id',
+    ];
+
     protected $attributes = [
         'anamnesis' => <<<'JSON'
 {

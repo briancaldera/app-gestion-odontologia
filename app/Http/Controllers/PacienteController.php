@@ -106,7 +106,7 @@ class PacienteController extends Controller
             return back();
         }
 
-        $paciente->load(['medicoTratante', 'historia', 'historiaEndodoncia']);
+        $paciente->load(['medicoTratante', 'historia', 'historiaEndodoncia', 'historiaCirugia']);
 
         return Inertia::render('Pacientes/Show', [
             'paciente' => new PacienteResource($paciente),
