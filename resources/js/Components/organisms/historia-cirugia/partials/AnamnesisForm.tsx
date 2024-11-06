@@ -153,7 +153,7 @@ const AnamnesisForm = () => {
             <Title level={'title-lg'}>Anamnesis</Title>
 
             <Form {...anamnesisForm}>
-                <form onSubmit={anamnesisForm.handleSubmit(handleSubmit)} className={'space-y-6'}>
+                <form onSubmit={anamnesisForm.handleSubmit(handleSubmit)} className={'grid grid-cols-1 sm:grid-cols-2 gap-6'}>
 
                     <AnamnesisFormField fieldName={'visita_medico_ultimos_6_meses'} anamnesisForm={anamnesisForm}/>
                     <AnamnesisFormField fieldName={'bajo_tratamiento_actual'} anamnesisForm={anamnesisForm}/>
@@ -226,7 +226,7 @@ const AnamnesisForm = () => {
                     <AnamnesisFormField fieldName={'alergia_yodo'} anamnesisForm={anamnesisForm}/>
 
                     <FormField render={({field}) => (
-                        <FormItem>
+                        <FormItem className={'col-span-full'}>
                             <FormLabel>{anamnesisSchema.shape.enfermedades.description}</FormLabel>
                             <div
                                 className={'grid grid-cols-1 sm:grid-cols-3 sm:grid-rows-7 grid-flow-col gap-y-3 gap-x-2'}>
@@ -274,7 +274,7 @@ const AnamnesisForm = () => {
                         </FormItem>
                     )} name={'enfermedades'} control={anamnesisForm.control}/>
 
-                    <div className={'flex justify-end'}>
+                    <div className={'col-span-full flex justify-end'}>
                         <Button type='submit'>Guardar</Button>
                     </div>
                 </form>

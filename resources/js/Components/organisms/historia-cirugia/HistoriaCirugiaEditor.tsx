@@ -7,6 +7,7 @@ import {UserCircle} from "lucide-react";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import AnamnesisSection from "@/Components/organisms/historia-cirugia/AnamnesisSection.tsx";
+import Section2 from "@/Components/organisms/historia-cirugia/Section2.tsx";
 
 type HistoriaCirugiaEditorContextType = { historia?: HistoriaCirugia }
 
@@ -37,6 +38,13 @@ const HistoriaCirugiaEditor = ({historia, homework, readMode, canCreateCorrectio
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
+                            <TabsTrigger value="section2" className={'p-0'}>
+                                <Surface className={'rounded-l-lg rounded-r-none rounded-b-none'}>
+                                    <Icon className={'size-8'}>
+                                        <UserCircle/>
+                                    </Icon>
+                                </Surface>
+                            </TabsTrigger>
                         </TabsList>
 
                         <ScrollArea className={'flex-1 w-full h-[83vh]'}>
@@ -45,6 +53,9 @@ const HistoriaCirugiaEditor = ({historia, homework, readMode, canCreateCorrectio
                                 <AnamnesisSection/>
                             </TabsContent>
 
+                            <TabsContent value="section2" className='p-0 m-0'>
+                                <Section2/>
+                            </TabsContent>
 
                         </ScrollArea>
                     </Tabs>

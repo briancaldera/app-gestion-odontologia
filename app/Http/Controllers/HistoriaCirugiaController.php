@@ -14,7 +14,8 @@ use Inertia\Inertia;
 class HistoriaCirugiaController extends Controller
 {
     public function __construct(protected HistoriaCirugiaService $historiaCirugiaService)
-    {}
+    {
+    }
 
     /**
      * Display a listing of the resource.
@@ -63,15 +64,7 @@ class HistoriaCirugiaController extends Controller
      */
     public function show(HistoriaCirugia $historia)
     {
-        /** @var Request $request */
-        $request = request();
-        if ($request->inertia() and !$request->expectsJson()) {
-            return Inertia::render('Odontologia/Cirugia/Historias/Show', [
-                'historia' => new HistoriaCirugiaResource($historia)
-            ]);
-        }
-
-        return response()->json([
+        return Inertia::render('Odontologia/Cirugia/Historias/Show', [
             'historia' => new HistoriaCirugiaResource($historia)
         ]);
     }
@@ -92,14 +85,34 @@ class HistoriaCirugiaController extends Controller
      */
     public function update(UpdateHistoriaCirugiaRequest $request, HistoriaCirugia $historia)
     {
-        if ($request->has('anamnesis')) {
-            $anamnesis_data = $request->validated('anamnesis');
+        $data = $request->validated();
 
+        if (isset($data['anamnesis'])) {
+            $anamnesis_data = $data['anamnesis'];
             $historia->anamnesis = collect($anamnesis_data);
-            $historia->save();
+        }
 
-            message('Anamnesis actualizada exitosamente', \Type::Success);
+        if (isset($data['habitos'])) {
+            $habitos_data = $data['habitos'];
+            $historia->habitos = collect($habitos_data);
+        }
+
+        if (isset($data['femenino'])) {
+            $femenino_data = $data['femenino'];
+            $historia->femenino = collect($femenino_data);
+        }
+
+        if (isset($data['femenino'])) {
+            $femenino_data = $data['femenino'];
+            $historia->femenino = collect($femenino_data);
+        }
+
+        if ($historia->update()) {
+            message('Historia actualizada exitosamente', \Type::Success);
             return response(null, 200);
+        } else {
+            message('Ocurrió un error al intentar actualizar', \Type::Error);
+            return response(null, 500);
         }
     }
 

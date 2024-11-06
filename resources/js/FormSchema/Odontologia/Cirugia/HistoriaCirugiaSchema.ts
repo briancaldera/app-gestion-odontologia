@@ -105,7 +105,7 @@ type ListItem = {
 
 type ReaccionMedicamentoItem = ListItem
 
-const reaccionMedicamentoItems: readonly ReaccionMedicamentoItem[]= [
+const reaccionMedicamentoItems: readonly ReaccionMedicamentoItem[] = [
     {id: "no_esteroideos", label: "Analgésicos no esteroideos"},
     {id: "antibiotico", label: "Antibióticos"},
     {id: "aspirina", label: "Aspirina"},
@@ -160,7 +160,7 @@ const habitosSchema = z.object({
         status: z.enum(['S', 'N', 'D']),
         description: z.string().max(MAX_TEXT_SIZE).describe('Descripción')
     }).describe('Consume alimentos con carbohidratos y azucares con frecuencia?'),
-})
+}).describe('Hábitos')
 
 const femeninoSchema = z.object({
     ginecologo_ultimos_6_meses: z.object({
@@ -219,7 +219,7 @@ const examenFisicoSchema = z.object({
 
 const observacionesSchema = z.string().max(MAX_TEXT_SIZE).describe('Observaciones')
 
-const estudios_radiograficos = z.object({
+const estudiosRadiograficosSchema = z.object({
     panoramica: z.string().max(MAX_TEXT_SIZE).describe('Panorámica'),
     periapical: z.string().max(MAX_TEXT_SIZE).describe('Periapical'),
     tension: z.object({
@@ -232,4 +232,14 @@ const estudios_radiograficos = z.object({
     plan_tratamiento: z.string().max(MAX_TEXT_SIZE).describe('Plan de tratamiento'),
 })
 
-export {enfermedadItems, anamnesisSchema, femeninoSchema, antecedentesSchema, habitosSchema, reaccionMedicamentoItems}
+export {
+    enfermedadItems,
+    anamnesisSchema,
+    femeninoSchema,
+    antecedentesSchema,
+    examenFisicoSchema,
+    observacionesSchema,
+    estudiosRadiograficosSchema,
+    habitosSchema,
+    reaccionMedicamentoItems
+}
