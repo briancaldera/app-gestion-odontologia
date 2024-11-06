@@ -31,6 +31,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/shadcn/ui/alert-dialog.tsx";
+import HistoriaCirugiaButton from "@/Pages/Pacientes/Partials/HistoriaCirugiaButton.tsx";
 
 type ShowProps = {
     paciente: Paciente
@@ -233,6 +234,7 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
 }
 
 const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
+    console.log(paciente)
     return (
         <div className={'h-[50vw] px-4 rounded-lg'}>
             <div className={'flex h-full border'}>
@@ -250,6 +252,7 @@ const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
 
                             <HistoriaItem paciente={paciente}/>
                             <HistoriaEndodonciaItem paciente={paciente}/>
+                            <HistoriaCirugiaButton paciente={paciente}/>
 
                         </div>
                     </ScrollArea>
