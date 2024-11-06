@@ -191,7 +191,7 @@ const femeninoSchema = z.object({
 
 const antecedentesSchema = z.object({
     ant_personales: z.string().max(MAX_TEXT_SIZE).describe('Resumen antecedentes personales'),
-    ant_familiares_enfermedades: z.array(z.string()).refine(items => items.every(item => enfermedadItems.some(enfermedad => enfermedad.id === item))),
+    ant_familiares_enfermedades: z.array(z.string()).refine(items => items.every(item => enfermedadItems.some(enfermedad => enfermedad.id === item))).describe('Tiene conocimiento de si algún familiar ha padecido o padece actualmente alguna de las siguientes enfermedades?'),
     ant_familiares: z.string().max(MAX_TEXT_SIZE).describe('Resumen antecedentes familiares'),
 })
 

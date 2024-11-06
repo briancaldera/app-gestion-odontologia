@@ -102,9 +102,9 @@ class HistoriaCirugiaController extends Controller
             $historia->femenino = collect($femenino_data);
         }
 
-        if (isset($data['femenino'])) {
-            $femenino_data = $data['femenino'];
-            $historia->femenino = collect($femenino_data);
+        if (isset($data['antecedentes'])) {
+            $antecedentes_data = $data['antecedentes'];
+            $historia->antecedentes = collect($antecedentes_data);
         }
 
         if ($historia->update()) {
