@@ -208,7 +208,7 @@ const examenFisicoSchema = z.object({
     intraoral: z.object({
         carrillos: z.string().max(MAX_TEXT_SIZE).describe('Carrillos'),
         lengua: z.string().max(MAX_TEXT_SIZE).describe('Lengua'),
-        encias: z.string().max(MAX_TEXT_SIZE).describe('Encias'),
+        encias: z.string().max(MAX_TEXT_SIZE).describe('Encías'),
         piso_boca: z.string().max(MAX_TEXT_SIZE).describe('Piso de boca'),
         paladar_duro: z.string().max(MAX_TEXT_SIZE).describe('Paladar duro'),
         paladar_blando: z.string().max(MAX_TEXT_SIZE).describe('Paladar blando'),

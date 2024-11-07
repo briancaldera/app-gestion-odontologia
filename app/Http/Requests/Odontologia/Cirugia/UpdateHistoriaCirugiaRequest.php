@@ -45,12 +45,20 @@ class UpdateHistoriaCirugiaRequest extends FormRequest
             'femenino.*' => ['array:status,description'],
             'femenino.*.status' => [Rule::in(['S', 'N', 'D'])],
             'femenino.*.description' => ['nullable', 'string', 'max:1000'],
-            
+
             'antecedentes' => ['sometimes', 'array:ant_personales,ant_familiares,ant_familiares_enfermedades'],
             'antecedentes.ant_personales' => ['nullable', 'string', 'max:1000'],
             'antecedentes.ant_familiares' => ['nullable', 'string', 'max:1000'],
             'antecedentes.ant_familiares_enfermedades' => ['list'],
             'antecedentes.ant_familiares_enfermedades.*' => [Rule::in(['diabetes', 'hepatitis_abc', 'artritis', 'asma_EPOC', 'anemia', 'infarto', "enfermedades_pulmonares", 'hipertiroidismo', 'hipotiroidismo', 'convulsiones_desmayos', 'hipertension', 'hipotension', 'sinusitis', 'angina_pecho', 'fiebre_reumatica', 'gastritis', 'ulcera_gastrica', 'enf_transmision_sexual', 'arterioesclerosis', 'alt_metabolicas', 'enf_endocrinas', 'otros',])],
+
+            'examen_fisico' => ['sometimes', 'array:extraoral,intraoral'],
+            'examen_fisico.extraoral' => ['array:cuello,cuero_cabelludo,labios,ojos,orejas,otros,piel'],
+            'examen_fisico.extraoral.*' => ['nullable', 'string', 'max:1000'],
+            'examen_fisico.intraoral' => ['array:carrillos,encias,frenillos,lengua,otros,paladar_blando,paladar_duro,piso_boca'],
+            'examen_fisico.intraoral.*' => ['nullable', 'string', 'max:1000'],
+
+            'observaciones' => ['sometimes', 'nullable', 'string', 'max:1000'],
         ];
     }
 }

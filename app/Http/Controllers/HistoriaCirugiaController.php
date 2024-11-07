@@ -107,6 +107,16 @@ class HistoriaCirugiaController extends Controller
             $historia->antecedentes = collect($antecedentes_data);
         }
 
+        if (isset($data['examen_fisico'])) {
+            $examen_fisico_data = $data['examen_fisico'];
+            $historia->examen_fisico = collect($examen_fisico_data);
+        }
+
+        if (isset($data['observaciones'])) {
+            $observaciones_data = $data['observaciones'];
+            $historia->observaciones = $observaciones_data;
+        }
+
         if ($historia->update()) {
             message('Historia actualizada exitosamente', \Type::Success);
             return response(null, 200);
