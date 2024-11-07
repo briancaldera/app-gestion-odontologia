@@ -59,6 +59,11 @@ class UpdateHistoriaCirugiaRequest extends FormRequest
             'examen_fisico.intraoral.*' => ['nullable', 'string', 'max:1000'],
 
             'observaciones' => ['sometimes', 'nullable', 'string', 'max:1000'],
+
+            'estudios_radiograficos' => ['sometimes', 'array:panoramica,periapical,tension,exam_comp,diagnostico,plan_tratamiento'],
+            'estudios_radiograficos.*' => ['nullable', 'string', 'max:1000'],
+            'estudios_radiograficos.tension' => ['array:sistole,diastole,PPM'],
+            'estudios_radiograficos.tension.*' => ['nullable', 'string', 'max:100'],
         ];
     }
 }

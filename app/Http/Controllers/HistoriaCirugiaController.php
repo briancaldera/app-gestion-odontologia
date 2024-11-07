@@ -41,13 +41,13 @@ class HistoriaCirugiaController extends Controller
         $paciente = Paciente::find($data['paciente_id']);
 
         if ($paciente->assigned_to !== $user->id) {
-            message('No estas autorizado para crear un historia a este paciente', Type::Error);
-            message('Debes estar asignado como médico tratante', Type::Info);
+            message('No estas autorizado para crear un historia a este paciente', \Type::Error);
+            message('Debes estar asignado como médico tratante', \Type::Info);
             return back();
         }
 
         if ($user->cannot('update', $paciente)) {
-            message('No tienes permiso para modificar este paciente', Type::Info);
+            message('No tienes permiso para modificar este paciente', \Type::Info);
             return back();
         }
 
@@ -115,6 +115,11 @@ class HistoriaCirugiaController extends Controller
         if (isset($data['observaciones'])) {
             $observaciones_data = $data['observaciones'];
             $historia->observaciones = $observaciones_data;
+        }
+
+        if (isset($data['estudios_radiograficos'])) {
+            $estudios_radiograficos_data = $data['estudios_radiograficos'];
+            $historia->estudios_radiograficos = $estudios_radiograficos_data;
         }
 
         if ($historia->update()) {

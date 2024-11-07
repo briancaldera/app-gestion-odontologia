@@ -9,6 +9,7 @@ import {Icon} from "@/Components/atoms/Icon.tsx";
 import AnamnesisSection from "@/Components/organisms/historia-cirugia/AnamnesisSection.tsx";
 import Section2 from "@/Components/organisms/historia-cirugia/Section2.tsx";
 import Section3 from "@/Components/organisms/historia-cirugia/Section3.tsx";
+import Section4 from "@/Components/organisms/historia-cirugia/Section4.tsx";
 
 type HistoriaCirugiaEditorContextType = { historia?: HistoriaCirugia }
 
@@ -29,10 +30,10 @@ const HistoriaCirugiaEditor = ({historia, homework, readMode, canCreateCorrectio
 
             <div className={'h-full'}>
                 <div className={'flex gap-x-2'}>
-                    <Tabs defaultValue="section3" className={"basis-3/4 flex-auto flex h-full"}
+                    <Tabs defaultValue="section1" className={"basis-3/4 flex-auto flex h-full"}
                           orientation={'vertical'}>
                         <TabsList className={'flex-none flex flex-col items-end justify-start p-0 sticky top-0'}>
-                            <TabsTrigger value="anamnesis" className={'p-0'}>
+                            <TabsTrigger value="section1" className={'p-0'}>
                                 <Surface className={'rounded-l-lg rounded-r-none rounded-b-none'}>
                                     <Icon className={'size-8'}>
                                         <UserCircle/>
@@ -53,11 +54,18 @@ const HistoriaCirugiaEditor = ({historia, homework, readMode, canCreateCorrectio
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
+                            <TabsTrigger value="section4" className={'p-0'}>
+                                <Surface className={'rounded-l-lg rounded-r-none rounded-b-none'}>
+                                    <Icon className={'size-8'}>
+                                        <UserCircle/>
+                                    </Icon>
+                                </Surface>
+                            </TabsTrigger>
                         </TabsList>
 
                         <ScrollArea className={'flex-1 w-full h-[83vh]'}>
 
-                            <TabsContent value="anamnesis" className='p-0 m-0'>
+                            <TabsContent value="section1" className='p-0 m-0'>
                                 <AnamnesisSection/>
                             </TabsContent>
 
@@ -67,6 +75,10 @@ const HistoriaCirugiaEditor = ({historia, homework, readMode, canCreateCorrectio
 
                             <TabsContent value="section3" className='p-0 m-0'>
                                 <Section3/>
+                            </TabsContent>
+
+                            <TabsContent value="section4" className='p-0 m-0'>
+                                <Section4/>
                             </TabsContent>
 
                         </ScrollArea>

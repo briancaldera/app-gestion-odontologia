@@ -226,7 +226,7 @@ const estudiosRadiograficosSchema = z.object({
         sistole: z.string().max(MAX_TEXT_SIZE).describe('Sistólica'),
         diastole: z.string().max(MAX_TEXT_SIZE).describe('Diastólica'),
         PPM: z.string().max(MAX_TEXT_SIZE).describe('PPM'),
-    }),
+    }).describe('Registro de Tensión Arterial'),
     exam_comp: z.string().max(MAX_TEXT_SIZE).describe('Exámenes complementarios'),
     diagnostico: z.string().max(MAX_TEXT_SIZE).describe('Diagnóstico'),
     plan_tratamiento: z.string().max(MAX_TEXT_SIZE).describe('Plan de tratamiento'),
