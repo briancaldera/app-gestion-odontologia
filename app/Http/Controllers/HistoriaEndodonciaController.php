@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Odontologia\Endodoncia\UpdateHistoriaEndodonciaRequest;
 use App\Http\Requests\UpdateAnamnesisRequest;
 use App\Http\Requests\UpdateEvaluacionDolorRequest;
 use App\Http\Resources\Odontologia\Endodoncia\HistoriaEndodonciaResource;
@@ -15,6 +16,7 @@ use App\ValueObjects\Endodoncia\Anamnesis;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class HistoriaEndodonciaController extends Controller
 {
@@ -223,9 +225,27 @@ class HistoriaEndodonciaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, HistoriaEndodoncia $historiaEndodoncia)
+    public function update(UpdateHistoriaEndodonciaRequest $request, HistoriaEndodoncia $historia)
     {
-        //
+        $data = $request->validated();
+
+        if (isset($data['periodontodiagrama'])) {
+            $periodontodiagrama_file = $data['periodontodiagrama'];
+            $historia->addMedia($periodontodiagrama_file)->toMediaCollection('periodontodiagrama');
+        }
+
+        if (isset($data['consentimiento'])) {
+            $consentimiento_file = $data['consentimiento'];
+            $historia->addMedia($consentimiento_file)->toMediaCollection('consentimiento');
+        }
+
+        if ($historia->update()) {
+            message('Historia actualizada exitosamente', \Type::Success);
+            return response(null, 200);
+        } else {
+            message('Ocurrió un error al intentar actualizar', \Type::Error);
+            return response(null, 500);
+        }
     }
 
     /**
@@ -234,5 +254,22 @@ class HistoriaEndodonciaController extends Controller
     public function destroy(HistoriaEndodoncia $historiaEndodoncia)
     {
         //
+    }
+
+    public function getFile(Request $request, HistoriaEndodoncia $historia, string $file, string $id) {
+
+        if ($file === 'consentimiento') {
+            $consentimiento = $historia->getMedia('consentimiento')->first(fn(Media $media) => $media->uuid === $id);
+
+            return response()->file($consentimiento->getPath());
+        }
+
+        if ($file === 'periodontodiagrama') {
+            $periodontodiagrama = $historia->getMedia('periodontodiagrama')->first(fn(Media $media) => $media->uuid === $id);
+
+            return response()->file($periodontodiagrama->getPath());
+        }
+
+        return response(null, 404);
     }
 }

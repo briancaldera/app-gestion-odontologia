@@ -45,6 +45,8 @@ class HistoriaEndodonciaResource extends JsonResource
                 'updated_at' => $this->updated_at,
                 'autor' => new UserResource($this->whenLoaded('autor')),
                 'paciente' => new PacienteResource($this->whenLoaded('paciente')),
+                'consentimiento' => $this->consentimiento,
+                'periodontodiagrama' => $this->periodontodiagrama,
             ]),
         ];
     }

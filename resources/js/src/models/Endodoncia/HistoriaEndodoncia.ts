@@ -18,6 +18,8 @@ type HistoriaEndodoncia = {
     evaluacion_dolor?: z.infer<typeof evaluacionDolorSchema>
     fichas_endodonticas: FichaEndodoncia[]
     secuencia_tratamiento?: Object
+    periodontodiagrama: string | null
+    consentimiento: string | null
 
     created_at?: string
     updated_at?: string

@@ -117,6 +117,16 @@ return [
             'url'    => env('APP_URL').'/historias/odontologicas/media',
         ],
 
+        'endodoncia-historias-consentimientos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/endodoncia/historias/consentimientos'),
+        ],
+
+        'endodoncia-historias-periodontodiagramas' => [
+            'driver' => 'local',
+            'root' => storage_path('app/endodoncia/historias/periodontodiagramas'),
+        ],
+
         'endodoncia-historias-fichas-radiografias-iniciales' => [
             'driver' => 'local',
             'root' => storage_path('app/endodoncia/historias/fichas/radiografias/iniciales'),

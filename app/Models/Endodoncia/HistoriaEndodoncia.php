@@ -10,22 +10,28 @@ use App\Status;
 use App\StatusHolder;
 use App\ValueObjects\Endodoncia\Anamnesis as AnamnesisValueObject;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * @property AnamnesisValueObject $anamnesis
  * @property Collection $evaluacion_dolor
 */
-class HistoriaEndodoncia extends Model implements StatusHolder
+class HistoriaEndodoncia extends Model implements StatusHolder, HasMedia
 {
     use HasFactory;
     use HasUuids;
     use HasStatus;
+    use InteractsWithMedia;
 
     protected $table = 'historia_endodoncias';
     protected $primaryKey = 'id';
@@ -171,6 +177,39 @@ JSON,
             'evaluacion_dolor' => 'collection',
             'secuencia_tratamiento' => 'collection',
         ];
+    }
+
+    protected $appends = [
+        'consentimiento',
+        'periodontodiagrama',
+    ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('consentimiento')->useDisk('endodoncia-historias-consentimientos')->singleFile();
+        $this->addMediaCollection('periodontodiagrama')->useDisk('endodoncia-historias-periodontodiagramas')->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this
+            ->addMediaConversion('preview')
+            ->fit(Fit::Contain, 300, 300)
+            ->nonQueued();
+    }
+
+    protected function consentimiento(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('consentimiento')->map(fn(Media $media) => url("/endodoncia/historias/$this->id/consentimiento/$media->uuid"))->first()
+        );
+    }
+
+    protected function periodontodiagrama(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('periodontodiagrama')->map(fn(Media $media) => url("/endodoncia/historias/$this->id/periodontodiagrama/$media->uuid"))->first()
+        );
     }
 
     public function autor(): BelongsTo
