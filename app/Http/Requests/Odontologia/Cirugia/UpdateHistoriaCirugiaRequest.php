@@ -64,6 +64,8 @@ class UpdateHistoriaCirugiaRequest extends FormRequest
             'estudios_radiograficos.*' => ['nullable', 'string', 'max:1000'],
             'estudios_radiograficos.tension' => ['array:sistole,diastole,PPM'],
             'estudios_radiograficos.tension.*' => ['nullable', 'string', 'max:100'],
+
+            'consentimiento' => ['sometimes', 'image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000'],
         ];
     }
 }

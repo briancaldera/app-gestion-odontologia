@@ -119,6 +119,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     // Routes for HC
     Route::prefix('/cirugia')->name('cirugia.')->group(function() {
         Route::resource('historias', HistoriaCirugiaController::class)->except(['create']);
+        Route::get('historias/{historia}/consentimiento/{id}', [HistoriaCirugiaController::class, 'getConsentimiento'])->name('historias.consentimientos.show');
     });
 });
 

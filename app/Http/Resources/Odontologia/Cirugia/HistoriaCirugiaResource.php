@@ -42,6 +42,7 @@ class HistoriaCirugiaResource extends JsonResource
                 'observaciones' => $this->observaciones,
                 'estudios_radiograficos' => $this->estudios_radiograficos,
                 'secuencia_tratamiento' => $this->secuencia_tratamiento,
+                'consentimiento' => $this->consentimiento,
             ]),
         ];
     }

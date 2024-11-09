@@ -2,14 +2,20 @@
 
 namespace App\Models\Cirugia;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class HistoriaCirugia extends Model
+class HistoriaCirugia extends Model implements HasMedia
 {
     use HasFactory;
     use HasUuids;
+    use InteractsWithMedia;
 
     protected $table = 'historia_cirugias';
     protected $primaryKey = 'id';
@@ -230,5 +236,29 @@ JSON,
             'estudios_radiograficos' => 'collection',
             'secuencia_tratamiento' => 'collection',
         ];
+    }
+
+    protected $appends = [
+        'consentimiento',
+    ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('consentimiento')->useDisk('historia-cirugia-consentimientos')->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this
+            ->addMediaConversion('preview')
+            ->fit(Fit::Contain, 300, 300)
+            ->nonQueued();
+    }
+
+    protected function consentimiento(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('consentimiento')->map(fn(Media $media) => url("/cirugia/historias/$this->id/consentimiento/$media->uuid"))->first()
+        );
     }
 }

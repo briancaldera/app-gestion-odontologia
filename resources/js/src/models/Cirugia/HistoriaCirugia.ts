@@ -16,9 +16,9 @@ type HistoriaCirugia = {
 
     status: Status
     paciente_id: string
-    paciente?: Paciente,
+    paciente: Paciente,
     autor_id: string
-    autor?: User
+    autor: User
 
     anamnesis: z.infer<typeof anamnesisSchema>
     habitos: z.infer<typeof habitosSchema>
@@ -27,6 +27,7 @@ type HistoriaCirugia = {
     examen_fisico: z.infer<typeof examenFisicoSchema>
     observaciones: string | null
     estudios_radiograficos: z.infer<typeof estudiosRadiograficosSchema>
+    consentimiento: string | null
 
     created_at: string
     updated_at: string

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\HistoriaCirugiaService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class HistoriaCirugiaController extends Controller
 {
@@ -65,7 +66,7 @@ class HistoriaCirugiaController extends Controller
     public function show(HistoriaCirugia $historia)
     {
         return Inertia::render('Odontologia/Cirugia/Historias/Show', [
-            'historia' => new HistoriaCirugiaResource($historia)
+            'historia' => new HistoriaCirugiaResource($historia),
         ]);
     }
 
@@ -122,6 +123,11 @@ class HistoriaCirugiaController extends Controller
             $historia->estudios_radiograficos = $estudios_radiograficos_data;
         }
 
+        if (isset($data['consentimiento'])) {
+            $consentimiento_file = $data['consentimiento'];
+            $historia->addMedia($consentimiento_file)->toMediaCollection('consentimiento');
+        }
+
         if ($historia->update()) {
             message('Historia actualizada exitosamente', \Type::Success);
             return response(null, 200);
@@ -137,5 +143,14 @@ class HistoriaCirugiaController extends Controller
     public function destroy(HistoriaCirugia $historia)
     {
         //
+    }
+
+    public function getConsentimiento(HistoriaCirugia $historia, string $id)
+    {
+        $user = request()->user();
+
+        $consentimiento = $historia->getMedia('consentimiento')->first(fn(Media $media) => $media->uuid === $id);
+
+        return response()->file($consentimiento->getPath());
     }
 }
