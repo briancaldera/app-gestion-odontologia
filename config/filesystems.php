@@ -147,6 +147,11 @@ return [
             'url'    => env('APP_URL').'/endodoncia/historias/fichas/radiografias/penachos',
         ],
 
+        'historia-cirugia-periodontodiagramas' => [
+            'driver' => 'local',
+            'root' => storage_path('app/cirugia/historias/periodontodiagramas'),
+        ],
+
         'historia-cirugia-consentimientos' => [
             'driver' => 'local',
             'root' => storage_path('app/cirugia/historias/consentimientos'),

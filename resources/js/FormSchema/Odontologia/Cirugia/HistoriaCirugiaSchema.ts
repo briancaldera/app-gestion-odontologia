@@ -243,6 +243,13 @@ const consentimientoSchema = z
     .refine((file: File) => file.size >= MIN_PICTURE_SIZE, {message: 'Archivo muy pequeño'})
     .refine((file: File) => file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
 
+const periodontodiagramaSchema = z
+    .any()
+    .refine((data: any) => data instanceof File)
+    .refine((file: File) => ACCEPTED_PICTURE_MIME.includes(file?.type), {message: 'Archivo inválido. Formatos permitidos: .jpg .jpeg .png'})
+    .refine((file: File) => file.size >= MIN_PICTURE_SIZE, {message: 'Archivo muy pequeño'})
+    .refine((file: File) => file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
+
 export {
     enfermedadItems,
     anamnesisSchema,
@@ -253,5 +260,6 @@ export {
     estudiosRadiograficosSchema,
     habitosSchema,
     reaccionMedicamentoItems,
-    consentimientoSchema
+    consentimientoSchema,
+    periodontodiagramaSchema,
 }

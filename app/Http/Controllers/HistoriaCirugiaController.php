@@ -123,6 +123,11 @@ class HistoriaCirugiaController extends Controller
             $historia->estudios_radiograficos = $estudios_radiograficos_data;
         }
 
+        if (isset($data['periodontodiagrama'])) {
+            $periodontodiagrama_file = $data['periodontodiagrama'];
+            $historia->addMedia($periodontodiagrama_file)->toMediaCollection('periodontodiagrama');
+        }
+
         if (isset($data['consentimiento'])) {
             $consentimiento_file = $data['consentimiento'];
             $historia->addMedia($consentimiento_file)->toMediaCollection('consentimiento');
@@ -145,6 +150,23 @@ class HistoriaCirugiaController extends Controller
         //
     }
 
+    public function getFile(Request $request, HistoriaCirugia $historia, string $file, string $id) {
+
+        if ($file === 'consentimiento') {
+            $consentimiento = $historia->getMedia('consentimiento')->first(fn(Media $media) => $media->uuid === $id);
+
+            return response()->file($consentimiento->getPath());
+        }
+
+        if ($file === 'periodontodiagrama') {
+            $periodontodiagrama = $historia->getMedia('periodontodiagrama')->first(fn(Media $media) => $media->uuid === $id);
+
+            return response()->file($periodontodiagrama->getPath());
+        }
+
+        return response(null, 404);
+    }
+
     public function getConsentimiento(HistoriaCirugia $historia, string $id)
     {
         $user = request()->user();
@@ -152,5 +174,14 @@ class HistoriaCirugiaController extends Controller
         $consentimiento = $historia->getMedia('consentimiento')->first(fn(Media $media) => $media->uuid === $id);
 
         return response()->file($consentimiento->getPath());
+    }
+
+    public function getPeriodontodiagrama(HistoriaCirugia $historia, string $id)
+    {
+        $user = request()->user();
+
+        $periodontodiagrama = $historia->getMedia('periodontodiagrama')->first(fn(Media $media) => $media->uuid === $id);
+
+        return response()->file($periodontodiagrama->getPath());
     }
 }

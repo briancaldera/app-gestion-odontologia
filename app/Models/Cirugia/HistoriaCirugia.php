@@ -240,11 +240,13 @@ JSON,
 
     protected $appends = [
         'consentimiento',
+        'periodontodiagrama',
     ];
 
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('consentimiento')->useDisk('historia-cirugia-consentimientos')->singleFile();
+        $this->addMediaCollection('periodontodiagrama')->useDisk('historia-cirugia-periodontodiagramas')->singleFile();
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -259,6 +261,13 @@ JSON,
     {
         return new Attribute(
             get: fn() => $this->getMedia('consentimiento')->map(fn(Media $media) => url("/cirugia/historias/$this->id/consentimiento/$media->uuid"))->first()
+        );
+    }
+
+    protected function periodontodiagrama(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('periodontodiagrama')->map(fn(Media $media) => url("/cirugia/historias/$this->id/periodontodiagrama/$media->uuid"))->first()
         );
     }
 }

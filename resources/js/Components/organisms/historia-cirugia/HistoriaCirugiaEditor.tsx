@@ -11,6 +11,7 @@ import Section2 from "@/Components/organisms/historia-cirugia/Section2.tsx";
 import Section3 from "@/Components/organisms/historia-cirugia/Section3.tsx";
 import Section4 from "@/Components/organisms/historia-cirugia/Section4.tsx";
 import Section5 from "@/Components/organisms/historia-cirugia/Section5.tsx";
+import Section6 from "@/Components/organisms/historia-cirugia/Section6.tsx";
 
 type HistoriaCirugiaEditorContextType = { historia?: HistoriaCirugia }
 
@@ -69,6 +70,13 @@ const HistoriaCirugiaEditor = ({historia, homework, readMode, canCreateCorrectio
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
+                            <TabsTrigger value="section6" className={'p-0'}>
+                                <Surface className={'rounded-l-lg rounded-r-none rounded-b-none'}>
+                                    <Icon className={'size-8'}>
+                                        <UserCircle/>
+                                    </Icon>
+                                </Surface>
+                            </TabsTrigger>
                         </TabsList>
 
                         <ScrollArea className={'flex-1 w-full h-[83vh]'}>
@@ -91,6 +99,10 @@ const HistoriaCirugiaEditor = ({historia, homework, readMode, canCreateCorrectio
 
                             <TabsContent value="section5" className='p-0 m-0'>
                                 <Section5/>
+                            </TabsContent>
+
+                            <TabsContent value="section6" className='p-0 m-0'>
+                                <Section6/>
                             </TabsContent>
 
                         </ScrollArea>

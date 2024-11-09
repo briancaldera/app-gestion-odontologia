@@ -27,6 +27,7 @@ type HistoriaCirugia = {
     examen_fisico: z.infer<typeof examenFisicoSchema>
     observaciones: string | null
     estudios_radiograficos: z.infer<typeof estudiosRadiograficosSchema>
+    periodontodiagrama: string | null
     consentimiento: string | null
 
     created_at: string
