@@ -66,7 +66,7 @@ COPY . .
 RUN composer install
 
 RUN npm install
-RUN php artisan migrate
+RUN php artisan migrate --force
 RUN php artisan db:seed
 
 RUN php artisan storage:link
