@@ -66,9 +66,10 @@ COPY . .
 RUN composer install
 
 RUN npm install
-RUN npm run build
-
+RUN php artisan migrate --seed
 RUN php artisan storage:link
+
+RUN npm run build
 
 RUN chown -R sail: .
 
