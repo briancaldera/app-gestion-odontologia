@@ -15,11 +15,11 @@ import {Text} from "@/Components/atoms/Text";
 
 const ConsetimientoMedico = () => {
 
-    const {historia} = useContext(HistoriaEditorContext)
+    const {historia, disabled} = useContext(HistoriaEditorContext)
 
-    const {isProcessing, router} = useInertiaSubmit()
+    const {router} = useInertiaSubmit()
     const hasConsentimiento = !!historia.historia_odontologica?.consentimiento
-    const isDisabled = hasConsentimiento || isProcessing
+    const isDisabled = hasConsentimiento || disabled
 
     const consentimientoForm = useForm<z.infer<typeof consentimientoSchema>>({
         resolver: zodResolver(consentimientoSchema),

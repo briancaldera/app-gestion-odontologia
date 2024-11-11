@@ -12,12 +12,12 @@ import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 
 const MaxSupInfOclu = () => {
-    const {historia} = React.useContext(HistoriaEditorContext)
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
     const {maxilar_sup, maxilar_inf, modelos_oclusion} = historia.historia_odontologica?.estudio_modelos!
 
     const {isProcessing, router} = useInertiaSubmit()
 
-    const isDisabled: boolean = isProcessing
+    const isDisabled: boolean = !!historia.historia_odontologica?.consentimiento || disabled
 
     const maxSupInfOcluForm = useForm<z.infer<typeof maxSupInfOcluSchema>>({
         resolver: zodResolver(maxSupInfOcluSchema),

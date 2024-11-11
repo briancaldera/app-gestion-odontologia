@@ -4,6 +4,7 @@ const Home = ({auth}) => {
     return (
         <div>
             <Navbar user={auth.user}></Navbar>
+
         </div>
     )
 }

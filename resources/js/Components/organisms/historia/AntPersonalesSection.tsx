@@ -29,8 +29,9 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
                 <Trastornos/>
             </CorrectionsBlock>
 
-            <AlergiasYMedicamentos/>
-
+            <CorrectionsBlock model={correctionsModel} name={'alergias'} canCreateCorrections={canCreateCorrections}>
+                <AlergiasYMedicamentos/>
+            </CorrectionsBlock>
         </Surface>
     )
 }

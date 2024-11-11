@@ -11,12 +11,16 @@ import ConsetimientoMedico from "@/Components/organisms/historia/partials/Conset
 import AntecedentesOdontologicosPersonales
     from "@/Components/organisms/historia/partials/AntecedentesOdontologicosPersonales.tsx";
 import ExamenFisico from "@/Components/organisms/historia/partials/ExamenFisico.tsx";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 
 type HistoriaOdontologicaSectionProps = {
     form: UseFormReturn<z.infer<typeof HistoriaOdontologicaSchema>>
 }
 
 const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) => {
+
+    const {historia, homework, canCreateCorrections, correctionsModel} = React.useContext(HistoriaEditorContext)
 
     const route = useRoute()
     const {isProcessing, router} = useInertiaSubmit()
@@ -41,11 +45,21 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
 
             <Title level={'title-lg'}>Historia Odontologica</Title>
 
-            <AntecedentesOdontologicosPersonales/>
 
-            <ConsetimientoMedico/>
+            <CorrectionsBlock model={correctionsModel} name={'ant_odon_personales'}
+                              canCreateCorrections={canCreateCorrections}>
+                <AntecedentesOdontologicosPersonales/>
+            </CorrectionsBlock>
 
-            <ExamenFisico/>
+            <CorrectionsBlock model={correctionsModel} name={'consentimiento'}
+                              canCreateCorrections={canCreateCorrections}>
+                <ConsetimientoMedico/>
+            </CorrectionsBlock>
+
+            <CorrectionsBlock model={correctionsModel} name={'examen_fisico'}
+                              canCreateCorrections={canCreateCorrections}>
+                <ExamenFisico/>
+            </CorrectionsBlock>
 
         </Surface>);
 }

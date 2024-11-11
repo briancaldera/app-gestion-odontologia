@@ -20,7 +20,7 @@ import {Button} from "@/shadcn/ui/button.tsx";
 const AntecedentesOdontologicosPersonales = () => {
 
     const {isProcessing, router} = useInertiaSubmit()
-    const {historia} = useContext(HistoriaEditorContext)
+    const {historia, disabled} = useContext(HistoriaEditorContext)
     const {ant_personales, habitos, portador} = historia.historia_odontologica!
 
     const antOdonPerForm = useForm<z.infer<typeof antecedentesOdontologicosPersonalesSchema>>({
@@ -43,7 +43,7 @@ const AntecedentesOdontologicosPersonales = () => {
                 succion_digital: habitos.succion_digital ?? false
             }, portador: {ortodoncia: portador.ortodoncia ?? false, protesis: portador.protesis ?? false}
         },
-        disabled: isProcessing,
+        disabled: disabled,
     })
     const handleSubmit = (values: z.infer<typeof antecedentesOdontologicosPersonalesSchema>) => {
         const endpoint = route('historias.odontologica.update', {
@@ -75,7 +75,7 @@ const AntecedentesOdontologicosPersonales = () => {
                         (
                             <FormItem>
                                 <FormControl>
-                                    <Textarea id={field.name} className={'min-h-48'} {...field}/>
+                                    <Textarea id={field.name} className={'min-h-48'} {...field} disabled={disabled}/>
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>

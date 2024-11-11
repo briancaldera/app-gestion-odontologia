@@ -13,12 +13,12 @@ import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {Checkbox} from "@/shadcn/ui/checkbox.tsx";
 
 const EstudioModelosParte2 = () => {
-    const {historia} = React.useContext(HistoriaEditorContext)
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
     const {examenes_comp, interconsultas, diagnostico, pronostico} = historia.historia_odontologica?.estudio_modelos!
 
     const {isProcessing, router} = useInertiaSubmit()
 
-    const isDisabled: boolean = isProcessing
+    const isDisabled: boolean = disabled
 
     const estudioModelosParte2Form = useForm<z.infer<typeof estudioModelosParte2Schema>>({
         resolver: zodResolver(estudioModelosParte2Schema),
@@ -96,6 +96,7 @@ const EstudioModelosParte2 = () => {
                                                     >
                                                         <FormControl>
                                                             <Checkbox
+                                                                disabled={field.disabled}
                                                                 checked={field.value?.includes(item.id)}
                                                                 onCheckedChange={(checked) => {
                                                                     return checked

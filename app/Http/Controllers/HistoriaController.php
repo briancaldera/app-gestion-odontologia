@@ -22,6 +22,7 @@ use App\Http\Requests\UpdatePeriodontodiagramaRequest;
 use App\Http\Requests\UpdatePlanTratamiento;
 use App\Http\Requests\UpdateSecuenciaTratamiento;
 use App\Http\Requests\UpdateTrastornosRequest;
+use App\Http\Resources\Group\HomeworkResource;
 use App\Http\Resources\Odontologia\HistoriaResource;
 use App\Models\Group;
 use App\Models\Group\Homework;
@@ -276,7 +277,7 @@ class HistoriaController extends Controller
 
             return Inertia::render('Historias/Show', [
                 'historia' => new HistoriaResource($historia),
-                'homework' => $homework,
+                'homework' => $homework ? new HomeworkResource($homework) : null,
             ]);
         }
     }
@@ -325,7 +326,7 @@ class HistoriaController extends Controller
 
             return Inertia::render('Historias/Edit', [
                 'historia' => new HistoriaResource($historia),
-                'homework' => $homework,
+                'homework' => $homework ? new HomeworkResource($homework) : null,
             ]);
         }
     }

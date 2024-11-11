@@ -46,7 +46,7 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
 
-                    <CorrectionsBlock model={correctionsModel} name={'alergias'} canCreateCorrections={canCreateCorrections}>
+                    <CorrectionsBlock model={correctionsModel} name={'ant_familiares'} canCreateCorrections={canCreateCorrections}>
                     <section>
                         <header className={'mb-1.5 mt-5 space-y-1.5'}>
                             <Title level={'title-md'}>Antecedentes Médicos Familiares</Title>

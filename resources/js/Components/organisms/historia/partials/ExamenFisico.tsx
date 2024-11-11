@@ -16,11 +16,11 @@ import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {Separator} from "@/shadcn/ui/separator.tsx";
 
 const ExamenFisico = ({}) => {
-    const {historia} = useContext(HistoriaEditorContext)
+    const {historia, disabled} = useContext(HistoriaEditorContext)
     const {isProcessing, router} = useInertiaSubmit()
 
     const hasConsentimiento: boolean = !!historia.historia_odontologica?.consentimiento
-    const isDisabled: boolean = !hasConsentimiento || isProcessing
+    const isDisabled: boolean = !hasConsentimiento || disabled
 
     const {examen_fisico: {signos_vitales, examen_intraoral, examen_extraoral}} = historia.historia_odontologica!
 

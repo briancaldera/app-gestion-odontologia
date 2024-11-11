@@ -29,7 +29,8 @@ type CorrectionsBlockProps = {
 
 const CorrectionsBlock = ({model, name, canCreateCorrections, children}: CorrectionsBlockProps) => {
 
-    const messages = model?.model?.sections[name] ?? null
+    const sections = model?.model?.sections
+    const messages =  sections ? sections[name] : null
 
     const hasCorrections: boolean = messages?.length > 0
 

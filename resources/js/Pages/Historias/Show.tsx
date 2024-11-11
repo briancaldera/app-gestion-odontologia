@@ -36,6 +36,8 @@ const Show = ({historia, homework}: ShowProps) => {
 
     const {auth: {user}} = usePage().props as { auth: { user: User } }
 
+    console.log(homework)
+
     const can = usePermission()
 
     const canCreateCorrections = can('homeworks-create-corrections')

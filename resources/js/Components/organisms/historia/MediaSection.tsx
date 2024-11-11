@@ -17,6 +17,8 @@ import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} fro
 import {Input} from "@/shadcn/ui/input.tsx";
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 
 // TODO: Remove dialog when file is submitted
 // TODO: Show media title and description
@@ -29,6 +31,14 @@ type MediaSectionProps = {
 }
 
 const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
+
+    const {
+        historia,
+        disabled,
+        homework,
+        canCreateCorrections,
+        correctionsModel
+    } = React.useContext(HistoriaEditorContext)
 
     const [openAddFileDialog, setOpenAddFileDialog] = React.useState<boolean>(false)
 
@@ -92,15 +102,17 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
                         historia clínica. (Máximo 10 MB)</Text>
                 </header>
 
-                <div className={'grid grid-cols-1 sm:grid-cols-3 gap-3'}>
-                    {
-                        media.map(url => (
-                            <div key={url} className={'aspect-square'}>
-                                <Image src={url}/>
-                            </div>
-                        ))
-                    }
-                </div>
+                <CorrectionsBlock model={correctionsModel} name={'media'} canCreateCorrections={canCreateCorrections}>
+                    <div className={'grid grid-cols-1 sm:grid-cols-3 gap-3'}>
+                        {
+                            media.map(url => (
+                                <div key={url} className={'aspect-square'}>
+                                    <Image src={url}/>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </CorrectionsBlock>
 
                 <Dialog open={openAddFileDialog} onOpenChange={onOpenChange}>
                     <DialogContent className={'max-w-[75vw] p-0 border-0'}>
@@ -162,7 +174,8 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
 
 
                 <div className={'flex justify-end gap-3'}>
-                    <Button onClick={() => setOpenAddFileDialog(true)}><Plus className={'size-4 me-2'}/>Agregar</Button>
+                    <Button disabled={disabled} onClick={() => setOpenAddFileDialog(true)}><Plus
+                        className={'size-4 me-2'}/>Agregar</Button>
                 </div>
 
             </section>

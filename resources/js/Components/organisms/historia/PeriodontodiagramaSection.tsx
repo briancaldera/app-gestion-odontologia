@@ -12,6 +12,8 @@ import {Button} from "@/shadcn/ui/button.tsx";
 import {Loader2} from "lucide-react";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 
 type PeriodontodiagramaSection = {
     periodontograma: string | null
@@ -20,12 +22,13 @@ type PeriodontodiagramaSection = {
 
 const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSection) => {
 
+    const {historia, disabled, correctionsModel, canCreateCorrections} = React.useContext(HistoriaEditorContext)
+
     const route = useRoute()
 
     const {router, isProcessing} = useInertiaSubmit()
 
     const handleSubmit = (values: z.infer<typeof PeriodontodiagramaSchema>) => {
-        console.log(values)
 
         const endpoint = route('historias.odontologica.periodontodiagramas.update', {
             historia: values.historia_id
@@ -58,41 +61,44 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
         <Surface className={'p-6 h-full'}>
             <Title level={'title-lg'}>Periodontodiagrama</Title>
 
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
+            <CorrectionsBlock model={correctionsModel} name={'periodontodiagrama'}
+                              canCreateCorrections={canCreateCorrections}>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
 
 
-                    <div>
+                        <div>
 
 
-
-                        <FormField render={({field}) => (
-                            <FormItem>
-                                <FormControl>
-                                    <div className={'flex justify-center bg-neutral-950 min-h-[900px]'}>
-                                        <div className={'w-4/5'}>
-                                            <Image src={field.value ?? periodontograma} className={'object-contain w-full h-auto'}/>
+                            <FormField render={({field}) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <div className={'flex justify-center bg-neutral-950 min-h-[900px]'}>
+                                            <div className={'w-4/5'}>
+                                                <Image src={field.value ?? periodontograma}
+                                                       className={'object-contain w-full h-auto'}/>
+                                            </div>
                                         </div>
-                                    </div>
-                                </FormControl>
-                                <FormMessage/>
-                            </FormItem>
-                        )} name={'periodontodiagrama'} control={form.control}/>
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )} name={'periodontodiagrama'} control={form.control}/>
 
-                    </div>
+                        </div>
 
-                    <DragAndDrop maxFiles={1} accept={ACCEPTED_PICTURE_MIME} handleDrop={handleDrop}/>
+                        <DragAndDrop maxFiles={1} accept={ACCEPTED_PICTURE_MIME} handleDrop={handleDrop}
+                                     disabled={disabled}/>
 
-                    <div className={'flex justify-end'}>
-                        <Button disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>
-                            {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Guardar
-                        </Button>
-                    </div>
+                        <div className={'flex justify-end'}>
+                            <Button disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>
+                                {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}Guardar
+                            </Button>
+                        </div>
 
 
-
-                </form>
-            </Form>
+                    </form>
+                </Form>
+            </CorrectionsBlock>
         </Surface>
     )
 }

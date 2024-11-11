@@ -65,6 +65,7 @@ const TabTriggerStyle = 'p-0 m-0'
 
 type HistoriaEditorContextType = {
     historia: Historia
+    disabled: boolean
     homework?: Homework | null
     canCreateCorrections: boolean
     correctionsModel: UseCorrectionsReturn
@@ -72,6 +73,7 @@ type HistoriaEditorContextType = {
 const HistoriaEditorContext = React.createContext<HistoriaEditorContextType>({
     correctionsModel: {model: null, handleSubmit: (values) => {}},
     historia: null,
+    disabled: true,
     homework: null,
     canCreateCorrections: false})
 
@@ -89,6 +91,8 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
     const corrections = homework?.documents.find((document) => document.id === historia?.id).corrections
 
     const {isProcessing, router} = useInertiaSubmit()
+
+    const isDisabled = readMode || isProcessing
 
     const handleSubmitCorrections = (values: {section: string, content: string}) => {
         const endpoint = route('groups.assignments.homeworks.corrections', {
@@ -110,6 +114,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             },
             onSuccess: page => {
                 toast.success('Correcciones agregadas')
+                router.reload()
             }
         })
     }
@@ -120,14 +125,14 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
         resolver: zodResolver(HistoriaSchema),
         defaultValues: HistoriaDefaults,
         values: historia,
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
         resolver: zodResolver(PacienteSchema),
         defaultValues: PacienteDefaults,
         values: historia.paciente,
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const trastornos = historia?.trastornos!!
@@ -140,14 +145,14 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
         resolver: zodResolver(AntPersonalesSchema),
         defaultValues: AntPersonalesDefaults,
         values: historia.ant_personales,
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const antFamiliaresForm = useForm<z.infer<typeof AntFamiliaresSchema>>({
         resolver: zodResolver(AntFamiliaresSchema),
         defaultValues: AntFamiliaresDefaults,
         values: historia.ant_familiares,
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const historiaOdontologicaForm = useForm<z.infer<typeof HistoriaOdontologicaSchema>>({
@@ -160,7 +165,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             habitos: historia.historia_odontologica!.habitos,
             portador: historia.historia_odontologica!.portador
         },
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const defaults = (historia?.historia_odontologica?.plan_tratamiento) ? {
@@ -175,7 +180,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             historia_id: historia.historia_odontologica!.historia_id,
             plan_tratamiento: historia.historia_odontologica!.plan_tratamiento
         },
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const modificacionesDefaults = (historia.historia_odontologica?.modificaciones_plan_tratamiento) ? {
@@ -190,7 +195,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             historia_id: historia.historia_odontologica!.historia_id,
             modificaciones_plan_tratamiento: historia.historia_odontologica!.modificaciones_plan_tratamiento,
         },
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const secuenciaDefaults = (historia.historia_odontologica?.secuencia_tratamiento) ? {
@@ -205,7 +210,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             historia_id: historia.historia_odontologica!.historia_id,
             secuencia_tratamiento: historia.historia_odontologica!.secuencia_tratamiento,
         },
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const examenRadiograficoForm = useForm<z.infer<typeof ExamenRadiograficoSchema>>({
@@ -232,7 +237,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                 imagenes: []
             }
         },
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const estudioModelosDefaults = (historia.historia_odontologica?.estudio_modelos) ? mergeDeep({...EstudioModelosDefaults}, {estudio_modelos: historia.historia_odontologica?.estudio_modelos}, {historia_id: historia.id}) satisfies z.infer<typeof EstudioModelosSchema>
@@ -242,7 +247,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
         resolver: zodResolver(EstudioModelosSchema),
         defaultValues: EstudioModelosDefaults,
         values: historia.historia_odontologica?.estudio_modelos,
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     const periodontodiagramaForm = useForm<z.infer<typeof PeriodontodiagramaSchema>>({
@@ -255,12 +260,12 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             historia_id: historia.id,
             periodontodiagrama: null
         },
-        disabled: readMode,
+        disabled: isDisabled,
     })
 
     return (
         <HistoriaEditorContext.Provider
-            value={{historia: historia, homework: homework, canCreateCorrections: canCreateCorrections, correctionsModel: correctionsModel}}>
+            value={{historia: historia, homework: homework, canCreateCorrections: canCreateCorrections, correctionsModel: correctionsModel, disabled: isDisabled}}>
             <div className={'h-full'}>
                 <Menubar className={'mb-2'}>
                     <MenubarMenu>

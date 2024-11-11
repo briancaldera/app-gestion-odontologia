@@ -20,12 +20,12 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/s
 
 const HistoriaPeriodontalForm = () => {
 
-    const {historia} = React.useContext(HistoriaEditorContext)
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
     const {higiene_bucal: hb, control_higiene_bucal: chb} = historia.historia_odontologica!.historia_periodontal
 
     const {isProcessing, router} = useInertiaSubmit()
 
-    const isDisabled: boolean = isProcessing
+    const isDisabled: boolean = disabled
 
     const historiaPeriodontalForm = useForm<z.infer<typeof historiaPeriodontalSchema>>({
         resolver: zodResolver(historiaPeriodontalSchema),
@@ -119,6 +119,7 @@ const HistoriaPeriodontalForm = () => {
                                                     >
                                                         <FormControl>
                                                             <Checkbox
+                                                                disabled={field.disabled}
                                                                 checked={field.value?.includes(item.id)}
                                                                 onCheckedChange={(checked) => {
                                                                     return checked
@@ -171,6 +172,7 @@ const HistoriaPeriodontalForm = () => {
                                                     >
                                                         <FormControl>
                                                             <Checkbox
+                                                                disabled={field.disabled}
                                                                 checked={field.value?.includes(item.id)}
                                                                 onCheckedChange={(checked) => {
                                                                     return checked
@@ -223,6 +225,7 @@ const HistoriaPeriodontalForm = () => {
                                                     >
                                                         <FormControl>
                                                             <Checkbox
+                                                                disabled={field.disabled}
                                                                 checked={field.value?.includes(item.id)}
                                                                 onCheckedChange={(checked) => {
                                                                     return checked

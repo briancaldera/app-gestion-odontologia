@@ -27,6 +27,7 @@ import {
 import {route, useRoute} from "ziggy-js";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 
 interface PlanTratamientoSectionProps {
     form: UseFormReturn<z.infer<PlanTratamientoSchema>>
@@ -35,6 +36,8 @@ interface PlanTratamientoSectionProps {
 const PlanTratamientoTableContext = React.createContext<{onDeleteTratamiento: (index: number) => void}>({onDeleteTratamiento: (_index: number) => {}})
 
 const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
+
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
 
     const route = useRoute()
     const {isProcessing, router} = useInertiaSubmit()
@@ -66,11 +69,9 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
         const endpoint = route('historias.odontologica.plantratamiento.update', {
             historia: values.historia_id
         })
-        console.log(values)
 
         router.patch(endpoint, values, {
             onError: errors => {
-                console.log(errors)
                 mapServerErrorsToFields(form, errors)
             },
             onSuccess: page => form.reset(values)
@@ -90,7 +91,7 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
                 <div className={'sticky flex justify-end right-0 top-0'}>
 
                     <Popover open={openAddTratamientoPopover} onOpenChange={setOpenAddTratamientoPopover}>
-                        <PopoverTrigger type={'button'} className={'border rounded-full size-12 flex items-center justify-center shadow'}>
+                        <PopoverTrigger disabled={form.formState.disabled} type={'button'} className={'border rounded-full size-12 flex items-center justify-center shadow'}>
                             <Icon className={'flex-none'}>
                                 <SquarePlus/>
                             </Icon>
@@ -159,7 +160,7 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
                             )} name={'plan_tratamiento'} control={form.control}/>
 
                             <div className={'flex justify-end'}>
-                                <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
+                                <Button type={'submit'} disabled={form.formState.disabled || !form.formState.isDirty}>Guardar</Button>
                             </div>
                         </form>
                     </Form>

@@ -256,7 +256,9 @@ class GroupController extends Controller
             $docs = $historias_regulares_adulto->map(fn (Historia $historia) => [
                 'id' => $historia->id,
                 'type' => 'HRA',
-                'corrections' => '{"sections": {}}'
+                'corrections' => [
+                    'sections' => null,
+                ],
             ])->toArray();
 
             $data = [

@@ -27,12 +27,15 @@ import SecuenciaTratamientoSchema, {TratamientoRealizadoSchema, TratamientoReali
 import {formatDate} from 'date-fns'
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {route} from "ziggy-js";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 
 interface SecuenciaTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof SecuenciaTratamientoSchema>>
 }
 
 const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) => {
+
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
 
     const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
     const {isProcessing, router} = useInertiaSubmit()
@@ -89,7 +92,7 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
                 <div className={'sticky flex justify-end right-0 top-0'}>
 
                     <Popover open={openAddTratamientoPopover} onOpenChange={setOpenAddTratamientoPopover}>
-                        <PopoverTrigger type={'button'}
+                        <PopoverTrigger type={'button'} disabled={form.formState.disabled}
                                         className={'border rounded-full size-12 flex items-center justify-center shadow'}>
                             <Icon className={'flex-none'}>
                                 <SquarePlus/>

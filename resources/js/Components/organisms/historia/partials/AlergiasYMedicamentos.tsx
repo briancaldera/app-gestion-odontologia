@@ -18,12 +18,12 @@ import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 
 const AlergiasYMedicamentos = () => {
-    const {historia} = React.useContext(HistoriaEditorContext)
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
     const {alergias, medicamentos} = historia.ant_personales!
 
     const {isProcessing, router} = useInertiaSubmit()
 
-    const isDisabled: boolean = isProcessing
+    const isDisabled: boolean = disabled
 
     const medAlerForm = useForm<z.infer<typeof medAlerSchema>>({
         resolver: zodResolver(medAlerSchema),
@@ -90,6 +90,7 @@ const AlergiasYMedicamentos = () => {
                                                     >
                                                         <FormControl>
                                                             <Checkbox
+                                                                disabled={medAlerForm.formState.disabled}
                                                                 checked={field.value?.includes(item.id)}
                                                                 onCheckedChange={(checked) => {
                                                                     return checked
@@ -154,6 +155,7 @@ const AlergiasYMedicamentos = () => {
                                                     >
                                                         <FormControl>
                                                             <Checkbox
+                                                                disabled={medAlerForm.formState.disabled}
                                                                 checked={field.value?.includes(item.id)}
                                                                 onCheckedChange={(checked) => {
                                                                     return checked

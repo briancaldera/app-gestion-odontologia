@@ -9,15 +9,16 @@ import React from "react";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {formatDate} from "date-fns";
+import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 
 const ControlPlacaSection = () => {
 
-    const {historia} = React.useContext(HistoriaEditorContext)
+    const {historia, disabled, homework, canCreateCorrections, correctionsModel} = React.useContext(HistoriaEditorContext)
     const {control_placa} = historia.historia_odontologica!.historia_periodontal
 
     const {isProcessing, router} = useInertiaSubmit()
 
-    const isDisabled = isProcessing
+    const isDisabled = disabled
 
     const handleSubmit = (model: DentalPlaqueChartModel) => {
 
@@ -47,6 +48,7 @@ const ControlPlacaSection = () => {
 
             <Title level={'h4'}>Control de placa de dental</Title>
 
+            <CorrectionsBlock model={correctionsModel} name={'control_placa'} canCreateCorrections={canCreateCorrections}>
             <div className={'flex flex-col gap-y-2'}>
                 {
                     control_placa.length > 0 ? (
@@ -66,18 +68,19 @@ const ControlPlacaSection = () => {
                         !newControl && (
                             <div className={'flex flex-col justify-center items-center p-6 gap-y-4'}>
                                 <Text>No existe ningún control de placa</Text>
-                                <Button onClick={() => setNewControl(true)}>Crear control de placa</Button>
+                                {/*<Button disabled={disabled} onClick={() => setNewControl(true)}>Crear control de placa</Button>*/}
                             </div>
                         )
                     )
                 }
 
             </div>
+            </CorrectionsBlock>
 
-            <div className={'mt-2'}>
+            <div className={'mt-2 flex justify-end'}>
                 {
                     !newControl ? (
-                        <Button onClick={() => setNewControl(true)}>Crear control de placa</Button>
+                        <Button disabled={disabled} onClick={() => setNewControl(true)}>Crear control de placa</Button>
                     ) : (
                         <ControlPlacaDiagrama onClick={(model) => handleSubmit(model)}/>
                     )

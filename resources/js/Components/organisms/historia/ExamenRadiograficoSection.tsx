@@ -11,6 +11,8 @@ import HistoriaOdontologica from "@/src/models/HistoriaOdontologica.ts";
 import InterpretacionPanoramica from "@/Components/organisms/historia/partials/InterpretacionPanoramica.tsx";
 import InterpretacionPeriapicales from "@/Components/organisms/historia/partials/InterpretacionPeriapicales.tsx";
 import InterpretacionCoronales from "@/Components/organisms/historia/partials/InterpretacionCoronales.tsx";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 
 type ExamenRadiograficoSectionProps = {
     historiaOdontologica: HistoriaOdontologica
@@ -21,6 +23,8 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
 
     const route = useRoute()
     const {isProcessing, router} = useInertiaSubmit()
+
+    const {historia, homework, canCreateCorrections, correctionsModel} = React.useContext(HistoriaEditorContext)
 
     const handleSubmit = (values: z.infer<typeof ExamenRadiograficoSchema>) => {
 
@@ -84,11 +88,22 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
 
             <Title level={'title-lg'}>Examen Radiográfico</Title>
 
-            <InterpretacionPanoramica/>
+            <CorrectionsBlock model={correctionsModel} name={'int_panoramicas'}
+                              canCreateCorrections={canCreateCorrections}>
+                <InterpretacionPanoramica/>
+            </CorrectionsBlock>
 
-            <InterpretacionPeriapicales/>
 
-            <InterpretacionCoronales/>
+            <CorrectionsBlock model={correctionsModel} name={'int_periapicales'}
+                              canCreateCorrections={canCreateCorrections}>
+                <InterpretacionPeriapicales/>
+            </CorrectionsBlock>
+
+
+            <CorrectionsBlock model={correctionsModel} name={'int_coronales'}
+                              canCreateCorrections={canCreateCorrections}>
+                <InterpretacionCoronales/>
+            </CorrectionsBlock>
 
         </Surface>
     )

@@ -39,12 +39,12 @@ const trastornosItems: Record<string, TrastornoItem[]> = {
 }
 
 const Trastornos = () => {
-    const {historia} = React.useContext(HistoriaEditorContext)
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
     const {trastornos} = historia.ant_personales!
 
     const {isProcessing, router} = useInertiaSubmit()
 
-    const isDisabled: boolean = isProcessing
+    const isDisabled: boolean = isProcessing || disabled
 
     const trastornosForm = useForm<z.infer<typeof trastornosSchema>>({
         resolver: zodResolver(trastornosSchema),
@@ -130,6 +130,7 @@ const Trastornos = () => {
                                                                     >
                                                                         <FormControl>
                                                                             <Checkbox
+                                                                                disabled={field.disabled}
                                                                                 checked={field.value?.includes(item.id)}
                                                                                 onCheckedChange={(checked) => {
                                                                                     return checked

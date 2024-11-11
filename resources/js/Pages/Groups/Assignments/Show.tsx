@@ -55,7 +55,7 @@ const Show = ({assignment, historias}: ShowProps) => {
                             <Separator className={'my-4'}/>
                             <Text>
                                 {
-                                    faker.lorem.paragraphs(3)
+                                    assignment.description ?? 'No hay descripción'
                                 }
                             </Text>
                         </div>
@@ -114,6 +114,9 @@ const TurnInHomeworkCard = ({assignment, historias}: { assignment: Assignment, h
 
                 </div>
                 <CardFooter>
+                    <Link href={route('historias.show', {historia: historias[0].id, _query: {
+                            homework: myHomework[0].id
+                        }})}>
                     {
                         myHomework.length > 0 ? (
                             <div>Documento entregado en {format(myHomework[0].created_at, 'Pp')}</div>
@@ -121,6 +124,7 @@ const TurnInHomeworkCard = ({assignment, historias}: { assignment: Assignment, h
                             <Button onClick={() => setOpenDialog(true)} className={'w-full'}>Entregar</Button>
                         )
                     }
+                    </Link>
                 </CardFooter>
             </Card>
 

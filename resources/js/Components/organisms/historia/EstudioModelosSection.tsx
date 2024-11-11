@@ -1,18 +1,16 @@
 import {z} from "zod"
 import {UseFormReturn} from 'react-hook-form'
-import HistoriaOdontologicaSchema from '@/FormSchema/Historia/HistoriaOdontologicaSchema'
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
-import {Textarea} from '@/shadcn/ui/textarea'
-import {Checkbox} from "@/shadcn/ui/checkbox"
-import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Historia/EstudioModelosSchema";
-import {Button} from "@/shadcn/ui/button";
+import EstudioModelosSchema from "@/FormSchema/Historia/EstudioModelosSchema";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {useRoute} from "ziggy-js";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 import MaxSupInfOclu from "@/Components/organisms/historia/partials/MaxSupInfOclu.tsx";
 import EstudioModelosParte2 from "@/Components/organisms/historia/partials/EstudioModelosParte2.tsx";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import React from "react";
+import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 
 
 type EstudioModelosSectionProps = {
@@ -20,6 +18,8 @@ type EstudioModelosSectionProps = {
 }
 
 const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
+
+    const {historia, homework, canCreateCorrections, correctionsModel} = React.useContext(HistoriaEditorContext)
 
     const {isProcessing, router}: ReturnType<typeof useInertiaSubmit> = useInertiaSubmit()
     const route = useRoute()
@@ -43,9 +43,14 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
         <Surface className={'w-full px-6 min-h-screen'}>
             <Title level={'title-lg'}>Estudio de Modelos</Title>
 
-            <MaxSupInfOclu/>
+            <CorrectionsBlock model={correctionsModel} name={'maxsupinfoclu'}
+                              canCreateCorrections={canCreateCorrections}>
+                <MaxSupInfOclu/>
+            </CorrectionsBlock>
 
-            <EstudioModelosParte2/>
+            <CorrectionsBlock model={correctionsModel} name={'diagnostico'} canCreateCorrections={canCreateCorrections}>
+                <EstudioModelosParte2/>
+            </CorrectionsBlock>
         </Surface>
     )
 }

@@ -30,12 +30,15 @@ import ModificacionesPlanTratamientoSchema, {
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {formatDate} from 'date-fns'
 import {route} from "ziggy-js";
+import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 
 interface ModificacionesPlanTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof ModificacionesPlanTratamientoSchema>>
 }
 
 const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamientoSectionProps) => {
+
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
 
     const {isProcessing, router} = useInertiaSubmit()
     const [openAddModificacionPopover, setOpenAddModificacionPopover] = React.useState<boolean>(false)
@@ -93,7 +96,7 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                 <div className={'sticky flex justify-end right-0 top-0'}>
 
                     <Popover open={openAddModificacionPopover} onOpenChange={setOpenAddModificacionPopover}>
-                        <PopoverTrigger type={'button'}
+                        <PopoverTrigger type={'button'} disabled={form.formState.disabled}
                                         className={'border rounded-full size-12 flex items-center justify-center shadow'}>
                             <Icon className={'flex-none'}>
                                 <SquarePlus/>
