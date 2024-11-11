@@ -312,6 +312,20 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
+                            <TabsTrigger value="estudioModelos" className={'p-0'}>
+                                <Surface className={'rounded-none'}>
+                                    <Icon className={'size-8'}>
+                                        <FileBox/>
+                                    </Icon>
+                                </Surface>
+                            </TabsTrigger>
+                            <TabsTrigger value="periodontodiagrama" className={'p-0'}>
+                                <Surface className={'rounded-none'}>
+                                    <Icon className={'size-8'}>
+                                        <TableRowsSplit/>
+                                    </Icon>
+                                </Surface>
+                            </TabsTrigger>
                             <TabsTrigger value="planTratamiento" className={'p-0'}>
                                 <Surface className={'rounded-none'}>
                                     <Icon className={'size-8'}>
@@ -330,20 +344,6 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                                 <Surface className={'rounded-none'}>
                                     <Icon className={'size-8'}>
                                         <ListChecks/>
-                                    </Icon>
-                                </Surface>
-                            </TabsTrigger>
-                            <TabsTrigger value="estudioModelos" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <FileBox/>
-                                    </Icon>
-                                </Surface>
-                            </TabsTrigger>
-                            <TabsTrigger value="periodontodiagrama" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <TableRowsSplit/>
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
@@ -387,6 +387,13 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                                 <ExamenRadiograficoSection historiaOdontologica={historia.historia_odontologica!}
                                                            form={examenRadiograficoForm}/>
                             </TabsContent>
+                            <TabsContent value="estudioModelos" className={TabTriggerStyle}>
+                                <EstudioModelosSection form={estudioModelosForm}/>
+                            </TabsContent>
+                            <TabsContent value="periodontodiagrama" className={TabTriggerStyle}>
+                                <PeriodontodiagramaSection form={periodontodiagramaForm}
+                                                           periodontograma={historia.historia_odontologica?.periodontodiagrama[0] ?? null}/>
+                            </TabsContent>
                             <TabsContent value="planTratamiento" className={TabTriggerStyle}>
                                 <PlanTratamientoSection form={planTratamientoForm}/>
                             </TabsContent>
@@ -395,13 +402,6 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                             </TabsContent>
                             <TabsContent value="secuenciaPlanTratamiento" className={TabTriggerStyle}>
                                 <SecuenciaPlanTratamientoSection form={secuenciaTratamientoForm}/>
-                            </TabsContent>
-                            <TabsContent value="estudioModelos" className={TabTriggerStyle}>
-                                <EstudioModelosSection form={estudioModelosForm}/>
-                            </TabsContent>
-                            <TabsContent value="periodontodiagrama" className={TabTriggerStyle}>
-                                <PeriodontodiagramaSection form={periodontodiagramaForm}
-                                                           periodontograma={historia.historia_odontologica?.periodontodiagrama[0] ?? null}/>
                             </TabsContent>
                             <TabsContent value="historia-periodontal" className={TabTriggerStyle}>
                                 <HistoriaPeriodontalSection readonly={readMode} historia_id={historia.id}

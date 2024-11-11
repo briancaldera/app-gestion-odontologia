@@ -82,7 +82,7 @@ const EstudioModelosParte2 = () => {
                                     <FormLabel className="text-base">Interconsultas</FormLabel>
                                     <FormDescription>Fecha y firma del docente</FormDescription>
                                 </div>
-                                <div className='flex justify-evenly'>
+                                <div className='flex flex-wrap gap-3'>
                                     {interconsultasItems.map((item) => (
                                         <FormField
                                             key={item.id}

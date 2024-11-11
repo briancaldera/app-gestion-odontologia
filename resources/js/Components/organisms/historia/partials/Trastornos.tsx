@@ -98,7 +98,7 @@ const Trastornos = () => {
                             {
                                 Object.keys(trastornosSchema.omit({descripcion: true}).shape).map((key: string) => (
                                     <div id={key}
-                                         className={'grid grid-cols-2 gap-2 border rounded-lg p-6 content-start'}
+                                         className={'grid grid-cols-1 sm:grid-cols-2 gap-2 border rounded-lg p-6 content-start'}
                                          key={key}>
                                         {/*<div className={'col-span-full capitalize'}>*/}
                                         {/*    <Label htmlFor={key}>{key}</Label>*/}
@@ -115,7 +115,7 @@ const Trastornos = () => {
                                                     </FormDescription>
                                                 </div>
                                                 <div
-                                                    className={'grid grid-cols-2 gap-2 p-6 content-start'}>
+                                                    className={'grid grid-cols-1 sm:grid-cols-2 gap-2 p-6 content-start'}>
 
                                                     {trastornosItems[key].map((item) => (
                                                         <FormField

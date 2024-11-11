@@ -39,8 +39,6 @@ type ShowProps = {
 
 const Show = ({paciente}: ShowProps) => {
 
-    console.log(paciente)
-
     return (
         <AuthLayout title={`Paciente - ${paciente.nombre} ${paciente.apellido}`}>
             <ScrollArea className={'h-full bg-white'}>
@@ -104,11 +102,11 @@ const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
 
             </div>
             <div className={'basis-full'}>
-                <Tabs defaultValue={'information'} className={'w-full'}>
+                <Tabs defaultValue={'information'} className={'w-full h-full'}>
                     <TabsList
                         className={'flex justify-start w-full bg-transparent border-b-2 border-b-slate-200 rounded-none p-0'}>
                         <TabsTrigger value={'information'} className={tabTriggerStyle}>Información</TabsTrigger>
-                        <TabsTrigger value={'historias'} className={tabTriggerStyle}>Historia Médica</TabsTrigger>
+                        <TabsTrigger value={'historias'} className={tabTriggerStyle}>Historia Clínica</TabsTrigger>
                     </TabsList>
                     <TabsContent value={'information'}>
                         <InformationSection paciente={paciente}/>
@@ -234,10 +232,10 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
 }
 
 const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
-    console.log(paciente)
+
     return (
-        <div className={'h-[50vw] px-4 rounded-lg'}>
-            <div className={'flex h-full border'}>
+        <div className={'h-[50vw] px-4 rounded-lg '}>
+            <div className={'flex h-full border flex-wrap'}>
                 <div className={'basis-1/3 p-4 flex flex-col'}>
 
                     <div className={'inline-flex gap-2'}>

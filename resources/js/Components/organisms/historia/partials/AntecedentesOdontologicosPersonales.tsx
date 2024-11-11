@@ -122,7 +122,7 @@ const AntecedentesOdontologicosPersonales = () => {
                             </div>
 
                             <div
-                                className={'col-span-full grid grid-cols-1 gap-2 grid-flow-col-dense sm:grid-cols-4 sm:grid-rows-5'}>
+                                className={'col-span-full flex flex-col sm:flex-row sm:flex-wrap gap-3'}>
 
                                 {
                                     Object.keys(antecedentesOdontologicosPersonalesSchema.shape.habitos.shape).filter(habito => habito !== 'descripcion').sort().map(habito =>

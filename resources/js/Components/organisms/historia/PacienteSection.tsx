@@ -121,7 +121,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                     <div className={'hidden sm:block'}></div>
 
                     <div className={'w-full'}>
-                        <Button disabled={!form.formState.isDirty || isProcessing || form.formState.disabled} type={'submit'}>Actualizar</Button>
+
                     </div>
                 </form>
             </Form>

@@ -76,7 +76,7 @@ const AlergiasYMedicamentos = () => {
                                     <FormLabel className="text-base">Medicamentos</FormLabel>
                                     <FormDescription></FormDescription>
                                 </div>
-                                <div className='grid grid-cols-6 gap-3'>
+                                <div className='flex flex-col sm:flex-row sm:flex-wrap gap-3'>
                                     {medicamentoItems.map((item) => (
                                         <FormField
                                             key={item.id}
@@ -140,7 +140,7 @@ const AlergiasYMedicamentos = () => {
                                     <FormLabel className="text-base">Alergias</FormLabel>
                                     <FormDescription></FormDescription>
                                 </div>
-                                <div className='flex justify-evenly'>
+                                <div className='flex gap-3 flex-col sm:flex-row justify-evenly'>
                                     {alergiaItems.map((item) => (
                                         <FormField
                                             key={item.id}
