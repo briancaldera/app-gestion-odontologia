@@ -24,6 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'profile' => EnsureUserHasProfile::class,
         ]);
 
+        $middleware->trustProxies(at: '*');
+        $middleware->trustHosts(at: ['ugma-app-gestion-odontologia-96559078110.us-east1.run.app']);
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
