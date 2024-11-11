@@ -6,6 +6,23 @@ declare module 'ziggy-js' {
     "ignition.executeSolution": [],
     "ignition.updateConfig": [],
     "profile.index": [],
+    "profile.create": [],
+    "profile.edit": [],
+    "profile.update": [],
+    "profile.destroy": [],
+    "profile.store": [],
+    "profile.updatePicture": [],
+    "profile.picture.show": [
+        {
+            "name": "profile",
+            "required": true,
+            "binding": "user_id"
+        },
+        {
+            "name": "id",
+            "required": true
+        }
+    ],
     "profile.show": [
         {
             "name": "profile",
@@ -13,13 +30,23 @@ declare module 'ziggy-js' {
             "binding": "user_id"
         }
     ],
-    "profile.edit": [],
-    "profile.update": [],
-    "profile.destroy": [],
-    "profile.create": [],
-    "profile.store": [],
-    "profile.updatePicture": [],
     "dashboard": [],
+    "users.codes.index": [],
+    "users.codes.store": [],
+    "users.codes.update": [
+        {
+            "name": "userCode",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "users.codes.destroy": [
+        {
+            "name": "userCode",
+            "required": true,
+            "binding": "id"
+        }
+    ],
     "notifications.index": [],
     "notifications.markAsRead": [
         {
@@ -247,6 +274,13 @@ declare module 'ziggy-js' {
             "binding": "id"
         }
     ],
+    "historias.odontologica.periodontal.controlplaca.store": [
+        {
+            "name": "historia",
+            "required": true,
+            "binding": "id"
+        }
+    ],
     "historias.odontologica.radiografias.update": [
         {
             "name": "historia",
@@ -273,6 +307,24 @@ declare module 'ziggy-js' {
             "name": "historia",
             "required": true,
             "binding": "id"
+        }
+    ],
+    "historias.odontologica.consentimiento.update": [
+        {
+            "name": "historia",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "historias.odontologica.consentimiento.show": [
+        {
+            "name": "historia",
+            "required": true,
+            "binding": "id"
+        },
+        {
+            "name": "id",
+            "required": true
         }
     ],
     "historias.odontologica.panoramicas": [
@@ -337,67 +389,92 @@ declare module 'ziggy-js' {
             "binding": "id"
         }
     ],
-    "historias.historia.create": [],
-    "historias.update": [
+    "endodoncia.historias.index": [],
+    "endodoncia.historias.create": [],
+    "endodoncia.historias.store": [],
+    "endodoncia.historias.show": [
         {
             "name": "historia",
             "required": true,
             "binding": "id"
         }
     ],
-    "historias.storeAntFamiliares": [
+    "endodoncia.historias.edit": [
         {
             "name": "historia",
             "required": true,
             "binding": "id"
         }
     ],
-    "historias.updateAntFamiliares": [
-        {
-            "name": "historia",
-            "required": true,
-            "binding": "id"
-        }
-    ],
-    "historias.storeAntPersonales": [
-        {
-            "name": "historia",
-            "required": true,
-            "binding": "id"
-        }
-    ],
-    "historias.updateAntPersonales": [
-        {
-            "name": "historia",
-            "required": true,
-            "binding": "id"
-        }
-    ],
-    "historias.storeTrastornos": [
-        {
-            "name": "historia",
-            "required": true,
-            "binding": "id"
-        }
-    ],
-    "historias.updateTrastornos": [
+    "endodoncia.historias.update": [
         {
             "name": "historia",
             "required": true
         }
     ],
-    "historias.storeHistoriaOdontologica": [
+    "endodoncia.historias.destroy": [
+        {
+            "name": "historia",
+            "required": true
+        }
+    ],
+    "endodoncia.historias.anamnesis.update": [
         {
             "name": "historia",
             "required": true,
             "binding": "id"
         }
     ],
-    "historias.updateHistoriaOdontologica": [
+    "endodoncia.historias.dolor.update": [
         {
             "name": "historia",
             "required": true,
             "binding": "id"
+        }
+    ],
+    "cirugia.historias.index": [],
+    "cirugia.historias.store": [],
+    "cirugia.historias.show": [
+        {
+            "name": "historia",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "cirugia.historias.edit": [
+        {
+            "name": "historia",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "cirugia.historias.update": [
+        {
+            "name": "historia",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "cirugia.historias.destroy": [
+        {
+            "name": "historia",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "cirugia.historias.file.show": [
+        {
+            "name": "historia",
+            "required": true,
+            "binding": "id"
+        },
+        {
+            "name": "file",
+            "required": true
+        },
+        {
+            "name": "id",
+            "required": true
         }
     ],
     "register": [],
