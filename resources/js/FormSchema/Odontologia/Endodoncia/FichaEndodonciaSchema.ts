@@ -65,7 +65,8 @@ const metodoObturacionItems: MetodoObturacion[] = [
 ]
 
 const fichaEndodonticaSchema = z.object({
-    sintomas: z.string().max(MAX_TEXT_SIZE).describe('Sintomas'),
+    diente: z.string().max(MAX_TEXT_SIZE).describe('Diente'),
+    sintomas: z.string().max(MAX_TEXT_SIZE).describe('Síntomas'),
     signos: z.string().max(MAX_TEXT_SIZE).describe('Signos'),
     interpretacion_radiografica: z.string().max(MAX_TEXT_SIZE).describe('Interpretación radiográfica'),
     etiologia: z.array(z.string()).describe('Etiología'),
@@ -102,4 +103,4 @@ const radiografiasTratamientoSchema = z.object({
     cono_patron: radiografiaSchema
 })
 
-export {etiologiaItems, examenTejidoPeriodontalItems, pruebaVitalidadPulparItems, morfologiaConductoItems, tratamientoConductoItems, metodoObturacionItems}
+export {fichaEndodonticaSchema, radiografiasTratamientoSchema, etiologiaItems, examenTejidoPeriodontalItems, pruebaVitalidadPulparItems, morfologiaConductoItems, tratamientoConductoItems, metodoObturacionItems}

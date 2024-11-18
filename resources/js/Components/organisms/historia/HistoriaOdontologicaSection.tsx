@@ -43,7 +43,7 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
 
         <Surface className={'w-full px-6 min-h-screen'}>
 
-            <Title level={'title-lg'}>Historia Odontologica</Title>
+            <Title level={'title-lg'}>Historia Odontológica</Title>
 
 
             <CorrectionsBlock model={correctionsModel} name={'ant_odon_personales'}

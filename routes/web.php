@@ -114,6 +114,8 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
         Route::resource('historias', HistoriaEndodonciaController::class);
         Route::patch('/historias/{historia}/anamnesis', [HistoriaEndodonciaController::class, 'updateAnamnesis'])->name('historias.anamnesis.update');
         Route::patch('/historias/{historia}/dolor', [HistoriaEndodonciaController::class, 'updateEvaluacionDolor'])->name('historias.dolor.update');
+        Route::post('/historias/{historia}/ficha', [HistoriaEndodonciaController::class, 'storeFicha'])->name('historias.ficha.store');
+        Route::get('historias/{historia}/{file}/{id}', [HistoriaEndodonciaController::class, 'getFile'])->whereIn('file', ['consentimiento', 'periodontodiagrama'])->name('historias.file.show');
     });
 
     // Routes for HC

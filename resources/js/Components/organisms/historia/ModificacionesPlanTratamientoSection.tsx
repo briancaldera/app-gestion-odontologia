@@ -73,7 +73,6 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
 
         router.patch(endpoint, {...values}, {
             onError: errors => {
-                console.log(errors)
                 // TODO Show errors somewhere in the table
             },
             onSuccess: page => {
@@ -84,13 +83,10 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <Surface className={'px-6'}>
             <Title level={'title-lg'}>Modificaciones del Plan de Tratamiento</Title>
 
             <section className={'my-6 relative'}>
-                <header>
-                    <Title level={'title-md'}>Modificaciones del plan de tratamiento</Title>
-                </header>
 
                 {/*actions*/}
                 <div className={'sticky flex justify-end right-0 top-0'}>

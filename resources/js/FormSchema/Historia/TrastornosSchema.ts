@@ -62,6 +62,7 @@ const endocrinos: readonly TrastornoItem[] = [
     {id: 'hipertiroidismo', label: 'Hipertiroidismo'},
     {id: 'adenopatia', label: 'Adenopatía'},
     {id: 'hipotiroidismo', label: 'Hipotiroidismo'},
+    {id: 'cirrosis_hepatica', label: 'Cirrosis Hepática'},
     {id: 'otros', label: 'Otros'},
 ] satisfies TrastornoItem[]
 
@@ -78,7 +79,6 @@ const gastrointestinales: readonly TrastornoItem[] = [
     {id: 'reflujo_gastrico', label: 'Reflujo gástrico'},
     {id: 'gastroenteritis', label: 'Gastroenteritis'},
     {id: 'colon_irritable', label: 'Colon Irritable'},
-    {id: 'cirrosis_hepatica', label: 'Cirrosis Hepática'},
     {id: 'estrenimiento', label: 'Estreñimiento'},
     {id: 'otros', label: 'Otros'},
 ] satisfies TrastornoItem[]
@@ -145,16 +145,16 @@ const infectocontagiosa: readonly TrastornoItem[] = [
 ] satisfies TrastornoItem[]
 
 const trastornosSchema = z.object({
-    cardiovasculares: z.array(z.string()),
-    hematologicos: z.array(z.string()),
-    respiratorios: z.array(z.string()),
-    endocrinos: z.array(z.string()),
-    gastrointestinales: z.array(z.string()),
-    neurologicos: z.array(z.string()),
-    oseos: z.array(z.string()),
-    ginecologicos: z.array(z.string()),
-    urologicos: z.array(z.string()),
-    infectocontagiosa: z.array(z.string()),
+    cardiovasculares: z.array(z.string()).describe('Trastornos Cardiovasculares'),
+    hematologicos: z.array(z.string()).describe('Trastornos Hematológicos'),
+    respiratorios: z.array(z.string()).describe('Trastornos Respiratorios'),
+    endocrinos: z.array(z.string()).describe('Trastornos Endocrinos'),
+    gastrointestinales: z.array(z.string()).describe('Trastornos Gastrointestinales'),
+    neurologicos: z.array(z.string()).describe('Trastornos Neurológicos'),
+    oseos: z.array(z.string()).describe('Trastornos Óseos'),
+    ginecologicos: z.array(z.string()).describe('Trastornos Ginecológicos'),
+    urologicos: z.array(z.string()).describe('Trastornos Urológicos'),
+    infectocontagiosa: z.array(z.string()).describe('Enf. Infecto-contagiosas'),
     descripcion: z.string().max(MAX_TEXT_SIZE).nullable()
 })
 
@@ -236,7 +236,6 @@ const TGastrointestinalesSchema = z.object({
     reflujo_gastrico: TrastornoSchema,
     gastroenteritis: TrastornoSchema,
     colon_irritable: TrastornoSchema,
-    cirrosis_hepatica: TrastornoSchema,
     estrenimiento: TrastornoSchema,
     otros: OtrosTrastornosSchema,
 })

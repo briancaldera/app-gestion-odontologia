@@ -124,7 +124,7 @@ const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
 const InformationSection = ({paciente}: { paciente: Paciente }) => {
     return (
         <div className={'px-6'}>
-            <section className={'grid grid-cols-2 sm:grid-cols-3 gap-y-8 pt-6'}>
+            <section className={'grid grid-cols-2 sm:grid-cols-3 gap-y-8 gap-x-6 pt-6'}>
 
                 <div className={'col-span-full border-l-4 border-l-indigo-500 pl-4'}>
                     <Title className={'uppercase font-semibold'}>Información personal</Title>
@@ -145,35 +145,7 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
                     <Title className={'font-semibold'}>{paciente.cedula}</Title>
                 </div>
 
-                <div className={'space-y-2'}>
-                    <Title className={'font-semibold text-neutral-400'}>Fecha de nacimiento</Title>
-                    <Title className={'font-semibold'}>{paciente.fecha_nacimiento}</Title>
-                </div>
-
-                <div className={'space-y-2'}>
-                    <Title className={'font-semibold text-neutral-400'}>Dirección</Title>
-                    <Title className={'font-semibold'}>{paciente.direccion}</Title>
-                </div>
-
-                <div className={'space-y-2'}>
-                    <Title className={'font-semibold text-neutral-400'}>Teléfono</Title>
-                    <Title className={'font-semibold'}>{paciente.telefono}</Title>
-                </div>
-
-                <div className={'space-y-2'}>
-                    <Title className={'font-semibold text-neutral-400'}>Ocupación</Title>
-                    <Title className={'font-semibold'}>{paciente.ocupacion}</Title>
-                </div>
-
-            </section>
-            <Separator className={'mt-8'}/>
-            <section className={'grid grid-cols-2 sm:grid-cols-3 gap-y-8 pt-6'}>
-
-                <div className={'col-span-full border-l-4 border-l-indigo-500 pl-4'}>
-                    <Title className={'uppercase font-semibold'}>Información médica</Title>
-                </div>
-
-                <div className={'space-y-2'}>
+                <div className={'space-y-2 col-start-1'}>
                     <Title className={'font-semibold text-neutral-400'}>Edad</Title>
                     <Title className={'font-semibold'}>{paciente?.edad ?? 'No autorizado para ver'}</Title>
                 </div>
@@ -185,22 +157,60 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
 
                 <div className={'space-y-2'}>
                     <Title className={'font-semibold text-neutral-400'}>Peso</Title>
-                    <Title className={'font-semibold'}>{paciente?.peso + ' Kg' ?? 'No autorizado para ver'}</Title>
+                    <Title className={'font-semibold'}>{paciente?.peso + ' Kg'}</Title>
                 </div>
 
                 <div className={'space-y-2'}>
-                    <Title className={'font-semibold text-neutral-400'}>Motivo de consulta</Title>
+                    <Title className={'font-semibold text-neutral-400'}>Fecha de nacimiento</Title>
+                    <Title className={'font-semibold'}>{paciente.fecha_nacimiento}</Title>
+                </div>
+
+                <div className={'space-y-2'}>
+                    <Title className={'font-semibold text-neutral-400'}>Ocupación</Title>
+                    <Title className={'font-semibold'}>{paciente.ocupacion}</Title>
+                </div>
+
+                <div className={'space-y-2'}>
+                    <Title className={'font-semibold text-neutral-400'}>Teléfono</Title>
+                    <Title className={'font-semibold'}>{paciente.telefono}</Title>
+                </div>
+
+                <div className={'space-y-2 col-span-full'}>
+                    <Title className={'font-semibold text-neutral-400'}>Dirección</Title>
+                    <Title className={'font-semibold'}>{paciente.direccion}</Title>
+                </div>
+
+                <div className={'space-y-2'}>
+                    <Title className={'font-semibold text-neutral-400'}>En caso de emergencia contactar</Title>
+                    <Title className={'font-semibold'}>{paciente.direccion}</Title>
+                </div>
+
+                <div className={'space-y-2'}>
+                    <Title className={'font-semibold text-neutral-400'}>Teléfono emergencia</Title>
+                    <Title className={'font-semibold'}>{paciente.direccion}</Title>
+                </div>
+
+            </section>
+            <Separator className={'mt-8'}/>
+            <section className={'grid grid-cols-1 sm:grid-cols-3 gap-y-8 pt-6 gap-x-6'}>
+
+                <div className={'col-span-full border-l-4 border-l-indigo-500 pl-4'}>
+                    <Title className={'uppercase font-semibold'}>Información clínica</Title>
+                </div>
+
+                <div className={'space-y-2'}>
+                    <Title className={'font-semibold text-neutral-400'}>Diagnóstico</Title>
                     <Title className={'font-semibold'}>{paciente.motivo_consulta}</Title>
                 </div>
 
                 <div className={'space-y-2'}>
-                    <Title className={'font-semibold text-neutral-400'}>Enfermedad actual</Title>
+                    <Title className={'font-semibold text-neutral-400'}>Tratamiento indicado</Title>
                     <Title className={'font-semibold'}>{paciente.enfermedad_actual}</Title>
                 </div>
 
             </section>
             <Separator className={'mt-8'}/>
-            <section className={'grid grid-cols-2 sm:grid-cols-3 gap-y-8 pt-6'}>
+            <section className={'grid grid-cols-2 sm:grid-cols-3 gap-y-8 pt-6 gap-x-6'}>
 
                 <div className={'col-span-full border-l-4 border-l-indigo-500 pl-4'}>
                     <Title className={'uppercase font-semibold'}>Información de registro</Title>
@@ -212,7 +222,7 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
                         <Title
                             className={'font-semibold'}>{paciente?.created_at ? format(paciente.created_at, 'P') : 'No autorizado para ver'}</Title>
                         <Label
-                            className={'text-slate-400 font-normal'}>{paciente?.created_at && formatDistanceToNow(paciente.created_at)}</Label>
+                            className={'text-slate-400 font-normal'}>Hace {paciente?.created_at && formatDistanceToNow(paciente.created_at)}</Label>
                     </div>
                 </div>
 
@@ -222,7 +232,7 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
                         <Title
                             className={'font-semibold'}>{paciente?.updated_at ? format(paciente.updated_at, 'P') : 'No autorizado para ver'}</Title>
                         <Label
-                            className={'text-slate-400 font-normal'}>{paciente?.updated_at && formatDistanceToNow(paciente.updated_at)}</Label>
+                            className={'text-slate-400 font-normal'}>Hace {paciente?.updated_at && formatDistanceToNow(paciente.updated_at)}</Label>
                     </div>
                 </div>
 
@@ -232,7 +242,6 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
 }
 
 const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
-
     return (
         <div className={'h-[50vw] px-4 rounded-lg '}>
             <div className={'flex h-full border flex-wrap'}>

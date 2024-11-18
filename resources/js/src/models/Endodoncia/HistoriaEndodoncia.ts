@@ -3,6 +3,7 @@ import User from "@/src/models/User.ts";
 import Paciente from "@/src/models/Paciente.ts";
 import {z} from "zod";
 import {anamnesisSchema, evaluacionDolorSchema} from "@/FormSchema/Odontologia/Endodoncia/HistoriaEndodonciaSchema.ts";
+import {fichaEndodonticaSchema} from "@/FormSchema/Odontologia/Endodoncia/FichaEndodonciaSchema.ts";
 
 type HistoriaEndodoncia = {
     id: string
@@ -15,11 +16,27 @@ type HistoriaEndodoncia = {
     paciente?: Paciente,
     anamnesis?: z.infer<typeof anamnesisSchema>
     evaluacion_dolor?: z.infer<typeof evaluacionDolorSchema>
+    fichas_endodonticas: FichaEndodoncia[]
     secuencia_tratamiento?: Object
+    periodontodiagrama: string | null
+    consentimiento: string | null
 
     created_at?: string
     updated_at?: string
 }
+
+type FichaEndodoncia =
+    Omit<z.infer<typeof fichaEndodonticaSchema>, 'signos' | 'sintomas' | 'interpretacion_radiografica' | 'etiologia'>
+    &
+    {
+        id: string,
+        data: {
+            signos: Pick<z.infer<typeof fichaEndodonticaSchema>, 'signos'>
+            sintomas: Pick<z.infer<typeof fichaEndodonticaSchema>, 'sintomas'>
+            interpretacion_radiografica: Pick<z.infer<typeof fichaEndodonticaSchema>, 'interpretacion_radiografica'>
+            etiologia: Pick<z.infer<typeof fichaEndodonticaSchema>, 'etiologia'>
+        }
+    }
 
 const anamnesis = {
     "visita_medico_ultimos_6_meses": {
@@ -104,4 +121,4 @@ const anamnesis = {
     }
 }
 
-export {type HistoriaEndodoncia}
+export {type HistoriaEndodoncia, type FichaEndodoncia}

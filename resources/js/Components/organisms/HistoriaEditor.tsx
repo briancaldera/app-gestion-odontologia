@@ -128,10 +128,23 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
         disabled: isDisabled,
     })
 
+    const {paciente} = historia
+
     const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
         resolver: zodResolver(PacienteSchema),
-        defaultValues: PacienteDefaults,
-        values: historia.paciente,
+        defaultValues: {
+            apellido: paciente?.apellido ?? "",
+            cedula: paciente?.cedula ?? "",
+            direccion: paciente?.direccion ?? '',
+            edad: paciente?.edad ?? 0,
+            fecha_nacimiento: paciente?.fecha_nacimiento ?? Date().toString(),
+            foto: null,
+            nombre: paciente?.nombre ?? "",
+            ocupacion: paciente?.ocupacion ?? "",
+            peso: paciente?.peso ?? 0,
+            sexo: paciente?.sexo ?? "",
+            telefono: paciente?.telefono ?? '',
+        },
         disabled: isDisabled,
     })
 
@@ -279,7 +292,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                 <div className={'flex gap-x-2'}>
 
 
-                    <Tabs defaultValue="paciente" className={"basis-3/4 flex-auto flex h-full"}
+                    <Tabs defaultValue="historiaOdon" className={"basis-3/4 flex-auto flex h-full"}
                           orientation={'vertical'}>
                         <TabsList className={'flex-none flex flex-col items-end justify-start p-0 sticky top-0'}>
                             <TabsTrigger value="paciente" className={'p-0'}>
@@ -289,17 +302,17 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
-                            <TabsTrigger value="antPersonales" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <HeartPulse/>
-                                    </Icon>
-                                </Surface>
-                            </TabsTrigger>
                             <TabsTrigger value="antFamiliares" className={'p-0'}>
                                 <Surface className={'rounded-none'}>
                                     <Icon className={'size-8'}>
                                         <Users/>
+                                    </Icon>
+                                </Surface>
+                            </TabsTrigger>
+                            <TabsTrigger value="antPersonales" className={'p-0'}>
+                                <Surface className={'rounded-none'}>
+                                    <Icon className={'size-8'}>
+                                        <HeartPulse/>
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
@@ -317,17 +330,17 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>
-                            <TabsTrigger value="estudioModelos" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <FileBox/>
-                                    </Icon>
-                                </Surface>
-                            </TabsTrigger>
                             <TabsTrigger value="periodontodiagrama" className={'p-0'}>
                                 <Surface className={'rounded-none'}>
                                     <Icon className={'size-8'}>
                                         <TableRowsSplit/>
+                                    </Icon>
+                                </Surface>
+                            </TabsTrigger>
+                            <TabsTrigger value="estudioModelos" className={'p-0'}>
+                                <Surface className={'rounded-none'}>
+                                    <Icon className={'size-8'}>
+                                        <FileBox/>
                                     </Icon>
                                 </Surface>
                             </TabsTrigger>

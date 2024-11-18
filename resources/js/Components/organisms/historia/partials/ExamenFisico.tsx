@@ -91,19 +91,36 @@ const ExamenFisico = ({}) => {
                     <Separator className='bg-rose-500'/>
                 </div>
             }
-            <Title level={'title-md'}>Antecedentes Odontologicos Personales</Title>
-            <Text>Restauraciones, cirugías, prótesis, tratamientos periodontales, endodonticos,
-                ortodonticos que ha recibido el paciente</Text>
+            <Title level={'title-lg'}>Examen Físico</Title>
 
             <Form {...examenFisicoForm}>
                 <form id='examenFisicoForm' onSubmit={examenFisicoForm.handleSubmit(handleSubmit)}>
 
-                    <div className={'grid grid-cols-8 gap-2'}>
-                        <div className={'grid grid-cols-1'}>
+                    <div className='grid grid-cols-1 sm:grid-cols-3 gap-y-6'>
+
+                        <Title className='col-span-full'>Signos vitales</Title>
+
+                        <div className='col-span-full flex flex-wrap justify-center gap-x-10'>
+
+                            <Title>Tensión arterial:</Title>
 
                             <FormField render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Diastole</FormLabel>
+                                <FormItem className={'w-32'}>
+                                    <FormLabel className={'capitalize'}>Sistólica</FormLabel>
+                                    <div className={'flex items-baseline gap-2'}>
+                                        <FormControl>
+                                            <Input {...field} type={'number'}/>
+                                        </FormControl>
+                                        <Text level={'body-md'} className={'font-bold '}>mmHg</Text>
+                                    </div>
+                                    <FormMessage/>
+                                </FormItem>
+                            )} name={'examen_fisico.signos_vitales.tension_arterial.sistole'}
+                                       control={examenFisicoForm.control}/>
+
+                            <FormField render={({field}) => (
+                                <FormItem className={'w-32'}>
+                                    <FormLabel>Diastólica</FormLabel>
                                     <div className={'flex items-baseline gap-2'}>
                                         <FormControl>
                                             <Input {...field} type={'number'}/>
@@ -115,28 +132,15 @@ const ExamenFisico = ({}) => {
                             )} name={'examen_fisico.signos_vitales.tension_arterial.diastole'}
                                        control={examenFisicoForm.control}/>
 
-                            <FormField render={({field}) => (
-                                <FormItem>
-                                    <FormLabel htmlFor={field.name} className={'capitalize'}>Sistole</FormLabel>
-                                    <div className={'flex items-baseline gap-2'}>
-                                        <FormControl>
-                                            <Input id={field.name} {...field} type={'number'}/>
-                                        </FormControl>
-                                        <Text level={'body-md'} className={'font-bold '}>mmHg</Text>
-                                    </div>
-                                    <FormMessage/>
-                                </FormItem>
-                            )} name={'examen_fisico.signos_vitales.tension_arterial.sistole'}
-                                       control={examenFisicoForm.control}/>
                         </div>
 
-                        <div className={'col-span-7 grid grid-cols-1 sm:grid-cols-4 gap-6'}>
+                        <div className='col-span-full flex flex-wrap justify-center gap-x-10'>
                             <FormField render={({field}) => (
-                                <FormItem>
-                                    <FormLabel htmlFor={field.name} className={'capitalize'}>Pulso</FormLabel>
+                                <FormItem className={'w-32'}>
+                                    <FormLabel className={'capitalize'}>Pulso</FormLabel>
                                     <div className={'flex gap-2 items-baseline'}>
                                         <FormControl>
-                                            <Input id={field.name}  {...field} type={'number'}/>
+                                            <Input {...field} type={'number'}/>
                                         </FormControl>
                                         <Tooltip>
                                             <TooltipTrigger onClick={(e) => e.preventDefault()}>
@@ -152,12 +156,12 @@ const ExamenFisico = ({}) => {
                             )} name={'examen_fisico.signos_vitales.pulso'} control={examenFisicoForm.control}/>
 
                             <FormField render={({field}) => (
-                                <FormItem>
-                                    <FormLabel htmlFor={field.name}
-                                               className={'capitalize'}>Respiración</FormLabel>
+                                <FormItem className={'w-32'}>
+                                    <FormLabel
+                                        className={'capitalize'}>Respiración</FormLabel>
                                     <div className={'flex gap-2 items-baseline'}>
                                         <FormControl>
-                                            <Input id={field.name}  {...field} type={'number'}/>
+                                            <Input {...field} type={'number'}/>
                                         </FormControl>
                                         <Tooltip>
                                             <TooltipTrigger onClick={(e) => e.preventDefault()}>
@@ -173,12 +177,12 @@ const ExamenFisico = ({}) => {
                             )} name={'examen_fisico.signos_vitales.respiracion'} control={examenFisicoForm.control}/>
 
                             <FormField render={({field}) => (
-                                <FormItem>
-                                    <FormLabel htmlFor={field.name}
-                                               className={'capitalize'}>Temperatura</FormLabel>
+                                <FormItem className={'w-32'}>
+                                    <FormLabel
+                                        className={'capitalize'}>Temperatura</FormLabel>
                                     <div className={'flex gap-2 items-baseline'}>
                                         <FormControl>
-                                            <Input id={field.name}  {...field} type={'number'} step={0.1}/>
+                                            <Input {...field} type={'number'} step={0.1}/>
                                         </FormControl>
                                         <Tooltip>
                                             <TooltipTrigger onClick={(e) => e.preventDefault()}>
@@ -193,40 +197,49 @@ const ExamenFisico = ({}) => {
                                 </FormItem>
                             )} name={'examen_fisico.signos_vitales.temperatura'} control={examenFisicoForm.control}/>
                         </div>
+
                     </div>
 
-                    <Title level={'title-md'}>Examen Extraoral</Title>
-                    <div>
-                        {
-                            Object.keys(ExamenFisicoSchema.shape.examen_extraoral.shape).map(char => (
-                                <FormField key={char} render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>{ExamenFisicoSchema.shape.examen_extraoral.shape[char].description}</FormLabel>
-                                        <FormControl>
-                                            <Textarea {...field}/>
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )} name={`examen_fisico.examen_extraoral.${char}`} control={examenFisicoForm.control}/>
-                            ))
-                        }
+
+                    <div className='py-6'>
+                        <Title level={'title-md'}>Examen Extraoral</Title>
+                        <div>
+                            {
+                                Object.keys(ExamenFisicoSchema.shape.examen_extraoral.shape).map(char => (
+                                    <FormField key={char} render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>{ExamenFisicoSchema.shape.examen_extraoral.shape[char].description}</FormLabel>
+                                            <FormControl>
+                                                <Textarea {...field}/>
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )} name={`examen_fisico.examen_extraoral.${char}`}
+                                               control={examenFisicoForm.control}/>
+                                ))
+                            }
+                        </div>
+
                     </div>
 
-                    <Title level={'title-md'}>Examen Intraoral</Title>
-                    <div>
-                        {
-                            Object.keys(ExamenFisicoSchema.shape.examen_intraoral.shape).map(char => (
-                                <FormField key={char} render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>{ExamenFisicoSchema.shape.examen_intraoral.shape[char].description}</FormLabel>
-                                        <FormControl>
-                                            <Textarea id={field.name} {...field}/>
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )} name={`examen_fisico.examen_intraoral.${char}`} control={examenFisicoForm.control}/>
-                            ))
-                        }
+                    <div className='py-6'>
+                        <Title level={'title-md'}>Examen Intraoral</Title>
+                        <div>
+                            {
+                                Object.keys(ExamenFisicoSchema.shape.examen_intraoral.shape).map(char => (
+                                    <FormField key={char} render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>{ExamenFisicoSchema.shape.examen_intraoral.shape[char].description}</FormLabel>
+                                            <FormControl>
+                                                <Textarea {...field}/>
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )} name={`examen_fisico.examen_intraoral.${char}`}
+                                               control={examenFisicoForm.control}/>
+                                ))
+                            }
+                        </div>
                     </div>
 
                 </form>

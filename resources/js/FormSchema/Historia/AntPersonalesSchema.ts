@@ -45,12 +45,12 @@ const medicamentoItems: readonly MedicamentoItem[] = [
     {id: 'esteroides', label: 'Esteroides'},
     {id: 'antidepresivos', label: 'Antidepresivos'},
     {id: 'anticonceptivos', label: 'Anticonceptivos'},
-    {id: 'hipogicemiante', label: 'Hipogicemiante'},
+    {id: 'hipoglicemiante', label: 'Hipoglicemiante'},
     {id: 'anticonvulsivos', label: 'Anticonvulsivos'},
     {id: 'sildenafil', label: 'Sildenafil'},
-    {id: 'acidoacetilicidico', label: 'Acidoacetilicídico'},
+    {id: 'acido_acetilsalicilico', label: 'Ácido acetilsalicílico'},
     {id: 'anticoagulante', label: 'Anticoagulante'},
-    {id: 'bifosfanato', label: 'Bifosfanato'},
+    {id: 'bifosfanato_calcio', label: 'Bifosfanato de calcio'},
     {id: 'otros', label: 'Otros'},
 ] satisfies MedicamentoItem[]
 

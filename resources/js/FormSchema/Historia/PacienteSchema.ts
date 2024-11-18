@@ -6,7 +6,6 @@ const MIN_PICTURE_SIZE = 5 * 1000 // 5 KB
 const ACCEPTED_PICTURE_MIME = ['image/jpeg', 'image/jpg', 'image/png']
 
 const PacienteSchema = z.object({
-    id: z.string().optional(),
     cedula: z
         .string({
             description: 'La cédula de paciente',

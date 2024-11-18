@@ -24,6 +24,7 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {Checkbox} from "@/shadcn/ui/checkbox.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
+import ke from "../../../../../../public/build/assets/Show-DfCfFHqs";
 
 const trastornosItems: Record<string, TrastornoItem[]> = {
     cardiovasculares,
@@ -38,13 +39,13 @@ const trastornosItems: Record<string, TrastornoItem[]> = {
     infectocontagiosa,
 }
 
-const Trastornos = () => {
+const TrastornosForm = () => {
     const {historia, disabled} = React.useContext(HistoriaEditorContext)
     const {trastornos} = historia.ant_personales!
 
     const {isProcessing, router} = useInertiaSubmit()
 
-    const isDisabled: boolean = isProcessing || disabled
+    const isDisabled: boolean = disabled
 
     const trastornosForm = useForm<z.infer<typeof trastornosSchema>>({
         resolver: zodResolver(trastornosSchema),
@@ -88,9 +89,6 @@ const Trastornos = () => {
             <Form {...trastornosForm}>
                 <form onSubmit={trastornosForm.handleSubmit(handleSubmit)} className={''}>
                     <section className={'my-6'}>
-                        <header>
-                            <Title level={'title-md'}>Trastornos</Title>
-                        </header>
 
                         <div
                             className={'grid grid-cols-1 sm:grid-cols-2 gap-6 border rounded-2xl border-slate-300 p-3'}>
@@ -100,22 +98,18 @@ const Trastornos = () => {
                                     <div id={key}
                                          className={'grid grid-cols-1 sm:grid-cols-2 gap-2 border rounded-lg p-6 content-start'}
                                          key={key}>
-                                        {/*<div className={'col-span-full capitalize'}>*/}
-                                        {/*    <Label htmlFor={key}>{key}</Label>*/}
-                                        {/*</div>*/}
-
 
                                         <FormField
                                             control={trastornosForm.control}
                                             name={key} render={() => (
                                             <FormItem className={'col-span-full'}>
                                                 <div className="mb-4">
-                                                    <FormLabel className="text-base capitalize">{key}</FormLabel>
+                                                    <FormLabel className="text-base">{trastornosSchema.shape[key].description}</FormLabel>
                                                     <FormDescription>
                                                     </FormDescription>
                                                 </div>
                                                 <div
-                                                    className={'grid grid-cols-1 sm:grid-cols-2 gap-2 p-6 content-start'}>
+                                                    className={'grid grid-cols-1 xl:grid-cols-2 gap-2 xl:p-6 content-start'}>
 
                                                     {trastornosItems[key].map((item) => (
                                                         <FormField
@@ -165,7 +159,7 @@ const Trastornos = () => {
                                 <FormField render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Descripción</FormLabel>
-                                        <FormDescription>En caso de ser positivo alguna de las anteriores, especificar el tiempo, si ha sido controlado, si ha tenido complicaciones,
+                                        <FormDescription>En caso de ser positivo a alguna de las anteriores, especificar el tiempo, si ha sido controlado, si ha tenido complicaciones,
                                             si toma alguna medicación, etc.</FormDescription>
                                         <FormControl>
                                             <Textarea {...field}/>
@@ -186,4 +180,4 @@ const Trastornos = () => {
     )
 }
 
-export default Trastornos
+export default TrastornosForm

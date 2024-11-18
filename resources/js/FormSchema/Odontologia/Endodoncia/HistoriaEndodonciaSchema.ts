@@ -120,14 +120,19 @@ const MAX_PICTURE_SIZE: number = 10 * 1000 * 1000 // 10 MB
 const MIN_PICTURE_SIZE: number = 1000 // 1 KB
 const ACCEPTED_PICTURE_MIME: readonly string[] = ['image/jpeg', 'image/jpg', 'image/png']
 
-const consentimientoSchema = z.object({
-    consentimiento: z
-        .any()
-        .refine((data: any) => data instanceof File)
-        .refine((file: File) => ACCEPTED_PICTURE_MIME.includes(file?.type), {message: 'Archivo inválido. Formatos permitidos: .jpg .jpeg .png'})
-        .refine((file: File) => file.size >= MIN_PICTURE_SIZE, {message: 'Archivo muy pequeño'})
-        .refine((file: File) => file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
-})
+const consentimientoSchema = z
+    .any()
+    .refine((data: any) => data instanceof File)
+    .refine((file: File) => ACCEPTED_PICTURE_MIME.includes(file?.type), {message: 'Archivo inválido. Formatos permitidos: .jpg .jpeg .png'})
+    .refine((file: File) => file.size >= MIN_PICTURE_SIZE, {message: 'Archivo muy pequeño'})
+    .refine((file: File) => file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
+
+const periodontodiagramaSchema = z
+    .any()
+    .refine((data: any) => data instanceof File)
+    .refine((file: File) => ACCEPTED_PICTURE_MIME.includes(file?.type), {message: 'Archivo inválido. Formatos permitidos: .jpg .jpeg .png'})
+    .refine((file: File) => file.size >= MIN_PICTURE_SIZE, {message: 'Archivo muy pequeño'})
+    .refine((file: File) => file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
 
 type FrecuenciaItem = ListItem
 
@@ -192,4 +197,13 @@ const evaluacionDolorSchema = z.object({
     dolor_momento_dia: z.string().max(MAX_TEXT_SIZE).describe('En qué momento del día siente más dolor?'),
 })
 
-export {anamnesisSchema, evaluacionDolorSchema, consentimientoSchema, sensibilidadDolorItems, frecuenciaDolorItems, calidadDolorItems, enfermedadesItems}
+export {
+    anamnesisSchema,
+    evaluacionDolorSchema,
+    consentimientoSchema,
+    sensibilidadDolorItems,
+    frecuenciaDolorItems,
+    calidadDolorItems,
+    enfermedadesItems,
+    periodontodiagramaSchema,
+}

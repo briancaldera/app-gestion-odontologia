@@ -23,6 +23,13 @@ class FichaEndodoncia extends Model implements HasMedia
     protected $keyType = 'string';
     public $incrementing = false;
 
+    protected $fillable = [
+        'diente',
+        'data',
+        'pruebas_diagnosticas',
+        'radiografias_data'
+    ];
+
     protected $attributes = [
         'data' => <<<'JSON'
 {
@@ -74,6 +81,15 @@ JSON,
 }
 JSON,
         ];
+
+    protected function casts()
+    {
+        return [
+            'data' => 'collection',
+            'radiografias_data' => 'collection',
+            'pruebas_diagnosticas' => 'collection',
+        ];
+    }
 
     protected $appends = [
         'radiografias_inicial',

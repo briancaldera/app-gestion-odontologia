@@ -28,6 +28,7 @@ import {route, useRoute} from "ziggy-js";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import {Text} from "@/Components/atoms/Text";
 
 interface PlanTratamientoSectionProps {
     form: UseFormReturn<z.infer<PlanTratamientoSchema>>
@@ -79,14 +80,11 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <Surface className={'px-6'}>
             <Title level={'title-lg'}>Plan de Tratamiento</Title>
+            <Text>Fase Sistémica, Fase Preventiva y Educativa, Fase Periodontal, Fase Quirúrgica, Fase Endodóntica, Fase Operatoria, Fase Protésica, Fase de Control y Mantenimiento</Text>
 
-            <section className={'my-6 relative'}>
-                <header>
-                    <Title level={'title-md'}>Plan de Tratamiento</Title>
-                </header>
-
+            <section className={'relative'}>
                 {/*actions*/}
                 <div className={'sticky flex justify-end right-0 top-0'}>
 

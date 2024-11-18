@@ -53,7 +53,7 @@ const SidebarMenu = ({
         <SidebarContext.Provider value={{expanded: expanded}}>
 
             <aside className={
-                ' /*mobile*/ bg-indigo-600 fixed z-50 max-lg:inset-x-0 max-lg:h-16 bottom-0' +
+                ' /*mobile*/ bg-indigo-600 fixed z-50 max-lg:inset-x-0 max-lg:h-10 bottom-0' +
                 ' /*tablet*/ ' +
                 ` /*laptop*/  lg:inset-y-0 lg:inset-x-px lg:left-0 ${expanded ? 'lg:w-72' : 'lg:w-28'}`}>
                 <div className={'sm:h-20 items-center hidden lg:flex'}>
@@ -69,14 +69,12 @@ const SidebarMenu = ({
                         }
                     </Link>
                 </div>
-                <div>
-                    <SidebarMenuGroup>
-                        <Text className={'uppercase text-sm font-semibold text-indigo-400 mt-2'}>Clínica</Text>
+                <div className={'flex justify-center items-baseline lg:flex-col '}>
+                    <SidebarMenuGroup title='Clínica'>
                         {clinicaMenu.map((menuItem, _index) => (
                             <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
                     </SidebarMenuGroup>
-                    <SidebarMenuGroup>
-                        <Text className={'uppercase text-sm font-semibold text-indigo-400 mt-2'}>Escuela</Text>
+                    <SidebarMenuGroup title='Escuela'>
                         {escuelaMenu.map((menuItem, _index) => (
                             <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
                     </SidebarMenuGroup>
@@ -85,8 +83,6 @@ const SidebarMenu = ({
                         (
                             <>
                                 <SidebarMenuGroup>
-                                    <Text
-                                        className={'uppercase text-sm font-semibold text-indigo-400 mt-2'}>Sistema</Text>
                                     {
                                         sistemaMenu.map((menuItem, _index) => (
                                             <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))
@@ -96,13 +92,13 @@ const SidebarMenu = ({
                             </>
                         )
                     }
-                    <Separator className={'bg-indigo-400'}/>
+                    <Separator className={'hidden lg:block bg-indigo-400'}/>
                     <SidebarMenuGroup>
                         {footerMenu.map((menuItem, _index) => (
                             <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
                     </SidebarMenuGroup>
                 </div>
-                <div className={'absolute inset-y-0 right-0 flex items-center'}>
+                <div className={'hidden lg:block absolute inset-y-0 right-0 flex items-center'}>
                     <EllipsisVertical onClick={() => onExpandChange(!expanded)}
                                       className={"cursor-pointer text-white/20 animate-color transition hover:text-white"}/>
                 </div>
@@ -111,12 +107,13 @@ const SidebarMenu = ({
     )
 }
 
-const SidebarMenuGroup = ({children}) => {
+const SidebarMenuGroup = ({title, children}) => {
 
     const {expanded} = React.useContext(SidebarContext)
 
     return (
-        <div className={`h-full lg:p-6 flex lg:flex-col ${!expanded && 'items-center'} gap-1 justify-center lg:justify-start`}>
+        <div className={`h-full lg:p-6 flex lg:flex-col ${!expanded && 'items-center'} gap-1 justify-center max-lg:items-center lg:justify-start`}>
+            <Text className={'max-lg:hidden uppercase text-sm font-semibold text-indigo-400 mt-2'}>{title}</Text>
             {children}
         </div>
     )
@@ -131,7 +128,7 @@ const SidebarMenuItem = ({menuItem}: { menuItem: MenuItem }) => {
         <Link
             className={`flex-initial flex items-center ${!expanded && 'justify-center'} gap-2 rounded-lg p-2 cursor-pointer hover:bg-white/10 ${(url.startsWith(menuItem.link)) && 'bg-white/10'}`}
             href={menuItem.link} as={'button'}>
-            <Icon className={'size-8 text-white flex justify-center items-center'}>
+            <Icon className={'size-5 lg:size-8 text-white flex justify-center items-center'}>
                 {menuItem.icon}
             </Icon>
             {

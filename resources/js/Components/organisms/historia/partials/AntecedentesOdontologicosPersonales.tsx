@@ -64,9 +64,8 @@ const AntecedentesOdontologicosPersonales = () => {
 
     return (
         <div>
-            <Title level={'title-md'}>Antecedentes Odontologicos Personales</Title>
-            <Text>Restauraciones, cirugías, prótesis, tratamientos periodontales, endodonticos,
-                ortodonticos que ha recibido el paciente</Text>
+            <Title level={'title-md'}></Title>
+            <Text></Text>
 
             <Form {...antOdonPerForm}>
                 <form onSubmit={antOdonPerForm.handleSubmit(handleSubmit)} className={''}>
@@ -74,8 +73,11 @@ const AntecedentesOdontologicosPersonales = () => {
                     <FormField render={({field}) =>
                         (
                             <FormItem>
+                                <FormLabel>Antecedentes Odontológicos Personales</FormLabel>
+                                <FormDescription>Restauraciones, cirugías, prótesis, tratamientos periodontales, endodónticos,
+                                    ortodónticos que ha recibido el paciente</FormDescription>
                                 <FormControl>
-                                    <Textarea id={field.name} className={'min-h-48'} {...field} disabled={disabled}/>
+                                    <Textarea className={'min-h-48'} {...field}/>
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
@@ -87,9 +89,7 @@ const AntecedentesOdontologicosPersonales = () => {
                             className={'col-span-full sm:col-span-1 border rounded-lg grid grid-cols-1 sm:grid-cols-2 gap-2 p-5 content-start'}>
 
                             <div className={'col-span-full'}>
-                                <Title>Portador</Title>
-                                <Text level={'body-sm'}>Seleccione las opciones que apliquen al
-                                    paciente</Text>
+                                <Text>Actualmente el paciente es portador de:</Text>
                             </div>
 
 
@@ -125,7 +125,7 @@ const AntecedentesOdontologicosPersonales = () => {
                                 className={'col-span-full flex flex-col sm:flex-row sm:flex-wrap gap-3'}>
 
                                 {
-                                    Object.keys(antecedentesOdontologicosPersonalesSchema.shape.habitos.shape).filter(habito => habito !== 'descripcion').sort().map(habito =>
+                                    Object.keys(antecedentesOdontologicosPersonalesSchema.shape.habitos.shape).filter(habito => habito !== 'descripcion').map(habito =>
                                         (
                                             <FormField key={habito} render={({field}) => (
                                                 <FormItem>
