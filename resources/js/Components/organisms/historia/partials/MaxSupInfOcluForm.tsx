@@ -11,7 +11,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 
-const MaxSupInfOclu = () => {
+const MaxSupInfOcluForm = () => {
     const {historia, disabled} = React.useContext(HistoriaEditorContext)
     const {maxilar_sup, maxilar_inf, modelos_oclusion} = historia.historia_odontologica?.estudio_modelos!
 
@@ -81,15 +81,14 @@ const MaxSupInfOclu = () => {
 
     return (
         <div>
-            <Title level={'title-lg'}>Estudio de Modelos</Title>
 
             <Form {...maxSupInfOcluForm}>
                 <form onSubmit={maxSupInfOcluForm.handleSubmit(handleSubmit)}>
 
-                    <div className={'grid grid-flow-col grid-cols-3 grid-rows-[20pt_repeat(9,_1fr)] gap-y-.5 gap-x-4'}>
+                    <div className={'grid grid-cols-1 sm:grid-cols-3 gap-y-.5 gap-x-4'}>
 
-                        <div className={'grid row-span-full grid-rows-subgrid border rounded-lg p-2'}>
 
+                        <div className={'grid grid-cols-1 grid-cols-subgrid'}>
                             <Title>Maxilar Superior</Title>
 
                             {
@@ -109,9 +108,8 @@ const MaxSupInfOclu = () => {
                             }
                         </div>
 
-                        <div className={'grid row-span-full grid-rows-subgrid border rounded-lg p-2'}>
-
-                            <Title className={'h-20'}>Maxilar Inferior</Title>
+                        <div className={'grid grid-cols-1 grid-cols-subgrid'}>
+                            <Title>Maxilar Inferior (Mandíbula)</Title>
 
                             {
                                 Object.keys(estudioModelosSchema.shape.maxilar_inf.shape).map(item => {
@@ -130,9 +128,8 @@ const MaxSupInfOclu = () => {
                             }
                         </div>
 
-                        <div className={'grid row-span-full grid-rows-subgrid border rounded-lg p-2'}>
-
-                            <Title className={'h-20'}>Modelos de Oclusión</Title>
+                        <div className={'grid grid-cols-1 grid-cols-subgrid'}>
+                            <Title>Modelos de Oclusión</Title>
 
                             {
                                 Object.keys(estudioModelosSchema.shape.modelos_oclusion.shape).map(item => {
@@ -151,6 +148,7 @@ const MaxSupInfOclu = () => {
                             }
                         </div>
                     </div>
+
                     <div className={'flex justify-end py-3'}>
                         <Button type='submit'
                                 disabled={maxSupInfOcluForm.formState.disabled || !maxSupInfOcluForm.formState.isDirty}>Guardar</Button>
@@ -163,4 +161,4 @@ const MaxSupInfOclu = () => {
 
 const maxSupInfOcluSchema = estudioModelosSchema.pick({maxilar_sup: true, maxilar_inf: true, modelos_oclusion: true})
 
-export default MaxSupInfOclu
+export default MaxSupInfOcluForm

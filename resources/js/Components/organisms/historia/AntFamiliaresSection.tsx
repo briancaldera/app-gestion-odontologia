@@ -1,6 +1,5 @@
 import {UseFormReturn} from "react-hook-form";
 import {z} from "zod";
-import {useRoute} from "ziggy-js";
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
@@ -39,33 +38,24 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <Surface className={'w-full px-6'}>
 
             <Title level={'title-lg'}>Antecedentes Médicos Familiares</Title>
-
+            <Text level={'body-sm'}>Describa el estado actual o causa de muerte de padres, hermanos y abuelos.</Text>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className={''}>
 
                     <CorrectionsBlock model={correctionsModel} name={'ant_familiares'} canCreateCorrections={canCreateCorrections}>
-                    <section>
-                        <header className={'mb-1.5 mt-5 space-y-1.5'}>
-                            <Title level={'title-md'}>Antecedentes Médicos Familiares</Title>
-                            <Text level={'body-sm'}>Describa el estado actual o causa de muerte de padres hermanos y
-                                abuelos.</Text>
-                        </header>
-
 
                         <div
                             className={'grid grid-cols-1 sm:grid-cols-2 gap-6 border rounded-2xl border-slate-300 p-3'}>
                             {
                                 Object.keys(AntFamiliaresSchema.shape).filter(key => key !== 'historia_id').map(familiar => {
-
                                     return (
                                         <div key={familiar}>
                                             <FormField render={({field}) => (
                                                 <FormItem>
-                                                    <FormLabel className={'capitalize'}
-                                                               htmlFor={field.name}>{familiar.replace('_', ' ')}</FormLabel>
+                                                    <FormLabel>{AntFamiliaresSchema.shape[familiar].description}</FormLabel>
                                                     <FormControl>
                                                         <Textarea className={'h-36'} id={field.name} {...field}/>
                                                     </FormControl>
@@ -78,7 +68,6 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
                             }
                         </div>
 
-                    </section>
                     </CorrectionsBlock>
 
                     <div className={'flex justify-end mt-2'}>

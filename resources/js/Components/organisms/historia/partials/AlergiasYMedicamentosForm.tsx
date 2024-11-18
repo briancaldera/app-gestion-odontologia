@@ -13,11 +13,10 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
 import {Checkbox} from "@/shadcn/ui/checkbox.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
-import Title from "@/Components/atoms/Title";
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 
-const AlergiasYMedicamentos = () => {
+const AlergiasYMedicamentosForm = () => {
     const {historia, disabled} = React.useContext(HistoriaEditorContext)
     const {alergias, medicamentos} = historia.ant_personales!
 
@@ -73,8 +72,8 @@ const AlergiasYMedicamentos = () => {
 
                             <FormItem>
                                 <div className="mb-4">
-                                    <FormLabel className="text-base">Medicamentos</FormLabel>
-                                    <FormDescription></FormDescription>
+                                    <FormLabel className="text-base">Medicamentos que toma actualmente</FormLabel>
+                                    <FormDescription>(mg y dosis diaria)</FormDescription>
                                 </div>
                                 <div className='flex flex-col sm:flex-row sm:flex-wrap gap-3'>
                                     {medicamentoItems.map((item) => (
@@ -185,7 +184,7 @@ const AlergiasYMedicamentos = () => {
                         <FormField render={({field}) => (
                             <FormItem>
                                 <FormLabel>
-                                    Descripción
+                                    Especifique
                                 </FormLabel>
                                 <FormControl>
                                     <Textarea {...field}/>
@@ -210,4 +209,4 @@ const medAlerSchema = z.object({
     alergias: alergiaSchema
 })
 
-export default AlergiasYMedicamentos
+export default AlergiasYMedicamentosForm

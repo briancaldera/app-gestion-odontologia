@@ -8,10 +8,11 @@ import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import Field from "@/Components/molecules/Field";
 import DatePicker from "@/Components/molecules/DatePicker";
-import {Button} from "@/shadcn/ui/button";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/shadcn/ui/select";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
+import Input from "@/Components/atoms/Input.tsx";
+import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.tsx";
 
 type PacienteSectionProps = {
     form: UseFormReturn<z.infer<typeof PacienteSchema>>
@@ -44,51 +45,37 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
         <Surface className={'w-full p-6 h-screen'}>
             <Title level={'title-lg'}>Datos Personales</Title>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className={'grid grid-cols-1 sm:grid-cols-3 gap-4'}>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className={'flex flex-col sm:flex-row gap-6 pt-4'}>
+                    <div className='basis-1/3'>
+                        <FormField render={({field}) => (
+                            <FormItem className={'bg-slate-100 rounded-lg aspect-[3/4] p-2 flex justify-center items-center'}>
+                                <FormControl>
+                                    <ProfilePicturePicker src={field.value} onDrop={() => {}}
+                                                          className={'size-32'}/>
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )} name={'foto'} control={form.control}/>
+                    </div>
 
-                    <div className={'col-span-1'}>
+                    <div className='grid grid-cols-1 sm:grid-cols-3 gap-y-8 gap-x-6'>
+
+                        <Field control={form.control} name={'nombre'} label={'Nombre'}/>
+                        <Field control={form.control} name={'apellido'} label={'Apellido'}/>
                         <Field control={form.control} name={'cedula'} label={'Cédula'}/>
-                    </div>
 
-                    <div className={'hidden sm:block'}></div>
-                    <div className={'row-span-3'}>
 
-                        {/*<FormField render={({field}) => {*/}
-                        {/*    return (*/}
-                        {/*        <FormItem>*/}
-                        {/*            <FormLabel>Foto de paciente</FormLabel>*/}
-                        {/*            <FormControl>*/}
-                        {/*                <div className={'basis-full aspect-square'}>*/}
-                        {/*                    <ProfilePicturePicker onDrop={(files: File[]) => {*/}
-                        {/*                        if (files.length === 1) field.onChange(files[0])*/}
-                        {/*                    }} src={field.value} className={'w-auto h-full'}/>*/}
-                        {/*                </div>*/}
-                        {/*            </FormControl>*/}
-                        {/*            <FormMessage />*/}
-                        {/*        </FormItem>*/}
-                        {/*    )*/}
-                        {/*}} name={'foto'} control={form.control} />*/}
-                    </div>
-
-                    <Field control={form.control} name={'nombre'} label={'Nombre'}/>
-
-                    <Field control={form.control} name={'apellido'} label={'Apellido'}/>
-
-                    <div className={'grid grid-cols-2 gap-4'}>
-                        <Field control={form.control} name={'edad'} label={'Edad'} type={'number'}/>
-                        <Field control={form.control} name={'peso'} label={'Peso'} type={'number'}/>
-                    </div>
-
-                    <div className={'grid grid-cols-4 gap-4'}>
-                        <div className={'col-span-1'}>
+                        <div className={'flex gap-x-2'}>
+                            <Field control={form.control} name={'edad'} label={'Edad'} type={'number'}/>
 
                             <FormField render={({field}) => (
                                 <FormItem>
                                     <FormLabel>Sexo</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={field.disabled}>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}
+                                            disabled={field.disabled}>
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder={'Sexo'} />
+                                                <SelectValue placeholder={'Sexo'}/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -97,30 +84,63 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                                             <SelectItem value={'NI'}>No indicado</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             )} name={'sexo'} control={form.control}/>
+
+                            <Field control={form.control} name={'peso'} label={'Peso'} type={'number'}/>
                         </div>
-                        <div className={'col-span-3'}>
-                            <DatePicker control={form.control} label={'Fecha de nacimiento'} name={'fecha_nacimiento'}/>
-                        </div>
-                    </div>
 
-                    <div className={'col-span-2'}>
-                        <Field control={form.control} name={'direccion'} label={'Dirección'}/>
-                    </div>
-
-                    <Field control={form.control} name={'telefono'} label={'Teléfono'} type={'tel'}
-                           placeholder={'Ejemplo: 0414-1234567'}/>
+                        <DatePicker control={form.control} label={'Fecha de nacimiento'} name={'fecha_nacimiento'}/>
 
 
-                    <Field control={form.control} name={'ocupacion'} label={'Ocupación'}/>
+
+                        <FormField render={({field}) => (
+                            <FormItem className={'col-start-1'}>
+                                <FormLabel>Ocupación</FormLabel>
+                                <FormControl>
+                                    <Input {...field}/>
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )} name={'ocupacion'} control={form.control}/>
 
 
-                    <div className={'hidden sm:block'}></div>
-                    <div className={'hidden sm:block'}></div>
+                        <Field control={form.control} name={'telefono'} label={'Teléfono'} type={'tel'}
+                               placeholder={'Ejemplo: 0414-1234567'}/>
 
-                    <div className={'w-full'}>
+                        <FormField render={({field}) => (
+                            <FormItem className={'col-start-1 col-span-full'}>
+                                <FormLabel>Dirección</FormLabel>
+                                <FormControl>
+                                    <Input {...field}/>
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )} name={'direccion'} control={form.control}/>
+
+                        <FormField render={({field}) => (
+                            <FormItem className={''}>
+                                <FormLabel>En casos de emergencia contactar</FormLabel>
+                                <FormControl>
+                                    <Input {...field}/>
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )} name={'emergencia_contacto'} control={form.control}/>
+
+                        <FormField render={({field}) => (
+                            <FormItem className={''}>
+                                <FormLabel>Teléfono</FormLabel>
+                                <FormControl>
+                                    <Input {...field}/>
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )} name={'emergencia_telefono'} control={form.control}/>
+
+
+
 
                     </div>
                 </form>

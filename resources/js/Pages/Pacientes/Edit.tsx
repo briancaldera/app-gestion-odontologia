@@ -26,9 +26,6 @@ import {Separator} from "@/shadcn/ui/separator.tsx";
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
-import {pick} from 'lodash'
-import Dropzone from "react-dropzone";
-import {pictureFileFormats} from "@/Components/molecules/ProfilePicturePicker.tsx";
 import Image from "@/Components/atoms/Image.tsx";
 
 type EditProps = {
@@ -39,7 +36,6 @@ const EditPacienteSchema = PacienteSchema.omit({cedula: true})
 
 const Edit = ({paciente}: EditProps) => {
 
-    const {auth} = usePage().props
     const {router, isProcessing} = useInertiaSubmit()
 
     const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
@@ -62,10 +58,6 @@ const Edit = ({paciente}: EditProps) => {
 
     const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
 
-        const dirtyFields = Object.keys(pacienteForm.formState.dirtyFields)
-
-        // console.log(pick(values, dirtyFields))
-        // return
         const endpoint = route('pacientes.update', {paciente: paciente.id})
 
         const data = {
@@ -76,7 +68,6 @@ const Edit = ({paciente}: EditProps) => {
         router.post(endpoint, data, {
             onError: errors => {
                 mapServerErrorsToFields(pacienteForm, errors);
-                console.log(errors)
             },
             onSuccess: page => {
                 pacienteForm.reset(values)

@@ -6,7 +6,7 @@ import EstudioModelosSchema from "@/FormSchema/Historia/EstudioModelosSchema";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {useRoute} from "ziggy-js";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
-import MaxSupInfOclu from "@/Components/organisms/historia/partials/MaxSupInfOclu.tsx";
+import MaxSupInfOcluForm from "@/Components/organisms/historia/partials/MaxSupInfOcluForm.tsx";
 import EstudioModelosParte2 from "@/Components/organisms/historia/partials/EstudioModelosParte2.tsx";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import React from "react";
@@ -45,7 +45,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
 
             <CorrectionsBlock model={correctionsModel} name={'maxsupinfoclu'}
                               canCreateCorrections={canCreateCorrections}>
-                <MaxSupInfOclu/>
+                <MaxSupInfOcluForm/>
             </CorrectionsBlock>
 
             <CorrectionsBlock model={correctionsModel} name={'diagnostico'} canCreateCorrections={canCreateCorrections}>
