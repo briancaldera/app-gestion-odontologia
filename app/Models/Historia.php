@@ -138,7 +138,22 @@ class Historia extends Model implements StatusHolder
                 'name' => 'assign-id',
                 'display_name' => 'Asignar número de HRA',
                 'description' => 'Asignar número a una historia regular de adulto'
-            ]
+            ],
+            'approve-treatment' => [
+                'name' => 'approve-treatment',
+                'display_name' => 'Aprobar tratamiento',
+                'description' => 'Aprobar tratamiento en la secuencia de tratamiento y modificaciones del plan de tratamiento'
+            ],
+            'approve-plaque-control' => [
+                'name' => 'approve-plaque-control',
+                'display_name' => 'Aprobar control de placa',
+                'description' => 'Aprobar el control de placa'
+            ],
+            'approve-periodontal-discharge' => [
+                'name' => 'approve-periodontal-discharge',
+                'display_name' => 'Aprobar de alta periodontal',
+                'description' => 'Aprobar de alta periodontal de un paciente'
+            ],
         ]
     ];
 }

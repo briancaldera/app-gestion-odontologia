@@ -23,17 +23,11 @@ class UpdateModificacionesPlanTratamiento extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
-
-            'modificaciones_plan_tratamiento' => ['sometimes', 'required', 'array'],
-            'modificaciones_plan_tratamiento.*' => ['sometimes', 'required', 'array:fecha,diente,tratamiento'],
-            'modificaciones_plan_tratamiento.*.fecha' => ['sometimes', 'required', 'date'],
-            'modificaciones_plan_tratamiento.*.diente' => ['sometimes', 'required', 'string', 'max:100'],
-            'modificaciones_plan_tratamiento.*.tratamiento' => ['sometimes', 'nullable', 'string', 'max:1000'],
-//            'modificaciones_plan_tratamiento.*.nombre_docente' => ['sometimes', 'nullable', 'required', 'string'],
-//            'modificaciones_plan_tratamiento.*.aprobacion_docente' => ['sometimes', 'required', 'boolean'],
-//            'modificaciones_plan_tratamiento.paciente' => ['sometimes', 'required', 'string'],
-//            'modificaciones_plan_tratamiento.firma' => ['sometimes', 'nullable', 'string'],
+            'modificaciones_plan_tratamiento' => ['sometimes', 'required', 'list'],
+            'modificaciones_plan_tratamiento.*' => ['array:fecha,diente,tratamiento'],
+            'modificaciones_plan_tratamiento.*.fecha' => ['required', 'date'],
+            'modificaciones_plan_tratamiento.*.diente' => ['required', 'string', 'max:100'],
+            'modificaciones_plan_tratamiento.*.tratamiento' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

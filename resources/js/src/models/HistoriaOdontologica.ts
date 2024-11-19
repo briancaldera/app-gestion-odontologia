@@ -29,21 +29,28 @@ type Portador = {
 }
 
 type Tratamiento = {
+    id: string
     cavidad: string
     diente: string
     tratamiento: string
 }
 
 type ModificacionTratamiento = {
+    id: string
     diente: string
     fecha: string
     tratamiento: string
+    approver_id: string | null
+    approval: string | null
 }
 
 type TratamientoRealizado = {
+    id: string
     diente: string
     fecha: string
     tratamiento: string
+    approver_id: string | null
+    approval: string | null
 }
 
 const examen_fisico = {
@@ -121,5 +128,5 @@ type HistoriaPeriodontal = z.infer<typeof historiaPeriodontalSchema> & {
 }
 
 
-export {type HistoriaPeriodontal}
+export {type HistoriaPeriodontal, type Tratamiento, type ModificacionTratamiento, type TratamientoRealizado}
 export default HistoriaOdontologica

@@ -935,4 +935,23 @@ class HistoriaController extends Controller
 
         return response()->file($periodontodiagrama->getPath());
     }
+
+    public function approveModificacion(Request $request, Historia $historia, string $id)
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        /** @var User $user */
+        $user = $request->user();
+
+        if (!$historiaOdontologica->modificaciones_plan_tratamiento->some(fn($modificacion) => $modificacion['id'] === $id)) {
+            message('Modificación no encontrada', Type::Error);
+            return response(null, 400);
+        }
+
+        $this->historiaService->approveModificacionTratamiento($historia, $user, $id);
+
+        message('Modificacion aprobada', Type::Success);
+        return response(null, 200);
+    }
 }

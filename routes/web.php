@@ -109,6 +109,8 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show');
 
+    Route::post('/historias/{historia}/odontologica/modificaciones/{id}/aprobar', [HistoriaController::class, 'approveModificacion'])->name('historias.odontologica.modificacionestratamiento.approve');
+
     // Routes for HE
     Route::prefix('/endodoncia')->name('endodoncia.')->group(function() {
         Route::resource('historias', HistoriaEndodonciaController::class);

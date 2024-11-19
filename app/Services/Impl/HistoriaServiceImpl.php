@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\HistoriaService;
 use App\Status;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 class HistoriaServiceImpl implements HistoriaService
 {
@@ -185,10 +186,38 @@ class HistoriaServiceImpl implements HistoriaService
 
     public function updateModificacionesPlanTratamiento(Historia $historia, array $data): void
     {
-        $modificaciones = $data['modificaciones_plan_tratamiento'];
-        $historia_odon = $historia->historiaOdontologica()->updateOrCreate(['historia_id' => $historia->id], [
-            'modificaciones_plan_tratamiento' => $modificaciones
+        $modificaciones = collect($data['modificaciones_plan_tratamiento'])->map(fn ($mod) => [
+            'id' => (string) Str::ulid(),
+            'fecha' => $mod['fecha'],
+            'diente' => $mod['diente'],
+            'tratamiento' => $mod['tratamiento'],
+            'approver_id' => null,
+            'approval' => null,
         ]);
+
+        /** @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+        $historia_odon->modificaciones_plan_tratamiento = $historia_odon->modificaciones_plan_tratamiento->push(...$modificaciones);
+        $historia_odon->update();
+    }
+
+    public function approveModificacionTratamiento(Historia $historia, User $user, string $id): void
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        $historiaOdontologica->modificaciones_plan_tratamiento =
+            $historiaOdontologica->modificaciones_plan_tratamiento->map(function ($modificacion) use ($id, $user) {
+
+                if ($modificacion['id'] === $id) {
+                    $modificacion['approver_id'] = $user->id;
+                    $modificacion['approval'] = $user->id;
+                }
+
+                return $modificacion;
+            });
+
+        $historiaOdontologica->update();
     }
 
     public function updateSecuenciaTratamiento(Historia $historia, array $data): void
