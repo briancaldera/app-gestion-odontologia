@@ -954,4 +954,47 @@ class HistoriaController extends Controller
         message('Modificacion aprobada', Type::Success);
         return response(null, 200);
     }
+
+    public function updateModificacionesConsentimiento(Request $request, Historia $historia) {
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
+        /** @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+
+        $data = $request->validate([
+            'modificaciones_consentimiento' => ['required', 'image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000']
+        ]);
+        $file = $data['modificaciones_consentimiento'];
+
+        $historia_odon->addMedia($file)->toMediaCollection('modificaciones_consentimiento');
+
+        message('Archivo anexado a la historia exitosamente');
+        return response(null, '200');
+    }
+
+    public function getModificacionesConsentimiento(Historia $historia, string $id)
+    {
+        $user = request()->user();
+
+        if ($user->cannot('view', $historia)) {
+            return response(null, 404);
+        }
+
+        /* @var HistoriaOdontologica $historia_odo */
+        $historia_odo = $historia->historiaOdontologica;
+
+        $consentimiento = $historia_odo->getMedia('modificaciones_consentimiento')->first(fn(Media $media) => $media->uuid === $id);
+
+        return response()->file($consentimiento->getPath());
+    }
 }

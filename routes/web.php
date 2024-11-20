@@ -10,12 +10,7 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
-use App\Models\Group;
-use App\Models\Historia;
-use App\Models\User;
-use App\Notifications\UserAddedToGroup;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -109,8 +104,10 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show');
 
+    Route::patch('/historias/{historia}/odontologica/modificaciones/consentimiento', [HistoriaController::class, 'updateModificacionesConsentimiento'])->name('historias.odontologica.modificacionestratamiento.consentimiento.update');
     Route::post('/historias/{historia}/odontologica/modificaciones/{id}/aprobar', [HistoriaController::class, 'approveModificacion'])->name('historias.odontologica.modificacionestratamiento.approve');
 
+    Route::get('/historias/{historia}/odontologica/modificaciones/consentimientos/{id}', [HistoriaController::class, 'getModificacionesConsentimiento'])->name('historias.odontologica.modificacionestratamiento.consentimiento');
     // Routes for HE
     Route::prefix('/endodoncia')->name('endodoncia.')->group(function() {
         Route::resource('historias', HistoriaEndodonciaController::class);

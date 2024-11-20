@@ -3,7 +3,7 @@ import {estudioModelosSchema} from "@/FormSchema/Historia/EstudioModelosSchema";
 import {historiaPeriodontalSchema} from "@/FormSchema/Historia/HistoriaPeriodontalSchema.ts";
 import {DentalPlaqueChartModel} from "@/src/DentalPlaqueChartModel.ts";
 
-type HistoriaOdontologica = {
+type HistoriaOdontologica = Readonly<{
     historia_id: string
     ant_personales: string
     habitos: Habitos
@@ -11,8 +11,9 @@ type HistoriaOdontologica = {
     consentimiento: string | null
     examen_fisico: ExamenFisico
     estudio_modelos: z.infer<typeof estudioModelosSchema>
-    plan_tratamiento: Tratamiento[]
-    modificaciones_plan_tratamiento: ModificacionTratamiento[]
+    plan_tratamiento: readonly Tratamiento[]
+    modificaciones_plan_tratamiento: readonly ModificacionTratamiento[]
+    modificaciones_consentimiento: readonly string[]
     secuencia_tratamiento: TratamientoRealizado[]
     examen_radiografico: ExamenRadiografico
     periodontodiagrama: readonly string[]
@@ -21,7 +22,7 @@ type HistoriaOdontologica = {
     coronales: readonly string[]
     periapicales: readonly string[]
     anymedia: readonly string[]
-}
+}>
 
 type Portador = {
     ortodoncia: boolean
@@ -124,7 +125,7 @@ type ControlPlaca = {
 }
 
 type HistoriaPeriodontal = z.infer<typeof historiaPeriodontalSchema> & {
-    readonly control_placa: ControlPlaca[]
+    control_placa: ControlPlaca[]
 }
 
 

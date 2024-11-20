@@ -202,7 +202,8 @@ JSON,
         'coronales',
         'periapicales',
         'periodontodiagrama',
-        'anymedia'
+        'anymedia',
+        'modificaciones_consentimiento',
     ];
 
     protected function casts()
@@ -236,6 +237,7 @@ JSON,
         $this->addMediaCollection('periapicales')->useDisk('periapicales');
         $this->addMediaCollection('periodontodiagrama')->useDisk('periodontodiagramas')->singleFile();
         $this->addMediaCollection('anymedia')->useDisk('odontologica-media');
+        $this->addMediaCollection('modificaciones_consentimiento')->useDisk('historia-odontologica-modificaciones-consentimientos');
     }
 
     public function historia(): BelongsTo
@@ -282,6 +284,13 @@ JSON,
     {
         return new Attribute(
             get: fn() => $this->getMedia('anymedia')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/media/$media->uuid"))
+        );
+    }
+
+    protected function modificacionesConsentimiento(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('modificaciones_consentimiento')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/modificaciones/consentimientos/$media->uuid"))
         );
     }
 }

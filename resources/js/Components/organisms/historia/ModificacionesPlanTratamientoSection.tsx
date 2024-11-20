@@ -6,9 +6,9 @@ import Surface from "@/Components/atoms/Surface";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover";
 import {Icon} from "@/Components/atoms/Icon.tsx";
-import {Check, CircleCheckBig, MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
+import {CircleCheckBig, CircleX, MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
 import Heading from "@/Components/atoms/Heading";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import Input from "@/Components/atoms/Input";
 import Textarea from "@/Components/atoms/Textarea";
 import {OutlinedButton} from "@/Components/molecules/OutlinedButton";
@@ -24,6 +24,8 @@ import {
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
 import {
+    ACCEPTED_PICTURE_MIME,
+    modificacionesConsentimientoSchema,
     modificacionesPlanTratamientoSchema,
     modificacionPlanTratamientoSchema
 } from "@/FormSchema/Historia/ModificacionesPlanTratamientoSchema";
@@ -35,6 +37,9 @@ import {ModificacionTratamiento} from "@/src/models/HistoriaOdontologica.ts";
 import {usePermission} from "@/src/Utils/Utils.ts";
 import {Link} from "@inertiajs/react";
 import {toast} from "sonner";
+import {Text} from "@/Components/atoms/Text";
+import Dropzone from "react-dropzone";
+import {pictureFileFormats} from "@/Components/molecules/ProfilePicturePicker.tsx";
 
 interface ModificacionesPlanTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof modificacionesPlanTratamientoSchema>>
@@ -47,15 +52,42 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
     const {router} = useInertiaSubmit()
     const [openAddModificacionPopover, setOpenAddModificacionPopover] = React.useState<boolean>(false)
 
-    const {modificaciones_plan_tratamiento} = historia!.historia_odontologica!
-    console.log(modificaciones_plan_tratamiento)
+    const {modificaciones_plan_tratamiento, modificaciones_consentimiento} = historia!.historia_odontologica!
+    console.log(historia.historia_odontologica)
 
     const modificacionForm = useForm<z.infer<typeof modificacionPlanTratamientoSchema>>({
         resolver: zodResolver(modificacionPlanTratamientoSchema),
         defaultValues: {
             diente: "", fecha: '', tratamiento: ''
-        }
+        },
+        disabled: disabled
     })
+
+    const consentimientoForm = useForm<z.infer<typeof modificacionesConsentimientoSchema>>({
+        resolver: zodResolver(modificacionesConsentimientoSchema),
+        defaultValues: {
+            modificaciones_consentimiento: null
+        },
+        disabled: disabled
+    })
+
+    const onSubmitConsentimiento = (values: z.infer<typeof modificacionesConsentimientoSchema>) => {
+        const endpoint = route('historias.odontologica.modificacionestratamiento.consentimiento.update', {historia: historia.id})
+
+        const body = {
+            _method: 'patch',
+            ...values,
+        }
+
+        router.post(endpoint, body, {
+            onError: errors => {
+
+            },
+            onSuccess: page => {
+
+            }
+        })
+    }
 
     const onAddModificacion = (values: z.infer<typeof modificacionPlanTratamientoSchema>) => {
         const oldData = form.getValues().modificaciones_plan_tratamiento
@@ -90,6 +122,16 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
             }
         })
 
+    }
+
+    const onDropFile = ([file]: [File]) => {
+        file.preview = URL.createObjectURL(file)
+
+        consentimientoForm.setValue('modificaciones_consentimiento', file, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true
+        })
     }
 
     return (
@@ -177,8 +219,72 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                     </Form>
                 </ModificacionesPlanTratamientoTableContext.Provider>
 
-                <div className='border rounded-lg'>
+                <div className={'space-y-2'}>
+                    <Title className=''>Aceptación de modificación del paciente</Title>
+                    <div className={'flex justify-center'}>
 
+                        {
+                            modificaciones_consentimiento.length > 0 ? (
+                                <a href={modificaciones_consentimiento[0]} target={'_blank'}>
+
+                                <div className='border rounded-lg p-6 flex flex-col justify-center'>
+                                    <div className={'flex'}>
+
+                                    <CircleCheckBig className={'mr-2'}/><Text>Archivo subido</Text>
+                                    </div>
+                                    <Text>Haz clic para abrir</Text>
+                                </div>
+                                </a>
+                            ) : (
+                                <div className='border rounded-lg p-6 flex flex-col justify-center gap-y-2'>
+                                    <div className={'flex justify-center'}>
+                                        <CircleX className={'mr-2'}/><Text>Sin archivo</Text>
+
+                                    </div>
+                                    <Form {...consentimientoForm}>
+                                        <form onSubmit={consentimientoForm.handleSubmit(onSubmitConsentimiento)}>
+                                            <FormField render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>Archivo</FormLabel>
+                                                    <div className={'flex items-center'}>
+
+
+                                                            <Dropzone disabled={consentimientoForm.formState.disabled} maxFiles={1} accept={pictureFileFormats} onDropAccepted={onDropFile}>
+                                                                {
+                                                                    ({getRootProps, getInputProps}) => (
+                                                                        <div {...getRootProps()} className={'h-20'}>
+
+                                                                            <FormControl>
+                                                                                <Input type={'file'} {...getInputProps()}/>
+                                                                            </FormControl>
+                                                                            <FormMessage/>
+                                                                            <FormDescription>Haz clic aquí para subir un archivo</FormDescription>
+                                                                        </div>
+                                                                    )
+                                                                }
+
+                                                            </Dropzone>
+
+                                                        {
+                                                            !!field.value && <CircleCheckBig className='ml-2'/>
+                                                        }
+                                                    </div>
+
+                                                </FormItem>
+                                            )} name={'modificaciones_consentimiento'}
+                                                       control={consentimientoForm.control}/>
+                                            <div className={'flex justify-end mt-2'}>
+                                                <Button disabled={consentimientoForm.formState.disabled || !consentimientoForm.formState.isDirty}>
+                                                    Guardar
+                                                </Button>
+
+                                            </div>
+                                        </form>
+                                    </Form>
+                                </div>
+                            )
+                        }
+                    </div>
                 </div>
 
             </section>
