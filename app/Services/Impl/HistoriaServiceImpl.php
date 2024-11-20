@@ -222,12 +222,40 @@ class HistoriaServiceImpl implements HistoriaService
 
     public function updateSecuenciaTratamiento(Historia $historia, array $data): void
     {
-        $secuencia = $data['secuencia_tratamiento'];
-        $historia_odon = $historia->historiaOdontologica()->updateOrCreate(['historia_id' => $historia->id], [
-            'secuencia_tratamiento' => $secuencia
+        $secuencias = collect($data['secuencia_tratamiento'])->map(fn($sec) => [
+            'id' => (string) Str::ulid(),
+            'fecha' => $sec['fecha'],
+            'diente' => $sec['diente'],
+            'tratamiento' => $sec['tratamiento'],
+            'approver_id' => null,
+            'approval' => null,
         ]);
+
+        /** @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+
+        $historia_odon->secuencia_tratamiento = $historia_odon->secuencia_tratamiento->push(...$secuencias);
+        $historia_odon->update();
     }
 
+    public function approveSecuenciaTratamiento(Historia $historia, User $user, string $id): void
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        $historiaOdontologica->secuencia_tratamiento =
+            $historiaOdontologica->secuencia_tratamiento->map(function ($tratamiento) use ($id, $user) {
+
+                if ($tratamiento['id'] === $id) {
+                    $tratamiento['approver_id'] = $user->id;
+                    $tratamiento['approval'] = $user->id;
+                }
+
+                return $tratamiento;
+            });
+
+        $historiaOdontologica->update();
+    }
 
     public function addExamenRadiografico(HistoriaOdontologica $historiaOdon, array $data): ExamenRadiografico
     {

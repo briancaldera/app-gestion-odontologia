@@ -21,9 +21,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ArrayObject $portador
  * @property ArrayObject $examen_fisico the information about the physical examination
  * @property ArrayObject $estudio_modelos the models examination
- * @property ArrayObject $plan_tratamiento the treatment plan
+ * @property Collection $plan_tratamiento the treatment plan
  * @property Collection $modificaciones_plan_tratamiento the modifications to the treatment plan
- * @property ArrayObject $secuencia_tratamiento the sequence of treatments undergone by the patient
+ * @property Collection $secuencia_tratamiento the sequence of treatments undergone by the patient
  * @property ArrayObject $examen_radiografico
  * @property ArrayObject $historia_periodontal
  * @property Collection<string> $panoramicas
@@ -33,10 +33,10 @@ class HistoriaOdontologica extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
+    protected $table = 'historia_odontologicas';
     protected $primaryKey = 'historia_id';
     protected $keyType = 'string';
     public $incrementing = false;
-    protected $table = 'historia_odontologicas';
 
     public $timestamps = false;
 
@@ -213,9 +213,9 @@ JSON,
             'portador' => AsArrayObject::class,
             'examen_fisico' => AsArrayObject::class,
             'estudio_modelos' => AsArrayObject::class,
-            'plan_tratamiento' => AsArrayObject::class,
+            'plan_tratamiento' => 'collection',
             'modificaciones_plan_tratamiento' => 'collection',
-            'secuencia_tratamiento' => AsArrayObject::class,
+            'secuencia_tratamiento' => 'collection',
             'examen_radiografico' => AsArrayObject::class,
             'historia_periodontal' => AsArrayObject::class,
         ];

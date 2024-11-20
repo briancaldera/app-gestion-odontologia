@@ -1,4 +1,4 @@
-import {z} from 'zod'
+import {undefined, z} from 'zod'
 import {ColumnDef, createColumnHelper, Row} from "@tanstack/react-table";
 import {useForm, UseFormReturn} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
 import {Button} from "@/shadcn/ui/button";
-import {MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
+import {CircleCheckBig, MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
 import Title from "@/Components/atoms/Title";
 import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover";
 import {Icon} from "@/Components/atoms/Icon.tsx";
@@ -23,14 +23,18 @@ import Textarea from "@/Components/atoms/Textarea";
 import {OutlinedButton} from "@/Components/molecules/OutlinedButton";
 import {DataTable} from "@/Components/molecules/DataTable";
 import Surface from "@/Components/atoms/Surface";
-import SecuenciaTratamientoSchema, {TratamientoRealizadoSchema, TratamientoRealizadoDefaults} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
+import {tratamientoRealizadoSchema, secuenciaTratamientoSchema} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
 import {formatDate} from 'date-fns'
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {route} from "ziggy-js";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import {toast} from "sonner";
+import {TratamientoRealizado} from "@/src/models/HistoriaOdontologica.ts";
+import {usePermission} from "@/src/Utils/Utils.ts";
+import {Link} from "@inertiajs/react";
 
 interface SecuenciaTratamientoSectionProps {
-    form: UseFormReturn<z.infer<typeof SecuenciaTratamientoSchema>>
+    form: UseFormReturn<z.infer<typeof secuenciaTratamientoSchema>>
 }
 
 const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) => {
@@ -40,12 +44,18 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
     const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
     const {isProcessing, router} = useInertiaSubmit()
 
-    const tratamientoForm = useForm<z.infer<typeof TratamientoRealizadoSchema>>({
-        resolver: zodResolver(TratamientoRealizadoSchema),
-        defaultValues: TratamientoRealizadoDefaults
+    const {secuencia_tratamiento} = historia.historia_odontologica!
+    console.log(secuencia_tratamiento)
+
+    const tratamientoForm = useForm<z.infer<typeof tratamientoRealizadoSchema>>({
+        resolver: zodResolver(tratamientoRealizadoSchema),
+        defaultValues: {
+            diente: "", fecha: '', tratamiento: ''
+        },
+        disabled: disabled
     })
 
-    const onAddTratamiento = (values: z.infer<typeof TratamientoRealizadoDefaults>) => {
+    const onAddTratamiento = (values: z.infer<typeof tratamientoRealizadoSchema>) => {
         const oldData = form.getValues().secuencia_tratamiento
         form.setValue('secuencia_tratamiento', [...oldData, values], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true
@@ -62,21 +72,31 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
         })
     }
 
-    const onSubmitSecuencia = (values: z.infer<typeof SecuenciaTratamientoSchema>) => {
+    const onSubmitSecuencia = (values: z.infer<typeof secuenciaTratamientoSchema>) => {
 
         const endpoint: string = route('historias.odontologica.secuenciatratamiento.update', {
-            historia: values.historia_id
+            historia: historia.id
         })
 
         router.patch(endpoint, {...values}, {
             onError: errors => {
-                // TODO Show errors
-                console.log(errors)
+                toast.error('Ocurrió un error al intentar actualizar la historia. Por favor, revise la información suministrada')
             },
             onSuccess: page => {
-                form.reset(values)
+                form.reset()
+                router.reload()
             }
         })
+    }
+
+    const onDropFile = ([file]: [File]) => {
+        file.preview = URL.createObjectURL(file)
+
+        // consentimientoForm.setValue('modificaciones_consentimiento', file, {
+        //     shouldDirty: true,
+        //     shouldTouch: true,
+        //     shouldValidate: true
+        // })
     }
 
     return (
@@ -152,7 +172,7 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
                         <form onSubmit={form.handleSubmit(onSubmitSecuencia)}>
                             <FormField render={({field}) => (
                                 <FormItem>
-                                    <DataTable columns={columns} data={field.value}/>
+                                    <DataTable columns={columns} data={[...secuencia_tratamiento, ...field.value]}/>
                                 </FormItem>
                             )} name={'secuencia_tratamiento'} control={form.control}/>
 
@@ -170,20 +190,75 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
 
 const SecuenciaPlanTratamientoTableContext = React.createContext<{onDeleteModificacion: (index: number) => void}>({onDeleteModificacion: (_index: number) => {}})
 
-const columnHelper = createColumnHelper<z.infer<typeof TratamientoRealizadoSchema>>()
+const columnHelper = createColumnHelper<TratamientoRealizado>()
 
-const columns: ColumnDef<z.infer<typeof TratamientoRealizadoSchema>>[] = [
-    columnHelper.accessor(originalRow => formatDate(originalRow.fecha, 'eee, PP'), {
+const columns: ColumnDef<TratamientoRealizado>[] = [
+    columnHelper.accessor(originalRow => formatDate(originalRow.fecha, 'P'), {
         id: 'fecha',
-        header: 'Fecha'
+        header: 'Fecha',
+        cell: ({row, cell}) => {
+            return (
+                <div className={!row.original.id ? 'text-rose-600' : ''}>
+                    {formatDate(row.original.fecha, 'P')}
+                </div>
+            )
+        }
     }),
     columnHelper.accessor(originalRow => originalRow.diente, {
         id: 'diente',
-        header: 'Diente'
+        header: 'Diente',
+        cell: ({row}) => {
+            return (
+                <div className={!row.original.id ? 'text-rose-600' : ''}>
+                    {row.original.diente}
+                </div>
+            )
+        },
     }),
     columnHelper.accessor(originalRow => originalRow.tratamiento, {
         id: 'tratamiento',
-        header: 'Tratamientos Realizado'
+        header: 'Tratamientos Realizado',
+        cell: ({row}) => {
+            return (
+                <div className={!row.original.id ? 'text-rose-600' : ''}>
+                    {row.original.tratamiento}
+                </div>
+            )
+        }
+    }),
+    columnHelper.accessor(originalRow => originalRow.approver_id, {
+        enableResizing: false,
+        size: 200,
+        cell: ({cell, row}) => (<td style={{width: cell.column.getSize()}}>{row.original.approver_id ?? ''}</td>),
+        id: 'approver_id',
+        header: 'Nombre del docente'
+    }),
+    columnHelper.accessor(originalRow => originalRow.approval, {
+        cell: (props) => {
+            const can = usePermission()
+            const {historia, disabled} = React.useContext(HistoriaEditorContext)
+
+            if (props.row.original.approval) return props.row.original.approval
+
+            if (can('historias-approve-treatment') && !!props.row.original.id) {
+                return (
+                    <td className={'flex justify-center'}>
+                        <Button asChild>
+                            <Link method='post' as="button" type="button"
+                                  href={route('historias.odontologica.secuenciatratamiento.approve', {
+                                      historia: historia.id,
+                                      id: props.row.original.id
+                                  })}>
+                                <CircleCheckBig className='mr-2'/>
+                                Aprobar
+                            </Link>
+                        </Button>
+                    </td>
+                )
+            }
+        },
+        id: 'approval',
+        header: 'Firma'
     }),
     columnHelper.display({
         id: 'actions',
@@ -191,7 +266,7 @@ const columns: ColumnDef<z.infer<typeof TratamientoRealizadoSchema>>[] = [
     }),
 ]
 
-const TratamientoRealizadoMenu = ({row}: {row: Row<z.infer<typeof TratamientoRealizadoSchema>>}) => {
+const TratamientoRealizadoMenu = ({row}: {row: Row<TratamientoRealizado>}) => {
     const context = React.useContext(SecuenciaPlanTratamientoTableContext)
 
     return (
@@ -204,7 +279,13 @@ const TratamientoRealizadoMenu = ({row}: {row: Row<z.infer<typeof TratamientoRea
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-                <DropdownMenuItem className={'text-rose-600'} onClick={() => context.onDeleteModificacion(row.index)}><Trash2 className={'size-4 me-1'}/>Eliminar modificación</DropdownMenuItem>
+                {
+                    !row.original.id && (
+                        <DropdownMenuItem className={'text-rose-600'}
+                                          onClick={() => context.onDeleteModificacion(row.index)}><Trash2
+                            className={'size-4 me-1'}/>Eliminar modificación</DropdownMenuItem>
+                    )
+                }
             </DropdownMenuContent>
         </DropdownMenu>
     )

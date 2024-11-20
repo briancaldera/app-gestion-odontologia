@@ -31,6 +31,7 @@ interface HistoriaService
     public function updateModificacionesPlanTratamiento(Historia $historia, array $data): void;
     public function approveModificacionTratamiento(Historia $historia, User $user, string $id): void;
     public function updateSecuenciaTratamiento(Historia $historia, array $data): void;
+    public function approveSecuenciaTratamiento(Historia $historia, User $user, string $id): void;
     public function addExamenRadiografico(HistoriaOdontologica $historiaOdon, array $data): ExamenRadiografico;
     public function updateExamenRadiografico(ExamenRadiografico $examenRadio, array $data): ExamenRadiografico;
     public function changeStatus(Historia $historia, Status $status): Historia;

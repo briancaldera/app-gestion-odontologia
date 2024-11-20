@@ -23,15 +23,11 @@ class UpdateSecuenciaTratamiento extends FormRequest
     public function rules(): array
     {
         return [
-            'historia_id' => ['required', 'uuid', 'exists:' . Historia::class . ',id'],
-
-            'secuencia_tratamiento' => ['sometimes', 'required', 'array'],
-            'secuencia_tratamiento.*' => ['sometimes', 'array:fecha,diente,tratamiento'],
-            'secuencia_tratamiento.*.fecha' => ['sometimes', 'required', 'date'],
-            'secuencia_tratamiento.*.diente' => ['sometimes', 'required', 'string', 'max:100'],
-            'secuencia_tratamiento.*.tratamiento' => ['sometimes', 'nullable', 'string', 'max:1000'],
-//            'secuencia_tratamiento.secuencia.*.nombre_docente' => ['sometimes', 'required', 'string', 'max:255'],
-//            'secuencia_tratamiento.secuencia.*.aprobacion_docente' => ['sometimes', 'required', 'boolean'],
+            'secuencia_tratamiento' => ['sometimes', 'required', 'list'],
+            'secuencia_tratamiento.*' => ['array:fecha,diente,tratamiento'],
+            'secuencia_tratamiento.*.fecha' => ['required', 'date'],
+            'secuencia_tratamiento.*.diente' => ['required', 'string', 'max:100'],
+            'secuencia_tratamiento.*.tratamiento' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

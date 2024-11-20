@@ -24,7 +24,6 @@ import {
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
 import {
-    ACCEPTED_PICTURE_MIME,
     modificacionesConsentimientoSchema,
     modificacionesPlanTratamientoSchema,
     modificacionPlanTratamientoSchema
@@ -53,7 +52,6 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
     const [openAddModificacionPopover, setOpenAddModificacionPopover] = React.useState<boolean>(false)
 
     const {modificaciones_plan_tratamiento, modificaciones_consentimiento} = historia!.historia_odontologica!
-    console.log(historia.historia_odontologica)
 
     const modificacionForm = useForm<z.infer<typeof modificacionPlanTratamientoSchema>>({
         resolver: zodResolver(modificacionPlanTratamientoSchema),
@@ -352,7 +350,7 @@ const columns: ColumnDef<ModificacionTratamiento>[] = [
             if (can('historias-approve-treatment') && !!props.row.original.id) {
                 return (
                     <td className={'flex justify-center'}>
-                        <Button asChild variant='secondary'>
+                        <Button asChild>
                             <Link method='post' as="button" type="button"
                                   href={route('historias.odontologica.modificacionestratamiento.approve', {
                                       historia: historia.id,

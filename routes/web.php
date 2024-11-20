@@ -78,7 +78,9 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::patch('/historias/{historia}/odontologica/modelos/update', [HistoriaController::class, 'updateEstudioModelos'])->name('historias.odontologica.modelos.update');
     Route::patch('/historias/{historia}/odontologica/plan/update', [HistoriaController::class, 'updatePlanTratamiento'])->name('historias.odontologica.plantratamiento.update');
     Route::patch('/historias/{historia}/odontologica/modificaciones/update', [HistoriaController::class, 'updateModificacionesPlanTratamiento'])->name('historias.odontologica.modificacionestratamiento.update');
-    Route::patch('/historias/{historia}/odontologica/secuencia/update', [HistoriaController::class, 'updateSecuenciaTratamiento'])->name('historias.odontologica.secuenciatratamiento.update');
+    Route::patch('/historias/{historia}/odontologica/secuencia', [HistoriaController::class, 'updateSecuenciaTratamiento'])->name('historias.odontologica.secuenciatratamiento.update');
+    Route::post('/historias/{historia}/odontologica/secuencia/{id}/aprobar', [HistoriaController::class, 'approveSecuenciaTratamiento'])->name('historias.odontologica.secuenciatratamiento.approve');
+
     Route::patch('/historias/{historia}/odontologica/periodontal/update', [HistoriaController::class, 'updateHistoriaPeriodontal'])->name('historias.odontologica.periodontal.update');
     Route::post('/historias/{historia}/odontologica/periodontal/controlplaca', [HistoriaController::class, 'storeControlPlaca'])->name('historias.odontologica.periodontal.controlplaca.store');
 

@@ -559,6 +559,25 @@ class HistoriaController extends Controller
         return response(null, 200);
     }
 
+    public function approveSecuenciaTratamiento(Request $request, Historia $historia, string $id)
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        /** @var User $user */
+        $user = $request->user();
+
+        if (!$historiaOdontologica->secuencia_tratamiento->some(fn($secuencia) => $secuencia['id'] === $id)) {
+            message('Tratamiento no encontrado', Type::Error);
+            return response(null, 404);
+        }
+
+        $this->historiaService->approveSecuenciaTratamiento($historia, $user, $id);
+
+        message('Tratamiento aprobado', Type::Success);
+        return response(null, 200);
+    }
+
     public function updateExamenRadiografico(Historia $historia, UpdateExamenRadiografico $request)
     {
         /* @var User $user */
@@ -946,7 +965,7 @@ class HistoriaController extends Controller
 
         if (!$historiaOdontologica->modificaciones_plan_tratamiento->some(fn($modificacion) => $modificacion['id'] === $id)) {
             message('Modificación no encontrada', Type::Error);
-            return response(null, 400);
+            return response(null, 404);
         }
 
         $this->historiaService->approveModificacionTratamiento($historia, $user, $id);
