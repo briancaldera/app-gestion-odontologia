@@ -120,8 +120,11 @@ type ExamenRadiografico = {
 }
 
 type ControlPlaca = {
+    id: string
     fecha: string
     modelo: DentalPlaqueChartModel
+    approver_id: string | null
+    approval: string | null
 }
 
 type HistoriaPeriodontal = z.infer<typeof historiaPeriodontalSchema> & {

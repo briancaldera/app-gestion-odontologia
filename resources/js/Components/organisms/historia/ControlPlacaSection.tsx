@@ -1,4 +1,4 @@
-import {DentalPlaqueChartModel, useDentalPlaqueChart} from "@/src/DentalPlaqueChartModel.ts";
+import {calculatePlaquePercentage, DentalPlaqueChartModel, useDentalPlaqueChart} from "@/src/DentalPlaqueChartModel.ts";
 import DentalPlaqueChart from "@/Components/controlplaca/DentalPlaqueChart.tsx";
 import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
@@ -10,10 +10,20 @@ import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {formatDate} from "date-fns";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {usePermission} from "@/src/Utils/Utils.ts";
+import {Link} from "@inertiajs/react";
+import {CircleCheckBig} from "lucide-react";
 
 const ControlPlacaSection = () => {
 
-    const {historia, disabled, homework, canCreateCorrections, correctionsModel} = React.useContext(HistoriaEditorContext)
+    const can = usePermission()
+    const {
+        historia,
+        disabled,
+        homework,
+        canCreateCorrections,
+        correctionsModel
+    } = React.useContext(HistoriaEditorContext)
     const {control_placa} = historia.historia_odontologica!.historia_periodontal
 
     const {isProcessing, router} = useInertiaSubmit()
@@ -33,6 +43,7 @@ const ControlPlacaSection = () => {
 
         router.post(endpoint, body, {
             onSuccess: page => {
+                setNewControl(false)
                 router.reload()
             },
             onError: errors => {
@@ -48,33 +59,73 @@ const ControlPlacaSection = () => {
 
             <Title level={'h4'}>Control de placa de dental</Title>
 
-            <CorrectionsBlock model={correctionsModel} name={'control_placa'} canCreateCorrections={canCreateCorrections}>
-            <div className={'flex flex-col gap-y-2'}>
-                {
-                    control_placa.length > 0 ? (
-                        control_placa.map((item) =>
-                            <div className={'border p-6 rounded-lg'} key={item.fecha}>
-                                <ControlPlacaDiagrama model={item.modelo} date={item.fecha} key={item.fecha}
-                                                      onClick={() => {
-                                                      }} disabled={true}/>
+            <CorrectionsBlock model={correctionsModel} name={'control_placa'}
+                              canCreateCorrections={canCreateCorrections}>
+                <div className={'flex flex-col gap-y-2'}>
+                    {
+                        control_placa.length > 0 ? (
+                            control_placa.map((item) =>
+                                <div className={'border p-6 rounded-lg'} key={item.fecha}>
+                                    <ControlPlacaDiagrama model={item.modelo} date={item.fecha} key={item.fecha}
+                                                          onClick={() => {
+                                                          }} disabled={true}/>
 
-                                <div className={'col-start-1 col-span-1 border p-6'}>
+                                    <div className={'col-start-1 col-span-1 border grid grid-col-1 sm:grid-cols-3'}>
 
-                                    <Text className={'font-bold'}>Fecha: {formatDate(item.fecha, 'P')}</Text>
+                                        <div className='border p-6 flex items-center gap-x-4'>
+                                            <Text>Fecha: {formatDate(item.fecha, 'P')}</Text>
+
+                                        </div>
+                                        <div className='border p-6 flex items-center gap-x-4'>
+                                            <Text>Porcentaje</Text>
+                                            {
+                                                (item.approver_id) && (
+                                                    <div className={'flex-1 flex justify-center items-center'}>
+                                                        <Text level={'h1'}>
+                                                            {(!Number.isNaN(calculatePlaquePercentage(item.modelo)) ? calculatePlaquePercentage(item.modelo) : 0).toFixed(2)}
+                                                        </Text>
+                                                        <Text>%</Text>
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
+                                        <div className='border p-6 flex items-center gap-x-4'>
+                                            <Text>Firma</Text>
+                                            <div className='flex-1 flex justify-center'>
+
+
+                                                {
+                                                    (can('historias-approve-plaque-control') && !!item.id) ? (
+                                                        <Button asChild>
+                                                            <Link method='post'
+                                                                  href={route('historias.odontologica.periodontal.controlplaca.approve', {
+                                                                      historia: historia.id,
+                                                                      id: item.id
+                                                                  })} as='button' type='button'><CircleCheckBig
+                                                                className='mr-2'/>Aprobar</Link>
+                                                        </Button>
+                                                    ) : (!!item.approver_id) && (
+                                                        <div>
+                                                            {item.approver_id}
+                                                        </div>
+                                                    )
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            )
+                        ) : (
+                            !newControl && (
+                                <div className={'flex flex-col justify-center items-center p-6 gap-y-4'}>
+                                    <Text>No existe ningún control de placa</Text>
+                                    {/*<Button disabled={disabled} onClick={() => setNewControl(true)}>Crear control de placa</Button>*/}
+                                </div>
+                            )
                         )
-                    ) : (
-                        !newControl && (
-                            <div className={'flex flex-col justify-center items-center p-6 gap-y-4'}>
-                                <Text>No existe ningún control de placa</Text>
-                                {/*<Button disabled={disabled} onClick={() => setNewControl(true)}>Crear control de placa</Button>*/}
-                            </div>
-                        )
-                    )
-                }
+                    }
 
-            </div>
+                </div>
             </CorrectionsBlock>
 
             <div className={'mt-2 flex justify-end'}>
@@ -86,6 +137,23 @@ const ControlPlacaSection = () => {
                     )
                 }
             </div>
+
+            <div>
+                <Title>De alta periodontal</Title>
+                <Text>Nombre del tutor:</Text>
+                <div className={'flex'}>
+                    <Text>Firma del tutor:</Text>
+                    <Text>Nota:</Text>
+                </div>
+            </div>
+
+            {
+                can('historias-approve-periodontal-discharge') && (
+                    <div>
+
+                    </div>
+                )
+            }
 
 
         </Surface>

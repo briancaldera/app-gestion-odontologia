@@ -83,6 +83,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     Route::patch('/historias/{historia}/odontologica/periodontal/update', [HistoriaController::class, 'updateHistoriaPeriodontal'])->name('historias.odontologica.periodontal.update');
     Route::post('/historias/{historia}/odontologica/periodontal/controlplaca', [HistoriaController::class, 'storeControlPlaca'])->name('historias.odontologica.periodontal.controlplaca.store');
+    Route::post('/historias/{historia}/odontologica/periodontal/controlplaca/{id}/aprobar', [HistoriaController::class, 'approveControlPlaca'])->name('historias.odontologica.periodontal.controlplaca.approve');
 
     Route::patch('/historias/{historia}/odontologica/radiografias/update', [HistoriaController::class, 'updateExamenRadiografico'])->name('historias.odontologica.radiografias.update');
     Route::patch('/historias/{historia}/odontologica/periodontodiagrama/update', [HistoriaController::class, 'updatePeriodontodiagrama'])->name('historias.odontologica.periodontodiagramas.update');

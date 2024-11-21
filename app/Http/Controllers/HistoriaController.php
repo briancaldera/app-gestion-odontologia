@@ -38,6 +38,7 @@ use App\Status;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -800,8 +801,11 @@ class HistoriaController extends Controller
         $data = $storeControlPlaca->validated();
 
         $new_control_placa = [
+            'id' => (string) Str::ulid(),
             'fecha' => now(),
             'modelo' => $data['control_placa'],
+            'approver_id' => null,
+            'approval' => null,
         ];
 
         /** @var HistoriaOdontologica $historia_odon */
@@ -817,6 +821,37 @@ class HistoriaController extends Controller
 
         message('Control de placa agregado');
         return response(null, '200');
+    }
+
+    public function approveControlPlaca(Request $request, Historia $historia, string $id)
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        /** @var User $user */
+        $user = $request->user();
+
+        $control_placa = collect($historiaOdontologica->historia_periodontal->control_placa);
+
+        $historiaOdontologica->historia_periodontal->control_placa = $control_placa->map(function ($control) use ($id, $user) {
+
+            if ($control['id'] === $id) {
+                $control['approver_id'] = $user->id;
+                $control['approval'] = $user->id;
+            }
+
+            return $control;
+        });
+
+        $historiaOdontologica->update();
+
+        message('Modificacion aprobada', Type::Success);
+        return response(null, 200);
+    }
+
+    public function approveHistoriaPeriodontal(Request $request, Historia $historia)
+    {
+
     }
 
     public function getMedia(Historia $historia, string $id)

@@ -179,7 +179,11 @@ JSON,
       "control_halitosis": null,
       "tratamiento": null
     },
-    "control_placa": []
+    "control_placa": [],
+    "approver_id": null,
+    "approval": null,
+    "nota": null,
+    "last_percentage": null
 }
 JSON,
     ];
