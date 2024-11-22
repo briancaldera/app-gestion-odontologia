@@ -10,9 +10,24 @@ import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {formatDate} from "date-fns";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
-import {usePermission} from "@/src/Utils/Utils.ts";
-import {Link} from "@inertiajs/react";
+import {mapServerErrorsToFields, usePermission} from "@/src/Utils/Utils.ts";
+import {Link, router} from "@inertiajs/react";
 import {CircleCheckBig} from "lucide-react";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+    DialogTrigger
+} from "@/shadcn/ui/dialog.tsx";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
+import {Input} from "@/shadcn/ui/input.tsx";
+import {toast} from "sonner";
 
 const ControlPlacaSection = () => {
 
@@ -24,7 +39,8 @@ const ControlPlacaSection = () => {
         canCreateCorrections,
         correctionsModel
     } = React.useContext(HistoriaEditorContext)
-    const {control_placa} = historia.historia_odontologica!.historia_periodontal
+    const {historia_periodontal} = historia.historia_odontologica!
+    const {control_placa} = historia_periodontal
 
     const {isProcessing, router} = useInertiaSubmit()
 
@@ -138,25 +154,101 @@ const ControlPlacaSection = () => {
                 }
             </div>
 
-            <div>
+            <div className='flex flex-col items-center gap-y-2'>
                 <Title>De alta periodontal</Title>
-                <Text>Nombre del tutor:</Text>
-                <div className={'flex'}>
-                    <Text>Firma del tutor:</Text>
-                    <Text>Nota:</Text>
+                <Text>Nombre del tutor: {historia_periodontal.approver_id}</Text>
+                <div className={'flex gap-x-8'}>
+                    <Text>Firma del tutor: {historia_periodontal.approval}</Text>
+                    <Text>Nota: {historia_periodontal.nota}</Text>
                 </div>
+                {
+                    (can('historias-approve-periodontal-discharge') && !historia_periodontal.approver_id) && (
+                        <div>
+                            <ApprovePeriodontalDischargeDialog/>
+                        </div>
+                    )
+                }
             </div>
 
-            {
-                can('historias-approve-periodontal-discharge') && (
-                    <div>
 
-                    </div>
-                )
-            }
+
 
 
         </Surface>
+    )
+}
+
+const approvePeriodontalDischargeSchema = z.object({
+    nota: z.string().max(30)
+})
+
+const ApprovePeriodontalDischargeDialog = () => {
+
+    const {historia} = React.useContext(HistoriaEditorContext)
+
+    const form = useForm<z.infer<typeof approvePeriodontalDischargeSchema>>({
+        resolver: zodResolver(approvePeriodontalDischargeSchema),
+        defaultValues: {
+            nota: ''
+        }
+    })
+    const handleSubmit = (values: z.infer<typeof approvePeriodontalDischargeSchema>) => {
+        const endpoint = route('historias.odontologica.periodontal.approve', { historia: historia.id})
+
+        const body = {
+            ...values
+        }
+
+        router.post(endpoint, body, {
+            onError: errors => {
+                mapServerErrorsToFields(form, errors)
+            },
+            onSuccess: page => {}
+        })
+    }
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button>
+                    <CircleCheckBig className='mr-2'/>
+                    Aprobar
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogTitle>Aprobar de alta periodontal</DialogTitle>
+                <DialogDescription>
+                    Está a punto de aprobar el alta periodontal de esta historia.
+                </DialogDescription>
+                <div>
+                    <Form {...form}>
+                        <form id='approvePeriodontalDischargeForm' onSubmit={form.handleSubmit(handleSubmit)}>
+
+                            <FormField render={({field}) => (
+                                <FormItem className='w-20'>
+                                    <FormLabel>Nota</FormLabel>
+                                    <FormControl>
+                                        <Input {...field}/>
+                                    </FormControl>
+                                    <FormMessage/>
+                                    <FormDescription></FormDescription>
+                                </FormItem>
+                            )} name={'nota'} control={form.control}/>
+                        </form>
+                    </Form>
+                </div>
+                <DialogFooter>
+                    <DialogClose>
+                        <Button type="button" variant="secondary">
+                            Cancelar
+                        </Button>
+                        <Button type='submit' form='approvePeriodontalDischargeForm'>
+                            Aprobar
+                        </Button>
+                    </DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }
 

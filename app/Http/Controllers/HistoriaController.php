@@ -678,6 +678,27 @@ class HistoriaController extends Controller
         return response(null, 200);
     }
 
+    public function approvePeriodontalDischarge(Request $request, Historia $historia)
+    {
+        // todo: use gate
+
+        $data = $request->validate([
+            'nota' => ['required', 'string', 'max:30'],
+        ]);
+
+        $user = $request->user();
+        $historia_odon = $historia->historiaOdontologica;
+
+        $historia_odon->historia_periodontal->approver_id = $user->id;
+        $historia_odon->historia_periodontal->approval = $user->id;
+        $historia_odon->historia_periodontal->nota = $data['nota'];
+
+        $historia_odon->update();
+
+        message('Historia periodontal actualizada exitosamente', Type::Success);
+        return response(null, 200);
+    }
+
     public function updatePeriodontodiagrama(Historia $historia, UpdatePeriodontodiagramaRequest $request)
     {
         /* @var User $user */
@@ -847,11 +868,6 @@ class HistoriaController extends Controller
 
         message('Modificacion aprobada', Type::Success);
         return response(null, 200);
-    }
-
-    public function approveHistoriaPeriodontal(Request $request, Historia $historia)
-    {
-
     }
 
     public function getMedia(Historia $historia, string $id)

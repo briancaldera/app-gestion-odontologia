@@ -182,8 +182,7 @@ JSON,
     "control_placa": [],
     "approver_id": null,
     "approval": null,
-    "nota": null,
-    "last_percentage": null
+    "nota": null
 }
 JSON,
     ];

@@ -129,8 +129,10 @@ type ControlPlaca = {
 
 type HistoriaPeriodontal = z.infer<typeof historiaPeriodontalSchema> & {
     control_placa: ControlPlaca[]
+    approver_id: string | null,
+    approval: string | null,
+    nota: string | null
 }
-
 
 export {type HistoriaPeriodontal, type Tratamiento, type ModificacionTratamiento, type TratamientoRealizado}
 export default HistoriaOdontologica
