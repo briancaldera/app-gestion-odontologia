@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('telefono')->nullable();
             $table->text('motivo_consulta');
             $table->text('enfermedad_actual')->nullable();
+            $table->jsonb('informacion_emergencia');
             $table->foreignUuid('registered_by')->references('id')->on('users')->restrictOnUpdate()->restrictOnDelete();
             $table->foreignUuid('assigned_to')->references('id')->on('users')->restrictOnUpdate()->restrictOnDelete();
             $table->timestamps();

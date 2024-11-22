@@ -1,8 +1,8 @@
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import {useForm} from "react-hook-form";
-import {z} from 'zod'
+import {undefined, z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
-import {PacienteDefaults, PacienteSchema} from '@/FormSchema/Pacientes/CreateSchema.ts'
+import {PacienteSchema} from '@/FormSchema/Pacientes/CreateSchema.ts'
 import {Button} from "@/shadcn/ui/button.tsx";
 import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
@@ -31,10 +31,26 @@ const Create = () => {
     const {auth} = usePage().props
     const {router, isProcessing} = useInertiaSubmit()
 
-
     const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
         resolver: zodResolver(PacienteSchema),
-        defaultValues: PacienteDefaults,
+        defaultValues: {
+            apellido: "",
+            cedula: "",
+            direccion: "",
+            edad: 0,
+            enfermedad_actual: '',
+            foto: null,
+            informacion_emergencia: {
+                contacto: "",
+                telefono: ""
+            },
+            motivo_consulta: "",
+            nombre: "",
+            ocupacion: "",
+            peso: 0,
+            sexo: "",
+            telefono: ''
+        },
     })
 
     const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
@@ -153,36 +169,52 @@ const Create = () => {
                                         </FormItem>
                                     )} name={"apellido"} control={pacienteForm.control}/>
 
-                                    <FormField render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel>Ocupación</FormLabel>
-                                            <FormControl>
-                                                <Input {...field}/>
-                                            </FormControl>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={"ocupacion"} control={pacienteForm.control}/>
+                                    <div className={'grid grid-cols-2 gap-3'}>
 
-                                    <FormField render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel>Teléfono <span
-                                                className={'text-slate-400'}>(Opcional)</span></FormLabel>
-                                            <FormControl>
-                                                <Input {...field}/>
-                                            </FormControl>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={"telefono"} control={pacienteForm.control}/>
+                                        <FormField render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>Edad</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field}/>
+                                                </FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )} name={"edad"} control={pacienteForm.control}/>
 
-                                    <FormField render={({field}) => (
-                                        <FormItem className={'col-span-full'}>
-                                            <FormLabel>Dirección</FormLabel>
-                                            <FormControl>
-                                                <Input {...field}/>
-                                            </FormControl>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )} name={"direccion"} control={pacienteForm.control}/>
+                                        <FormField render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>Sexo</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Seleccione..."/>
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="F">Femenino</SelectItem>
+                                                        <SelectItem value="M">Masculino</SelectItem>
+                                                        <SelectItem value="NI">No indicado</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )} name={"sexo"} control={pacienteForm.control}/>
+                                    </div>
+
+                                    <div className={'grid grid-cols-2 gap-3'}>
+                                        <FormField render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>Peso</FormLabel>
+                                                <div className={'flex items-baseline gap-2'}>
+                                                    <FormControl>
+                                                        <Input {...field}/>
+                                                    </FormControl>
+                                                    <Text>Kg</Text>
+                                                </div>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )} name={"peso"} control={pacienteForm.control}/>
+                                    </div>
 
                                     <FormField render={({field}) => (
                                         <FormItem>
@@ -234,56 +266,65 @@ const Create = () => {
                                         </FormItem>
                                     )} name={"fecha_nacimiento"} control={pacienteForm.control}/>
 
-                                    <div className={'grid grid-cols-2 gap-3'}>
+                                    <FormField render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Ocupación</FormLabel>
+                                            <FormControl>
+                                                <Input {...field}/>
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )} name={"ocupacion"} control={pacienteForm.control}/>
+
+                                    <FormField render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Teléfono <span
+                                                className={'text-slate-400'}>(Opcional)</span></FormLabel>
+                                            <FormControl>
+                                                <Input {...field} placeholder='Formato: 0414-1234567'/>
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )} name={"telefono"} control={pacienteForm.control}/>
+
+                                    <FormField render={({field}) => (
+                                        <FormItem className={'col-span-full'}>
+                                            <FormLabel>Dirección</FormLabel>
+                                            <FormControl>
+                                                <Input {...field}/>
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )} name={"direccion"} control={pacienteForm.control}/>
+
+                                    <div className={'col-span-full grid grid-cols-subgrid'}>
+                                        <Title className={'col-span-full'}>En casos de emergencia contactar a</Title>
+
 
                                         <FormField render={({field}) => (
                                             <FormItem>
-                                                <FormLabel>Edad</FormLabel>
+                                                <FormLabel>Nombre</FormLabel>
                                                 <FormControl>
                                                     <Input {...field}/>
                                                 </FormControl>
                                                 <FormMessage/>
                                             </FormItem>
-                                        )} name={"edad"} control={pacienteForm.control}/>
+                                        )} name={"informacion_emergencia.contacto"} control={pacienteForm.control}/>
 
                                         <FormField render={({field}) => (
                                             <FormItem>
-                                                <FormLabel>Sexo</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Seleccione..."/>
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="F">Femenino</SelectItem>
-                                                        <SelectItem value="M">Masculino</SelectItem>
-                                                        <SelectItem value="NI">No indicado</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
+                                                <FormLabel>Teléfono</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field}/>
+                                                </FormControl>
                                                 <FormMessage/>
                                             </FormItem>
-                                        )} name={"sexo"} control={pacienteForm.control}/>
-                                    </div>
-
-                                    <div className={'grid grid-cols-2 gap-3'}>
-                                        <FormField render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Peso</FormLabel>
-                                                <div className={'flex items-baseline gap-2'}>
-                                                    <FormControl>
-                                                        <Input {...field}/>
-                                                    </FormControl>
-                                                    <Text>Kg</Text>
-                                                </div>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )} name={"peso"} control={pacienteForm.control}/>
+                                        )} name={"informacion_emergencia.telefono"} control={pacienteForm.control}/>
                                     </div>
 
                                     <Separator className={'col-span-full my-6'}/>
 
-                                    <Title className={'col-span-full'} level={'h5'}>Información médica</Title>
+                                    <Title className={'col-span-full'} level={'h5'}>Información clínica</Title>
 
                                     <FormField render={({field}) => (
                                         <FormItem className={'col-span-full'}>
@@ -301,7 +342,7 @@ const Create = () => {
                                             <FormLabel>Enfermedad actual <span
                                                 className={'text-slate-400'}>(Opcional)</span></FormLabel>
                                             <FormControl>
-                                            <Textarea
+                                                <Textarea
                                                     placeholder={'Indica cualquier enfermedad que padezca el paciente al momento de la consulta'} {...field}/>
                                             </FormControl>
                                             <FormMessage/>

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Cirugia\HistoriaCirugia;
 use App\Models\Endodoncia\HistoriaEndodoncia;
+use Illuminate\Database\Eloquent\Casts\ArrayObject;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,6 +35,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $motivo_consulta
  * @property string $enfermedad_actual
  * @property array $foto the url that points to the picture file.
+ * @property ArrayObject $informacion_emergencia emergency information
  * @property string $registered_by the user who registered the patient.
  * @property string $assigned_to the user assigned to treat this patient.
  * @property Date $created_at the datetime when this model was created.
@@ -60,7 +63,24 @@ class Paciente extends Model implements HasMedia
         'ocupacion',
         'direccion',
         'telefono',
+        'informacion_emergencia',
     ];
+
+    protected $attributes = [
+        'informacion_emergencia' => <<<'JSON'
+{
+  "contacto": null,
+  "telefono": null
+}
+JSON,
+    ];
+
+    protected function casts()
+    {
+        return [
+            'informacion_emergencia' => AsArrayObject::class,
+        ];
+    }
 
     protected $appends = [
         'foto'

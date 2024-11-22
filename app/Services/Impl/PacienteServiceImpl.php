@@ -30,6 +30,7 @@ class PacienteServiceImpl implements PacienteService
         $newPaciente->telefono = $data->telefono;
         $newPaciente->motivo_consulta = $data->motivo_consulta;
         $newPaciente->enfermedad_actual = $data->enfermedad_actual;
+        $newPaciente->informacion_emergencia = $data->informacion_emergencia;
         $newPaciente->registered_by = $user->id;
         $newPaciente->assigned_to = $user->id;
 

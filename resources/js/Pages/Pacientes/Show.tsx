@@ -182,12 +182,12 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
 
                 <div className={'space-y-2'}>
                     <Title className={'font-semibold text-neutral-400'}>En caso de emergencia contactar</Title>
-                    <Title className={'font-semibold'}>{paciente.direccion}</Title>
+                    <Title className={'font-semibold'}>{paciente.informacion_emergencia?.contacto}</Title>
                 </div>
 
                 <div className={'space-y-2'}>
                     <Title className={'font-semibold text-neutral-400'}>Teléfono emergencia</Title>
-                    <Title className={'font-semibold'}>{paciente.direccion}</Title>
+                    <Title className={'font-semibold'}>{paciente.informacion_emergencia?.telefono}</Title>
                 </div>
 
             </section>

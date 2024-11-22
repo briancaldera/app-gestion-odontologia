@@ -35,6 +35,7 @@ class PacienteResource extends JsonResource
                 'telefono' => $this->telefono,
                 'motivo_consulta' => $this->motivo_consulta,
                 'enfermedad_actual' => $this->enfermedad_actual,
+                'informacion_emergencia' => $this->informacion_emergencia,
                 'foto' => $this->foto,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
