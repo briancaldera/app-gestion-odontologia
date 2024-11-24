@@ -37,6 +37,7 @@ class HistoriaResource extends JsonResource
                 'status' => $this->status,
                 'autor_id' => $this->autor_id,
                 'numero' => $this->numero,
+                'semestre' => $this->semestre,
                 'motivo_consulta' => $this->motivo_consulta,
                 'enfermedad_actual' => $this->enfermedad_actual,
                 'autor' => new UserResource($this->whenLoaded('autor')),

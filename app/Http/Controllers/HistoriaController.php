@@ -352,7 +352,9 @@ class HistoriaController extends Controller
 
         $data = $request->validated();
         $this->historiaService->updateHistoria($historia, $data);
-        return response()->noContent();
+
+        message('Historia actualizada', Type::Success);
+        return response(null, 200);
     }
 
     public function updatePaciente(Paciente $paciente, UpdatePacienteRequest $request)

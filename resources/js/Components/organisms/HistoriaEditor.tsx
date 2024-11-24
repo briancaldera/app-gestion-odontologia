@@ -5,7 +5,7 @@ import {useForm} from "react-hook-form"
 import {undefined, z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
 import React from "react";
-import PacienteSchema, {PacienteDefaults} from "@/FormSchema/Historia/PacienteSchema";
+import PacienteSchema from "@/FormSchema/Historia/PacienteSchema";
 import AntPersonalesSchema, {AntPersonalesDefaults} from "@/FormSchema/Historia/AntPersonalesSchema";
 import AntFamiliaresSchema, {AntFamiliaresDefaults} from "@/FormSchema/Historia/AntFamiliaresSchema";
 import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema";
@@ -16,7 +16,6 @@ import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema
 import {
     Bone,
     BriefcaseMedical,
-    Clipboard,
     FileBox,
     HeartPulse,
     Hospital,
@@ -33,17 +32,16 @@ import ModificacionesPlanTratamientoSection from '@/Components/organisms/histori
 import SecuenciaPlanTratamientoSection from '@/Components/organisms/historia/SecuenciaTratamientoSection'
 import Historia from '@/src/models/Historia'
 import PacienteSection from "@/Components/organisms/historia/PacienteSection";
-import HistoriaSection from "@/Components/organisms/historia/HistoriaSection";
 import AntFamiliaresSection from "@/Components/organisms/historia/AntFamiliaresSection";
 import AntPersonalesSection from "@/Components/organisms/historia/AntPersonalesSection";
 import HistoriaOdontologicaSection from "@/Components/organisms/historia/HistoriaOdontologicaSection";
 import PlanTratamientoSection from "@/Components/organisms/historia/PlanTratamientoSection";
 import PlanTratamientoSchema, {PlanTratamientoDefaults} from "@/FormSchema/Historia/PlanTratamientoSchema";
-import ModificacionesPlanTratamientoSchema, {
-    ModificacionesPlanTratamientoDefaults
+import {
+    modificacionesPlanTratamientoSchema
 } from "@/FormSchema/Historia/ModificacionesPlanTratamientoSchema";
-import SecuenciaTratamientoSchema, {
-    SecuenciaTratamientoDefaults
+import {
+    secuenciaTratamientoSchema
 } from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
 import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Historia/EstudioModelosSchema";
 import {mergeDeep} from "@/src/Utils/Utils";
@@ -196,32 +194,18 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
         disabled: isDisabled,
     })
 
-    const modificacionesDefaults = (historia.historia_odontologica?.modificaciones_plan_tratamiento) ? {
-        modificaciones_plan_tratamiento: historia.historia_odontologica?.modificaciones_plan_tratamiento ?? [],
-        historia_id: historia.id
-    } satisfies z.infer<typeof ModificacionesPlanTratamientoSchema> : Object.assign(ModificacionesPlanTratamientoDefaults, {historia_id: historia?.id}) satisfies z.infer<typeof ModificacionesPlanTratamientoSchema>
-
-    const modificacionesTratamientoForm = useForm<z.infer<typeof ModificacionesPlanTratamientoSchema>>({
-        resolver: zodResolver(ModificacionesPlanTratamientoSchema),
-        defaultValues: ModificacionesPlanTratamientoDefaults,
-        values: {
-            historia_id: historia.historia_odontologica!.historia_id,
-            modificaciones_plan_tratamiento: historia.historia_odontologica!.modificaciones_plan_tratamiento,
+    const modificacionesTratamientoForm = useForm<z.infer<typeof modificacionesPlanTratamientoSchema>>({
+        resolver: zodResolver(modificacionesPlanTratamientoSchema),
+        defaultValues: {
+            modificaciones_plan_tratamiento: []
         },
         disabled: isDisabled,
     })
 
-    const secuenciaDefaults = (historia.historia_odontologica?.secuencia_tratamiento) ? {
-        secuencia_tratamiento: historia.historia_odontologica?.secuencia_tratamiento ?? [],
-        historia_id: historia.id
-    } satisfies z.infer<typeof SecuenciaTratamientoSchema> : Object.assign(SecuenciaTratamientoDefaults, {historia_id: historia.id}) satisfies z.infer<typeof SecuenciaTratamientoSchema>
-
-    const secuenciaTratamientoForm = useForm<z.infer<typeof SecuenciaTratamientoSchema>>({
-        resolver: zodResolver(SecuenciaTratamientoSchema),
-        defaultValues: SecuenciaTratamientoDefaults,
-        values: {
-            historia_id: historia.historia_odontologica!.historia_id,
-            secuencia_tratamiento: historia.historia_odontologica!.secuencia_tratamiento,
+    const secuenciaTratamientoForm = useForm<z.infer<typeof secuenciaTratamientoSchema>>({
+        resolver: zodResolver(secuenciaTratamientoSchema),
+        defaultValues: {
+            secuencia_tratamiento: []
         },
         disabled: isDisabled,
     })
@@ -292,7 +276,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                 <div className={'flex gap-x-2'}>
 
 
-                    <Tabs defaultValue="historiaOdon" className={"basis-3/4 flex-auto flex h-full"}
+                    <Tabs defaultValue="paciente" className={"basis-3/4 flex-auto flex h-full"}
                           orientation={'vertical'}>
                         <TabsList className={'flex-none flex flex-col items-end justify-start p-0 sticky top-0'}>
                             <TabsTrigger value="paciente" className={'p-0'}>

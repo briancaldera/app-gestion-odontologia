@@ -121,13 +121,13 @@ class PermissionsSeeder extends Seeder
             'admision' => [
                 'users' => ['index-all', 'read', 'read-private'],
                 'pacientes' => ['index-all', 'read',],
-                'historias' => ['index-all', 'read', 'read-private', 'assign-id'],
+                'historias' => ['index-all', 'read', 'read-private', 'assign-id', 'assign-semester'],
                 'historias-endodoncia' => ['index-all', 'read', 'read-private', 'assign-id'],
             ],
             'profesor' => [
                 'users' => ['read', 'read-private'],
                 'pacientes' => ['index-all', 'read',],
-                'historias' => ['read', 'update-status'],
+                'historias' => ['read', 'update-status', 'approve-treatment', 'approve-plaque-control', 'approve-periodontal-discharge'],
                 'historias-endodoncia' => ['read', 'update-status'],
                 'groups' => ['read', 'update', 'index-users'],
                 'assignments' => ['create', 'read', 'update', 'delete'],
@@ -136,7 +136,7 @@ class PermissionsSeeder extends Seeder
             'estudiante' => [
                 'users' => ['read'],
                 'pacientes' => ['read', 'create', 'update'],
-                'historias' => ['read', 'create', 'update'],
+                'historias' => ['read', 'create', 'update', 'assign-semester'],
                 'historias-endodoncia' => ['read', 'create', 'update'],
                 'groups' => ['read'],
                 'assignments' => ['read'],

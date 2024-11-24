@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('historias', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('paciente_id')->references('id')->on('pacientes')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('numero')->nullable();
+            $table->string('numero')->nullable()->unique();
+            $table->string('semestre')->nullable();
             $table->enum('status', ['abierta', 'entregada', 'correccion', 'cerrada']);
             $table->foreignUuid('autor_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();

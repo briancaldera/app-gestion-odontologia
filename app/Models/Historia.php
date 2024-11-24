@@ -39,9 +39,12 @@ class Historia extends Model implements StatusHolder
 
     protected $attributes = [
         'numero' => null,
+        'semestre' => null,
     ];
 
     protected $fillable = [
+        'numero',
+        'semestre',
         'status',
         'autor_id',
     ];
@@ -138,6 +141,11 @@ class Historia extends Model implements StatusHolder
                 'name' => 'assign-id',
                 'display_name' => 'Asignar número de HRA',
                 'description' => 'Asignar número a una historia regular de adulto'
+            ],
+            'assign-semester' => [
+                'name' => 'assign-semester',
+                'display_name' => 'Asignar semestre',
+                'description' => 'Asignar semestre a la HRA'
             ],
             'approve-treatment' => [
                 'name' => 'approve-treatment',
