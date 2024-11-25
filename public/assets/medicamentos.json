@@ -1,0 +1,16 @@
+{
+    "medicamentos": [
+        {"id": "antihipertensivos", "label": "Antihipertensivos"},
+        {"id": "analgesicos", "label": "Analgésicos"},
+        {"id": "esteroides", "label": "Esteroides"},
+        {"id": "antidepresivos", "label": "Antidepresivos"},
+        {"id": "anticonceptivos", "label": "Anticonceptivos"},
+        {"id": "hipoglicemiante", "label": "Hipoglicemiante"},
+        {"id": "anticonvulsivos", "label": "Anticonvulsivos"},
+        {"id": "sildenafil", "label": "Sildenafil"},
+        {"id": "acido_acetilsalicilico", "label": "Ácido acetilsalicílico"},
+        {"id": "anticoagulante", "label": "Anticoagulante"},
+        {"id": "bifosfanato_calcio", "label": "Bifosfanato de calcio"},
+        {"id": "otros", "label": "Otros"}
+    ]
+}

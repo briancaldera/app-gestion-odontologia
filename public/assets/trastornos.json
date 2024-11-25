@@ -1,0 +1,496 @@
+{
+    "trastornos": [
+        {
+            "id": "cardiovasculares",
+            "label": "Trastornos Cardiovasculares",
+            "list": [
+                {
+                    "id": "disnea",
+                    "label": "Disnea"
+                },
+                {
+                    "id": "cansancio",
+                    "label": "Cansancio"
+                },
+                {
+                    "id": "vertigo",
+                    "label": "Vertigo"
+                },
+                {
+                    "id": "palpitaciones",
+                    "label": "Palpitaciones"
+                },
+                {
+                    "id": "taquicardia",
+                    "label": "Taquicardia"
+                },
+                {
+                    "id": "bradicardia",
+                    "label": "Bradicardia"
+                },
+                {
+                    "id": "varices",
+                    "label": "Várices"
+                },
+                {
+                    "id": "infarto_miocardio",
+                    "label": "Infarto al miocardio"
+                },
+                {
+                    "id": "angina_pecho",
+                    "label": "Angina de pecho"
+                },
+                {
+                    "id": "hipertension",
+                    "label": "Hipertensión"
+                },
+                {
+                    "id": "endocarditis",
+                    "label": "Endocarditis"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        },
+        {
+            "id": "hematologicos",
+            "label": "Trastornos Hematológicos",
+            "list": [
+                {
+                    "id": "palidez",
+                    "label": "Palidez"
+                },
+                {
+                    "id": "ictericia",
+                    "label": "Ictericia"
+                },
+                {
+                    "id": "anemia",
+                    "label": "Anemia"
+                },
+                {
+                    "id": "hemorragias",
+                    "label": "Hemorragias"
+                },
+                {
+                    "id": "hematoma",
+                    "label": "Hematoma"
+                },
+                {
+                    "id": "equimosis",
+                    "label": "Equimosis"
+                },
+                {
+                    "id": "petequias",
+                    "label": "Petequias"
+                },
+                {
+                    "id": "dengue",
+                    "label": "Dengue"
+                },
+                {
+                    "id": "hemofilia",
+                    "label": "Hemofilia"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        },
+        {
+            "id": "respiratorios",
+            "label": "Trastornos Respiratorios",
+            "list": [
+                {
+                    "id": "ciaonosis",
+                    "label": "Ciaonosis"
+                },
+                {
+                    "id": "hemoptisis",
+                    "label": "Hemoptisis"
+                },
+                {
+                    "id": "esputos",
+                    "label": "Esputos"
+                },
+                {
+                    "id": "enfisema_pulmonar",
+                    "label": "Enfisema pulmonar"
+                },
+                {
+                    "id": "asma",
+                    "label": "Asma"
+                },
+                {
+                    "id": "asfixia",
+                    "label": "Asfixia"
+                },
+                {
+                    "id": "tos_frecuente",
+                    "label": "Tos frecuente"
+                },
+                {
+                    "id": "rinitis",
+                    "label": "Rinitis"
+                },
+                {
+                    "id": "sonido_anormal",
+                    "label": "Sonido anormal"
+                },
+                {
+                    "id": "inf_respiratorias",
+                    "label": "Infecciones respiratorias"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        },
+        {
+            "id": "endocrinos",
+            "label": "Trastornos Endocrinos",
+            "list": [
+                {
+                    "id": "poliuria",
+                    "label": "Poliuria"
+                },
+                {
+                    "id": "polidipsia",
+                    "label": "Polidipsia"
+                },
+                {
+                    "id": "polifagia",
+                    "label": "Polifagia"
+                },
+                {
+                    "id": "variacion_peso",
+                    "label": "Variación de peso"
+                },
+                {
+                    "id": "irritabilidad",
+                    "label": "Irritabilidad"
+                },
+                {
+                    "id": "sudoracion_excesiva",
+                    "label": "Sudoración excesiva"
+                },
+                {
+                    "id": "diabetes",
+                    "label": "Diabetes"
+                },
+                {
+                    "id": "intolerancia_frio",
+                    "label": "Intolerancia al frío"
+                },
+                {
+                    "id": "hipoglicemia",
+                    "label": "Hipoglicemia"
+                },
+                {
+                    "id": "hipertiroidismo",
+                    "label": "Hipertiroidismo"
+                },
+                {
+                    "id": "adenopatia",
+                    "label": "Adenopatía"
+                },
+                {
+                    "id": "hipotiroidismo",
+                    "label": "Hipotiroidismo"
+                },
+                {
+                    "id": "cirrosis_hepatica",
+                    "label": "Cirrosis Hepática"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        },
+        {
+            "id": "gastrointestinales",
+            "label": "Trastornos Gastrointestinales",
+            "list": [
+                {
+                    "id": "diarrea",
+                    "label": "Diarrea"
+                },
+                {
+                    "id": "flatulencia",
+                    "label": "Flatulencia"
+                },
+                {
+                    "id": "acidez",
+                    "label": "Acidez"
+                },
+                {
+                    "id": "nauseas",
+                    "label": "Nauseas"
+                },
+                {
+                    "id": "vomitos",
+                    "label": "Vómitos"
+                },
+                {
+                    "id": "ulceras",
+                    "label": "Úlceras"
+                },
+                {
+                    "id": "dolor_estomacal",
+                    "label": "Dolor estomacal"
+                },
+                {
+                    "id": "gastritis",
+                    "label": "Gastritis"
+                },
+                {
+                    "id": "parasitos",
+                    "label": "Parásitos"
+                },
+                {
+                    "id": "reflujo_gastrico",
+                    "label": "Reflujo gástrico"
+                },
+                {
+                    "id": "gastroenteritis",
+                    "label": "Gastroenteritis"
+                },
+                {
+                    "id": "colon_irritable",
+                    "label": "Colon Irritable"
+                },
+                {
+                    "id": "estrenimiento",
+                    "label": "Estreñimiento"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        },
+        {
+            "id": "neurologicos",
+            "label": "Trastornos Neurológicos",
+            "list": [
+                {
+                    "id": "convulsiones",
+                    "label": "Convulsiones"
+                },
+                {
+                    "id": "temblor",
+                    "label": "Temblor"
+                },
+                {
+                    "id": "tic",
+                    "label": "Tic"
+                },
+                {
+                    "id": "epilepsia",
+                    "label": "Epilepsia"
+                },
+                {
+                    "id": "cefalea",
+                    "label": "Cefálea"
+                },
+                {
+                    "id": "depresion",
+                    "label": "Depresión"
+                },
+                {
+                    "id": "dislexia",
+                    "label": "Dislexia"
+                },
+                {
+                    "id": "parkinson",
+                    "label": "Parkinson"
+                },
+                {
+                    "id": "alzheimer",
+                    "label": "Alzheimer"
+                },
+                {
+                    "id": "ecv",
+                    "label": "ECV"
+                },
+                {
+                    "id": "bulimia",
+                    "label": "Bulimia"
+                },
+                {
+                    "id": "anorexia",
+                    "label": "Anorexia"
+                },
+                {
+                    "id": "sindrome_down",
+                    "label": "Síndrome de Down"
+                },
+                {
+                    "id": "retardo_mental",
+                    "label": "Retardo mental"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        },
+        {
+            "id": "oseos",
+            "label": "Trastornos Óseos",
+            "list": [
+                {
+                    "id": "deformidades",
+                    "label": "Deformidades"
+                },
+                {
+                    "id": "fracturas",
+                    "label": "Fracturas"
+                },
+                {
+                    "id": "escleroticas_azules",
+                    "label": "Escleroticas azules"
+                },
+                {
+                    "id": "artritis",
+                    "label": "Artritis"
+                },
+                {
+                    "id": "dificultad_movimiento",
+                    "label": "Dificultad de movimiento"
+                },
+                {
+                    "id": "osteoporosis",
+                    "label": "Osteoporosis"
+                },
+                {
+                    "id": "osteomelitis",
+                    "label": "Osteomelitis"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        },
+        {
+            "id": "ginecologicos",
+            "label": "Trastornos Ginecológicos",
+            "list": [
+                {
+                    "id": "embarazo",
+                    "label": "Embarazo"
+                },
+                {
+                    "id": "menstruacion",
+                    "label": "Menstruación"
+                },
+                {
+                    "id": "abortos",
+                    "label": "Abortos"
+                },
+                {
+                    "id": "menopausia",
+                    "label": "Menopausia"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        },
+        {
+            "id": "urologicos",
+            "label": "Trastornos Urológicos",
+            "list": [
+                {
+                    "id": "insuficiencia_renal",
+                    "label": "Insuficiencia renal"
+                },
+                {
+                    "id": "colico_nefritico",
+                    "label": "Cólico nefrítico"
+                },
+                {
+                    "id": "cancer_prostata",
+                    "label": "Cáncer de próstata"
+                },
+                {
+                    "id": "andropausia",
+                    "label": "Andropausia"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        },
+        {
+            "id": "infectocontagiosa",
+            "label": "Enf. Infecto-contagiosas",
+            "list": [
+                {
+                    "id": "parotiditis",
+                    "label": "Paroditis"
+                },
+                {
+                    "id": "tuberculosis",
+                    "label": "Tuberculosis"
+                },
+                {
+                    "id": "vih_sida",
+                    "label": "VIH/SIDA"
+                },
+                {
+                    "id": "blenorragia",
+                    "label": "Blenorragia"
+                },
+                {
+                    "id": "sifilis",
+                    "label": "Sífilis"
+                },
+                {
+                    "id": "herpes",
+                    "label": "Herpes"
+                },
+                {
+                    "id": "hepatitis_abc",
+                    "label": "Hepatitis A-B-C"
+                },
+                {
+                    "id": "influenza",
+                    "label": "Influenza"
+                },
+                {
+                    "id": "vhp",
+                    "label": "VHP"
+                },
+                {
+                    "id": "rubeola",
+                    "label": "Rubeola"
+                },
+                {
+                    "id": "varicela",
+                    "label": "Varicela"
+                },
+                {
+                    "id": "sarampion",
+                    "label": "Sarampión"
+                },
+                {
+                    "id": "covid",
+                    "label": "Covid"
+                },
+                {
+                    "id": "otros",
+                    "label": "Otros"
+                }
+            ]
+        }
+    ]
+}

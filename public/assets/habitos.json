@@ -1,0 +1,52 @@
+{
+    "habitos": [
+        {
+            "id": "fumar",
+            "label": "Fuma"
+        },
+        {
+            "id": "alcohol",
+            "label":  "Consume alcohol"
+        },
+        {
+            "id": "drogas",
+            "label":  "Consume drogas"
+        },
+        {
+            "id": "onicofagia",
+            "label":  "Onicogafia"
+        },
+        {
+            "id": "deglusion_atip",
+            "label":  "Deglusión atípica"
+        },
+        {
+            "id": "bruxismo",
+            "label":  "Bruxismo"
+        },
+        {
+            "id": "bruxomania",
+            "label":  "Bruxomania"
+        },
+        {
+            "id": "queilofagia",
+            "label":  "Queilofagia"
+        },
+        {
+            "id": "palillos",
+            "label":  "Uso de palillos"
+        },
+        {
+            "id": "respirador_bucal",
+            "label":  "Respirador bucal"
+        },
+        {
+            "id": "succion_digital",
+            "label":  "Succión digital"
+        },
+        {
+            "id": "otros",
+            "label":  "Otros"
+        }
+    ]
+}
