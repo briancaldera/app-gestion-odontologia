@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Cirugia\HistoriaCirugia;
 use App\Models\Endodoncia\HistoriaEndodoncia;
 use App\Models\Group;
 use App\Models\Group\Assignment;
@@ -11,6 +12,7 @@ use App\Models\Paciente;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
@@ -74,6 +76,7 @@ class PermissionsSeeder extends Seeder
         $assignments_permissions = createPermissionsFromActions(Assignment::$actions);
         $homeworks_permissions = createPermissionsFromActions(Homework::$actions);
         $historias_endodoncia_permissions = createPermissionsFromActions(HistoriaEndodoncia::$actions);
+        $historias_cirugia_permission = createPermissionsFromActions(HistoriaCirugia::$actions);
 
         function createRolesFromArray(array $roles)
         {
@@ -117,23 +120,26 @@ class PermissionsSeeder extends Seeder
                 'system' => ['full-control', 'add-users-codes', 'update-users-codes', 'remove-users-codes'],
                 'users' => ['index-all', 'read', 'read-private', 'update', 'delete', 'add-registration'],
                 'pacientes' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'delete'],
-                'historias' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
-                'historias-endodoncia' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
+                'historias' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
+                'historias-endodoncia' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
+                'historias-cirugia' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'groups' => ['index-all', 'create', 'read', 'read-private', 'update', 'delete', 'index-users', 'add-users', 'remove-users'],
                 'assignments' => ['create', 'read', 'read-private', 'update', 'delete'],
                 'homeworks' => ['index-all', 'read', 'update', 'delete', 'create-corrections'],
             ],
             'admision' => [
                 'users' => ['index-all', 'read', 'read-private'],
-                'pacientes' => ['index-all', 'read',],
+                'pacientes' => ['index-all', 'read', 'read-private'],
                 'historias' => ['index-all', 'read', 'read-private', 'assign-id', 'assign-semester'],
-                'historias-endodoncia' => ['index-all', 'read', 'read-private', 'assign-id'],
+                'historias-endodoncia' => ['index-all', 'read', 'read-private', 'assign-id', 'assign-semester'],
+                'historias-cirugia' => ['index-all', 'read', 'read-private', 'assign-id', 'assign-semester'],
             ],
             'profesor' => [
                 'users' => ['read', 'read-private'],
-                'pacientes' => ['index-all', 'read',],
+                'pacientes' => ['index-all', 'read', 'read-private'],
                 'historias' => ['read', 'update-status', 'approve-treatment', 'approve-plaque-control', 'approve-periodontal-discharge'],
-                'historias-endodoncia' => ['read', 'update-status'],
+                'historias-endodoncia' => ['read', 'update-status', 'approve-treatment',],
+                'historias-cirugia' => ['read', 'update-status', 'approve-treatment',],
                 'groups' => ['read', 'update', 'index-users'],
                 'assignments' => ['create', 'read', 'update', 'delete'],
                 'homeworks' => ['index-all', 'read', 'delete', 'create-corrections'],
@@ -142,7 +148,8 @@ class PermissionsSeeder extends Seeder
                 'users' => ['read'],
                 'pacientes' => ['read', 'create', 'update'],
                 'historias' => ['read', 'create', 'update', 'assign-semester'],
-                'historias-endodoncia' => ['read', 'create', 'update'],
+                'historias-endodoncia' => ['read', 'create', 'update', 'assign-semester'],
+                'historias-cirugia' => ['read', 'create', 'update', 'assign-semester'],
                 'groups' => ['read'],
                 'assignments' => ['read'],
                 'homeworks' => ['create', 'read', 'update', 'delete'],
@@ -175,7 +182,9 @@ class PermissionsSeeder extends Seeder
             ...$pacientes_permissions,
             ...$groups_permissions,
             ...$assignments_permissions,
-            ...$homeworks_permissions]);
+            ...$homeworks_permissions,
+            ...$historias_cirugia_permission,
+        ]);
 
         assignPermissionsToRoles($all_permissions, $user_roles, collect($permissions_roles));
     }
