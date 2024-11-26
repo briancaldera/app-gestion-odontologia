@@ -273,14 +273,14 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                         <MenubarTrigger>Archivo</MenubarTrigger>
                         <MenubarContent>
                             <MenubarItem asChild>
-                                <a href={`/historias/${historia.id}/print`} target='_blank'>
-                                    <Printer className={'size-4 mr-2'}/>Imprimir
+                                <a href={`/historias/${historia.id}/download`}>
+                                    <Download className={'size-4 mr-2'}/>Descargar
                                 </a>
                             </MenubarItem>
                             <MenubarSeparator/>
                             <MenubarItem asChild>
-                                <a href={`/historias/${historia.id}/download`}>
-                                    <Download className={'size-4 mr-2'}/>Descargar
+                                <a href={`/historias/${historia.id}/print`} target='_blank'>
+                                    <Printer className={'size-4 mr-2'}/>Imprimir
                                 </a>
                             </MenubarItem>
                         </MenubarContent>
