@@ -43,6 +43,11 @@ class PermissionsSeeder extends Seeder
 
         $system_actions = [
             'system' => [
+                'full-control' => [
+                    'name' => 'full-control',
+                    'display_name' => 'Full control sobre el sistema',
+                    'description' => 'Permite realizar cualquier acción sobre el sistema. Solo asigne este permiso a administradores',
+                ],
                 'add-users-codes' => [
                     'name' => 'add-users-codes',
                     'display_name' => 'Agregar códigos de usuarios',
@@ -109,7 +114,7 @@ class PermissionsSeeder extends Seeder
 
         $permissions_roles = [
             'admin' => [
-                'system' => ['add-users-codes', 'update-users-codes', 'remove-users-codes'],
+                'system' => ['full-control', 'add-users-codes', 'update-users-codes', 'remove-users-codes'],
                 'users' => ['index-all', 'read', 'read-private', 'update', 'delete', 'add-registration'],
                 'pacientes' => ['index-all', 'read', 'read-private', 'update', 'delete'],
                 'historias' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
