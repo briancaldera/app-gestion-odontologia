@@ -116,7 +116,7 @@ class PermissionsSeeder extends Seeder
             'admin' => [
                 'system' => ['full-control', 'add-users-codes', 'update-users-codes', 'remove-users-codes'],
                 'users' => ['index-all', 'read', 'read-private', 'update', 'delete', 'add-registration'],
-                'pacientes' => ['index-all', 'read', 'read-private', 'update', 'delete'],
+                'pacientes' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'delete'],
                 'historias' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'historias-endodoncia' => ['index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'groups' => ['index-all', 'create', 'read', 'read-private', 'update', 'delete', 'index-users', 'add-users', 'remove-users'],

@@ -168,6 +168,11 @@ JSON,
                 'display_name' => 'Eliminar pacientes',
                 'description' => 'Eliminar a un paciente del sistema'
             ],
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre pacientes',
+                'description' => 'Full control sobre el modelo de paciente'
+            ],
         ]
     ];
 }
