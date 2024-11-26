@@ -1072,13 +1072,20 @@ class HistoriaController extends Controller
         return response()->file($consentimiento->getPath());
     }
 
-    public function printHistoria(Historia $historia)
+    public function downloadHistoria(Request $request, Historia $historia)
     {
-
         $pdf = Pdf::loadView('print.historia', [
             'historia' => $historia,
         ])->setPaper('letter');
 
-        return $pdf->stream(($historia->numero ?? 'HCE-sin-numero') . '.pdf');
+        if ($request->is('*/download')) {
+            return $pdf->download(($historia->numero ?? 'HCE-sin-numero') . '.pdf');
+        }
+
+        if ($request->is('*/print')) {
+            return $pdf->stream(($historia->numero ?? 'HCE-sin-numero') . '.pdf');
+        }
+
+        return response(null, 404);
     }
 }

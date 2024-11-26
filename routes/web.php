@@ -66,7 +66,6 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/pacientes/{paciente}/foto/{id}', [PacienteController::class, 'getFoto']);
 
 //    Routes for HCE
-    Route::get('/historias/{historia}/imprimir', [HistoriaController::class, 'printHistoria'])->name('historias.print');
     Route::get('/historias/dashboard', [HistoriaController::class, 'dashboard'])->name('historias.dashboard');
     Route::get('/historias', [HistoriaController::class, 'index'])->name('historias.index');
     Route::get('/historias/crear', [HistoriaController::class, 'create'])->name('historias.create');
@@ -114,6 +113,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::post('/historias/{historia}/odontologica/modificaciones/{id}/aprobar', [HistoriaController::class, 'approveModificacion'])->name('historias.odontologica.modificacionestratamiento.approve');
 
     Route::get('/historias/{historia}/odontologica/modificaciones/consentimientos/{id}', [HistoriaController::class, 'getModificacionesConsentimiento'])->name('historias.odontologica.modificacionestratamiento.consentimiento');
+    Route::get('/historias/{historia}/{action}', [HistoriaController::class, 'downloadHistoria'])->whereIn('action', ['download', 'print',])->name('historias.download');
     // Routes for HE
     Route::prefix('/endodoncia')->name('endodoncia.')->group(function() {
         Route::resource('historias', HistoriaEndodonciaController::class);

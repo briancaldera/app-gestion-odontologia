@@ -15,12 +15,12 @@ import HistoriaOdontologicaSchema, {
 import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema/Historia/ExamenRadiograficoSchema.ts'
 import {
     Bone,
-    BriefcaseMedical,
+    BriefcaseMedical, Download,
     FileBox,
     HeartPulse,
     Hospital,
     Images,
-    ListChecks,
+    ListChecks, Printer,
     RefreshCcwDot,
     Table,
     TableRowsSplit,
@@ -53,7 +53,7 @@ import {
     MenubarCheckboxItem,
     MenubarContent,
     MenubarItem,
-    MenubarMenu,
+    MenubarMenu, MenubarSeparator,
     MenubarTrigger,
 } from "@/shadcn/ui/menubar"
 import {Homework} from "@/src/models/Group.ts";
@@ -273,8 +273,14 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                         <MenubarTrigger>Archivo</MenubarTrigger>
                         <MenubarContent>
                             <MenubarItem asChild>
-                                <a href={route('historias.print', { historia: historia.id})} target='_blank'>
-                                    Imprimir
+                                <a href={`/historias/${historia.id}/print`} target='_blank'>
+                                    <Printer className={'size-4 mr-2'}/>Imprimir
+                                </a>
+                            </MenubarItem>
+                            <MenubarSeparator/>
+                            <MenubarItem asChild>
+                                <a href={`/historias/${historia.id}/download`}>
+                                    <Download className={'size-4 mr-2'}/>Descargar
                                 </a>
                             </MenubarItem>
                         </MenubarContent>
