@@ -1,4 +1,23 @@
 @php use Illuminate\Support\Carbon; @endphp
+@php
+    if(!function_exists('insert_ws')){
+        function insert_ws(int $count = 1): string {
+            return html_entity_decode(str_repeat('&nbsp;', $count));
+        }
+    }
+
+    if(!function_exists('insert_field')){
+        function insert_field($field, int $expectedSpaces = 1): string {
+
+            if (!isset($field)) {
+                return insert_ws($expectedSpaces);
+            }
+
+            return $field;
+        }
+    }
+
+@endphp
     <!doctype html>
 <html lang="en">
 <head>
@@ -22,6 +41,13 @@
 
         .page-break-before {
             page-break-before: always;
+        }
+
+        .fillable {
+            word-break: break-word;
+            text-decoration: underline;
+            text-decoration-color: #000;
+            text-underline-offset: 4px;
         }
 
         *, ::before, ::after {
@@ -649,7 +675,7 @@
             text-transform: uppercase;
         }
         .underline {
-            text-decoration-line: underline;
+            text-decoration: underline;
         }
         .decoration-black {
             text-decoration-color: #000;
@@ -683,22 +709,22 @@
     <div class="space-x-4">
         <div class="inline">
             <span class="font-bold">Historia N°</span>
-            <span class="decoration-black underline underline-offset-4">{{$historia->numero}}</span>
+            <span class="fillable">{{insert_field($historia->numero, 12)}}</span>
         </div>
         <div class="inline">
             <span class="font-bold">Fecha:</span>
-            <span class="underline underline-offset-4">{{ Carbon::make($historia->created_at)->format('d-m-Y') }}</span>
+            <span class="fillable">{{ insert_field(Carbon::make($historia->created_at)->format('d-m-Y'), 10) }}</span>
         </div>
     </div>
     <div class="space-x-4">
         <div class="inline">
             <span class="font-bold">Bachiller:</span>
             <span
-                class="underline underline-offset-4">{{ $historia->autor->profile->nombres . ' ' .  $historia->autor->profile->apellidos}}</span>
+                class="fillable">{{ insert_field($historia->autor->profile->nombres . ' ' .  $historia->autor->profile->apellidos, 30)}}</span>
         </div>
         <div class="inline">
             <span class="font-bold">Semestre:</span>
-            <span class="underline underline-offset-4">{{ $historia->semestre }}</span>
+            <span class="fillable">{{ insert_field($historia->semestre) }}</span>
         </div>
     </div>
 
@@ -711,47 +737,47 @@
 
     <div>
         <p><span class="font-bold">Nombres y apellidos: </span> <span
-                class="underline underline-offset-4">{{$historia->paciente->nombre . ' ' . $historia->paciente->apellido}}</span>
+                class="fillable">{{insert_field($historia->paciente->nombre . ' ' . $historia->paciente->apellido, 30)}}</span>
             <span class="font-bold">Cédula: </span> <span
-                class="underline underline-offset-4">{{$historia->paciente->cedula}}</span>
+                class="fillable">{{insert_field($historia->paciente->cedula, 10)}}</span>
         </p>
     </div>
 
     <div class="space-x-4">
         <div class="space-x-2 inline">
             <span class="font-bold">Edad:</span>
-            <span class="underline underline-offset-4">{{ $historia->paciente->edad }}</span>
+            <span class="fillable">{{ insert_field($historia->paciente->edad, 5) }}</span>
         </div>
         <div class="space-x-2 inline">
             <span class="font-bold">Sexo:</span>
-            <span class="underline underline-offset-4">{{ $historia->paciente->sexo }}</span>
+            <span class="fillable">{{ insert_field($historia->paciente->sexo, 5) }}</span>
         </div>
         <div class="space-x-2 inline">
             <span class="font-bold">Peso:</span>
-            <span class="underline underline-offset-4">{{ $historia->paciente->peso }}</span><span>Kg.</span>
+            <span class="fillable">{{ insert_field($historia->paciente->peso, 5) }}</span><span>Kg.</span>
         </div>
         <div class="space-x-2 inline">
             <span class="font-bold">Fecha de nacimiento:</span>
             <span
-                class="underline underline-offset-4">{{ Carbon::make($historia->paciente->fecha_nacimiento)->format('d-m-Y') }}</span>
+                class="fillable">{{ insert_field(Carbon::make($historia->paciente->fecha_nacimiento)->format('d-m-Y'), 10) }}</span>
         </div>
     </div>
 
     <div>
         <div class="space-x-2 inline">
             <span class="font-bold">Ocupación:</span>
-            <span class="underline underline-offset-4">{{ $historia->paciente->ocupacion }}</span>
+            <span class="fillable">{{ insert_field($historia->paciente->ocupacion, 20) }}</span>
         </div>
         <div class="space-x-2 inline">
             <span class="font-bold">Teléfono:</span>
-            <span class="underline underline-offset-4">{{ $historia->paciente->telefono }}</span>
+            <span class="fillable">{{ insert_field($historia->paciente->telefono, 10) }}</span>
         </div>
     </div>
 
     <div>
         <div class="space-x-2">
             <span class="font-bold">Dirección:</span>
-            <span class="underline underline-offset-4">{{ $historia->paciente->direccion }}</span>
+            <span class="fillable">{{ insert_field($historia->paciente->direccion, 160) }}</span>
         </div>
     </div>
 
@@ -759,26 +785,26 @@
         <div class="space-x-2 inline">
             <span class="font-bold">En caso de emergencia contactar a:</span>
             <span
-                class="underline underline-offset-4">{{ $historia->paciente->informacion_emergencia->contacto }}</span>
+                class="whitespace-pre fillable">{{ insert_field($historia->paciente->informacion_emergencia->contacto, 30) }}</span>
         </div>
         <div class="space-x-2 inline">
             <span class="font-bold">Teléfono:</span>
             <span
-                class="underline underline-offset-4">{{ $historia->paciente->informacion_emergencia->telefono }}</span>
+                class="break-words fillable">{{ insert_field($historia->paciente->informacion_emergencia->telefono, 20) }}</span>
         </div>
     </div>
 
     <div>
         <div class="font-bold">Motivo de consulta</div>
-        <p class="underline underline-offset-4">
-            {{ $historia->paciente->motivo_consulta }}
+        <p class="fillable">
+            {{ insert_field($historia->paciente->motivo_consulta, 160) }}
         </p>
     </div>
 
     <div>
         <div class="font-bold">Enfermedad actual</div>
-        <p class="underline underline-offset-4">
-            {{ $historia->paciente->enfermedad_actual }}
+        <p class="fillable">
+            {{ insert_field($historia->paciente->enfermedad_actual, 160) }}
         </p>
     </div>
 </section>
@@ -790,13 +816,13 @@
         <h3 class="font-bold text-lg">Antecedentes Médicos Familiares</h3>
     </header>
 
-    <p>Madre: <span class="underline underline-offset-4">{{ $historia->antFamiliares->madre }}</span></p>
-    <p>Padre: <span class="underline underline-offset-4">{{ $historia->antFamiliares->padre }}</span></p>
-    <p>Hermanos: <span class="underline underline-offset-4">{{ $historia->antFamiliares->hermanos }}</span></p>
+    <p>Madre: <span class="fillable">{{ insert_field($historia->antFamiliares->madre, 80 + 50) }}</span></p>
+    <p>Padre: <span class="fillable">{{ insert_field($historia->antFamiliares->padre, 80 + 50) }}</span></p>
+    <p>Hermanos: <span class="fillable">{{ insert_field($historia->antFamiliares->hermanos, 73 + 50) }}</span></p>
     <p>Abuelos maternos: <span
-            class="underline underline-offset-4">{{ $historia->antFamiliares->abuelos_maternos }}</span></p>
+            class="fillable">{{ insert_field($historia->antFamiliares->abuelos_maternos, 62 + 50) }}</span></p>
     <p>Abuelos paternos: <span
-            class="underline underline-offset-4">{{ $historia->antFamiliares->abuelos_paternos }}</span></p>
+            class="fillable">{{ insert_field($historia->antFamiliares->abuelos_paternos, 62 + 50) }}</span></p>
 </section>
 
 <section class="py-3 page-break-before">
@@ -834,8 +860,8 @@
             <p>En caso de ser positivo a alguna de las anteriores, especificar el tiempo, si ha sido controlado, si ha
                 tenido complicaciones,
                 si toma alguna medicación, etc.</p>
-            <p class="underline underline-offset-4">
-                {{ $historia->trastornos['descripcion']}}
+            <p class="fillable">
+                {{ insert_field($historia->trastornos['descripcion'], 160)}}
             </p>
         </div>
     </section>
@@ -860,8 +886,8 @@
 
         <div class="py-2">
             <p class="font-bold">Dosis</p>
-            <p class="underline underline-offset-4">
-                {{ $historia->antPersonales->medicamentos->dosis }}
+            <p class="fillable">
+                {{ insert_field($historia->antPersonales->medicamentos->dosis, 160) }}
             </p>
         </div>
     </section>
@@ -889,8 +915,8 @@
 
         <div class="py-2">
             <p class="font-bold">Especifique</p>
-            <p class="underline underline-offset-4">
-                {{ $historia->antPersonales->alergias->descripcion }}
+            <p class="fillable">
+                {{ insert_field($historia->antPersonales->alergias->descripcion, 160) }}
             </p>
         </div>
     </section>
@@ -907,8 +933,8 @@
             <p>Restauraciones, cirugías, prótesis, tratamientos periodontales, endodónticos, ortodónticos que ha
                 recibido el paciente</p>
         </header>
-        <p class="underline underline-offset-4">
-            {{$historia->historiaOdontologica->ant_personales}}
+        <p class="fillable">
+            {{insert_field($historia->historiaOdontologica->ant_personales, 160)}}
         </p>
     </section>
 
@@ -923,10 +949,10 @@
 
         <div class="space-x-2">
             <div class="space-x-2 inline">
-                <span>Ortodoncia</span><span>Sí: {{ $portador->ortodoncia ? 'X' : '' }}</span><span>No: {{ $portador->ortodoncia ? '' : 'X' }}</span>
+                <span>Ortodoncia: </span><span>Sí: <span class="fillable">{{ $portador->ortodoncia ? 'X' : insert_ws() }}</span></span> <span>No: <span class="fillable">{{ $portador->ortodoncia ? insert_ws() : 'X' }}</span></span>
             </div>
             <div class="space-x-2 inline">
-                <span>Prótesis</span><span>Sí: {{ $portador->protesis ? 'X' : '' }}</span><span>No: {{ $portador->protesis ? '' : 'X' }}</span>
+                <span>Prótesis: </span><span>Sí: <span class="fillable">{{ $portador->protesis ? 'X' : insert_ws() }}</span></span> <span>No: <span class="fillable">{{ $portador->protesis ? insert_ws() : 'X' }}</span></span>
             </div>
         </div>
     </section>
@@ -953,8 +979,8 @@
 
         <div class="py-2">
             <p class="font-bold">En caso de presentar algún hábito explique desde cuándo y la frecuencia</p>
-            <p class="underline underline-offset-4">
-                {{ $historia->historiaOdontologica->habitos['descripcion'] }}
+            <p class="fillable">
+                {{ insert_field($historia->historiaOdontologica->habitos['descripcion'], 160) }}
             </p>
         </div>
     </section>
@@ -1002,15 +1028,15 @@
         <div>
             <div class="space-x-2 text-center">
                 <span>Tension Arterial: </span> <span>Sistólica: <span
-                        class="underline underline-offset-4">{{$signos_vitales['tension_arterial']['sistole']}}</span></span>
+                        class="fillable">{{insert_field($signos_vitales['tension_arterial']['sistole'], 4)}}</span> </span>
                 <span>Diastólica: <span
-                        class="underline underline-offset-4">{{$signos_vitales['tension_arterial']['diastole']}}</span></span>
+                        class="fillable">{{insert_field($signos_vitales['tension_arterial']['diastole'], 4)}}</span> </span>
             </div>
             <div class="space-x-2 text-center">
                 <span>Pulso: <span
-                        class="underline underline-offset-4">{{ $signos_vitales['pulso'] }}</span> </span><span>Respiración: <span
-                        class="underline underline-offset-4">{{$signos_vitales['respiracion']}}</span></span><span>Temperatura: <span
-                        class="underline underline-offset-4">{{ $signos_vitales['temperatura'] }}</span></span>
+                        class="fillable">{{ insert_field($signos_vitales['pulso'], 4) }}</span> </span><span>Respiración: <span
+                        class="fillable">{{insert_field($signos_vitales['respiracion'], 4)}}</span> </span><span>Temperatura: <span
+                        class="fillable">{{ insert_field($signos_vitales['temperatura'], 4) }}</span> </span>
             </div>
         </div>
     </section>
@@ -1025,17 +1051,17 @@
         </header>
 
         <div>
-            <p><span class="font-bold">Cabeza: </span><span>{{ $extraoral['cabeza'] }}</span></p>
-            <p><span class="font-bold">Cara: </span><span>{{ $extraoral['cara'] }}</span></p>
-            <p><span class="font-bold">Simetría facial: </span><span>{{ $extraoral['simetria_facial'] }}</span></p>
-            <p><span class="font-bold">Piel: </span><span>{{ $extraoral['piel'] }}</span></p>
+            <p><span class="font-bold">Cabeza: </span><span class="fillable">{{ insert_field($extraoral['cabeza'], 80) }}</span></p>
+            <p><span class="font-bold">Cara: </span><span class="fillable">{{ insert_field($extraoral['cara'], 80) }}</span></p>
+            <p><span class="font-bold">Simetría facial: </span><span class="fillable">{{ insert_field($extraoral['simetria_facial'], 80) }}</span></p>
+            <p><span class="font-bold">Piel: </span><span class="fillable">{{ insert_field($extraoral['piel'], 80) }}</span></p>
             <p><span
-                    class="font-bold">Lesiones extraorales: </span><span>{{ $extraoral['lesiones_extraorales'] }}</span>
+                    class="font-bold">Lesiones extraorales: </span><span class="fillable">{{ insert_field($extraoral['lesiones_extraorales'], 80) }}</span>
             </p>
-            <p><span class="font-bold">Palpación de ganglios: </span><span>{{ $extraoral['palpacion_ganglios'] }}</span>
+            <p><span class="font-bold">Palpación de ganglios: </span><span class="fillable">{{ insert_field($extraoral['palpacion_ganglios'], 80) }}</span>
             </p>
             <p><span
-                    class="font-bold">Articulación Temporomandibular: </span><span>{{ $extraoral['articulacion_temporomandibular'] }}</span>
+                    class="font-bold">Articulación Temporomandibular: </span><span class="fillable">{{ insert_field($extraoral['articulacion_temporomandibular'], 80) }}</span>
             </p>
         </div>
 
@@ -1051,18 +1077,18 @@
         </header>
 
         <div>
-            <p><span class="font-bold">Dientes: </span><span>{{ $intraoral['dientes'] }}</span></p>
-            <p><span class="font-bold">Discromías dentarias: </span><span>{{ $intraoral['discromias'] }}</span></p>
-            <p><span class="font-bold">Encías: </span><span>{{ $intraoral['encias'] }}</span></p>
-            <p><span class="font-bold">Frenillos: </span><span>{{ $intraoral['frenillos'] }}</span></p>
-            <p><span class="font-bold">Labios: </span><span>{{ $intraoral['labios'] }}</span></p>
-            <p><span class="font-bold">Lengua (tipo): </span><span>{{ $intraoral['lengua_tipo'] }}</span></p>
-            <p><span class="font-bold">Maxilares: </span><span>{{ $intraoral['maxilares'] }}</span></p>
-            <p><span class="font-bold">Mejillas: </span><span>{{ $intraoral['mejillas'] }}</span></p>
+            <p><span class="font-bold">Dientes: </span><span class="fillable">{{ insert_field($intraoral['dientes'], 80) }}</span></p>
+            <p><span class="font-bold">Discromías dentarias: </span><span class="fillable">{{ insert_field($intraoral['discromias'], 80) }}</span></p>
+            <p><span class="font-bold">Encías: </span><span class="fillable">{{ insert_field($intraoral['encias'], 80) }}</span></p>
+            <p><span class="font-bold">Frenillos: </span><span class="fillable">{{ insert_field($intraoral['frenillos'], 80) }}</span></p>
+            <p><span class="font-bold">Labios: </span><span class="fillable">{{ insert_field($intraoral['labios'], 80) }}</span></p>
+            <p><span class="font-bold">Lengua (tipo): </span><span class="fillable">{{ insert_field($intraoral['lengua_tipo'], 80) }}</span></p>
+            <p><span class="font-bold">Maxilares: </span><span class="fillable">{{ insert_field($intraoral['maxilares'], 80) }}</span></p>
+            <p><span class="font-bold">Mejillas: </span><span class="fillable">{{ insert_field($intraoral['mejillas'], 80) }}</span></p>
             <p><span
-                    class="font-bold">Paladar duro y blando: </span><span>{{ $intraoral['paladar_duro_blando'] }}</span>
+                    class="font-bold">Paladar duro y blando: </span><span class="fillable">{{ insert_field($intraoral['paladar_duro_blando'], 80) }}</span>
             </p>
-            <p><span class="font-bold">Piso de la boca: </span><span>{{ $intraoral['piso_boca'] }}</span></p>
+            <p><span class="font-bold">Piso de la boca: </span><span class="fillable">{{ insert_field($intraoral['piso_boca'], 80) }}</span></p>
         </div>
 
     </section>
@@ -1122,8 +1148,8 @@
             <h4 class="font-bold">Interpretación Radiográfica Periapicales: (Corona, Raíz, Hueso y Espacio Ligamento
                 Periodontal)</h4>
 
-            <p class="underline underline-offset-4">
-                {{ $historia->historiaOdontologica->examen_radiografico->interpretacion_periapicales }}
+            <p class="fillable">
+                {{ insert_field($historia->historiaOdontologica->examen_radiografico->interpretacion_periapicales, 160) }}
             </p>
         </div>
 
@@ -1131,8 +1157,8 @@
             <h4 class="font-bold">Interpretación Radiográfica Coronales: (Corona, Cresta Alveolar, Espacio de la Cámara
                 Pulpar)</h4>
 
-            <p class="underline underline-offset-4">
-                {{ $historia->historiaOdontologica->examen_radiografico->interpretacion_coronales }}
+            <p class="fillable">
+                {{ insert_field($historia->historiaOdontologica->examen_radiografico->interpretacion_coronales, 160) }}
             </p>
         </div>
     </section>
@@ -1278,8 +1304,8 @@
 
     <div class="py-4">
         <h3 class="font-bold text-lg">Exámenes complementarios:</h3>
-        <p class="underline underline-offset-4">
-            {{ $estudio_modelos['examenes_comp'] }}
+        <p class="fillable">
+            {{ insert_field($estudio_modelos['examenes_comp'], 160) }}
         </p>
     </div>
 
@@ -1296,26 +1322,26 @@
                 <span>
                     <span class="font-bold">{{$interconsultas['label']}}: </span>
                     <span
-                        class="underline underline-offset-4">{{ $interconsultas_historia->contains($interconsultas['id']) ? 'X' : '' }}</span>
+                        class="fillable">{{ $interconsultas_historia->contains($interconsultas['id']) ? 'X' : insert_ws(2) }}</span>
                 </span>
             @endforeach
         </p>
-        <p class="underline underline-offset-4">
-            {{ $estudio_modelos['interconsultas']['descripcion'] }}
+        <p class="fillable">
+            {{ insert_field($estudio_modelos['interconsultas']['descripcion'], 160) }}
         </p>
     </div>
 
     <div class="py-4">
         <h3 class="font-bold text-lg">Diagnóstico</h3>
-        <p class="underline underline-offset-4">
-            {{ $estudio_modelos['diagnostico'] }}
+        <p class="fillable">
+            {{ insert_field($estudio_modelos['diagnostico'], 160)}}
         </p>
     </div>
 
     <div class="py-4">
         <h3 class="font-bold text-lg">Pronóstico (General/Específicos)</h3>
-        <p class="underline underline-offset-4">
-            {{ $estudio_modelos['pronostico'] }}
+        <p class="fillable">
+            {{ insert_field($estudio_modelos['pronostico'], 160) }}
         </p>
     </div>
 </section>
@@ -1493,7 +1519,7 @@
                         @foreach($higiene_list['tipo_cepillo'] as $tipo_cepillo)
                             <span>
                         <span class="font-bold">{{$tipo_cepillo['label']}}: </span><span
-                                    class="underline underline-offset-4">{{$tipo_cepillo_historia->contains($tipo_cepillo['id']) ? 'X' : ''}}</span>
+                                    class="fillable">{{$tipo_cepillo_historia->contains($tipo_cepillo['id']) ? 'X' : ''}}</span>
 
                             </span>
 
@@ -1508,7 +1534,7 @@
                         @foreach($higiene_list['metodo_cepillado'] as $metodo_cepillado)
                             <span>
                         <span class="font-bold">{{$metodo_cepillado['label']}}: </span><span
-                                    class="underline underline-offset-4">{{$metodo_cepillado_historia->contains($metodo_cepillado['id']) ? 'X' : ''}}</span>
+                                    class="fillable">{{$metodo_cepillado_historia->contains($metodo_cepillado['id']) ? 'X' : ''}}</span>
                             </span>
                         @endforeach
                     </p>
@@ -1521,7 +1547,7 @@
                         @foreach($higiene_list['metodo_auxiliar'] as $metodo_aux)
                             <span>
                         <span class="font-bold">{{$metodo_aux['label']}}: </span><span
-                                    class="underline underline-offset-4">{{$metodo_aux_historia->contains($metodo_aux['id']) ? 'X' : ''}}</span>
+                                    class="fillable">{{$metodo_aux_historia->contains($metodo_aux['id']) ? 'X' : ''}}</span>
                             </span>
                         @endforeach
                     </p>
@@ -1583,7 +1609,7 @@
                         <p class="font-bold text-lg">
                             Tratamiento:
                         </p>
-                        <p class="underline underline-offset-4">
+                        <p class="fillable">
                             {{$control_higiene_historia['tratamiento']}}
                         </p>
                     </div>
