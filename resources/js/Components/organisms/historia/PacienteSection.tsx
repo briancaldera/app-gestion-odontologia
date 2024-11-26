@@ -112,7 +112,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                             <FormItem
                                 className={'bg-slate-100 rounded-lg aspect-[3/4] p-2 flex justify-center items-center'}>
                                 <FormControl>
-                                    <ProfilePicturePicker src={field.value} onDrop={() => {
+                                    <ProfilePicturePicker disabled={true} src={field.value} onDrop={() => {
                                     }}
                                                           className={'size-32'}/>
                                 </FormControl>
@@ -362,15 +362,15 @@ const AssignSemesterDialog = () => {
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                <DialogTitle>Asignar número de historia</DialogTitle>
-                <DialogDescription>Asigne un número a esta historia</DialogDescription>
+                <DialogTitle>Asignar semestre</DialogTitle>
+                <DialogDescription>Asigne un número de semestre</DialogDescription>
                 <div>
                     <Form {...form}>
                         <form id={'assignSemesterForm'} onSubmit={form.handleSubmit(handleSubmit)}>
 
                             <FormField render={({field}) => (
                                 <FormItem className={'w-fit'}>
-                                    <FormLabel>N° de historia</FormLabel>
+                                    <FormLabel>Semestre</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
