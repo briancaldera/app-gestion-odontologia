@@ -2,7 +2,7 @@ import Surface from '@/Components/atoms/Surface'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import {useForm} from "react-hook-form"
-import {undefined, z} from 'zod'
+import {z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
 import React from "react";
 import PacienteSchema from "@/FormSchema/Historia/PacienteSchema";
@@ -37,12 +37,8 @@ import AntPersonalesSection from "@/Components/organisms/historia/AntPersonalesS
 import HistoriaOdontologicaSection from "@/Components/organisms/historia/HistoriaOdontologicaSection";
 import PlanTratamientoSection from "@/Components/organisms/historia/PlanTratamientoSection";
 import PlanTratamientoSchema, {PlanTratamientoDefaults} from "@/FormSchema/Historia/PlanTratamientoSchema";
-import {
-    modificacionesPlanTratamientoSchema
-} from "@/FormSchema/Historia/ModificacionesPlanTratamientoSchema";
-import {
-    secuenciaTratamientoSchema
-} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
+import {modificacionesPlanTratamientoSchema} from "@/FormSchema/Historia/ModificacionesPlanTratamientoSchema";
+import {secuenciaTratamientoSchema} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
 import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Historia/EstudioModelosSchema";
 import {mergeDeep} from "@/src/Utils/Utils";
 import ExamenRadiograficoSection from "@/Components/organisms/historia/ExamenRadiograficoSection.tsx";
@@ -52,11 +48,19 @@ import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import MediaSection from "@/Components/organisms/historia/MediaSection.tsx";
 import HistoriaPeriodontalSection from "@/Components/organisms/historia/HistoriaPeriodontalSection.tsx";
 import ControlPlacaSection from "@/Components/organisms/historia/ControlPlacaSection.tsx";
-import {Menubar, MenubarCheckboxItem, MenubarContent, MenubarMenu, MenubarTrigger,} from "@/shadcn/ui/menubar"
+import {
+    Menubar,
+    MenubarCheckboxItem,
+    MenubarContent,
+    MenubarItem,
+    MenubarMenu,
+    MenubarTrigger,
+} from "@/shadcn/ui/menubar"
 import {Homework} from "@/src/models/Group.ts";
 import {useCorrections, UseCorrectionsReturn} from "@/src/corrections/corrections.ts";
 import {toast} from "sonner";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
+import {route} from "ziggy-js";
 
 
 const TabTriggerStyle = 'p-0 m-0'
@@ -265,6 +269,16 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             value={{historia: historia, homework: homework, canCreateCorrections: canCreateCorrections, correctionsModel: correctionsModel, disabled: isDisabled}}>
             <div className={'h-full'}>
                 <Menubar className={'mb-2'}>
+                    <MenubarMenu>
+                        <MenubarTrigger>Archivo</MenubarTrigger>
+                        <MenubarContent>
+                            <MenubarItem asChild>
+                                <a href={route('historias.print', { historia: historia.id})} target='_blank'>
+                                    Imprimir
+                                </a>
+                            </MenubarItem>
+                        </MenubarContent>
+                    </MenubarMenu>
                     <MenubarMenu>
                         <MenubarTrigger>Vista</MenubarTrigger>
                         <MenubarContent>

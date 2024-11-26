@@ -66,6 +66,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/pacientes/{paciente}/foto/{id}', [PacienteController::class, 'getFoto']);
 
 //    Routes for HCE
+    Route::get('/historias/{historia}/imprimir', [HistoriaController::class, 'printHistoria'])->name('historias.print');
     Route::get('/historias/dashboard', [HistoriaController::class, 'dashboard'])->name('historias.dashboard');
     Route::get('/historias', [HistoriaController::class, 'index'])->name('historias.index');
     Route::get('/historias/crear', [HistoriaController::class, 'create'])->name('historias.create');

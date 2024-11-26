@@ -35,6 +35,7 @@ use App\Services\CorreccionService;
 use App\Services\HistoriaService;
 use App\Services\RadiografiaService;
 use App\Status;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -673,8 +674,9 @@ class HistoriaController extends Controller
 //        $historia_odon->historia_periodontal->control_higiene_bucal['control_halitosis'] = $data['control_higiene_bucal']['control_halitosis'];
 //        $historia_odon->historia_periodontal->control_higiene_bucal['tratamiento'] = $data['control_higiene_bucal']['tratamiento'];
 
-        $historia_odon->historia_periodontal = $data;
-        $historia_odon->save();
+        $historia_odon->historia_periodontal->higiene_bucal = $data['higiene_bucal'];
+        $historia_odon->historia_periodontal->control_higiene_bucal = $data['control_higiene_bucal'];
+        $historia_odon->update();
 
         message('Historia periodontal actualizada exitosamente 👍🏻', Type::Success);
         return response(null, 200);
@@ -1068,5 +1070,15 @@ class HistoriaController extends Controller
         $consentimiento = $historia_odo->getMedia('modificaciones_consentimiento')->first(fn(Media $media) => $media->uuid === $id);
 
         return response()->file($consentimiento->getPath());
+    }
+
+    public function printHistoria(Historia $historia)
+    {
+
+        $pdf = Pdf::loadView('print.historia', [
+            'historia' => $historia,
+        ])->setPaper('letter');
+
+        return $pdf->stream(($historia->numero ?? 'HCE-sin-numero') . '.pdf');
     }
 }
