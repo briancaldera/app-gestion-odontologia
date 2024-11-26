@@ -270,4 +270,65 @@ JSON,
             get: fn() => $this->getMedia('periodontodiagrama')->map(fn(Media $media) => url("/cirugia/historias/$this->id/periodontodiagrama/$media->uuid"))->first()
         );
     }
+
+    public static array $actions = [
+        'historias-cirugia' => [
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre las historias de cirugía',
+                'description' => 'Full control sobre el modelo de historia de cirugía'
+            ],
+            'index-all' => [
+                'name' => 'index-all',
+                'display_name' => 'Indexar todas las HC',
+                'description' => 'Indexar todas las historias de cirugía de todos los usuarios'
+            ],
+            'create' => [
+                'name' => 'create',
+                'display_name' => 'Crear HC',
+                'description' => 'Crear historias de cirugía'
+            ],
+            'read' => [
+                'name' => 'read',
+                'display_name' => 'Ver HC',
+                'description' => 'Ver una historia de cirugía en particular'
+            ],
+            'read-private' => [
+                'name' => 'read-private',
+                'display_name' => 'Ver información privada',
+                'description' => 'Ver información privada sobre una historia de cirugía'
+            ],
+            'update' => [
+                'name' => 'update',
+                'display_name' => 'Actualizar HC',
+                'description' => 'Actualizar una historia de cirugía'
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'display_name' => 'Eliminar HC',
+                'description' => 'Eliminar una historia de cirugía'
+            ],
+            'update-status' => [
+                'name' => 'update-status',
+                'display_name' => 'Actualizar el estado',
+                'description' => 'Actualizar el estado de una historia de cirugía'
+            ],
+            'assign-id' => [
+                'name' => 'assign-id',
+                'display_name' => 'Asignar número de HC',
+                'description' => 'Asignar número a una historia de cirugía'
+            ],
+            'assign-semester' => [
+                'name' => 'assign-semester',
+                'display_name' => 'Asignar semestre',
+                'description' => 'Asignar semestre a la HC'
+            ],
+            'approve-treatment' => [
+                'name' => 'approve-treatment',
+                'display_name' => 'Aprobar tratamiento',
+                'description' => 'Aprobar tratamiento en la secuencia de tratamiento'
+            ],
+        ]
+    ];
+
 }

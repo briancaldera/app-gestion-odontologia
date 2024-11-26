@@ -102,6 +102,11 @@ class Historia extends Model implements StatusHolder
 
     public static array $actions = [
         'historias' => [
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre las historias',
+                'description' => 'Full control sobre el modelo de historia clínica'
+            ],
             'index-all' => [
                 'name' => 'index-all',
                 'display_name' => 'Indexar todas las HRA',
