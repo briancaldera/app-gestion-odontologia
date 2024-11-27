@@ -80,7 +80,7 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
     }
 
     return (
-        <Surface className={'px-6'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
             <Title level={'title-lg'}>Plan de Tratamiento</Title>
             <Text>Fase Sistémica, Fase Preventiva y Educativa, Fase Periodontal, Fase Quirúrgica, Fase Endodóntica, Fase Operatoria, Fase Protésica, Fase de Control y Mantenimiento</Text>
 
@@ -165,7 +165,7 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
                 </PlanTratamientoTableContext.Provider>
 
             </section>
-        </Surface>
+        </div>
     )
 }
 

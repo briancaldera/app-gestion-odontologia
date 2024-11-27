@@ -40,8 +40,7 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
 
 
     return (
-
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
 
             <Title level={'title-lg'}>Historia Odontológica</Title>
 
@@ -61,7 +60,8 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
                 <ExamenFisico/>
             </CorrectionsBlock>
 
-        </Surface>);
+        </div>
+    )
 }
 
 export default HistoriaOdontologicaSection

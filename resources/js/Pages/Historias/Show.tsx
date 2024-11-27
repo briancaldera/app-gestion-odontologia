@@ -47,13 +47,13 @@ const Show = ({historia, homework}: ShowProps) => {
     return (
         <AuthLayout title={`Historia: ${historia.paciente?.nombre} ${historia.paciente?.apellido}`}>
             <ScrollArea className={'h-full'}>
-                <div className={'px-6 py-2 pr-0 flex'}>
+                <div className={'max-lg:px-2 lg:p-6 max-lg:pt-2 flex gap-x-2'}>
                     <div className={'basis-full'}>
                         <HistoriaEditor historia={historia} readMode={true} homework={homework}
                                         canCreateCorrections={canCreateCorrections}/>
                     </div>
                     {/*Sidebar for additional actions/options*/}
-                    <div className={'basis-16 flex flex-col px-2 gap-y-1'}>
+                    <div className={'basis-16 flex flex-col gap-y-2'}>
                         {
                             canUpdateHistoria && (
                                 <Button className={'w-full aspect-square h-auto'} asChild>

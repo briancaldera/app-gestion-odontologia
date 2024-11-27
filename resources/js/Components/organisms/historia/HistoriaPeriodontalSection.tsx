@@ -16,14 +16,14 @@ const HistoriaPeriodontalSection = ({historia_id, historia_periodontal, readonly
     const {historia, homework, canCreateCorrections, correctionsModel} = React.useContext(HistoriaEditorContext)
 
     return (
-        <Surface className={'p-6'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
 
             <CorrectionsBlock model={correctionsModel} name={'historia_periodontal'}
                               canCreateCorrections={canCreateCorrections}>
                 <HistoriaPeriodontalForm/>
             </CorrectionsBlock>
 
-        </Surface>
+        </div>
     )
 }
 

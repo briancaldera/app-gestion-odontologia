@@ -58,7 +58,7 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
     }
 
     return (
-        <Surface className={'p-6 h-full'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
             <Title level={'title-lg'}>Periodontodiagrama</Title>
 
             <CorrectionsBlock model={correctionsModel} name={'periodontodiagrama'}
@@ -86,11 +86,15 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
 
                         </div>
 
-                        <DragAndDrop maxFiles={1} accept={ACCEPTED_PICTURE_MIME} handleDrop={handleDrop}
-                                     disabled={disabled}/>
+                        {
+                            !disabled && (
+                                <DragAndDrop maxFiles={1} accept={ACCEPTED_PICTURE_MIME} handleDrop={handleDrop}
+                                             disabled={disabled}/>
+                            )
+                        }
 
                         <div className={'flex justify-end'}>
-                            <Button disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>
+                            <Button disabled={disabled || !form.formState.isDirty}>
                                 {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}Guardar
                             </Button>
                         </div>
@@ -99,7 +103,7 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
                     </form>
                 </Form>
             </CorrectionsBlock>
-        </Surface>
+        </div>
     )
 }
 

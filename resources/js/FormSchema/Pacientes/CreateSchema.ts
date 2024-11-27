@@ -4,7 +4,7 @@ const MAX_PICTURE_SIZE = 2 * 1000 * 1000 // 2 MB
 const MIN_PICTURE_SIZE = 5 * 1000 // 5 KB
 const ACCEPTED_PICTURE_MIME = ['image/jpeg', 'image/jpg', 'image/png']
 
-const PacienteSchema = z.object({
+const pacienteSchema = z.object({
     cedula: z
         .string({
             description: 'La cédula de paciente',
@@ -68,4 +68,4 @@ const PacienteSchema = z.object({
     })
 })
 
-export {PacienteSchema}
+export {pacienteSchema}

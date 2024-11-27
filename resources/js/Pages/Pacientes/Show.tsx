@@ -2,7 +2,7 @@ import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import Paciente from "@/src/models/Paciente.ts";
 import React from "react";
 import {usePermission} from "@/src/Utils/Utils.ts";
-import {EllipsisVertical, FolderOpen, History, User} from "lucide-react";
+import {EllipsisVertical, FolderOpen, History, User as UserIcon} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs.tsx"
 import Title from "@/Components/atoms/Title";
 import {Button} from "@/shadcn/ui/button.tsx";
@@ -12,21 +12,18 @@ import {format, formatDistanceToNow} from 'date-fns'
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import Image from "@/Components/atoms/Image.tsx";
 import {Icon} from "@/Components/atoms/Icon.tsx";
-import {
-    DropdownMenu,
-    DropdownMenuContent, DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/shadcn/ui/dropdown-menu.tsx'
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from '@/shadcn/ui/dropdown-menu.tsx'
 import {Text} from "@/Components/atoms/Text";
-import {Link} from "@inertiajs/react";
-import Historia from "@/src/models/Historia.ts";
+import {Link, usePage} from "@inertiajs/react";
 import {route} from "ziggy-js";
+import User from '@/src/models/User.ts'
 import {
-    AlertDialog, AlertDialogAction, AlertDialogCancel,
-    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger
@@ -52,6 +49,7 @@ const tabTriggerStyle = 'py-2.5 rounded-none ring-0 shadow-none px-12 text-slate
 
 const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
 
+    const user: User | null = usePage().props.auth.user
     const can = usePermission()
 
     return (
@@ -63,11 +61,12 @@ const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
                         {
                             paciente.foto ?
                                 (
-                                    <Image src={paciente.foto} className={'w-full h-auto object-contain aspect-square'}/>
+                                    <Image src={paciente.foto}
+                                           className={'w-full h-auto object-contain aspect-square'}/>
                                 ) : (
                                     <div className={'h-full flex justify-center items-center'}>
                                         <Icon className={'text-slate-200 size-fit'}>
-                                            <User className={'size-16'}/>
+                                            <UserIcon className={'size-16'}/>
                                         </Icon>
                                     </div>
                                 )
@@ -80,23 +79,26 @@ const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
                 </div>
                 <div className={'col-start-4 py-3'}>
                     <div className={'flex justify-end items-center gap-3'}>
-                        <Button className={'bg-indigo-500'}>Crear Historia</Button>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant={'outline'}><EllipsisVertical/></Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align={"end"}>
-                                { can('pacientes-update') &&
-                                    <DropdownMenuItem asChild>
-                                        <Link href={route('pacientes.edit', {paciente: paciente.id})}>
-                                            <Text>
-                                                Editar
-                                            </Text>
-                                        </Link>
-                                    </DropdownMenuItem>
-                                }
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        {
+                            can('pacientes-update') && paciente.assigned_to === user?.id || can('pacientes-full-control') && (
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant={'outline'}><EllipsisVertical/></Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align={"end"}>
+                                        {can('pacientes-update') &&
+                                            <DropdownMenuItem asChild>
+                                                <Link href={route('pacientes.edit', {paciente: paciente.id})}>
+                                                    <Text>
+                                                        Editar
+                                                    </Text>
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        }
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            )
+                        }
                     </div>
                 </div>
 
@@ -241,7 +243,7 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
     )
 }
 
-const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
+const HistoriasSection = ({paciente}: { paciente: Paciente }) => {
     return (
         <div className={'h-[50vw] px-4 rounded-lg '}>
             <div className={'flex h-full border flex-wrap'}>
@@ -284,12 +286,13 @@ const HistoriasSection = ({paciente}: {paciente: Paciente}) => {
     )
 }
 
-const HistoriaItem = ({paciente}: {paciente?: Paciente | null}) => {
+const HistoriaItem = ({paciente}: { paciente?: Paciente | null }) => {
 
     const historia = paciente?.historia
 
     return (
-        <div className={`group h-32 border bg-${historia ? 'sky' : 'slate'}-100 border-${historia ? 'sky' : 'slate'}-400 rounded-lg p-3 flex flex-col`}>
+        <div
+            className={`group h-32 border bg-${historia ? 'sky' : 'slate'}-100 border-${historia ? 'sky' : 'slate'}-400 rounded-lg p-3 flex flex-col`}>
             <div>
                 <Title>Historia regular</Title>
             </div>
@@ -300,7 +303,7 @@ const HistoriaItem = ({paciente}: {paciente?: Paciente | null}) => {
                             Historia clínica creada
                         </Text>
                         <Button asChild>
-                            <Link href={route('historias.show', {historia: historia.id})} >
+                            <Link href={route('historias.show', {historia: historia.id})}>
                                 Ver historia clínica
                             </Link>
                         </Button>
@@ -322,14 +325,16 @@ const HistoriaItem = ({paciente}: {paciente?: Paciente | null}) => {
                                         Crear historia clínica
                                     </AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        Estás a punto de crear la historia clínica para este paciente. ¿Deseas continuar?
+                                        Estás a punto de crear la historia clínica para este paciente. ¿Deseas
+                                        continuar?
                                     </AlertDialogDescription>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>
                                             Cancelar
                                         </AlertDialogCancel>
                                         <AlertDialogAction asChild>
-                                            <Link href={route('historias.store')} method={'post'} data={{paciente_id: paciente?.id}} as={'button'}>
+                                            <Link href={route('historias.store')} method={'post'}
+                                                  data={{paciente_id: paciente?.id}} as={'button'}>
                                                 Crear historia clínica
                                             </Link>
                                         </AlertDialogAction>
@@ -345,65 +350,68 @@ const HistoriaItem = ({paciente}: {paciente?: Paciente | null}) => {
     )
 }
 
-const HistoriaEndodonciaItem = ({paciente}: {paciente: Paciente}) => {
+const HistoriaEndodonciaItem = ({paciente}: { paciente: Paciente }) => {
 
     const historia = paciente.historia_endodoncia ?? null
 
     return (
         <>
-        <div className={`group h-32 border bg-${historia ? 'sky' : 'slate'}-100 border-${historia ? 'sky' : 'slate'}-400 rounded-lg p-3 flex flex-col`}>
-            <div>
-                <Title>Historia de endodoncia</Title>
-            </div>
-            {
-                historia ? (
-                    <div className={'flex-1 flex justify-center items-center gap-x-3'}>
-                        <Text>
-                            Historia de endodoncia creada
-                        </Text>
-                        <Button asChild>
-                            <Link href={route('endodoncia.historias.show', {historia: historia.id})} >
-                                Ver historia de endodoncia
-                            </Link>
-                        </Button>
-                    </div>
-                ) : (
-                    <div className={'flex-1 flex justify-center items-center gap-x-3'}>
-                        <Text>
-                            No hay historia de endodoncia creada
-                        </Text>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button>
-                                    Crear
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                        Crear historia de endodoncia
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Estás a punto de crear la historia de endodoncia para este paciente. ¿Deseas continuar?
-                                    </AlertDialogDescription>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>
-                                            Cancelar
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction asChild>
-                                            <Link href={route('endodoncia.historias.store')} method={'post'} data={{paciente_id: paciente.id}} as={'button'}>
-                                                Crear historia de endodoncia
-                                            </Link>
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogHeader>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </div>
-                )
-            }
+            <div
+                className={`group h-32 border bg-${historia ? 'sky' : 'slate'}-100 border-${historia ? 'sky' : 'slate'}-400 rounded-lg p-3 flex flex-col`}>
+                <div>
+                    <Title>Historia de endodoncia</Title>
+                </div>
+                {
+                    historia ? (
+                        <div className={'flex-1 flex justify-center items-center gap-x-3'}>
+                            <Text>
+                                Historia de endodoncia creada
+                            </Text>
+                            <Button asChild>
+                                <Link href={route('endodoncia.historias.show', {historia: historia.id})}>
+                                    Ver historia de endodoncia
+                                </Link>
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className={'flex-1 flex justify-center items-center gap-x-3'}>
+                            <Text>
+                                No hay historia de endodoncia creada
+                            </Text>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button>
+                                        Crear
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Crear historia de endodoncia
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Estás a punto de crear la historia de endodoncia para este paciente. ¿Deseas
+                                            continuar?
+                                        </AlertDialogDescription>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
+                                                Cancelar
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction asChild>
+                                                <Link href={route('endodoncia.historias.store')} method={'post'}
+                                                      data={{paciente_id: paciente.id}} as={'button'}>
+                                                    Crear historia de endodoncia
+                                                </Link>
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogHeader>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
+                    )
+                }
 
-        </div>
+            </div>
         </>
     )
 }

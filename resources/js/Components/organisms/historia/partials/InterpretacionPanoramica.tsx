@@ -17,14 +17,12 @@ import {Button} from "@/shadcn/ui/button.tsx";
 const ACCEPTED_PICTURE_MIME: readonly string[] = ['image/jpeg', 'image/jpg', 'image/png']
 
 const InterpretacionPanoramica = () => {
-    const {historia} = React.useContext(HistoriaEditorContext)
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
 
     const {historia_odontologica} = historia
     const {interpretacion_panoramica} = historia.historia_odontologica?.examen_radiografico!
 
     const {isProcessing, router} = useInertiaSubmit()
-
-    const isDisabled: boolean = isProcessing
 
     const interpretacionPanoramicaForm = useForm<z.infer<typeof interpretacionPanoramicaSchema>>({
         resolver: zodResolver(interpretacionPanoramicaSchema),
@@ -40,7 +38,7 @@ const InterpretacionPanoramica = () => {
                 imagenes: []
             },
         },
-        disabled: isDisabled,
+        disabled: disabled,
     })
 
     const handleSubmit = (values: z.infer<typeof interpretacionPanoramicaSchema>) => {
@@ -119,9 +117,13 @@ const InterpretacionPanoramica = () => {
                         </div>
 
 
-                        <div className={'my-2'}>
-                            <DragAndDrop maxFiles={5} handleDrop={handleDropPanoramica}/>
-                        </div>
+                        {
+                            !disabled && (
+                                <div className={'my-2'}>
+                                    <DragAndDrop maxFiles={5} handleDrop={handleDropPanoramica} disabled={disabled}/>
+                                </div>
+                            )
+                        }
 
                         <FormField render={({field}) => (
                             <FormItem>
@@ -137,7 +139,7 @@ const InterpretacionPanoramica = () => {
                                         <FormItem>
                                             <FormLabel>{interpretacionPanoramicaSchema.shape.interpretacion_panoramica.shape.descripcion.shape[interpretacion].description}</FormLabel>
                                             <FormControl>
-                                                <Textarea value={field.value} onChange={field.onChange}/>
+                                                <Textarea {...field}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>

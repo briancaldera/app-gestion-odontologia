@@ -2,14 +2,13 @@ import Paciente from "@/src/models/Paciente.ts";
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import React from "react";
-import {usePage} from "@inertiajs/react";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
-import {PacienteSchema} from "@/FormSchema/Pacientes/CreateSchema.ts";
+import {pacienteSchema} from "@/FormSchema/Pacientes/CreateSchema.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {route} from "ziggy-js";
-import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
+import {mapServerErrorsToFields, usePermission} from "@/src/Utils/Utils.ts";
 import {toast} from "sonner";
 import Title from "@/Components/atoms/Title";
 import {Button} from "@/shadcn/ui/button.tsx";
@@ -32,31 +31,36 @@ type EditProps = {
     paciente: Paciente
 }
 
-const EditPacienteSchema = PacienteSchema.omit({cedula: true})
+const EditPacienteSchema = pacienteSchema.omit({cedula: true})
 
 const Edit = ({paciente}: EditProps) => {
 
     const {router, isProcessing} = useInertiaSubmit()
+    const can = usePermission()
 
-    const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
-        resolver: zodResolver(PacienteSchema),
+    const pacienteForm = useForm<z.infer<typeof pacienteSchema>>({
+        resolver: zodResolver(pacienteSchema),
         defaultValues: {
-            apellido: paciente.apellido,
-            cedula: paciente.cedula,
-            direccion: paciente.direccion,
-            edad: paciente.edad,
+            apellido: paciente.apellido ?? '',
+            cedula: paciente.cedula ?? '',
+            direccion: paciente.direccion ?? '',
+            edad: paciente.edad ?? 0,
             enfermedad_actual: paciente.enfermedad_actual ?? '',
-            fecha_nacimiento: paciente.fecha_nacimiento,
-            motivo_consulta: paciente.motivo_consulta,
-            nombre: paciente.nombre,
-            ocupacion: paciente.ocupacion,
-            peso: paciente.peso,
-            sexo: paciente.sexo,
-            telefono: paciente.telefono ?? ''
+            fecha_nacimiento: new Date(paciente.fecha_nacimiento ?? ''),
+            motivo_consulta: paciente.motivo_consulta ?? '',
+            nombre: paciente.nombre ?? '',
+            ocupacion: paciente.ocupacion ?? '',
+            peso: paciente.peso ?? 0,
+            sexo: paciente.sexo ?? '',
+            telefono: paciente.telefono ?? '',
+            informacion_emergencia: {
+                contacto: paciente.informacion_emergencia?.contacto ?? '',
+                telefono: paciente.informacion_emergencia?.telefono ?? ''
+            }
         },
     })
 
-    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
+    const handleSubmit = (values: z.infer<typeof pacienteSchema>) => {
 
         const endpoint = route('pacientes.update', {paciente: paciente.id})
 
@@ -70,7 +74,6 @@ const Edit = ({paciente}: EditProps) => {
                 mapServerErrorsToFields(pacienteForm, errors);
             },
             onSuccess: page => {
-                pacienteForm.reset(values)
                 router.reload({only: ['paciente']})
             }
         })
@@ -130,41 +133,6 @@ const Edit = ({paciente}: EditProps) => {
                                     </FormItem>
                                 )} name={'foto'} control={pacienteForm.control}/>
 
-                                {/*<FormField render={({field}) => (<FormItem>*/}
-
-                                {/*    <FormControl>*/}
-                                {/*        <Input type={'file'} {...field} accept={'image/png,image/jpeg'}/>*/}
-                                {/*        /!*<Dropzone disabled={field.disabled} name={field.name} onDrop={(acceptedFiles: File[]) => {*!/*/}
-                                {/*        /!*    if (acceptedFiles.length === 0) toast.error('Debes elegir al menos 1 archivo')*!/*/}
-                                {/*        /!*    if (acceptedFiles.length > 1) toast.error('Debes elegir solo 1 archivo')*!/*/}
-
-                                {/*        /!*    const file = acceptedFiles[0]*!/*/}
-
-                                {/*        /!*    pacienteForm.setValue('foto', file, {*!/*/}
-                                {/*        /!*        shouldDirty: true,*!/*/}
-                                {/*        /!*        shouldTouch: true,*!/*/}
-                                {/*        /!*        shouldValidate: true*!/*/}
-                                {/*        /!*    })*!/*/}
-                                {/*        /!*}} accept={pictureFileFormats} maxFiles={1}>*!/*/}
-                                {/*        /!*    {({getRootProps, getInputProps}) => (*!/*/}
-                                {/*        /!*        <div className={'bg-slate-100 rounded-lg aspect-square'} {...getRootProps()}>*!/*/}
-                                {/*        /!*            <Avatar*!/*/}
-                                {/*        /!*                className={'w-full h-auto shadow-inner rounded-none'}>*!/*/}
-                                {/*        /!*                <Image src={field.value ?? paciente.foto} name={field.name}/>*!/*/}
-                                {/*        /!*                <AvatarFallback>*!/*/}
-                                {/*        /!*                    Sin foto*!/*/}
-                                {/*        /!*                </AvatarFallback>*!/*/}
-                                {/*        /!*            </Avatar>*!/*/}
-                                {/*        /!*            <input {...getInputProps()} name={field.name}/>*!/*/}
-                                {/*        /!*        </div>*!/*/}
-                                {/*        /!*    )}*!/*/}
-                                {/*        /!*</Dropzone>*!/*/}
-
-                                {/*    </FormControl>*/}
-                                {/*    <FormMessage/>*/}
-                                {/*</FormItem>)*/}
-                                {/*} name={'foto'} control={pacienteForm.control}/>*/}
-
                                 <div className={'p-6'}>
 
                                     <Title>Asignado a</Title>
@@ -190,7 +158,7 @@ const Edit = ({paciente}: EditProps) => {
                                         <FormItem>
                                             <FormLabel>Cédula</FormLabel>
                                             <FormControl>
-                                                <Input {...field}/>
+                                                <Input {...field} disabled={!can('system-full-control')}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>

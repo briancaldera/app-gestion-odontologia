@@ -38,7 +38,7 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
     }
 
     return (
-        <Surface className={'w-full px-6'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
 
             <Title level={'title-lg'}>Antecedentes Médicos Familiares</Title>
             <Text level={'body-sm'}>Describa el estado actual o causa de muerte de padres, hermanos y abuelos.</Text>
@@ -75,7 +75,7 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
                     </div>
                 </form>
             </Form>
-        </Surface>
+        </div>
     )
 }
 

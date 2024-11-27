@@ -8,19 +8,29 @@ import Avatar from "@/Components/atoms/Avatar";
 import {Text} from "@/Components/atoms/Text";
 import Title from "@/Components/atoms/Title";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
-import {ArrowBigLeft, Plug2, Plus, UserRoundX} from 'lucide-react'
+import {EllipsisVertical, Plus, UserRoundX} from 'lucide-react'
 import {Button} from "@/shadcn/ui/button.tsx";
-import SidebarMenu, {MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {DataTable} from "@/Components/molecules/DataTable.tsx";
 import {usePermission} from "@/src/Utils/Utils.ts";
 import {
-    AlertDialog, AlertDialogAction, AlertDialogCancel,
-    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/shadcn/ui/alert-dialog.tsx";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuTrigger
+} from "@/shadcn/ui/dropdown-menu.tsx";
 
 type IndexProps = {
     pacientes: Paciente[]
@@ -33,10 +43,12 @@ const Index = ({pacientes}: IndexProps) => {
     if (can('pacientes-index-all')) {
         return (
             <AuthLayout title={'Pacientes'}>
-                <ScrollArea className={'h-full'}>
-                    <Surface className={'h-full flex flex-col p-6 gap-y-6'}>
+                <ScrollArea className={'h-full bg-white'}>
+                    <div className={'px-6'}>
+
                         <Title level={'h3'}>Pacientes</Title>
-                        <div className={'flex justify-end'}><Text level={'body-xs'}>Total pacientes:<span className={'text-2xl font-bold'}>{pacientes.length}</span></Text></div>
+                        <div className={'flex justify-end'}><Text level={'body-xs'}>Total pacientes: <span
+                            className={'text-2xl font-bold'}>{pacientes.length}</span></Text></div>
 
                         {
                             pacientes.length !== 0 ? (
@@ -55,7 +67,7 @@ const Index = ({pacientes}: IndexProps) => {
                                 </div>
                             )
                         }
-                    </Surface>
+                    </div>
                 </ScrollArea>
             </AuthLayout>
         )
@@ -77,7 +89,8 @@ const Index = ({pacientes}: IndexProps) => {
                                                 Crear nuevo paciente
                                             </AlertDialogTitle>
                                             <AlertDialogDescription>
-                                                Estas seguro que deseas crear un nuevo paciente? Solo puedes crear una cantidad limitada de pacientes.
+                                                Estas seguro que deseas crear un nuevo paciente? Solo puedes crear una
+                                                cantidad limitada de pacientes.
                                             </AlertDialogDescription>
                                             <AlertDialogFooter>
                                                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
@@ -97,16 +110,19 @@ const Index = ({pacientes}: IndexProps) => {
                                 <ScrollArea className={'basis-full'}>
                                     <div className={'space-y-2'}>
                                         {
-                                            pacientes.map(paciente => <PacienteItem key={paciente.id} paciente={paciente}/>)
+                                            pacientes.map(paciente => <PacienteItem key={paciente.id}
+                                                                                    paciente={paciente}/>)
                                         }
                                     </div>
                                 </ScrollArea>
                             ) : (
                                 <div className={'flex-1 flex flex-col justify-center items-center gap-y-4'}>
                                     <UserRoundX className={'size-20 mb-4 text-slate-300'}/>
-                                    <Text className={'text-center'}>¡Aun no tienes ningún paciente! Registra a un nuevo paciente</Text>
+                                    <Text className={'text-center'}>¡Aun no tienes ningún paciente! Registra a un nuevo
+                                        paciente</Text>
                                     <Button role={'link'} asChild>
-                                        <Link href={route('pacientes.create')}><Plus className={'mr-2'}/>Registrar paciente</Link>
+                                        <Link href={route('pacientes.create')}><Plus className={'mr-2'}/>Registrar
+                                            paciente</Link>
                                     </Button>
                                 </div>
                             )
@@ -118,7 +134,7 @@ const Index = ({pacientes}: IndexProps) => {
     }
 }
 
-const PacienteItem = ({paciente}: {paciente: Paciente}) => {
+const PacienteItem = ({paciente}: { paciente: Paciente }) => {
 
     return (
         <Link href={route('pacientes.show', {paciente: paciente.id})}>
@@ -200,6 +216,32 @@ const pacientesColumDef: ColumnDef<Paciente>[] = [
             }
         }
     }),
+    pacientesColumnHelper.display({
+        id: 'actions',
+        cell: ({row}) => {
+            const can = usePermission()
+
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger>
+                        <EllipsisVertical/>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                        {
+                            can('pacientes-read') && (
+                                <DropdownMenuItem>
+                                    <Link href={route('pacientes.show', {paciente: row.original.id})}>
+                                        Ver paciente
+                                    </Link>
+                                </DropdownMenuItem>
+                            )
+                        }
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
+        }
+    })
 ]
 
 export default Index

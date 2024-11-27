@@ -23,7 +23,7 @@ class UpdatePacienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cedula' => ['sometimes', 'required', 'string', 'alpha_num:ascii', 'between:4, 10','regex:/^[VE][\d]{3,9}$/',],
+            'cedula' => ['sometimes', 'required', 'string', 'alpha_num:ascii', 'between:4, 10','regex:/^[VE][\d]{3,9}$/', 'unique:'.Paciente::class.',cedula'],
             'nombre' => ['sometimes', 'required', 'string', 'between:2, 50'],
             'apellido' => ['sometimes', 'required', 'string', 'between:2, 50'],
             'edad' => ['sometimes', 'required', 'numeric', 'integer', 'min:0', 'max:150'],

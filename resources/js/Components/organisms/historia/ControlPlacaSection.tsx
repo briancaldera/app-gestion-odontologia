@@ -71,7 +71,7 @@ const ControlPlacaSection = () => {
     const [newControl, setNewControl] = React.useState<boolean>(false)
 
     return (
-        <Surface className={'p-6'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
 
             <Title level={'h4'}>Control de placa de dental</Title>
 
@@ -174,7 +174,7 @@ const ControlPlacaSection = () => {
 
 
 
-        </Surface>
+        </div>
     )
 }
 

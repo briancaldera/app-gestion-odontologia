@@ -19,7 +19,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
 
     return (
 
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
 
             <Title level={'title-lg'}>Antecedentes Médicos Personales</Title>
 
@@ -30,7 +30,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
             <CorrectionsBlock model={correctionsModel} name={'alergias'} canCreateCorrections={canCreateCorrections}>
                 <AlergiasYMedicamentosForm/>
             </CorrectionsBlock>
-        </Surface>
+        </div>
     )
 }
 

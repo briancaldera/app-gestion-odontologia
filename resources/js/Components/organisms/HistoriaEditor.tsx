@@ -1,4 +1,3 @@
-import Surface from '@/Components/atoms/Surface'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import {useForm} from "react-hook-form"
@@ -15,12 +14,14 @@ import HistoriaOdontologicaSchema, {
 import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema/Historia/ExamenRadiograficoSchema.ts'
 import {
     Bone,
-    BriefcaseMedical, Download,
+    BriefcaseMedical,
+    Download,
     FileBox,
     HeartPulse,
     Hospital,
     Images,
-    ListChecks, Printer,
+    ListChecks,
+    Printer,
     RefreshCcwDot,
     Table,
     TableRowsSplit,
@@ -53,7 +54,8 @@ import {
     MenubarCheckboxItem,
     MenubarContent,
     MenubarItem,
-    MenubarMenu, MenubarSeparator,
+    MenubarMenu,
+    MenubarSeparator,
     MenubarTrigger,
 } from "@/shadcn/ui/menubar"
 import {Homework} from "@/src/models/Group.ts";
@@ -300,79 +302,79 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                           orientation={'vertical'}>
                         <TabsList className={'flex-none flex flex-col items-end justify-start p-0'}>
                             <TabsTrigger value="section1" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 rounded-tl-lg ${tab === 'section1' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Paciente</h2>
+                                <h2 className='max-sm:hidden'>Paciente</h2>
                                 <Icon>
                                     <UserCircle className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section2" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section2' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Ant. Familiares</h2>
+                                <h2 className='max-sm:hidden'>Ant. Familiares</h2>
                                 <Icon>
                                     <Users className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section3" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section3' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Ant. Personales</h2>
+                                <h2 className='max-sm:hidden'>Ant. Personales</h2>
                                 <Icon>
                                     <HeartPulse className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section4" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section4' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>H. Odont.</h2>
+                                <h2 className='max-sm:hidden'>H. Odont.</h2>
                                 <Icon>
                                     <Hospital className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section5" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section5' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Examen Rad.</h2>
+                                <h2 className='max-sm:hidden'>Examen Rad.</h2>
                                 <Icon>
                                     <Bone className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section6" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section6' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Periodont.</h2>
+                                <h2 className='max-sm:hidden'>Periodont.</h2>
                                 <Icon>
                                     <TableRowsSplit className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section7" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section7' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Est. de modelos</h2>
+                                <h2 className='max-sm:hidden'>Est. de modelos</h2>
                                 <Icon>
                                     <FileBox className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section8" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section8' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Tratamiento</h2>
+                                <h2 className='max-sm:hidden'>Tratamiento</h2>
                                 <Icon>
                                     <BriefcaseMedical className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section9" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section9' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Modif. Trat.</h2>
+                                <h2 className='max-sm:hidden'>Modif. Trat.</h2>
                                 <Icon>
                                     <RefreshCcwDot className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section10" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section10' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Secuencia Trat.</h2>
+                                <h2 className='max-sm:hidden'>Secuencia Trat.</h2>
                                 <Icon>
                                     <ListChecks className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section11" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section11' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>H. Periodontal</h2>
+                                <h2 className='max-sm:hidden'>H. Periodontal</h2>
                                 <Icon>
                                     <Table className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section12" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section12' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Cont. placa</h2>
+                                <h2 className='max-sm:hidden'>Cont. placa</h2>
                                 <Icon>
                                     <Table className={'size-6'}/>
                                 </Icon>
                             </TabsTrigger>
                             <TabsTrigger value="section13" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 rounded-bl-lg ${tab === 'section13' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
-                                <h2>Archivos</h2>
+                                <h2 className='max-sm:hidden'>Archivos</h2>
                                 <Icon>
                                     <Images className={'size-6'}/>
                                 </Icon>

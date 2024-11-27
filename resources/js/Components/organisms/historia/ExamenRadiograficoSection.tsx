@@ -84,7 +84,7 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
 
             <Title level={'title-lg'}>Examen Radiográfico</Title>
 
@@ -105,7 +105,7 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
                 <InterpretacionCoronales/>
             </CorrectionsBlock>
 
-        </Surface>
+        </div>
     )
 }
 

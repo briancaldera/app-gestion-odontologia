@@ -1,8 +1,8 @@
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import {useForm} from "react-hook-form";
-import {undefined, z} from 'zod'
+import {z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
-import {PacienteSchema} from '@/FormSchema/Pacientes/CreateSchema.ts'
+import {pacienteSchema} from '@/FormSchema/Pacientes/CreateSchema.ts'
 import {Button} from "@/shadcn/ui/button.tsx";
 import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
@@ -31,8 +31,8 @@ const Create = () => {
     const {auth} = usePage().props
     const {router, isProcessing} = useInertiaSubmit()
 
-    const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
-        resolver: zodResolver(PacienteSchema),
+    const pacienteForm = useForm<z.infer<typeof pacienteSchema>>({
+        resolver: zodResolver(pacienteSchema),
         defaultValues: {
             apellido: "",
             cedula: "",
@@ -53,7 +53,7 @@ const Create = () => {
         },
     })
 
-    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
+    const handleSubmit = (values: z.infer<typeof pacienteSchema>) => {
         const endpoint = route('pacientes.store')
 
         router.post(endpoint, values, {

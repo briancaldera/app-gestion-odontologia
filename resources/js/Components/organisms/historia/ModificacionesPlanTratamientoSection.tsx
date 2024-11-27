@@ -133,7 +133,7 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
     }
 
     return (
-        <Surface className={'px-6'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
             <Title level={'title-lg'}>Modificaciones del Plan de Tratamiento</Title>
 
             <section className={'my-6 relative'}>
@@ -286,7 +286,7 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                 </div>
 
             </section>
-        </Surface>
+        </div>
     )
 }
 

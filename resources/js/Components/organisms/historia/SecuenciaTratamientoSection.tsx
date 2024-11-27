@@ -100,7 +100,7 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
             <Title level={'title-lg'}>Secuencia del Plan de Tratamiento</Title>
 
             <section className={'my-6 relative'}>
@@ -184,7 +184,7 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
                 </SecuenciaPlanTratamientoTableContext.Provider>
 
             </section>
-        </Surface>
+        </div>
     )
 }
 

@@ -40,7 +40,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
             <Title level={'title-lg'}>Estudio de Modelos</Title>
 
             <CorrectionsBlock model={correctionsModel} name={'maxsupinfoclu'}
@@ -51,7 +51,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
             <CorrectionsBlock model={correctionsModel} name={'diagnostico'} canCreateCorrections={canCreateCorrections}>
                 <EstudioModelosParte2/>
             </CorrectionsBlock>
-        </Surface>
+        </div>
     )
 }
 

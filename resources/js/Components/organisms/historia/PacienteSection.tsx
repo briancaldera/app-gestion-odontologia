@@ -3,7 +3,6 @@ import {useForm, UseFormReturn} from "react-hook-form";
 import {z} from "zod";
 import PacienteSchema from "@/FormSchema/Historia/PacienteSchema";
 import {route, useRoute} from "ziggy-js";
-import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 import Field from "@/Components/molecules/Field";
@@ -61,7 +60,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
     }
 
     return (
-        <Surface className={'w-full p-6 h-screen'}>
+        <div className={'bg-white w-full p-6 min-h-screen'}>
 
             <div className={'flex flex-col items-center gap-y-1'}>
                 <Title level={'body-sm'}>Facultad de Odontología</Title>
@@ -225,7 +224,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                     </div>
                 </form>
             </Form>
-        </Surface>
+        </div>
     )
 }
 
