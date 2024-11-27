@@ -96,6 +96,8 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
 
     const isDisabled = readMode || isProcessing
 
+    const [tab, setTab] = React.useState('section1')
+
     const handleSubmitCorrections = (values: {section: string, content: string}) => {
         const endpoint = route('groups.assignments.homeworks.corrections', {
             group:homework?.assignment?.group_id,
@@ -294,149 +296,132 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                     </MenubarMenu>
                 </Menubar>
                 <div className={'flex gap-x-2'}>
-
-
-                    <Tabs defaultValue="paciente" className={"basis-3/4 flex-auto flex h-full"}
+                    <Tabs defaultValue={tab} className={"basis-3/4 flex-auto flex h-full"} onValueChange={(value) => setTab(value)}
                           orientation={'vertical'}>
-                        <TabsList className={'flex-none flex flex-col items-end justify-start p-0 sticky top-0'}>
-                            <TabsTrigger value="paciente" className={'p-0'}>
-                                <Surface className={'rounded-l-lg rounded-r-none rounded-b-none'}>
-                                    <Icon className={'size-8'}>
-                                        <UserCircle/>
-                                    </Icon>
-                                </Surface>
+                        <TabsList className={'flex-none flex flex-col items-end justify-start p-0'}>
+                            <TabsTrigger value="section1" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 rounded-tl-lg ${tab === 'section1' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Paciente</h2>
+                                <Icon>
+                                    <UserCircle className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="antFamiliares" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Users/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section2" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section2' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Ant. Familiares</h2>
+                                <Icon>
+                                    <Users className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="antPersonales" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <HeartPulse/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section3" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section3' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Ant. Personales</h2>
+                                <Icon>
+                                    <HeartPulse className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="historiaOdon" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Hospital/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section4" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section4' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>H. Odont.</h2>
+                                <Icon>
+                                    <Hospital className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="examenRadiografico" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Bone/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section5" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section5' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Examen Rad.</h2>
+                                <Icon>
+                                    <Bone className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="periodontodiagrama" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <TableRowsSplit/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section6" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section6' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Periodont.</h2>
+                                <Icon>
+                                    <TableRowsSplit className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="estudioModelos" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <FileBox/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section7" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section7' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Est. de modelos</h2>
+                                <Icon>
+                                    <FileBox className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="planTratamiento" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <BriefcaseMedical/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section8" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section8' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Tratamiento</h2>
+                                <Icon>
+                                    <BriefcaseMedical className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="modificacionesPlanTratamiento" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <RefreshCcwDot/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section9" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section9' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Modif. Trat.</h2>
+                                <Icon>
+                                    <RefreshCcwDot className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="secuenciaPlanTratamiento" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <ListChecks/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section10" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section10' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Secuencia Trat.</h2>
+                                <Icon>
+                                    <ListChecks className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="historia-periodontal" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Table/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section11" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section11' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>H. Periodontal</h2>
+                                <Icon>
+                                    <Table className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="control-placa" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Table/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section12" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section12' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Cont. placa</h2>
+                                <Icon>
+                                    <Table className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="media" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Images/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section13" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 rounded-bl-lg ${tab === 'section13' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2>Archivos</h2>
+                                <Icon>
+                                    <Images className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
                         </TabsList>
                         <ScrollArea className={'flex-1 w-full h-[83vh]'}>
-
-                            <TabsContent value="paciente" className={TabTriggerStyle}>
+                            <TabsContent value="section1" className={TabTriggerStyle}>
                                 <PacienteSection form={pacienteForm}/>
                             </TabsContent>
-                            <TabsContent value="antPersonales" className={TabTriggerStyle}>
-                                <AntPersonalesSection form={antPersonalesForm}/>
-                            </TabsContent>
-                            <TabsContent value="antFamiliares" className={TabTriggerStyle}>
+                            <TabsContent value="section2" className={TabTriggerStyle}>
                                 <AntFamiliaresSection form={antFamiliaresForm}/>
                             </TabsContent>
-                            <TabsContent value="historiaOdon" className={TabTriggerStyle}>
+                            <TabsContent value="section3" className={TabTriggerStyle}>
+                                <AntPersonalesSection form={antPersonalesForm}/>
+                            </TabsContent>
+                            <TabsContent value="section4" className={TabTriggerStyle}>
                                 <HistoriaOdontologicaSection form={historiaOdontologicaForm}/>
                             </TabsContent>
-                            <TabsContent value="examenRadiografico" className={TabTriggerStyle}>
+                            <TabsContent value="section5" className={TabTriggerStyle}>
                                 <ExamenRadiograficoSection historiaOdontologica={historia.historia_odontologica!}
                                                            form={examenRadiograficoForm}/>
                             </TabsContent>
-                            <TabsContent value="estudioModelos" className={TabTriggerStyle}>
-                                <EstudioModelosSection form={estudioModelosForm}/>
-                            </TabsContent>
-                            <TabsContent value="periodontodiagrama" className={TabTriggerStyle}>
+                            <TabsContent value="section6" className={TabTriggerStyle}>
                                 <PeriodontodiagramaSection form={periodontodiagramaForm}
                                                            periodontograma={historia.historia_odontologica?.periodontodiagrama[0] ?? null}/>
                             </TabsContent>
-                            <TabsContent value="planTratamiento" className={TabTriggerStyle}>
+                            <TabsContent value="section7" className={TabTriggerStyle}>
+                                <EstudioModelosSection form={estudioModelosForm}/>
+                            </TabsContent>
+                            <TabsContent value="section8" className={TabTriggerStyle}>
                                 <PlanTratamientoSection form={planTratamientoForm}/>
                             </TabsContent>
-                            <TabsContent value="modificacionesPlanTratamiento" className={TabTriggerStyle}>
+                            <TabsContent value="section9" className={TabTriggerStyle}>
                                 <ModificacionesPlanTratamientoSection form={modificacionesTratamientoForm}/>
                             </TabsContent>
-                            <TabsContent value="secuenciaPlanTratamiento" className={TabTriggerStyle}>
+                            <TabsContent value="section10" className={TabTriggerStyle}>
                                 <SecuenciaPlanTratamientoSection form={secuenciaTratamientoForm}/>
                             </TabsContent>
-                            <TabsContent value="historia-periodontal" className={TabTriggerStyle}>
+                            <TabsContent value="section11" className={TabTriggerStyle}>
                                 <HistoriaPeriodontalSection readonly={readMode} historia_id={historia.id}
                                                             historia_periodontal={historia.historia_odontologica!.historia_periodontal}/>
                             </TabsContent>
-                            <TabsContent value="control-placa" className={TabTriggerStyle}>
+                            <TabsContent value="section12" className={TabTriggerStyle}>
                                 <ControlPlacaSection/>
                             </TabsContent>
-                            <TabsContent value="media" className={TabTriggerStyle}>
+                            <TabsContent value="section13" className={TabTriggerStyle}>
                                 <MediaSection media={historia?.historia_odontologica?.anymedia ?? []}
                                               historia_id={historia.id} readmode={readMode}/>
                             </TabsContent>
-
                         </ScrollArea>
                     </Tabs>
 
