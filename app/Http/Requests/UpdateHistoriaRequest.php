@@ -26,7 +26,6 @@ class UpdateHistoriaRequest extends FormRequest
     {
         return [
             'paciente_id' => ['sometimes', 'required', 'string', 'uuid', 'exists:' . Paciente::class . ',id', 'unique:' . Historia::class],
-            'numero' => ['sometimes', 'nullable', 'string', 'unique:' . Historia::class . ',numero'],
             'semestre' => ['sometimes', 'string', Rule::in(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])],
 //            'motivo_consulta' => ['sometimes', 'required', 'string', 'max:255'],
 //            'enfermedad_actual' => ['sometimes', 'required', 'string', 'max:255'],
