@@ -63,6 +63,7 @@ import {useCorrections, UseCorrectionsReturn} from "@/src/corrections/correction
 import {toast} from "sonner";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 import {route} from "ziggy-js";
+import {usePage} from "@inertiajs/react";
 
 
 const TabTriggerStyle = 'p-0 m-0'
@@ -89,6 +90,8 @@ type HistoriaEditorProps = {
 }
 
 const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrections}: HistoriaEditorProps) => {
+
+    const url = usePage().url
 
     const [showSidebar, setShowSidebar] = React.useState<boolean>(false)
 
@@ -120,7 +123,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             },
             onSuccess: page => {
                 toast.success('Correcciones agregadas')
-                router.reload()
+                    router.visit(url)
             }
         })
     }

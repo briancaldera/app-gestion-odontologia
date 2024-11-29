@@ -5,7 +5,7 @@ import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import {ColumnDef, ColumnHelper, createColumnHelper} from "@tanstack/react-table";
 import {DataTable} from "@/Components/molecules/DataTable.tsx";
 import {route, useRoute} from "ziggy-js";
-import {FilePlus2, FileX2, Plus} from "lucide-react";
+import {EllipsisVertical, FilePlus2, FileX2, Plus} from "lucide-react";
 import {Text} from "@/Components/atoms/Text";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {Link} from "@inertiajs/react";
@@ -15,6 +15,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
 import Title from "@/Components/atoms/Title";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs.tsx";
 import {Calendar} from "@/shadcn/ui/calendar.tsx";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel} from '@/shadcn/ui/dropdown-menu.tsx'
 
 const Index = ({historias}: IndexProps) => {
 
@@ -23,8 +24,8 @@ const Index = ({historias}: IndexProps) => {
     if (can('historias-index-all')) {
         return (
             <AuthLayout title={'Historias'}>
-                <ScrollArea className={'h-full'}>
-                    <div>
+                <ScrollArea className={'bg-white h-full'}>
+                    <div className={'px-6'}>
                         <DataTable columns={historiaIndexTableColDef} data={historias} searchable={true}/>
                     </div>
                 </ScrollArea>
@@ -106,6 +107,11 @@ type IndexProps = {
 const columnHelper: ColumnHelper<Historia> = createColumnHelper<Historia>()
 
 const historiaIndexTableColDef: ColumnDef<Historia>[] = [
+    columnHelper.accessor((historia: Historia) => historia.numero ?? 'Sin asignar', {
+        meta: {title: 'Número de historia'},
+        id: 'code',
+        header: 'Número de historia',
+    }),
     columnHelper.accessor((historia: Historia) => `${historia.paciente?.nombre ?? ''} ${historia.paciente?.apellido ?? ''}`, {
         meta: {
             title: 'Paciente'
@@ -123,11 +129,6 @@ const historiaIndexTableColDef: ColumnDef<Historia>[] = [
         id: 'cedula',
         header: 'Cédula del paciente',
     }),
-    columnHelper.accessor((historia: Historia) => historia.numero ?? '-', {
-        meta: {title: 'Número de historia'},
-        id: 'code',
-        header: 'Número de historia',
-    }),
     columnHelper.accessor((historia: Historia) => `${historia.autor?.profile?.apellidos + ',' ?? ''} ${historia.autor?.profile?.nombres ?? ''}`, {
         meta: {title: 'Autor'},
         id: 'author',
@@ -140,6 +141,23 @@ const historiaIndexTableColDef: ColumnDef<Historia>[] = [
     }),
     columnHelper.display({
         id: 'actions',
+        cell: ({row}) => {
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <EllipsisVertical/>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align='end'>
+                        <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                        <DropdownMenuItem asChild>
+                            <Link href={route('historias.show', {historia: row.original.id})}>
+                                Ver historia
+                            </Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
+        }
     })
 ]
 

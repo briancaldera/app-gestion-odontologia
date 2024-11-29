@@ -8,7 +8,6 @@ import React from "react";
 import Title from "@/Components/atoms/Title";
 import {Loader2, NotebookPen} from "lucide-react";
 import {Text} from "@/Components/atoms/Text";
-import {faker} from '@faker-js/faker'
 import {Separator} from "@/shadcn/ui/separator.tsx";
 import {
     Dialog,
@@ -28,7 +27,8 @@ import Historia from "@/src/models/Historia.ts";
 import CreateHomeworkSchema from "@/FormSchema/Grupos/CreateHomeworkSchema.ts";
 import {Link, usePage} from "@inertiajs/react";
 import {format} from 'date-fns'
-import {Tabs, TabsContent, TabsList} from '@/shadcn/ui/tabs.tsx'
+import {Tabs, TabsContent, TabsList} from "@/shadcn/ui/tabs.tsx";
+import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
 
 type ShowProps = {
     assignment: Assignment,
@@ -39,106 +39,160 @@ const Show = ({assignment, historias}: ShowProps) => {
 
     const can = usePermission()
 
-    return (
-        <AuthLayout title={`Asignación - ${assignment.name}`}>
-            <div className={'grid grid-cols-4 h-full p-6 gap-2'}>
-                <div className={'col-span-3 overflow-y-scroll'}>
-                    <div className={'flex'}>
-                        <div className={'basis-20 flex-none'}>
-                            <div className={''}>
-                                <NotebookPen/>
+    console.log(assignment)
+
+    if (can('assignments-create') || can('assignments-full-control')) {
+
+        return (
+            <AuthLayout title={`Asignación - ${assignment.name}`}>
+                <ScrollArea className={'bg-white h-full'}>
+                    <div className={'grid grid-cols-4 h-full p-6 gap-2'}>
+
+                        <div className={'col-span-3 overflow-y-scroll'}>
+                            <div className={'flex'}>
+                                <div className={'basis-20 flex-none'}>
+                                    <div className={''}>
+                                        <NotebookPen/>
+                                    </div>
+
+                                </div>
+                                <div className={'flex-1 flex flex-col'}>
+                                    <Title level={'h3'}>{assignment.name}</Title>
+                                    <Separator className={'my-4'}/>
+                                    <Text>
+                                        {
+                                            assignment.description ?? 'No hay descripción'
+                                        }
+                                    </Text>
+                                </div>
+
                             </div>
 
                         </div>
-                        <div className={'flex-1 flex flex-col'}>
-                            <Title level={'h3'}>{assignment.name}</Title>
-                            <Separator className={'my-4'}/>
-                            <Text>
-                                {
-                                    assignment.description ?? 'No hay descripción'
-                                }
-                            </Text>
+
+
+                        <div className={'col-start-1'}>
+                            <Tabs defaultValue={'homeworks'}>
+                                <TabsList className={'w-full grid-cols-1'}>
+                                    <TabsList value={'homeworks'}>
+                                        Tarea entregada
+                                    </TabsList>
+                                </TabsList>
+                                <TabsContent value={'homeworks'}>
+                                    <HomeworksTab homeworks={assignment.homeworks}/>
+                                </TabsContent>
+                            </Tabs>
                         </div>
+
 
                     </div>
+                </ScrollArea>
+            </AuthLayout>
+        )
+    } else {
+        return (
+            <AuthLayout title={`Asignación - ${assignment.name}`}>
+                <ScrollArea className={'bg-white h-full'}>
+                    <div className={'grid grid-cols-1 sm:grid-cols-4 p-6 gap-2'}>
 
-                    {
-                        can('homeworks-index-all') && (
-                            <div>
-                                <Tabs defaultValue={'homeworks'}>
-                                    <TabsList className={'w-full grid-cols-1'}>
-                                        <TabsList value={'homeworks'}>
-                                            Tarea entregada
-                                        </TabsList>
-                                    </TabsList>
-                                    <TabsContent value={'homeworks'}>
-                                        <HomeworksTab homeworks={assignment.homeworks}/>
-                                    </TabsContent>
-                                </Tabs>
+                        <div className={'col-span-3 overflow-y-scroll'}>
+                            <div className={'flex'}>
+                                <div className={'basis-20 flex-none'}>
+                                    <div className={''}>
+                                        <NotebookPen/>
+                                    </div>
+
+                                </div>
+                                <div className={'flex-1 flex flex-col'}>
+                                    <Title level={'h3'}>{assignment.name}</Title>
+                                    <Separator className={'my-4'}/>
+                                    <Text>
+                                        {
+                                            assignment.description ?? 'No hay descripción'
+                                        }
+                                    </Text>
+                                </div>
+
                             </div>
-                        )
-                    }
-                </div>
-                <div className={'col-span-1 col-start-4 flex flex-col'}>
-                    {
-                        can('homeworks-create') && (
-                            <TurnInHomeworkCard historias={historias} assignment={assignment}/>
-                        )
-                    }
-                </div>
 
-            </div>
-        </AuthLayout>
-    )
+                        </div>
+
+                        <div className={'col-end-auto'}>
+                            <Title>Mi tarea</Title>
+                        </div>
+
+                        <div className={'col-span-1 col-start-4 flex flex-col'}>
+                            {
+                                can('homeworks-create') && (
+                                    <TurnInHomeworkCard historias={historias} assignment={assignment}/>
+                                )
+                            }
+                        </div>
+                    </div>
+                </ScrollArea>
+            </AuthLayout>
+        )
+    }
 }
 
-const TurnInHomeworkCard = ({assignment, historias}: { assignment: Assignment, historias: Historia[] }) => {
+const TurnInHomeworkCard =
+    ({assignment, historias}: { assignment: Assignment, historias: Historia[] }) => {
 
-    const {auth: {user}} = usePage().props
+        const {auth: {user}} = usePage().props
 
-    const [openDialog, setOpenDialog] = React.useState<boolean>(false)
-    const myHomework = assignment.homeworks?.filter(homework => homework.user_id === user.id) ?? []
+        const [openDialog, setOpenDialog] = React.useState<boolean>(false)
+        const myHomework = assignment.homeworks?.filter(homework => homework.user_id === user.id) ?? []
 
-    return (
-        <>
-            <Card>
-                <CardHeader>
-                    <CardTitle>
-                        Entregar
-                    </CardTitle>
-                    <CardDescription>
+        return (
+            <>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
+                            Entregar
+                        </CardTitle>
+                        <CardDescription>
 
-                    </CardDescription>
-                </CardHeader>
-                <div>
+                        </CardDescription>
+                    </CardHeader>
+                    <div>
 
-                </div>
-                <CardFooter>
-                    <Link href={route('historias.show', {historia: historias[0].id, _query: {
-                            homework: myHomework[0].id
-                        }})}>
-                    {
-                        myHomework.length > 0 ? (
-                            <div>Documento entregado en {format(myHomework[0].created_at, 'Pp')}</div>
-                        ) : (
-                            <Button onClick={() => setOpenDialog(true)} className={'w-full'}>Entregar</Button>
-                        )
-                    }
-                    </Link>
-                </CardFooter>
-            </Card>
+                    </div>
+                    <CardFooter>
+                        {/*<Link href={route('historias.show', {*/}
+                        {/*    historia: historias[0].id, _query: {*/}
+                        {/*        homework: myHomework[0].id*/}
+                        {/*    }*/}
+                        {/*})}>*/}
+                        {
+                            myHomework.length > 0 ? (
+                                <HomeworkItem homework={myHomework[0]}/>
+                            ) : (
+                                <Button onClick={() => setOpenDialog(true)} className={'w-full'}>Entregar</Button>
+                            )
+                        }
+                        {/*</Link>*/}
+                    </CardFooter>
+                </Card>
 
-            <TurnInHomeworkDialog open={openDialog} onOpenChange={setOpenDialog} historias={historias}
-                                  assignment={assignment}/>
-        </>
-    )
-}
+                <TurnInHomeworkDialog open={openDialog} onOpenChange={setOpenDialog} historias={historias}
+                                      assignment={assignment}/>
+            </>
+        )
+    }
 
-const TurnInHomeworkDialog = ({assignment, historias, open, onOpenChange}: {
+const TurnInHomeworkDialog = ({
+                                  assignment, historias, open, onOpenChange
+                              }: {
     assignment: Assignment,
-    historias: Historia[],
-    open: boolean,
-    onOpenChange: (open: boolean) => void
+    historias
+        :
+        Historia[],
+    open
+        :
+        boolean,
+    onOpenChange
+        :
+        (open: boolean) => void
 }) => {
 
     const {isProcessing, router} = useInertiaSubmit()
@@ -201,7 +255,7 @@ const TurnInHomeworkDialog = ({assignment, historias, open, onOpenChange}: {
             <DialogContent className={'max-w-3xl'}>
                 <DialogHeader>
                     <DialogTitle>Crear entrega</DialogTitle>
-                    <DialogDescription>Coloca un nombre y una descripción</DialogDescription>
+                    <DialogDescription></DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <Form {...assignmentForm}>
@@ -261,13 +315,29 @@ const HistoriaItem = ({
                           historia, isSelected, onClick = () => {
     }
                       }: { historia: Historia, isSelected: boolean, onClick: (historia: Historia) => void }) => {
+
+    const { paciente } = historia
+
     return (
         <div key={historia.id}
-             className={`group h-32 p-2 border rounded-lg cursor-pointer ${isSelected && 'bg-emerald-100'}`}
+             className={`flex gap-x-2 items-center group h-32 p-2 border rounded-lg cursor-pointer ${isSelected && 'bg-emerald-100'}`}
              onClick={() => onClick(historia)}>
+            <Avatar className={'size-20'}>
+                <AvatarImage src={paciente?.foto}/>
+                <AvatarFallback>{`${paciente?.nombre[0]}${paciente?.apellido[0]}`}</AvatarFallback>
+            </Avatar>
+            <div>
+
+                <Text>
+                    {`HCN°: ${historia.numero ?? 'Sin asignar'}`}
+                </Text>
             <Text>
                 {`Paciente: ${historia.paciente?.nombre} ${historia.paciente?.apellido}`}
             </Text>
+                <Text>
+                    {`Cédula: ${historia.paciente?.nombre} ${historia.paciente?.apellido}`}
+                </Text>
+            </div>
         </div>
     )
 }
@@ -286,6 +356,7 @@ const HomeworksTab = ({homeworks}: { homeworks: Homework[] }) => {
 }
 
 const HomeworkItem = ({homework}: { homework: Homework }) => {
+    console.log(homework)
 
     const firstResource = homework.documents[0]
 
@@ -293,9 +364,11 @@ const HomeworkItem = ({homework}: { homework: Homework }) => {
 
     switch (firstResource.type) {
         case 'HRA':
-            resourceLink = route('historias.show', {historia: firstResource.id, _query: {
+            resourceLink = route('historias.show', {
+                historia: firstResource.id, _query: {
                     homework: homework.id
-                }})
+                }
+            })
             break
         default:
             throw new Error('Tipo de recurso no encontrado')

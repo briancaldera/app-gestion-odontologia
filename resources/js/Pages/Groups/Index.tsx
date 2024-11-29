@@ -35,6 +35,7 @@ import Title from "@/Components/atoms/Title";
 import {Avatar} from "@mui/joy";
 import {DataTable} from "@/Components/molecules/DataTable.tsx";
 import {Icon} from "@/Components/atoms/Icon.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/shadcn/ui/select.tsx";
 
 type IndexProps = {
     groups: Group[]
@@ -50,8 +51,8 @@ const Index = ({groups, profesores}) => {
         return (
             <AuthLayout title='Grupos'>
                 <ScrollArea className='h-full'>
-                    <div className={'p-6 grid grid-cols-4 grid-rows-3 gap-6'}>
-                        <Surface className={'col-span-3 row-span-2 h-[700px]'}>
+                    <div className={'p-6 grid grid-cols-4 grid-rows-3 gap-6 h-full'}>
+                        <Surface className={'col-span-3 row-span-2 h-full'}>
                             <DataTable columns={columns} data={groups} searchable={true}/>
                         </Surface>
                         <Surface className={'col-span-1 p-6'}>
@@ -191,64 +192,74 @@ const CreateGroupDialog = ({
                                 <FormField render={({field}) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel>Administrador</FormLabel>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button variant={"outline"} role={'combobox'} className={
-                                                        cn(
-                                                            "w-[200px] justify-between",
-                                                            !field.value && "text-muted-foreground"
-                                                        )
-                                                    }>
-                                                        {
-                                                            field.value ? professorsList.find(user => user.id === field.value)?.email : 'Seleccione usuario'
-                                                        }
-                                                        <Icon>
-                                                            <ChevronsUpDown
-                                                                className={'ml-2 h-4 w-4 shrink-0 opacity-50'}/>
-                                                        </Icon>
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className={'p-0'}>
-                                                <Command>
-                                                    <CommandInput placeholder={'Seleccione usuario...'}/>
-                                                    <CommandList>
-                                                        <CommandEmpty>Usuario no encontrado.</CommandEmpty>
-                                                        <CommandGroup>
-                                                            {
-                                                                professorsList.map(user => (
-                                                                    <CommandItem
-                                                                        value={user.id}
-                                                                        key={user.id}
-                                                                        onSelect={() => form.setValue('owner', user.id)}
-                                                                    >
-                                                                        <Tooltip>
-                                                                            <TooltipTrigger>
-                                                                                <Check className={cn(
-                                                                                    "mr-2 h-4 w-4 inline",
-                                                                                    user.id === field.value
-                                                                                        ? "opacity-100"
-                                                                                        : "opacity-0"
-                                                                                )}/>
-                                                                                <Text level={'body-xs'} className={'inline'}>
-                                                                                    {user.email}
-                                                                                </Text>
-                                                                            </TooltipTrigger>
-                                                                            <TooltipContent>
-                                                                                <div>
-                                                                                    <Text>{`${user.profile?.nombres} ${user.profile?.apellidos}`}</Text>
-                                                                                </div>
-                                                                            </TooltipContent>
-                                                                        </Tooltip>
-                                                                    </CommandItem>
-                                                                ))
-                                                            }
-                                                        </CommandGroup>
-                                                    </CommandList>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={field.disabled} name={field.name}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder='Seleccione a un usuario'/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {professorsList.map(item => <SelectItem value={item.id} key={item.id}>{item.email}</SelectItem>)}
+                                            </SelectContent>
+                                        </Select>
+                                        {/*<Popover>*/}
+                                        {/*        <FormControl>*/}
+                                        {/*    <PopoverTrigger>*/}
+                                        {/*            <Button variant={"outline"} role={'combobox'} className={*/}
+                                        {/*                cn(*/}
+                                        {/*                    "w-[200px] justify-between",*/}
+                                        {/*                    !field.value && "text-muted-foreground"*/}
+                                        {/*                )*/}
+                                        {/*            }>*/}
+                                        {/*                {*/}
+                                        {/*                    field.value ? professorsList.find(user => user.id === field.value)?.email : 'Seleccione usuario'*/}
+                                        {/*                }*/}
+                                        {/*                <Icon>*/}
+                                        {/*                    <ChevronsUpDown*/}
+                                        {/*                        className={'ml-2 h-4 w-4 shrink-0 opacity-50'}/>*/}
+                                        {/*                </Icon>*/}
+                                        {/*            </Button>*/}
+                                        {/*    </PopoverTrigger>*/}
+                                        {/*        </FormControl>*/}
+                                        {/*    <PopoverContent className={'p-0'}>*/}
+                                        {/*        <Command>*/}
+                                        {/*            <CommandInput placeholder={'Seleccione usuario...'}/>*/}
+                                        {/*            <CommandList>*/}
+                                        {/*                <CommandEmpty>Usuario no encontrado.</CommandEmpty>*/}
+                                        {/*                <CommandGroup>*/}
+                                        {/*                    {*/}
+                                        {/*                        professorsList.map(user => (*/}
+                                        {/*                            <CommandItem*/}
+                                        {/*                                value={user.id}*/}
+                                        {/*                                key={user.id}*/}
+                                        {/*                                onSelect={() => form.setValue('owner', user.id)}*/}
+                                        {/*                            >*/}
+                                        {/*                                <Tooltip>*/}
+                                        {/*                                    <TooltipTrigger>*/}
+                                        {/*                                        <Check className={cn(*/}
+                                        {/*                                            "mr-2 h-4 w-4 inline",*/}
+                                        {/*                                            user.id === field.value*/}
+                                        {/*                                                ? "opacity-100"*/}
+                                        {/*                                                : "opacity-0"*/}
+                                        {/*                                        )}/>*/}
+                                        {/*                                        <Text level={'body-xs'} className={'inline'}>*/}
+                                        {/*                                            {user.email}*/}
+                                        {/*                                        </Text>*/}
+                                        {/*                                    </TooltipTrigger>*/}
+                                        {/*                                    <TooltipContent>*/}
+                                        {/*                                        <div>*/}
+                                        {/*                                            <Text>{`${user.profile?.nombres} ${user.profile?.apellidos}`}</Text>*/}
+                                        {/*                                        </div>*/}
+                                        {/*                                    </TooltipContent>*/}
+                                        {/*                                </Tooltip>*/}
+                                        {/*                            </CommandItem>*/}
+                                        {/*                        ))*/}
+                                        {/*                    }*/}
+                                        {/*                </CommandGroup>*/}
+                                        {/*            </CommandList>*/}
+                                        {/*        </Command>*/}
+                                        {/*    </PopoverContent>*/}
+                                        {/*</Popover>*/}
                                         <FormDescription>
                                             Este usuario será el administrador del grupo.
                                         </FormDescription>

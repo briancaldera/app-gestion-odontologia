@@ -234,16 +234,11 @@ const CreateAssignmentDialog = ({open, onOpenChange}: { open: boolean, onOpenCha
     )
 }
 
-const AssignmentsTab
-    = ({
-           assignments
-       }:
-           {
-               assignments: Assignment[]
-           }
-) => {
+const AssignmentsTab = ({assignments}: { assignments: Assignment[] }) => {
 
     const can = usePermission()
+
+
 
     return (
         <div className={'h-[80vh]'}>
@@ -251,7 +246,7 @@ const AssignmentsTab
                 assignments.length > 0 ? (
                     <div className={'flex flex-col gap-2'}>
                         {
-                            assignments.map(assignment => {
+                            assignments.toReversed().map(assignment => {
                                 return (
                                     <Link key={assignment.id} href={route('groups.assignments.show', {
                                         group: assignment.group_id,
@@ -439,14 +434,29 @@ const SelectHCESchema = z.object({
 
 const InfoSection = ({group}: { group: Group }) => {
 
+    const can = usePermission()
+
+    const {profile} = group.owner
     return (
         <Surface className={'p-6 space-y-3'}>
 
             <Title>Administrador de grupo</Title>
-            <div className={'flex gap-4'}>
+            <div className={'flex flex-col sm:flex-row gap-4 items-center'}>
+
                 <Avatar picture={group.owner.profile?.picture_url}
                         className={'h-auto aspect-square basis-1/12 flex-none'}/>
+                <h2>{`${profile?.nombres}  ${profile?.apellidos}`}</h2>
+
+                {
+                    can('groups-update') && (
+                        <Button variant='outline' className={'ml-auto'}>
+                            Cambiar administrador
+                        </Button>
+                    )
+                }
             </div>
+
+
 
         </Surface>
     )
@@ -459,7 +469,7 @@ const MembersSection = ({group, students}: { group: Group, students: User[] }) =
 
     return (
         <Surface className={'p-6'}>
-            <div className={'grid grid-cols-4 gap-6'}>
+            <div className={'grid grid-cols-1 sm:grid-cols-4 gap-6'}>
                 <div className={'col-span-3'}>
                     <DataTable columns={MembersColumns} data={group.members}/>
                 </div>

@@ -243,7 +243,7 @@ const AssignNumberDialog = () => {
     })
 
     const handleSubmit = (values: z.infer<typeof assignNumberSchema>) => {
-        const endpoint = route('historias.update', {historia: historia.id})
+        const endpoint = route('historias.assignid', {historia: historia.id})
 
         console.log(values)
 
