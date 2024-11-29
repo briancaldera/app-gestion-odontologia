@@ -59,6 +59,16 @@ class Assignment extends Model
 
     public static array $actions = [
         'assignments' => [
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre las asignaciones',
+                'description' => 'Full control sobre el modelo de asignaciones de grupo'
+            ],
+            'index-all' => [
+                'name' => 'index-all',
+                'display_name' => 'Indexar todos las tareas',
+                'description' => 'Indexar todos las tareas'
+            ],
             'create' => [
                 'name' => 'create',
                 'display_name' => 'Crear asignaciones',

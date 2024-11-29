@@ -124,7 +124,7 @@ class PermissionsSeeder extends Seeder
                 'historias-endodoncia' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'historias-cirugia' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'groups' => ['index-all', 'create', 'read', 'read-private', 'update', 'delete', 'index-users', 'add-users', 'remove-users'],
-                'assignments' => ['create', 'read', 'read-private', 'update', 'delete'],
+                'assignments' => ['index-all', 'create', 'read', 'read-private', 'update', 'delete'],
                 'homeworks' => ['index-all', 'read', 'update', 'delete', 'create-corrections'],
             ],
             'admision' => [
@@ -142,7 +142,7 @@ class PermissionsSeeder extends Seeder
                 'historias-cirugia' => ['read', 'update-status', 'approve-treatment',],
                 'groups' => ['read', 'update', 'index-users'],
                 'assignments' => ['create', 'read', 'update', 'delete'],
-                'homeworks' => ['index-all', 'read', 'delete', 'create-corrections'],
+                'homeworks' => ['read', 'delete', 'create-corrections'],
             ],
             'estudiante' => [
                 'users' => ['read'],

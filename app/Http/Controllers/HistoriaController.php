@@ -131,9 +131,9 @@ class HistoriaController extends Controller
             return back();
         }
 
-        if ($user->hasRole('admin') or $user->hasRole('admision')) {
+        if ($user->hasPermission('historias-index-all')) {
 
-            $historias = Historia::all();
+            $historias = Historia::with(['autor.profile', 'paciente'])->get();
 
             return inertia()->render('Historias/Index', [
                 'historias' => HistoriaResource::collection($historias),
@@ -263,9 +263,18 @@ class HistoriaController extends Controller
         }
 
         if ($user->hasRole('admin')) {
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
+            return Inertia::render('Historias/Show', [
+                'historia' => new HistoriaResource($historia),
+                'homework' => $homework,
+            ]);
         } elseif ($user->hasRole('admision')) {
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
+            return Inertia::render('Historias/Show', [
+                'historia' => new HistoriaResource($historia),
+            ]);
         } elseif ($user->hasRole('profesor')) {
             $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
@@ -355,6 +364,24 @@ class HistoriaController extends Controller
         $this->historiaService->updateHistoria($historia, $data);
 
         message('Historia actualizada', Type::Success);
+        return response(null, 200);
+    }
+
+    public function assignID(Request $request, Historia $historia)
+    {
+        if ($request->user()->cannot('assignID', $historia)) {
+            message('No posee permisos para asignar número a esta historia');
+            return back();
+        }
+
+        $data = $request->validate([
+            'numero' => ['sometimes', 'nullable', 'string', 'unique:' . Historia::class . ',numero'],
+        ]);
+
+        $historia->numero = $data['numero'];
+        $historia->update();
+
+        message('Número asignado', Type::Success);
         return response(null, 200);
     }
 

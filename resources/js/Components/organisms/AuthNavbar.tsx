@@ -202,9 +202,9 @@ const NotificationsSection = ({notifications}: { notifications: Notification[] }
                             </ScrollArea>
                         </div>
                     ) : (
-                        <div className={'h-20 w-96 flex justify-center items-center'}>
+                        <div className={'h-20 flex justify-center items-center'}>
                             <Text level={'body-sm'} className={'text-slate-400 flex-none'}>
-                                Yupi! No hay notificaciones
+                                No hay notificaciones
                             </Text>
                         </div>
                     )

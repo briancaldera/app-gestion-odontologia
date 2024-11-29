@@ -71,6 +71,7 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/historias/crear', [HistoriaController::class, 'create'])->name('historias.create');
     Route::post('/historias/store', [HistoriaController::class, 'store2'])->name('historias.store');
     Route::patch('/historias/{historia}', [HistoriaController::class, 'update'])->name('historias.update');
+    Route::patch('/historias/{historia}/assignid', [HistoriaController::class, 'assignID'])->name('historias.assignid');
     Route::get('/historias/{historia}/editar', [HistoriaController::class, 'edit'])->name('historias.edit');
 //    Route::patch('/pacientes/{paciente}', [HistoriaController::class, 'updatePaciente'])->name('pacientes.update');
     Route::patch('/historias/{historia}/antfamiliares/update', [HistoriaController::class, 'updateAntFamiliares'])->name('historias.antfamiliares.update');
