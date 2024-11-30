@@ -1,4 +1,4 @@
-import {undefined, z} from 'zod'
+import {z} from 'zod'
 import {ColumnDef, createColumnHelper, Row} from "@tanstack/react-table";
 import {useForm, UseFormReturn} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -22,8 +22,7 @@ import Input from "@/Components/atoms/Input";
 import Textarea from "@/Components/atoms/Textarea";
 import {OutlinedButton} from "@/Components/molecules/OutlinedButton";
 import {DataTable} from "@/Components/molecules/DataTable";
-import Surface from "@/Components/atoms/Surface";
-import {tratamientoRealizadoSchema, secuenciaTratamientoSchema} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
+import {secuenciaTratamientoSchema, tratamientoRealizadoSchema} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
 import {formatDate} from 'date-fns'
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {route} from "ziggy-js";
@@ -33,6 +32,11 @@ import {TratamientoRealizado} from "@/src/models/HistoriaOdontologica.ts";
 import {usePermission} from "@/src/Utils/Utils.ts";
 import {Link} from "@inertiajs/react";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import {Text} from "@/Components/atoms/Text";
+import Profile from "@/src/models/Profile.ts";
+import axios from "axios";
+import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
+import {Skeleton} from "@/shadcn/ui/skeleton.tsx";
 
 interface SecuenciaTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof secuenciaTratamientoSchema>>
@@ -46,7 +50,6 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
     const {isProcessing, router} = useInertiaSubmit()
 
     const {secuencia_tratamiento} = historia.historia_odontologica!
-    console.log(secuencia_tratamiento)
 
     const tratamientoForm = useForm<z.infer<typeof tratamientoRealizadoSchema>>({
         resolver: zodResolver(tratamientoRealizadoSchema),
@@ -177,7 +180,11 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
                                 </FormItem>
                             )} name={'secuencia_tratamiento'} control={form.control}/>
 
-                            <div className={'flex justify-end'}>
+                            <div className={'flex justify-end items-center gap-x-2'}>
+                                {
+                                    form.formState.isDirty &&
+                                    <Text className={'text-rose-500'}>Posees cambios sin guardar!</Text>
+                                }
                                 <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
                             </div>
                         </form>
@@ -230,7 +237,49 @@ const columns: ColumnDef<TratamientoRealizado>[] = [
     columnHelper.accessor(originalRow => originalRow.approver_id, {
         enableResizing: false,
         size: 200,
-        cell: ({cell, row}) => (<td style={{width: cell.column.getSize()}}>{row.original.approver_id ?? ''}</td>),
+        cell: ({cell, row, column}) => {
+
+            const [profile, setProfile] = React.useState<Profile | null>(null)
+            React.useEffect(() => {
+
+                if (row.original.approver_id) {
+                    axios.get(route('api.v1.profiles.show', {profile: row.original.approver_id}), ).then((res) => {
+                        const profile = res.data.data as Profile
+                        setProfile(profile)
+                    })
+                }
+            }, []) // [row]
+
+
+            if (row.original.approver_id) {
+                return (
+                    <div style={{width: `${column.getSize()}px`}} className='rounded-lg h-full p-2 flex gap-x-2 justify-center items-center border'>
+                        {
+                            profile ? (
+                                <>
+                                    <Avatar className='size-10'>
+                                        <AvatarImage src={profile?.picture_url}/>
+                                        <AvatarFallback></AvatarFallback>
+                                    </Avatar>
+                                    <Text className={'truncate'}>{`${profile?.nombres} ${profile?.apellidos}`}</Text>
+                                </>
+                            ) : (
+                                <>
+                                    <Skeleton className='size-10 rounded-full'/>
+                                    <Skeleton className='flex-1 h-[12pt]'/>
+                                </>
+                            )
+                        }
+
+
+                    </div>
+                )
+            } else {
+                return (
+                    <div style={{width: `${column.getSize()}px`}}></div>
+                )
+            }
+        },
         id: 'approver_id',
         header: 'Nombre del docente'
     }),
@@ -239,11 +288,15 @@ const columns: ColumnDef<TratamientoRealizado>[] = [
             const can = usePermission()
             const {historia, disabled} = React.useContext(HistoriaEditorContext)
 
-            if (props.row.original.approval) return props.row.original.approval
-
-            if (can('historias-approve-treatment') && !!props.row.original.id) {
+            if (props.row.original.approval) {
                 return (
-                    <td className={'flex justify-center'}>
+                    <div className='rounded-lg h-full bg-emerald-100 p-2 flex gap-x-2 justify-center items-center'>
+                        <CircleCheckBig className={'size-4'}/><Text>Aprobado</Text>
+                    </div>
+                )
+            } else if (can('historias-approve-treatment') && !!props.row.original.id) {
+                return (
+                    <div className={'flex justify-center'}>
                         <Button asChild>
                             <Link method='post' as="button" type="button"
                                   href={route('historias.odontologica.secuenciatratamiento.approve', {
@@ -254,9 +307,11 @@ const columns: ColumnDef<TratamientoRealizado>[] = [
                                 Aprobar
                             </Link>
                         </Button>
-                    </td>
+                    </div>
                 )
             }
+
+            return null
         },
         id: 'approval',
         header: 'Firma'
@@ -269,6 +324,7 @@ const columns: ColumnDef<TratamientoRealizado>[] = [
 
 const TratamientoRealizadoMenu = ({row}: {row: Row<TratamientoRealizado>}) => {
     const context = React.useContext(SecuenciaPlanTratamientoTableContext)
+    const can = usePermission()
 
     return (
         <DropdownMenu>
@@ -284,7 +340,14 @@ const TratamientoRealizadoMenu = ({row}: {row: Row<TratamientoRealizado>}) => {
                     !row.original.id && (
                         <DropdownMenuItem className={'text-rose-600'}
                                           onClick={() => context.onDeleteModificacion(row.index)}><Trash2
-                            className={'size-4 me-1'}/>Eliminar modificación</DropdownMenuItem>
+                            className={'size-4 me-1'}/>Eliminar tratamiento</DropdownMenuItem>
+                    )
+                }
+                {
+                    row.original.id && can('historias-full-control') && (
+                        <DropdownMenuItem className={'text-rose-600'}
+                                          onClick={() => {/* todo setup */}}><Trash2
+                            className={'size-4 me-1'}/>Forzar eliminar tratamiento</DropdownMenuItem>
                     )
                 }
             </DropdownMenuContent>
