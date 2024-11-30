@@ -13,18 +13,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
-use League\Flysystem\WhitespacePathNormalizer;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProfileController extends Controller
 {
-
-    const PROFILE_PICTURE_DIR = 'profiles/';
-
     public function index(Request $request)
     {
         /* @var User $user */
@@ -141,21 +135,9 @@ class ProfileController extends Controller
 
         $profile = $request->user()->profile;
 
-        $previousPicture = $profile->picture_url;
+        $pictureFile = $data['picture'];
 
-        if (is_null($data['picture'])) {
-            $profile->picture_url = null;
-        } else {
-            $profilePic = $data['picture'];
-            $profile->picture_url = $this->storeProfilePicture($profilePic);
-        }
-
-        $profile->save();
-
-        if (!is_null($previousPicture)) {
-            $filePath = Str::of($previousPicture)->remove('/storage/');
-            Storage::disk('public')->delete($filePath);
-        }
+        $profile->addMedia($pictureFile)->toMediaCollection('user-profile-picture');
 
         message('Perfil actualizado exitosamente', \Type::Success);
 
@@ -192,12 +174,5 @@ class ProfileController extends Controller
         }
 
         return response(null, 404);
-    }
-
-    private function storeProfilePicture($file): string
-    {
-        // TODO: process image here...
-        $now = now();
-        return $file->storePublicly((new WhitespacePathNormalizer())->normalizePath(self::PROFILE_PICTURE_DIR . $now->year), 'public');
     }
 }
