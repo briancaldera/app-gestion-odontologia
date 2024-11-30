@@ -29,6 +29,9 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {router} from "@inertiajs/react";
 import Pin from "@/Components/atoms/Pin.tsx";
 import {historiaSchema} from "@/FormSchema/Historia/HistoriaSchema.ts";
+import Image from "@/Components/atoms/Image.tsx";
+import logo from ''
+import Logo from "@/Components/atoms/Logo.tsx";
 
 type PacienteSectionProps = {
     form: UseFormReturn<z.infer<typeof historiaSchema>>
@@ -83,7 +86,9 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
     return (
         <div className={'bg-white w-full p-6 min-h-screen'}>
 
-            <div className={'flex flex-col items-center gap-y-1'}>
+            <div className={'flex flex-col items-center gap-y-1 relative'}>
+                <Logo className={'size-20 sm:absolute top-0 left-0'}/>
+                <Title level={'body-sm'}>Universidad Gran Mariscal de Ayacucho</Title>
                 <Title level={'body-sm'}>Facultad de Odontología</Title>
                 <Title level={'body-sm'}>Clínica Integral de Adulto</Title>
                 <Title level={'h3'} className={'font-bold'}>Historia Clínica</Title>

@@ -1,4 +1,4 @@
-import logoUrl from "/public/UGMA-logo.png"
+import logoUrl from "/public/assets/images/logo/UGMA-LOGO.png"
 import {cn} from "@/lib/utils.ts";
 
 const Logo = ({className = ''}: { className?: string }) => {
