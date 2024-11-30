@@ -2,7 +2,6 @@ import {useForm, UseFormReturn} from "react-hook-form";
 import {z} from 'zod'
 import Title from "@/Components/atoms/Title";
 import React from "react";
-import Surface from "@/Components/atoms/Surface";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover";
 import {Icon} from "@/Components/atoms/Icon.tsx";
@@ -40,6 +39,10 @@ import {Text} from "@/Components/atoms/Text";
 import Dropzone from "react-dropzone";
 import {pictureFileFormats} from "@/Components/molecules/ProfilePicturePicker.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
+import Profile from "@/src/models/Profile.ts";
+import {Skeleton} from "@/shadcn/ui/skeleton.tsx";
+import axios from "axios";
 
 interface ModificacionesPlanTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof modificacionesPlanTratamientoSchema>>
@@ -211,7 +214,11 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                                                data={[...modificaciones_plan_tratamiento, ...field.value]}/>
                                 </FormItem>
                             )} name={'modificaciones_plan_tratamiento'} control={form.control}/>
-                            <div className={'flex justify-end'}>
+                            <div className={'flex justify-end items-center gap-x-2'}>
+                                {
+                                    form.formState.isDirty &&
+                                    <Text className={'text-rose-500'}>Posees cambios sin guardar!</Text>
+                                }
                                 <Button type={'submit'} disabled={disabled || !form.formState.isDirty}>Guardar</Button>
                             </div>
                         </form>
@@ -226,13 +233,13 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                             modificaciones_consentimiento.length > 0 ? (
                                 <a href={modificaciones_consentimiento[0]} target={'_blank'}>
 
-                                <div className='border rounded-lg p-6 flex flex-col justify-center'>
-                                    <div className={'flex'}>
+                                    <div className='border rounded-lg p-6 flex flex-col justify-center'>
+                                        <div className={'flex'}>
 
-                                    <CircleCheckBig className={'mr-2'}/><Text>Archivo subido</Text>
+                                            <CircleCheckBig className={'mr-2'}/><Text>Archivo subido</Text>
+                                        </div>
+                                        <Text>Haz clic para abrir</Text>
                                     </div>
-                                    <Text>Haz clic para abrir</Text>
-                                </div>
                                 </a>
                             ) : (
                                 <div className='border rounded-lg p-6 flex flex-col justify-center gap-y-2'>
@@ -248,21 +255,24 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                                                     <div className={'flex items-center'}>
 
 
-                                                            <Dropzone disabled={consentimientoForm.formState.disabled} maxFiles={1} accept={pictureFileFormats} onDropAccepted={onDropFile}>
-                                                                {
-                                                                    ({getRootProps, getInputProps}) => (
-                                                                        <div {...getRootProps()} className={'h-20'}>
+                                                        <Dropzone disabled={consentimientoForm.formState.disabled}
+                                                                  maxFiles={1} accept={pictureFileFormats}
+                                                                  onDropAccepted={onDropFile}>
+                                                            {
+                                                                ({getRootProps, getInputProps}) => (
+                                                                    <div {...getRootProps()} className={'h-20'}>
 
-                                                                            <FormControl>
-                                                                                <Input type={'file'} {...getInputProps()}/>
-                                                                            </FormControl>
-                                                                            <FormMessage/>
-                                                                            <FormDescription>Haz clic aquí para subir un archivo</FormDescription>
-                                                                        </div>
-                                                                    )
-                                                                }
+                                                                        <FormControl>
+                                                                            <Input type={'file'} {...getInputProps()}/>
+                                                                        </FormControl>
+                                                                        <FormMessage/>
+                                                                        <FormDescription>Haz clic aquí para subir un
+                                                                            archivo</FormDescription>
+                                                                    </div>
+                                                                )
+                                                            }
 
-                                                            </Dropzone>
+                                                        </Dropzone>
 
                                                         {
                                                             !!field.value && <CircleCheckBig className='ml-2'/>
@@ -273,7 +283,8 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                                             )} name={'modificaciones_consentimiento'}
                                                        control={consentimientoForm.control}/>
                                             <div className={'flex justify-end mt-2'}>
-                                                <Button disabled={consentimientoForm.formState.disabled || !consentimientoForm.formState.isDirty}>
+                                                <Button
+                                                    disabled={consentimientoForm.formState.disabled || !consentimientoForm.formState.isDirty}>
                                                     Guardar
                                                 </Button>
 
@@ -337,7 +348,49 @@ const columns: ColumnDef<ModificacionTratamiento>[] = [
     columnHelper.accessor(originalRow => originalRow.approver_id, {
         enableResizing: false,
         size: 200,
-        cell: ({cell, row}) => (<td style={{width: cell.column.getSize()}}>{row.original.approver_id ?? ''}</td>),
+        cell: ({cell, row, column}) => {
+
+            const [profile, setProfile] = React.useState<Profile | null>(null)
+            React.useEffect(() => {
+
+                if (row.original.approver_id) {
+                    axios.get(route('api.v1.profiles.show', {profile: row.original.approver_id}), ).then((res) => {
+                        const profile = res.data.data as Profile
+                        setProfile(profile)
+                    })
+                }
+            }, []) // [row]
+
+
+            if (row.original.approver_id) {
+                return (
+                    <div style={{width: `${column.getSize()}px`}} className='rounded-lg h-full p-2 flex gap-x-2 justify-center items-center border'>
+                        {
+                            profile ? (
+                                <>
+                                    <Avatar className='size-10'>
+                                        <AvatarImage src={profile?.picture_url}/>
+                                        <AvatarFallback></AvatarFallback>
+                                    </Avatar>
+                                    <Text className={'truncate'}>{`${profile?.nombres} ${profile?.apellidos}`}</Text>
+                                </>
+                            ) : (
+                                <>
+                                    <Skeleton className='size-10 rounded-full'/>
+                                    <Skeleton className='flex-1 h-[12pt]'/>
+                                </>
+                            )
+                        }
+
+
+                    </div>
+                )
+            } else {
+                return (
+                    <div style={{width: `${column.getSize()}px`}}></div>
+                )
+            }
+        },
         id: 'approver_id',
         header: 'Nombre del docente'
     }),
@@ -346,11 +399,15 @@ const columns: ColumnDef<ModificacionTratamiento>[] = [
             const can = usePermission()
             const {historia, disabled} = React.useContext(HistoriaEditorContext)
 
-            if (props.row.original.approval) return props.row.original.approval
-
-            if (can('historias-approve-treatment') && !!props.row.original.id) {
+            if (props.row.original.approval) {
                 return (
-                    <td className={'flex justify-center'}>
+                    <div className='rounded-lg h-full bg-emerald-100 p-2 flex gap-x-2 justify-center items-center'>
+                        <CircleCheckBig className={'size-4'}/><Text>Aprobado</Text>
+                    </div>
+                )
+            } else if (can('historias-approve-treatment') && !!props.row.original.id) {
+                return (
+                    <div className={'flex justify-center'}>
                         <Button asChild>
                             <Link method='post' as="button" type="button"
                                   href={route('historias.odontologica.modificacionestratamiento.approve', {
@@ -361,9 +418,11 @@ const columns: ColumnDef<ModificacionTratamiento>[] = [
                                 Aprobar
                             </Link>
                         </Button>
-                    </td>
+                    </div>
                 )
             }
+
+            return null
         },
         id: 'approval',
         header: 'Firma'

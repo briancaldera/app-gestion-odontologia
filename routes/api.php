@@ -10,5 +10,5 @@ Route::middleware(['auth:sanctum', 'auth'])->prefix('/v1')->name('api.v1.')->gro
         return new UserResource($request->user());
     })->name('user');
 
-    Route::apiResource('profile', ProfileController::class)->only(['show']);
+    Route::apiResource('profiles', ProfileController::class)->only(['show']);
 });
