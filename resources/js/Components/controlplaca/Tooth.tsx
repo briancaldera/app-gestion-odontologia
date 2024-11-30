@@ -16,11 +16,11 @@ const unmarkedColor = 'bg-blue-200 hover:bg-blue-300'
 const Tooth = ({piece, size = 40, onClickSurface = () => {}, onDiscardPiece = () => {}}: ToothProps) => {
 
     return (
-        <div className={'relative p-2'}>
+        <div className={'w-full relative p-1 lg:p-2'}>
             <div onClick={() => onDiscardPiece(piece.id)}>
                 <CircleX className={'absolute right-0 top-0 z-50 w-1/4 h-auto cursor-pointer'}/>
             </div>
-            <div className={`w-12 aspect-square grid grid-cols-2 rotate-45`}>
+            <div className={`w-full aspect-square grid grid-cols-2 rotate-45`}>
                 {
                     (piece.present) ?
                         (<>

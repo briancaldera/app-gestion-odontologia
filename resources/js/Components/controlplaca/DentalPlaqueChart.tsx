@@ -3,6 +3,7 @@
 import TeethGroup from "./TeethGroup.tsx";
 import type {DentalPiece, Surface} from "@/src/models/DentalPiece.ts";
 import {UseDentalPlaqueChartReturn} from "@/src/DentalPlaqueChartModel.ts";
+import Heading from "@/Components/atoms/Heading";
 
 type DentalPlaqueChartProps = {
     chart: UseDentalPlaqueChartReturn
@@ -42,11 +43,26 @@ const DentalPlaqueChart = ({ chart, disabled = false }: DentalPlaqueChartProps) 
     }
 
     return (
-        <div className={'inline-grid grid-cols-1 sm:grid-cols-2'}>
-            <TeethGroup teeth={chart.getModel().quadrant_1} onDiscardPiece={(id) => {chart._listeners.setGroup1(prevState => handleDiscardPiece(prevState, id))}} onClickSurface={(id, surface, mark) => chart._listeners.setGroup1((prevState) => handleClickSurface(prevState, id, surface, mark))}/>
-            <TeethGroup teeth={chart.getModel().quadrant_2} onDiscardPiece={(id) => {chart._listeners.setGroup2(prevState => handleDiscardPiece(prevState, id))}} onClickSurface={(id, surface, mark) => chart._listeners.setGroup2((prevState) => handleClickSurface(prevState, id, surface, mark))}/>
-            <TeethGroup teeth={chart.getModel().quadrant_4} onDiscardPiece={(id) => {chart._listeners.setGroup4(prevState => handleDiscardPiece(prevState, id))}} onClickSurface={(id, surface, mark) => chart._listeners.setGroup4((prevState) => handleClickSurface(prevState, id, surface, mark))}/>
-            <TeethGroup teeth={chart.getModel().quadrant_3} onDiscardPiece={(id) => {chart._listeners.setGroup3(prevState => handleDiscardPiece(prevState, id))}} onClickSurface={(id, surface, mark) => chart._listeners.setGroup3((prevState) => handleClickSurface(prevState, id, surface, mark))}/>
+        <div className={'grid grid-cols-1 sm:grid-cols-2'}>
+            <div className={'relative'}>
+                <Heading className={'absolute px-2 max-sm:-left-5'} level={'h6'}>I</Heading>
+                <TeethGroup teeth={chart.getModel().quadrant_1} onDiscardPiece={(id) => {chart._listeners.setGroup1(prevState => handleDiscardPiece(prevState, id))}} onClickSurface={(id, surface, mark) => chart._listeners.setGroup1((prevState) => handleClickSurface(prevState, id, surface, mark))}/>
+            </div>
+            <div className={'relative'}>
+                <Heading className={'absolute px-2 max-sm:-left-5'} level='h6'>II</Heading>
+                <TeethGroup teeth={chart.getModel().quadrant_2} onDiscardPiece={(id) => chart._listeners.setGroup2(prevState => handleDiscardPiece(prevState, id))} onClickSurface={(id, surface, mark) => chart._listeners.setGroup2((prevState) => handleClickSurface(prevState, id, surface, mark))}/>
+            </div>
+            <div className={'relative'}>
+                <Heading className={'absolute px-2 max-sm:-left-5'} level='h6'>IV</Heading>
+                <TeethGroup teeth={chart.getModel().quadrant_4} onDiscardPiece={(id) => chart._listeners.setGroup4(prevState => handleDiscardPiece(prevState, id))} onClickSurface={(id, surface, mark) => chart._listeners.setGroup4((prevState) => handleClickSurface(prevState, id, surface, mark))}/>
+            </div>
+            <div className={'relative max-sm:row-start-3'}>
+                <Heading className={'absolute px-2 max-sm:-left-5'} level='h6'>III</Heading>
+                <TeethGroup teeth={chart.getModel().quadrant_3} onDiscardPiece={(id) => {
+                    chart._listeners.setGroup3(prevState => handleDiscardPiece(prevState, id))
+                }}
+                            onClickSurface={(id, surface, mark) => chart._listeners.setGroup3((prevState) => handleClickSurface(prevState, id, surface, mark))}/>
+            </div>
         </div>
     )
 }

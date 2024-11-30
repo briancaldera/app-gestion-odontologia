@@ -1,6 +1,5 @@
 import {calculatePlaquePercentage, DentalPlaqueChartModel, useDentalPlaqueChart} from "@/src/DentalPlaqueChartModel.ts";
 import DentalPlaqueChart from "@/Components/controlplaca/DentalPlaqueChart.tsx";
-import Surface from "@/Components/atoms/Surface";
 import Title from "@/Components/atoms/Title";
 import {Text} from "@/Components/atoms/Text";
 import {route} from "ziggy-js";
@@ -12,7 +11,7 @@ import {formatDate} from "date-fns";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 import {mapServerErrorsToFields, usePermission} from "@/src/Utils/Utils.ts";
 import {Link, router} from "@inertiajs/react";
-import {CircleCheckBig} from "lucide-react";
+import {CircleCheckBig, Plus} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -27,7 +26,6 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
 import {Input} from "@/shadcn/ui/input.tsx";
-import {toast} from "sonner";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 const ControlPlacaSection = () => {
@@ -90,11 +88,11 @@ const ControlPlacaSection = () => {
                                     <div className={'col-start-1 col-span-1 border grid grid-col-1 sm:grid-cols-3'}>
 
                                         <div className='border p-6 flex items-center gap-x-4'>
-                                            <Text>Fecha: {formatDate(item.fecha, 'P')}</Text>
-
+                                            <Title>Fecha:</Title>
+                                            <Text>{formatDate(item.fecha, 'P')}</Text>
                                         </div>
                                         <div className='border p-6 flex items-center gap-x-4'>
-                                            <Text>Porcentaje</Text>
+                                            <Title>Porcentaje:</Title>
                                             {
                                                 (item.approver_id) && (
                                                     <div className={'flex-1 flex justify-center items-center'}>
@@ -107,7 +105,7 @@ const ControlPlacaSection = () => {
                                             }
                                         </div>
                                         <div className='border p-6 flex items-center gap-x-4'>
-                                            <Text>Firma</Text>
+                                            <Title>Firma</Title>
                                             <div className='flex-1 flex justify-center'>
 
 
@@ -145,12 +143,14 @@ const ControlPlacaSection = () => {
                 </div>
             </CorrectionsBlock>
 
-            <div className={'mt-2 flex justify-end'}>
+            <div className={'mt-2 flex justify-end py-3'}>
                 {
                     !newControl ? (
-                        <Button disabled={disabled} onClick={() => setNewControl(true)}>Crear control de placa</Button>
+                        <Button variant='outline' disabled={disabled} onClick={() => setNewControl(true)}><Plus className={'mr-2'}/>Crear control de placa</Button>
                     ) : (
-                        <ControlPlacaDiagrama onClick={(model) => handleSubmit(model)}/>
+                        <div className={'border p-6 rounded-lg'}>
+                            <ControlPlacaDiagrama onClick={(model) => handleSubmit(model)}/>
+                        </div>
                     )
                 }
             </div>
@@ -316,19 +316,23 @@ const ControlPlacaDiagrama = ({
     return (
         <div>
 
-            <div className={'grid grid-cols-5 border'}>
+            <div className={'grid grid-cols-1 sm:grid-cols-5 border'}>
 
-                <div className={'col-span-full flex justify-center'}>
+                <div className={'col-span-full'}>
                     <DentalPlaqueChart chart={chart} disabled={disabled}/>
                 </div>
 
-                <div className={'p-4 flex justify-center items-center'}>
-                    <Text className={'text-center'}>Número de piezas dentales ({dentalPieces})</Text>
+                <div className={'col-span-1 flex items-center p-4 gap-x-2 border'}>
+                    <Text className={'text-center'}>Número de piezas dentales presentes</Text>
+                    <Text className={''} level={'h1'} component={'p'}>{dentalPieces}</Text>
+                </div>
+
+                <div className={'col-span-1 p-4 flex justify-center items-center gap-x-2 border'}>
                     <Text className={'text-center'}>Número de superficies (Número de diente x 4)</Text>
                     <Text className={''} level={'h1'} component={'p'}>{presentSurfacesCount}</Text>
                 </div>
 
-                <div className={'col-span-3 p-4 flex gap-2 justify-center items-center border-l border-r'}>
+                <div className={'sm:col-span-2 p-4 flex gap-2 justify-center items-center border'}>
                     <Text>% Placa Dental</Text>
                     <div>
                         <Text className={'text-center'}>
@@ -343,7 +347,7 @@ const ControlPlacaDiagrama = ({
 
                 </div>
 
-                <div className={'p-4 flex gap-2 justify-center items-center'}>
+                <div className={'col-span-1 p-4 flex gap-2 justify-center items-center border'}>
                     <Text>%</Text>
                     <Text level={'h1'}>
                         {(!Number.isNaN(plaquePercentage) ? plaquePercentage : 0).toFixed(2)}
@@ -352,11 +356,10 @@ const ControlPlacaDiagrama = ({
             </div>
 
 
-            <div>
+            <div className='p-2 justify-end'>
                 {
                     !disabled && <Button onClick={() => onClick(chart.getModel())} type='button'>Guardar</Button>
                 }
-
             </div>
         </div>
     )

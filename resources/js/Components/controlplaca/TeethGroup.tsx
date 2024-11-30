@@ -10,7 +10,7 @@ type TeethGroupProps = {
 const TeethGroup = ({teeth, onClickSurface = () => {}, onDiscardPiece = () => {}}: TeethGroupProps) => {
 
     return (
-        <div className={'p-4 inline-flex gap-1 border flex-wrap'}>
+        <div className={'lg:p-0.5 w-full flex lg:gap-1 border'}>
             {
                 teeth.map(tooth => <Tooth key={tooth.id} piece={tooth} onClickSurface={(surface, mark) => {
                     onClickSurface(tooth.id, surface, mark)
