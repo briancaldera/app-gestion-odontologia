@@ -68,25 +68,25 @@ JSON,
         'examen_fisico' => <<<'JSON'
 {
         "examen_extraoral": {
-            "articulacion_temporomandibular": "",
-            "cabeza": "",
-            "cara": "",
-            "lesiones_extraorales": "",
-            "palpacion_ganglios": "",
-            "piel": "",
-            "simetria_facial": ""
+            "articulacion_temporomandibular": null,
+            "cabeza": null,
+            "cara": null,
+            "lesiones_extraorales": null,
+            "palpacion_ganglios": null,
+            "piel": null,
+            "simetria_facial": null
         },
         "examen_intraoral": {
-            "dientes": "",
-            "discromias": "",
-            "encias": "",
-            "frenillos": "",
-            "labios": "",
-            "lengua_tipo": "",
-            "maxilares": "",
-            "mejillas": "",
-            "paladar_duro_blando": "",
-            "piso_boca": ""
+            "dientes": null,
+            "discromias": null,
+            "encias": null,
+            "frenillos": null,
+            "labios": null,
+            "lengua_tipo": null,
+            "maxilares": null,
+            "mejillas": null,
+            "paladar_duro_blando": null,
+            "piso_boca": null
         },
         "signos_vitales": {
             "pulso": 0,

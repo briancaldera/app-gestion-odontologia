@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('semestre')->nullable();
             $table->enum('status', ['abierta', 'entregada', 'correccion', 'cerrada']);
             $table->foreignUuid('autor_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->text('motivo_consulta')->nullable();
+            $table->text('enfermedad_actual')->nullable();
             $table->timestamps();
         });
     }

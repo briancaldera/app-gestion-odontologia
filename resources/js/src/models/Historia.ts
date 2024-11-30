@@ -18,6 +18,8 @@ type Historia = Readonly<{
     ant_personales?: AntPersonales
     trastornos?: Trastornos
     historia_odontologica?: HistoriaOdontologica
+    motivo_consulta: string | null
+    enfermedad_actual: string | null
 }>
 
 enum Status {

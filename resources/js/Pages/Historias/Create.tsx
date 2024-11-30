@@ -13,11 +13,9 @@ import PacienteSchema, {PacienteDefaults, PacienteFake} from "@/FormSchema/Histo
 import {zodResolver} from "@hookform/resolvers/zod";
 import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/shadcn/ui/select.tsx'
-import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu.tsx";
-import {ArrowBigLeft} from 'lucide-react'
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
-import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema.ts";
+import {historiaSchema} from "@/FormSchema/Historia/HistoriaSchema.ts";
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
 
 const Create = () => {
@@ -161,7 +159,7 @@ const PacienteSection = () => {
     )
 }
 
-const CreateHistoriaSchema = z.intersection(PacienteSchema, HistoriaSchema.omit({paciente_id: true}))
+const CreateHistoriaSchema = z.intersection(PacienteSchema, historiaSchema.omit({paciente_id: true}))
 
 const {paciente_id, ...HistoriaDefaultsMod} = HistoriaDefaults
 const CreateHistoriaDefaults = {...PacienteDefaults, ...HistoriaDefaultsMod} satisfies z.infer<typeof CreateHistoriaSchema>

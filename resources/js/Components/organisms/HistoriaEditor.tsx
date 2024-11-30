@@ -7,7 +7,7 @@ import React from "react";
 import PacienteSchema from "@/FormSchema/Historia/PacienteSchema";
 import AntPersonalesSchema, {AntPersonalesDefaults} from "@/FormSchema/Historia/AntPersonalesSchema";
 import AntFamiliaresSchema, {AntFamiliaresDefaults} from "@/FormSchema/Historia/AntFamiliaresSchema";
-import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema";
+import {historiaSchema} from "@/FormSchema/Historia/HistoriaSchema";
 import HistoriaOdontologicaSchema, {
     HistoriaOdontologicaDefaults
 } from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
@@ -130,10 +130,12 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
 
     const correctionsModel = useCorrections(handleSubmitCorrections, corrections)
 
-    const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
-        resolver: zodResolver(HistoriaSchema),
-        defaultValues: HistoriaDefaults,
-        values: historia,
+    const historiaForm = useForm<z.infer<typeof historiaSchema>>({
+        resolver: zodResolver(historiaSchema),
+        defaultValues: {
+            motivo_consulta: historia.motivo_consulta ?? "",
+            enfermedad_actual: historia.enfermedad_actual ?? "",
+        },
         disabled: isDisabled,
     })
 
@@ -385,7 +387,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                         </TabsList>
                         <ScrollArea className={'flex-1 w-full h-[83vh]'}>
                             <TabsContent value="section1" className={TabTriggerStyle}>
-                                <PacienteSection form={pacienteForm}/>
+                                <PacienteSection form={historiaForm}/>
                             </TabsContent>
                             <TabsContent value="section2" className={TabTriggerStyle}>
                                 <AntFamiliaresSection form={antFamiliaresForm}/>

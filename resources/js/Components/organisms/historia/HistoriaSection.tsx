@@ -1,6 +1,6 @@
 import {UseFormReturn} from "react-hook-form";
 import {z} from 'zod'
-import HistoriaSchema from "@/FormSchema/Historia/HistoriaSchema";
+import historiaSchema from "@/FormSchema/Historia/HistoriaSchema";
 import Title from "@/Components/atoms/Title";
 import React from "react";
 import Surface from "@/Components/atoms/Surface";
@@ -13,7 +13,7 @@ import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 
 interface HistoriaSectionProps {
     historia?: string
-    form: UseFormReturn<z.infer<typeof HistoriaSchema>>
+    form: UseFormReturn<z.infer<typeof historiaSchema>>
 }
 
 const HistoriaSection = ({form}: HistoriaSectionProps) => {
@@ -21,7 +21,7 @@ const HistoriaSection = ({form}: HistoriaSectionProps) => {
     const route = useRoute()
     const {processing, post} = useInertiaSubmit()
 
-    const handleSubmit = (values: z.infer<typeof HistoriaSchema>) => {
+    const handleSubmit = (values: z.infer<typeof historiaSchema>) => {
         const endpoint = route('historias.update')
 
 

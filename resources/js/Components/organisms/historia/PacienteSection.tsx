@@ -28,24 +28,45 @@ import {Button} from "@/shadcn/ui/button.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {router} from "@inertiajs/react";
 import Pin from "@/Components/atoms/Pin.tsx";
+import {historiaSchema} from "@/FormSchema/Historia/HistoriaSchema.ts";
 
 type PacienteSectionProps = {
-    form: UseFormReturn<z.infer<typeof PacienteSchema>>
+    form: UseFormReturn<z.infer<typeof historiaSchema>>
 }
 
 const PacienteSection = ({form}: PacienteSectionProps) => {
 
-    const {historia} = React.useContext(HistoriaEditorContext)
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
+    const {paciente} = historia
+
+    const pacienteForm = useForm<z.infer<typeof PacienteSchema>>({
+        resolver: zodResolver(PacienteSchema),
+        defaultValues: {
+            apellido: paciente?.apellido ?? "",
+            cedula: paciente?.cedula ?? "",
+            direccion: paciente?.direccion ?? "",
+            edad: paciente?.edad ?? 0,
+            fecha_nacimiento: paciente?.fecha_nacimiento ?? '',
+            foto: paciente?.foto ?? null,
+            nombre: paciente?.nombre ?? "",
+            ocupacion: paciente?.ocupacion ?? "",
+            peso: paciente?.peso ?? 0,
+            sexo: paciente?.sexo ?? "",
+            telefono: paciente?.telefono ?? ''
+        },
+        disabled: true // this form is always disabled
+    })
+
     const can = usePermission()
 
     const route = useRoute()
 
     const {router, isProcessing} = useInertiaSubmit()
 
-    const handleSubmit = (values: z.infer<typeof PacienteSchema>) => {
+    const handleSubmit = (values: z.infer<typeof historiaSchema>) => {
 
-        const endpoint = route('pacientes.update', {
-            paciente: values.id
+        const endpoint = route('historias.update', {
+            historia: historia.id
         })
 
         router.patch(endpoint, {...values}, {
@@ -86,11 +107,11 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                             Semestre:
                         </Text>
                         {
-                        historia.semestre && (
-                            <div className={'flex items-center gap-x-2'}>
-                                <Text>{historia.semestre}°</Text>
-                                <Pin color={colorMap.get(historia.semestre)!}/>
-                            </div>
+                            historia.semestre && (
+                                <div className={'flex items-center gap-x-2'}>
+                                    <Text>{historia.semestre}°</Text>
+                                    <Pin color={colorMap.get(historia.semestre)!}/>
+                                </div>
                             )}
 
                     </div>
@@ -104,8 +125,9 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
 
             <Title level={'title-lg'}>Datos Personales</Title>
 
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className={'flex flex-col sm:flex-row gap-6 pt-4'}>
+            <Form {...pacienteForm}>
+                <form onSubmit={form.handleSubmit(() => {
+                })} className={'flex flex-col sm:flex-row gap-6 pt-4'}>
                     <div className='basis-1/3'>
                         <FormField render={({field}) => (
                             <FormItem
@@ -117,18 +139,18 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
-                        )} name={'foto'} control={form.control}/>
+                        )} name={'foto'} control={pacienteForm.control}/>
                     </div>
 
                     <div className='grid grid-cols-1 sm:grid-cols-3 gap-y-8 gap-x-6'>
 
-                        <Field control={form.control} name={'nombre'} label={'Nombre'}/>
-                        <Field control={form.control} name={'apellido'} label={'Apellido'}/>
-                        <Field control={form.control} name={'cedula'} label={'Cédula'}/>
+                        <Field control={pacienteForm.control} name={'nombre'} label={'Nombre'}/>
+                        <Field control={pacienteForm.control} name={'apellido'} label={'Apellido'}/>
+                        <Field control={pacienteForm.control} name={'cedula'} label={'Cédula'}/>
 
 
                         <div className={'flex gap-x-2'}>
-                            <Field control={form.control} name={'edad'} label={'Edad'} type={'number'}/>
+                            <Field control={pacienteForm.control} name={'edad'} label={'Edad'} type={'number'}/>
 
                             <FormField render={({field}) => (
                                 <FormItem>
@@ -148,12 +170,13 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                                     </Select>
                                     <FormMessage/>
                                 </FormItem>
-                            )} name={'sexo'} control={form.control}/>
+                            )} name={'sexo'} control={pacienteForm.control}/>
 
-                            <Field control={form.control} name={'peso'} label={'Peso (Kg)'} type={'number'}/>
+                            <Field control={pacienteForm.control} name={'peso'} label={'Peso (Kg)'} type={'number'}/>
                         </div>
 
-                        <DatePicker control={form.control} label={'Fecha de nacimiento'} name={'fecha_nacimiento'}/>
+                        <DatePicker control={pacienteForm.control} label={'Fecha de nacimiento'}
+                                    name={'fecha_nacimiento'}/>
 
 
                         <FormField render={({field}) => (
@@ -164,10 +187,10 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
-                        )} name={'ocupacion'} control={form.control}/>
+                        )} name={'ocupacion'} control={pacienteForm.control}/>
 
 
-                        <Field control={form.control} name={'telefono'} label={'Teléfono'} type={'tel'}
+                        <Field control={pacienteForm.control} name={'telefono'} label={'Teléfono'} type={'tel'}
                                placeholder={'Ejemplo: 0414-1234567'}/>
 
                         <FormField render={({field}) => (
@@ -178,7 +201,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
-                        )} name={'direccion'} control={form.control}/>
+                        )} name={'direccion'} control={pacienteForm.control}/>
 
                         <FormField render={({field}) => (
                             <FormItem className={''}>
@@ -188,7 +211,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
-                        )} name={'informacion_emergencia.contacto'} control={form.control}/>
+                        )} name={'informacion_emergencia.contacto'} control={pacienteForm.control}/>
 
                         <FormField render={({field}) => (
                             <FormItem className={''}>
@@ -198,32 +221,49 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
-                        )} name={'informacion_emergencia.telefono'} control={form.control}/>
+                        )} name={'informacion_emergencia.telefono'} control={pacienteForm.control}/>
 
+                    </div>
+                </form>
+            </Form>
+
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className={'flex flex-col sm:flex-row gap-6 pt-4'}>
+
+
+                    <div className={'basis-1/4'}>
+
+                    </div>
+                    <div className='grid grid-cols-1 sm:grid-cols-3 gap-y-8 gap-x-6 basis-full'>
                         <FormField render={({field}) => (
                             <FormItem className={'col-span-full'}>
                                 <FormLabel>Motivo Consulta</FormLabel>
                                 <FormControl>
-                                    <Textarea value={historia.paciente?.motivo_consulta} disabled/>
+                                    <Textarea {...field}/>
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
-                        )} name={''} control={form.control}/>
+                        )} name={'motivo_consulta'} control={form.control}/>
 
                         <FormField render={({field}) => (
                             <FormItem className={'col-span-full'}>
                                 <FormLabel>Enfermedad Actual</FormLabel>
                                 <FormControl>
-                                    <Textarea value={historia.paciente?.enfermedad_actual ?? ''} disabled/>
+                                    <Textarea {...field}/>
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
-                        )} name={''} control={form.control}/>
+                        )} name={'enfermedad_actual'} control={form.control}/>
 
-
+                        <div className={'flex justify-end col-span-full'}>
+                            <Button disabled={disabled || !form.formState.isDirty}>
+                                Guardar
+                            </Button>
+                        </div>
                     </div>
                 </form>
             </Form>
+
         </div>
     )
 }

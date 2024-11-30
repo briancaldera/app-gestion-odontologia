@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Auth;
  * @property string $paciente_id the patient model related to the medical record
  * @property string $numero the id assigned by admision
  * @property string $autor_id the author for the medical record
+ * @property string $motivo_consulta
+ * @property string $enfermedad_actual
  * @property Status $status the status
  * @property Correccion $correcciones
  */
@@ -40,6 +42,8 @@ class Historia extends Model implements StatusHolder
     protected $attributes = [
         'numero' => null,
         'semestre' => null,
+        'motivo_consulta' => null,
+        'enfermedad_actual' => null,
     ];
 
     protected $fillable = [
@@ -47,6 +51,8 @@ class Historia extends Model implements StatusHolder
         'semestre',
         'status',
         'autor_id',
+        'motivo_consulta',
+        'enfermedad_actual',
     ];
 
     protected $dispatchesEvents = [
