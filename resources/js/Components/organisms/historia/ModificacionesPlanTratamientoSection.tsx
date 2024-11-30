@@ -102,7 +102,7 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
 
     const onDeleteModificacion = (index) => {
         const newData = form.getValues().modificaciones_plan_tratamiento
-        newData.splice(index, 1)
+        newData.splice(index - historia.historia_odontologica?.modificaciones_plan_tratamiento.length, 1)
         form.setValue('modificaciones_plan_tratamiento', [...newData], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true
         })

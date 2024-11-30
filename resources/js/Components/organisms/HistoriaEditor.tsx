@@ -191,11 +191,6 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
         disabled: isDisabled,
     })
 
-    const defaults = (historia?.historia_odontologica?.plan_tratamiento) ? {
-        plan_tratamiento: historia.historia_odontologica?.plan_tratamiento ?? [],
-        historia_id: historia.id
-    } satisfies z.infer<typeof PlanTratamientoSchema> : Object.assign(PlanTratamientoDefaults, {historia_id: historia?.id}) satisfies z.infer<typeof PlanTratamientoSchema>
-
     const planTratamientoForm = useForm<z.infer<typeof PlanTratamientoSchema>>({
         resolver: zodResolver(PlanTratamientoSchema),
         defaultValues: PlanTratamientoDefaults,
