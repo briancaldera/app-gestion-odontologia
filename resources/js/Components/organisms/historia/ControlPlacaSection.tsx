@@ -28,6 +28,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
 import {Input} from "@/shadcn/ui/input.tsx";
 import {toast} from "sonner";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 const ControlPlacaSection = () => {
 
@@ -71,7 +72,7 @@ const ControlPlacaSection = () => {
     const [newControl, setNewControl] = React.useState<boolean>(false)
 
     return (
-        <div className={'bg-white w-full p-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
             <Title level={'h4'}>Control de placa de dental</Title>
 
@@ -174,7 +175,7 @@ const ControlPlacaSection = () => {
 
 
 
-        </div>
+        </ScrollArea>
     )
 }
 

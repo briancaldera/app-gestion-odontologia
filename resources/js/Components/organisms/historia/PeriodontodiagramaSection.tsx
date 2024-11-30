@@ -14,6 +14,7 @@ import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type PeriodontodiagramaSection = {
     periodontograma: string | null
@@ -58,7 +59,7 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
     }
 
     return (
-        <div className={'bg-white w-full p-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
             <Title level={'title-lg'}>Periodontodiagrama</Title>
 
             <CorrectionsBlock model={correctionsModel} name={'periodontodiagrama'}
@@ -103,7 +104,7 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
                     </form>
                 </Form>
             </CorrectionsBlock>
-        </div>
+        </ScrollArea>
     )
 }
 

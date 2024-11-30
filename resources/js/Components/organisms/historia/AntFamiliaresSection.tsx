@@ -12,6 +12,7 @@ import {Button} from "@/shadcn/ui/button";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type AntFamiliaresSectionProps = {
     form: UseFormReturn<z.infer<typeof AntFamiliaresSchema>>
@@ -38,7 +39,7 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
     }
 
     return (
-        <div className={'bg-white w-full p-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
             <Title level={'title-lg'}>Antecedentes Médicos Familiares</Title>
             <Text level={'body-sm'}>Describa el estado actual o causa de muerte de padres, hermanos y abuelos.</Text>
@@ -75,7 +76,7 @@ const AntFamiliaresSection = ({form}: AntFamiliaresSectionProps) => {
                     </div>
                 </form>
             </Form>
-        </div>
+        </ScrollArea>
     )
 }
 

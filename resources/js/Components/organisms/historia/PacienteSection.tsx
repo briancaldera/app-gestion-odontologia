@@ -32,6 +32,7 @@ import {historiaSchema} from "@/FormSchema/Historia/HistoriaSchema.ts";
 import Image from "@/Components/atoms/Image.tsx";
 import logo from ''
 import Logo from "@/Components/atoms/Logo.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type PacienteSectionProps = {
     form: UseFormReturn<z.infer<typeof historiaSchema>>
@@ -84,7 +85,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
     }
 
     return (
-        <div className={'bg-white w-full p-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
             <div className={'flex flex-col items-center gap-y-1 relative'}>
                 <Logo className={'size-20 sm:absolute top-0 left-0'}/>
@@ -269,7 +270,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                 </form>
             </Form>
 
-        </div>
+        </ScrollArea>
     )
 }
 

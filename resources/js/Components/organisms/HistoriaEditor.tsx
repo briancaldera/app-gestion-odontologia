@@ -45,7 +45,6 @@ import {mergeDeep} from "@/src/Utils/Utils";
 import ExamenRadiograficoSection from "@/Components/organisms/historia/ExamenRadiograficoSection.tsx";
 import PeriodontodiagramaSchema from "@/FormSchema/Historia/PeriodontodiagramaSchema.ts";
 import PeriodontodiagramaSection from "@/Components/organisms/historia/PeriodontodiagramaSection.tsx";
-import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import MediaSection from "@/Components/organisms/historia/MediaSection.tsx";
 import HistoriaPeriodontalSection from "@/Components/organisms/historia/HistoriaPeriodontalSection.tsx";
 import ControlPlacaSection from "@/Components/organisms/historia/ControlPlacaSection.tsx";
@@ -385,7 +384,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                                 </Icon>
                             </TabsTrigger>
                         </TabsList>
-                        <ScrollArea className={'flex-1 w-full h-[83vh]'}>
+                        <div className={'flex-1'}>
                             <TabsContent value="section1" className={TabTriggerStyle}>
                                 <PacienteSection form={historiaForm}/>
                             </TabsContent>
@@ -429,7 +428,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                                 <MediaSection media={historia?.historia_odontologica?.anymedia ?? []}
                                               historia_id={historia.id} readmode={readMode}/>
                             </TabsContent>
-                        </ScrollArea>
+                        </div>
                     </Tabs>
 
                     {

@@ -32,6 +32,7 @@ import {toast} from "sonner";
 import {TratamientoRealizado} from "@/src/models/HistoriaOdontologica.ts";
 import {usePermission} from "@/src/Utils/Utils.ts";
 import {Link} from "@inertiajs/react";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 interface SecuenciaTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof secuenciaTratamientoSchema>>
@@ -100,7 +101,7 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
     }
 
     return (
-        <div className={'bg-white w-full p-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
             <Title level={'title-lg'}>Secuencia del Plan de Tratamiento</Title>
 
             <section className={'my-6 relative'}>
@@ -184,7 +185,7 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
                 </SecuenciaPlanTratamientoTableContext.Provider>
 
             </section>
-        </div>
+        </ScrollArea>
     )
 }
 

@@ -39,6 +39,7 @@ import {toast} from "sonner";
 import {Text} from "@/Components/atoms/Text";
 import Dropzone from "react-dropzone";
 import {pictureFileFormats} from "@/Components/molecules/ProfilePicturePicker.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 interface ModificacionesPlanTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof modificacionesPlanTratamientoSchema>>
@@ -133,7 +134,7 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
     }
 
     return (
-        <div className={'bg-white w-full p-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
             <Title level={'title-lg'}>Modificaciones del Plan de Tratamiento</Title>
 
             <section className={'my-6 relative'}>
@@ -286,7 +287,7 @@ const ModificacionesPlanTratamientoSection = ({form}: ModificacionesPlanTratamie
                 </div>
 
             </section>
-        </div>
+        </ScrollArea>
     )
 }
 

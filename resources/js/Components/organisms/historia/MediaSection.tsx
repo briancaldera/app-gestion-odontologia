@@ -19,6 +19,7 @@ import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 // TODO: Remove dialog when file is submitted
 // TODO: Show media title and description
@@ -92,7 +93,7 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
     }
 
     return (
-        <div className={'bg-white w-full p-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
             <Title level={'title-lg'}>Archivos adicionales</Title>
 
@@ -180,7 +181,7 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
                 </div>
 
             </section>
-        </div>
+        </ScrollArea>
     )
 }
 

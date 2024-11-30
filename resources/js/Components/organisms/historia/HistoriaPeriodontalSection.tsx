@@ -4,6 +4,7 @@ import HistoriaPeriodontalForm from "@/Components/organisms/historia/partials/Hi
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import React from "react";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type HistoriaPeriodontalSectionProps = {
     historia_id: string
@@ -16,14 +17,14 @@ const HistoriaPeriodontalSection = ({historia_id, historia_periodontal, readonly
     const {historia, homework, canCreateCorrections, correctionsModel} = React.useContext(HistoriaEditorContext)
 
     return (
-        <div className={'bg-white w-full p-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
             <CorrectionsBlock model={correctionsModel} name={'historia_periodontal'}
                               canCreateCorrections={canCreateCorrections}>
                 <HistoriaPeriodontalForm/>
             </CorrectionsBlock>
 
-        </div>
+        </ScrollArea>
     )
 }
 

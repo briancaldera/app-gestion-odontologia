@@ -29,6 +29,7 @@ import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import {Text} from "@/Components/atoms/Text";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 interface PlanTratamientoSectionProps {
     form: UseFormReturn<z.infer<PlanTratamientoSchema>>
@@ -80,7 +81,7 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
     }
 
     return (
-        <div className={'bg-white w-full p-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
             <Title level={'title-lg'}>Plan de Tratamiento</Title>
             <Text>Fase Sistémica, Fase Preventiva y Educativa, Fase Periodontal, Fase Quirúrgica, Fase Endodóntica, Fase Operatoria, Fase Protésica, Fase de Control y Mantenimiento</Text>
 
@@ -165,7 +166,7 @@ const PlanTratamientoSection = ({form}: PlanTratamientoSectionProps) => {
                 </PlanTratamientoTableContext.Provider>
 
             </section>
-        </div>
+        </ScrollArea>
     )
 }
 
