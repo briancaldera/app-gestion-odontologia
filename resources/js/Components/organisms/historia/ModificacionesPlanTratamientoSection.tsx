@@ -435,6 +435,7 @@ const columns: ColumnDef<ModificacionTratamiento>[] = [
 
 const ModificacionPlanTratamientoMenu = ({row}: { row: Row<ModificacionTratamiento> }) => {
     const context = React.useContext(ModificacionesPlanTratamientoTableContext)
+    const can = usePermission()
 
     return (
         <DropdownMenu>
@@ -451,6 +452,13 @@ const ModificacionPlanTratamientoMenu = ({row}: { row: Row<ModificacionTratamien
                         <DropdownMenuItem className={'text-rose-600'}
                                           onClick={() => context.onDeleteModificacion(row.index)}><Trash2
                             className={'size-4 me-1'}/>Eliminar modificación</DropdownMenuItem>
+                    )
+                }
+                {
+                    row.original.id && can('historias-full-control') && (
+                        <DropdownMenuItem className={'text-rose-600'}
+                                          onClick={() => {/* todo setup */}}><Trash2
+                            className={'size-4 me-1'}/>Forzar eliminar modificación</DropdownMenuItem>
                     )
                 }
             </DropdownMenuContent>
