@@ -2,8 +2,6 @@ import {Link, router, usePage} from "@inertiajs/react";
 import Avatar from "@/Components/atoms/Avatar.jsx";
 import {route, useRoute} from 'ziggy-js'
 import React, {Fragment} from "react";
-import {MoonIcon, SunIcon} from "@heroicons/react/24/outline"
-import {AuthContext} from "@/Layouts/AuthLayout.js";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -28,6 +26,7 @@ import {Input} from "@/shadcn/ui/input.tsx";
 import {Separator} from "@/shadcn/ui/separator.tsx";
 import {Switch} from "@/shadcn/ui/switch"
 import {SidebarTrigger} from "@/shadcn/ui/sidebar.tsx";
+import {BaseContext} from "@/Layouts/BaseLayout.tsx";
 
 declare const axios: Axios
 
@@ -53,7 +52,7 @@ const AuthSection = () => {
 
     const [openAuthDropdown, setOpenAuthDropdown] = React.useState<boolean>(false)
 
-    const {isDarkMode, toggleDarkMode} = React.useContext(AuthContext)
+    const {isDarkMode, toggleDarkMode} = React.useContext(BaseContext)
     const {auth: {user}}: { auth: { user: User } } = usePage().props
 
     const [notifications, setNotifications] = React.useState<Notification[]>([])
@@ -143,11 +142,7 @@ const AuthSection = () => {
                     <DropdownMenuItem onClick={(e) => e.stopPropagation()}
                                       className={"flex justify-between items-center gap-4"}>
                         Modo Oscuro
-                        <Switch checked={isDarkMode} onCheckedChange={() => toggleDarkMode(value => !value)}>
-                            {
-                                isDarkMode ? (<MoonIcon/>) : (<SunIcon/>)
-                            }
-                        </Switch>
+                        <Switch checked={isDarkMode} onCheckedChange={() => toggleDarkMode()}/>
                     </DropdownMenuItem>
                     <hr/>
                     <DropdownMenuItem onClick={handleLogout}>Cerrar Sesión</DropdownMenuItem>

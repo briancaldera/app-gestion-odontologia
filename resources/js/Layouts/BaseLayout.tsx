@@ -4,9 +4,19 @@ import React from "react";
 import {Toaster} from "@/shadcn/ui/sonner.tsx";
 import {toast} from "sonner";
 import {CircleX} from "lucide-react";
+import {useDarkMode} from "usehooks-ts";
+import {useLoading} from "@/src/Utils/Utils.ts";
+import Loader from "@/Components/atoms/Loader.tsx";
+
+const BaseContext = React.createContext({
+    isDarkMode: false, toggleDarkMode: () => {
+    }
+})
 
 const BaseLayout = ({children}) => {
     const messages = usePage().props.messages as Message[]
+    const {isDarkMode, toggle} = useDarkMode()
+    const isLoading = useLoading()
 
     useMessage(messages)
 
@@ -14,8 +24,15 @@ const BaseLayout = ({children}) => {
         <StyledEngineProvider injectFirst>
             <CssVarsProvider>
                 {/*<CssBaseline/>*/}
-                {children}
-                <Toaster expand duration={10000}/>
+                <BaseContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: toggle}}>
+                    <div className={`${isDarkMode ? 'dark' : ''}`}>
+                        {children}
+                        <Toaster expand duration={10000}/>
+                        <div className={'z-50 fixed bottom-0 left-0 p-4'} hidden={!isLoading}>
+                            <Loader/>
+                        </div>
+                    </div>
+                </BaseContext.Provider>
             </CssVarsProvider>
         </StyledEngineProvider>
     )
@@ -51,6 +68,12 @@ const useMessage = (messages: Message[]) => {
     })
 }
 
-const cancelToastAction = {cancel: {label: <CircleX className={'size-4'}/>, onClick: () => {}}}
+const cancelToastAction = {
+    cancel: {
+        label: <CircleX className={'size-4'}/>, onClick: () => {
+        }
+    }
+}
 
+export {BaseContext}
 export default BaseLayout
