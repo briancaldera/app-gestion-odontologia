@@ -77,10 +77,10 @@ function toMenuItem(menuItem: MenuItem) {
     return (
         <SidebarMenuItem key={menuItem.title}>
             <SidebarMenuButton asChild>
-                <a href={menuItem.url}>
+                <Link href={menuItem.url}>
                     <menuItem.icon/>
                     <span>{menuItem.title}</span>
-                </a>
+                </Link>
             </SidebarMenuButton>
         </SidebarMenuItem>
     )
