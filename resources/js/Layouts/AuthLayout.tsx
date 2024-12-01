@@ -1,15 +1,15 @@
 import {Head, router} from "@inertiajs/react";
 import React from "react";
-import AuthNavbar from "@/Components/organisms/AuthNavbar.tsx";
-import Loader from "@/Components/atoms/Loader.tsx";
 import {TooltipProvider} from "@/Components/atoms/Tooltip"
-import SidebarMenu from "@/Components/organisms/SidebarMenu.tsx";
+import {SidebarProvider} from "@/shadcn/ui/sidebar.tsx";
+import {AppSidebar} from "@/shadcn/ui/app-sidebar.tsx";
+import AuthNavbar from "@/Components/organisms/AuthNavbar.tsx";
 
 const DARK_MODE_KEY = 'dark_mode'
 
 export const AuthContext = React.createContext({})
 
-const AuthLayout = ({title, sidebar, children}) => {
+const AuthLayout = ({title, children}) => {
 
     const [loading, setLoading] = React.useState(false)
     const [isDarkMode, toggleDarkMode] = React.useState(false)
@@ -48,23 +48,17 @@ const AuthLayout = ({title, sidebar, children}) => {
         })
     }
 
-    const [isSidebarExpanded, setIsSidebarExpanded] = React.useState<boolean>(true)
-
     return (
         <AuthContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: handleToggleDarkMode}}>
+            <Head title={title}/>
             <TooltipProvider>
-                <Head title={title}/>
-                <div className={`${isDarkMode ? 'dark' : ''} bg-slate-100 dark:bg-slate-900 h-dvh flex flex-col`}>
-                    <SidebarMenu expanded={isSidebarExpanded}/>
-                    <AuthNavbar/>
-                    <div className={'z-50 absolute bottom-0 left-0 p-4'} hidden={!loading}>
-                        <Loader/>
-                    </div>
-                    <main
-                        className={`pt-14 sm:pt-20 lg:pb-0 pb-10 ${isSidebarExpanded ? 'lg:pl-72' : 'lg:pl-28'} h-full basis-full flex-none`}>
+                <SidebarProvider defaultOpen={true} className={`${isDarkMode ? 'dark' : ''}`}>
+                    <AppSidebar/>
+                    <main className='flex-1 pt-14 sm:pt-20 bg-slate-100 dark:bg-slate-900'>
+                        <AuthNavbar/>
                         {children}
                     </main>
-                </div>
+                </SidebarProvider>
             </TooltipProvider>
         </AuthContext.Provider>
     )

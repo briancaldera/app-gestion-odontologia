@@ -2,7 +2,7 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    darkMode: ["selector", "class"], // Default for shadcn is 'class'. Out of date?
+    darkMode: ["class"], // Default for shadcn is 'class'. Out of date?
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
