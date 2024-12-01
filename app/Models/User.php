@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notifiable;
 use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
@@ -22,7 +21,7 @@ use Laratrust\Traits\HasRolesAndPermissions;
  * @property string $email_verified_at
  * @property string $password
  */
-class User extends Authenticatable implements MustVerifyEmail, LaratrustUser
+class User extends Authenticatable implements MustVerifyEmail, LaratrustUser, HasLocalePreference
 {
     use HasFactory, Notifiable, HasUuids;
     use HasRolesAndPermissions;
@@ -89,8 +88,18 @@ class User extends Authenticatable implements MustVerifyEmail, LaratrustUser
         return Group::whereJsonContains('members', $this->id)->get();
     }
 
+    public function preferredLocale(): string
+    {
+        return 'es';
+    }
+
     public static array $actions = [
         'users' => [
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre los usuarios',
+                'description' => 'Full control sobre el modelo de usuario'
+            ],
             'index-all' => [
                 'name' => 'index-all',
                 'display_name' => 'Indexar usuarios',
