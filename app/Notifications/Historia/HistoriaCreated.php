@@ -14,7 +14,7 @@ class HistoriaCreated extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(protected Historia $historia)
     {
         //
     }
@@ -32,10 +32,10 @@ class HistoriaCreated extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable, Historia $historia): MailMessage
+    public function toMail(object $notifiable): MailMessage
     {
 
-        $url = route('historias.show', ['historia' => $historia->id]);
+        $url = route('historias.show', ['historia' => $this->historia->id]);
 
         return (new MailMessage)
             ->subject('Historia creada')
