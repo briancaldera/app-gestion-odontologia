@@ -15,7 +15,7 @@ const AuthLayout = ({title, children}) => {
             <TooltipProvider>
                 <SidebarProvider defaultOpen={true}>
                     <AppSidebar/>
-                    <main className='flex-1 pt-14 sm:pt-20 bg-slate-100 dark:bg-slate-900'>
+                    <main className='flex-1 flex flex-col pt-14 sm:pt-20 bg-slate-100 dark:bg-slate-900'>
                         <AuthNavbar/>
                         {children}
                     </main>
