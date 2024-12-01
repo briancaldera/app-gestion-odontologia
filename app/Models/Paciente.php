@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Cirugia\HistoriaCirugia;
 use App\Models\Endodoncia\HistoriaEndodoncia;
+use App\Observers\PacienteObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -12,8 +14,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
@@ -41,6 +41,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property Date $created_at the datetime when this model was created.
  * @property Date $updated_at the datetime when this model was last updated.
  */
+#[ObservedBy([PacienteObserver::class])]
 class Paciente extends Model implements HasMedia
 {
     use HasFactory;
