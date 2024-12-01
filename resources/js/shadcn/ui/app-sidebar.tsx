@@ -36,7 +36,7 @@ export function AppSidebar() {
     }
 
     return (
-        <Sidebar collapsible='icon' className={''}>
+        <Sidebar collapsible='icon' className={'z-50'}>
             <SidebarHeader>
                 <Link href={route('dashboard')} className={'overflow-hidden flex items-center gap-x-2 items-center hidden lg:flex'}>
                     <Logo className={'basis-14'}/>

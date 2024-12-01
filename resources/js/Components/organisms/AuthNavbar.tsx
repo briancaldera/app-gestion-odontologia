@@ -36,7 +36,7 @@ const AuthNavbar = () => {
     const {open} = useSidebar()
 
     return (
-        <nav className={`fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 ${open ? 'lg:pl-[18rem]' : 'lg:pl-[3rem]'} flex justify-end`}>
+        <nav className={`fixed z-40 inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 ${open ? 'lg:pl-[18rem]' : 'lg:pl-[3rem]'} flex justify-end`}>
             <div className={'flex-1 flex h-full'}>
                 {/*breadcrumbs*/}
                 <div className={'px-8 flex-1 flex items-center gap-x-6'}>
