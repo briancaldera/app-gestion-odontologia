@@ -6,7 +6,6 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HistoriaCirugiaController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\HistoriaEndodonciaController;
-use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
@@ -41,10 +40,6 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::post('/usuarios/codigos', [UserController::class, 'storeCode'])->name('users.codes.store');
     Route::patch('/usuarios/codigos/{userCode}', [UserController::class, 'updateCode'])->name('users.codes.update');
     Route::delete('/usuarios/codigos/{userCode}', [UserController::class, 'destroyCode'])->name('users.codes.destroy');
-
-    // Notifications routes
-    Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.index');
-    Route::patch('/notifications/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
 
     // Correccion routes
     Route::prefix('historias')->name('historias.')->group(function () {
