@@ -4,7 +4,7 @@ import React from "react";
 import {Toaster} from "@/shadcn/ui/sonner.tsx";
 import {toast} from "sonner";
 import {CircleX} from "lucide-react";
-import {useDarkMode} from "usehooks-ts";
+import {useTernaryDarkMode} from "usehooks-ts";
 import {useLoading} from "@/src/Utils/Utils.ts";
 import Loader from "@/Components/atoms/Loader.tsx";
 
@@ -15,8 +15,16 @@ const BaseContext = React.createContext({
 
 const BaseLayout = ({children}) => {
     const messages = usePage().props.messages as Message[]
-    const {isDarkMode, toggle} = useDarkMode()
+    const {isDarkMode, ternaryDarkMode, setTernaryDarkMode} = useTernaryDarkMode({defaultValue: 'light'})
     const isLoading = useLoading()
+
+    const toggleDarkMode = React.useCallback(() => {
+        if (ternaryDarkMode === 'light') {
+            setTernaryDarkMode('dark')
+        } else {
+            setTernaryDarkMode('light')
+        }
+    }, [])
 
     useMessage(messages)
 
@@ -24,8 +32,8 @@ const BaseLayout = ({children}) => {
         <StyledEngineProvider injectFirst>
             <CssVarsProvider>
                 {/*<CssBaseline/>*/}
-                <BaseContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: toggle}}>
-                    <div className={`${isDarkMode ? 'dark' : ''}`}>
+                <BaseContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: toggleDarkMode}}>
+                    <div className={`${isDarkMode ? 'dark' : 'light'}`}>
                         {children}
                         <Toaster expand duration={10000}/>
                         <div className={'z-50 fixed bottom-0 left-0 p-4'} hidden={!isLoading}>

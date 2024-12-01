@@ -25,21 +25,26 @@ import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSe
 import {Input} from "@/shadcn/ui/input.tsx";
 import {Separator} from "@/shadcn/ui/separator.tsx";
 import {Switch} from "@/shadcn/ui/switch"
-import {SidebarTrigger} from "@/shadcn/ui/sidebar.tsx";
+import {SidebarTrigger, useSidebar} from "@/shadcn/ui/sidebar.tsx";
 import {BaseContext} from "@/Layouts/BaseLayout.tsx";
+import {cn} from "@/lib/utils.ts";
 
 declare const axios: Axios
 
 const AuthNavbar = () => {
+
+    const {open} = useSidebar()
+
     return (
-        <nav className={'fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 lg:ps-72 flex justify-end'}>
+        <nav className={`fixed inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 ${open ? 'lg:pl-[18rem]' : 'lg:pl-[3rem]'} flex justify-end`}>
             <div className={'flex-1 flex h-full'}>
-                <SidebarTrigger/>
                 {/*breadcrumbs*/}
-                <div className={'px-8 flex-1 flex items-center justify-between'}>
+                <div className={'px-8 flex-1 flex items-center gap-x-6'}>
+                    <Icon>
+                        <SidebarTrigger/>
+                    </Icon>
                     <Breadcrumbs/>
-                    <SearchBar/>
-                    <SidebarTrigger/>
+                    <SearchBar className='ml-auto'/>
                 </div>
                 {/*auth section*/}
                 <AuthSection/>
@@ -321,7 +326,7 @@ const Breadcrumbs = () => {
 
 
     return (
-        <Breadcrumb>
+        <Breadcrumb className='max-sm:hidden'>
             <BreadcrumbList>
                 <BreadcrumbItem>
                     <BreadcrumbLink asChild><Link
@@ -336,11 +341,11 @@ const Breadcrumbs = () => {
     )
 }
 
-const SearchBar = () => {
+const SearchBar = ({className}: {className?: string}) => {
     const [searchTerm, setSearchTerm] = React.useState('')
 
     return (
-        <div className={'w-80 flex items-center gap-2 border rounded-full pr-2 bg-indigo-50 px-2'}>
+        <div className={cn('hidden sm:flex w-80 items-center gap-2 border rounded-full pr-2 bg-indigo-50 px-2', className)}>
             <Icon className={'flex-none'}>
                 <Search/>
             </Icon>
