@@ -797,14 +797,14 @@
     <div>
         <div class="font-bold">Motivo de consulta</div>
         <p class="fillable">
-            {{ insert_field($historia->paciente->motivo_consulta, 160) }}
+            {{ insert_field($historia->motivo_consulta, 160) }}
         </p>
     </div>
 
     <div>
         <div class="font-bold">Enfermedad actual</div>
         <p class="fillable">
-            {{ insert_field($historia->paciente->enfermedad_actual, 160) }}
+            {{ insert_field($historia->enfermedad_actual, 160) }}
         </p>
     </div>
 </section>
