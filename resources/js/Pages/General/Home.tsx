@@ -7,6 +7,9 @@ import {Check} from "lucide-react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
 
 const Home = ({auth}) => {
+
+    const {user} = auth
+
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Navbar */}
@@ -21,12 +24,12 @@ const Home = ({auth}) => {
                             </div>
                         </div>
                         <div className="flex items-center">
-                            {auth ? (
+                            {user ? (
                                 <Link href={route('dashboard')}
                                       className="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium">
                                     <Avatar>
-                                        <AvatarImage src={auth.user.profile.picture_url}/>
-                                        <AvatarFallback>{`${auth.user.profile.nombres[0]}${auth.user.profile.apellidos[0]}`}</AvatarFallback>
+                                        <AvatarImage src={user.profile.picture_url}/>
+                                        <AvatarFallback>{`${user.profile.nombres[0]}${user.profile.apellidos[0]}`}</AvatarFallback>
                                     </Avatar>
                                 </Link>
                                 ): (
