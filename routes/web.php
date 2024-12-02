@@ -6,6 +6,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HistoriaCirugiaController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\HistoriaEndodonciaController;
+use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
@@ -55,6 +56,10 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/grupos/{group}/asignaciones/{assignment}', [GroupController::class, 'showAssignment'])->name('groups.assignments.show');
     Route::post('/grupos/{group}/asignaciones/{assignment}/homework', [GroupController::class, 'storeHomework'])->name('groups.assignments.homeworks.store');
     Route::post('/grupos/{group}/asignaciones/{assignment}/homework/{homework}', [GroupController::class, 'addCorrectionsToDocument'])->name('groups.assignments.homeworks.corrections');
+
+    // Share routes
+    Route::patch('/historias/{historia}/share', [HistoriaController::class, 'share'])->name('historias.share');
+    Route::get('/entregas', [HomeworkController::class, 'index'])->name('entregas.index');
 
 //    Routes for patient
     Route::resource('pacientes', PacienteController::class);

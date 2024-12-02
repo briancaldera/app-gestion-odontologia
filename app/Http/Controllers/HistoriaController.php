@@ -1115,4 +1115,23 @@ class HistoriaController extends Controller
 
         return response(null, 404);
     }
+
+    public function share(Request $request, Historia $historia)
+    {
+
+        $data = $request->validate([
+            'users' => ['required', 'list',],
+            'users.*' => ['uuid',],
+        ]);
+
+        $users = collect($data['users']);
+
+        $historia->shared_with = $historia->shared_with->union($users);
+
+        $historia->status = Status::ENTREGADA;
+        $historia->update();
+
+        message('Historia compartida exitosamente', Type::Success);
+        return response(null, 200);
+    }
 }
