@@ -12,8 +12,6 @@ use App\Models\Paciente;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
-use Exception;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 
@@ -64,6 +62,11 @@ class PermissionsSeeder extends Seeder
                     'name' => 'remove-users-codes',
                     'display_name' => 'Eliminar códigos de usuarios',
                     'description' => 'Elimina códigos de usuarios que les permiten registrarse en el sistema',
+                ],
+                'view-actions' => [
+                    'name' => 'view-actions',
+                    'display_name' => 'Ver historial de operaciones',
+                    'description' => 'Ver el historial de acciones realizadas por los usuarios del sistema',
                 ],
             ]
         ];
@@ -117,8 +120,8 @@ class PermissionsSeeder extends Seeder
 
         $permissions_roles = [
             'admin' => [
-                'system' => ['full-control', 'add-users-codes', 'update-users-codes', 'remove-users-codes'],
-                'users' => ['index-all', 'read', 'read-private', 'update', 'delete', 'add-registration'],
+                'system' => ['full-control', 'add-users-codes', 'update-users-codes', 'remove-users-codes', 'view-actions'],
+                'users' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'delete', 'add-registration'],
                 'pacientes' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'delete'],
                 'historias' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'historias-endodoncia' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
