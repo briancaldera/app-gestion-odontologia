@@ -2,7 +2,7 @@ import AuthLayout from "@/Layouts/AuthLayout.tsx";
 import Paciente from "@/src/models/Paciente.ts";
 import React from "react";
 import {usePermission} from "@/src/Utils/Utils.ts";
-import {EllipsisVertical, FolderOpen, History, User as UserIcon} from "lucide-react";
+import {Clock, EllipsisVertical, FolderOpen, History, User as UserIcon} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs.tsx"
 import Title from "@/Components/atoms/Title";
 import {Button} from "@/shadcn/ui/button.tsx";
@@ -28,7 +28,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/shadcn/ui/alert-dialog.tsx";
-import HistoriaCirugiaButton from "@/Pages/Pacientes/Partials/HistoriaCirugiaButton.tsx";
+import {Card, CardDescription, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
 
 type ShowProps = {
     paciente: Paciente
@@ -39,7 +39,9 @@ const Show = ({paciente}: ShowProps) => {
     return (
         <AuthLayout title={`Paciente - ${paciente.nombre} ${paciente.apellido}`}>
             <ScrollArea className={'h-full bg-white'}>
-                <PacienteInfoSection paciente={paciente}/>
+                <div className={'pb-6'}>
+                    <PacienteInfoSection paciente={paciente}/>
+                </div>
             </ScrollArea>
         </AuthLayout>
     )
@@ -245,8 +247,8 @@ const InformationSection = ({paciente}: { paciente: Paciente }) => {
 
 const HistoriasSection = ({paciente}: { paciente: Paciente }) => {
     return (
-        <div className={'h-[50vw] px-4 rounded-lg '}>
-            <div className={'flex h-full border flex-wrap'}>
+        <div className={'h-fit px-4 rounded-lg '}>
+            <div className={'flex border flex-wrap'}>
                 <div className={'basis-1/3 p-4 flex flex-col'}>
 
                     <div className={'inline-flex gap-2'}>
@@ -260,8 +262,8 @@ const HistoriasSection = ({paciente}: { paciente: Paciente }) => {
                         <div className={'flex flex-col gap-y-3 py-2'}>
 
                             <HistoriaItem paciente={paciente}/>
-                            <HistoriaEndodonciaItem paciente={paciente}/>
-                            <HistoriaCirugiaButton paciente={paciente}/>
+                            {/*<HistoriaEndodonciaItem paciente={paciente}/>*/}
+                            {/*<HistoriaCirugiaButton paciente={paciente}/>*/}
 
                         </div>
                     </ScrollArea>
@@ -276,10 +278,21 @@ const HistoriasSection = ({paciente}: { paciente: Paciente }) => {
                         <Title level={'title-lg'}>Línea de tiempo</Title>
                     </div>
 
-                    <div className={'flex-1 bg-indigo-500'}>
-
+                    <div className={'flex-1 h-full flex flex-col justify-center items-center'}>
+                        <div className={'flex gap-x-2'}>
+                            <Clock className={'size-8'}/>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle><Title>Paciente registrado</Title></CardTitle>
+                                <CardDescription>
+                                    <Title level={'body-xs'} className={'text-slate-400'}>
+                                    {format(paciente.created_at, 'PPpp')}
+                                    </Title>
+                                </CardDescription>
+                            </CardHeader>
+                        </Card>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -289,6 +302,8 @@ const HistoriasSection = ({paciente}: { paciente: Paciente }) => {
 const HistoriaItem = ({paciente}: { paciente?: Paciente | null }) => {
 
     const historia = paciente?.historia
+    const {user} = usePage().props.auth
+    const can = usePermission()
 
     return (
         <div
@@ -311,14 +326,18 @@ const HistoriaItem = ({paciente}: { paciente?: Paciente | null }) => {
                 ) : (
                     <div className={'flex-1 flex justify-center items-center gap-x-3'}>
                         <Text>
-                            No hay historia clinica creada
+                            No hay historia clínica creada
                         </Text>
                         <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button>
-                                    Crear
-                                </Button>
-                            </AlertDialogTrigger>
+                            {
+                                can('historias-create') && paciente?.assigned_to === user.id && (
+                                    <AlertDialogTrigger asChild>
+                                        <Button>
+                                            Crear
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                )
+                            }
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>
