@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignUuid('autor_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->text('motivo_consulta')->nullable();
             $table->text('enfermedad_actual')->nullable();
+            $table->jsonb('shared_with');
             $table->timestamps();
         });
     }
