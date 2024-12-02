@@ -2,19 +2,18 @@
 
 namespace App\Models;
 
-use App\Events\HistoriaCreated;
 use App\HasStatus;
-use App\Models\Group\Homework;
+use App\Observers\HistoriaObserver;
 use App\Status;
 use App\StatusHolder;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 /**
  * @property string $id the UUID
@@ -25,7 +24,9 @@ use Illuminate\Support\Facades\Auth;
  * @property string $enfermedad_actual
  * @property Status $status the status
  * @property Correccion $correcciones
+ * @property Collection $shared_with
  */
+#[ObservedBy([HistoriaObserver::class])]
 class Historia extends Model implements StatusHolder
 {
     use HasFactory;
@@ -44,6 +45,7 @@ class Historia extends Model implements StatusHolder
         'semestre' => null,
         'motivo_consulta' => null,
         'enfermedad_actual' => null,
+        'shared_with' => '[]'
     ];
 
     protected $fillable = [
@@ -55,14 +57,11 @@ class Historia extends Model implements StatusHolder
         'enfermedad_actual',
     ];
 
-    protected $dispatchesEvents = [
-        'created' => HistoriaCreated::class
-    ];
-
     protected function casts()
     {
         return [
-            'status' => Status::class
+            'status' => Status::class,
+            'shared_with' => 'collection',
         ];
     }
 
