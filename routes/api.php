@@ -11,7 +11,7 @@ Route::middleware(['auth:sanctum', 'auth'])->prefix('/v1')->name('api.v1.')->gro
         return new UserResource($request->user());
     })->name('user');
 
-    Route::apiResource('profiles', ProfileController::class)->only(['show']);
+    Route::apiResource('profiles', ProfileController::class)->only(['show', 'index']);
 
     Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.index');
     Route::patch('/notifications/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');

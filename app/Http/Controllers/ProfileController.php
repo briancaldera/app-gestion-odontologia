@@ -23,7 +23,7 @@ class ProfileController extends Controller
     {
         /* @var User $user */
         $user = $request->user();
-        if ($user->hasRole('admin')) {
+        if ($user->hasPermission('users-index-all')) {
             $users = User::with(['profile'])->get();
 
             return Inertia::render('Profiles/Index', [
