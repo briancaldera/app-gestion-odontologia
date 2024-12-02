@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\CorreccionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EntregaController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HistoriaCirugiaController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\HistoriaEndodonciaController;
-use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
@@ -59,7 +59,8 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     // Share routes
     Route::patch('/historias/{historia}/share', [HistoriaController::class, 'share'])->name('historias.share');
-    Route::get('/entregas', [HomeworkController::class, 'index'])->name('entregas.index');
+    Route::get('/entregas', [EntregaController::class, 'index'])->name('entregas.index');
+    Route::post('/entregas', [EntregaController::class, 'index'])->name('entregas.store');
 
 //    Routes for patient
     Route::resource('pacientes', PacienteController::class);
