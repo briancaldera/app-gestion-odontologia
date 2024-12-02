@@ -32,6 +32,9 @@ const Index = ({historias}: IndexProps) => {
             <AuthLayout title={'Historias'}>
                 <ScrollArea className={'bg-white h-full'}>
                     <div className={'p-6'}>
+                        <Title level={'title-lg'}>
+                            Historias Clínicas
+                        </Title>
                         <DataTable columns={historiaIndexTableColDef} data={historias} searchable={true}/>
                     </div>
                 </ScrollArea>
@@ -46,7 +49,7 @@ const Index = ({historias}: IndexProps) => {
                             <CardHeader>
                                 <CardTitle>
                                     <Title level={'title-lg'}>
-                                        Historias
+                                        Historias Clínicas
                                     </Title>
                                 </CardTitle>
                             </CardHeader>

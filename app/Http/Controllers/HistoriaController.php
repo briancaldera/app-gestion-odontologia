@@ -262,30 +262,26 @@ class HistoriaController extends Controller
 
         }
 
+        $historia->load(['autor.profile', 'paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica']);
+
         if ($user->hasRole('admin')) {
-            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
             return Inertia::render('Historias/Show', [
                 'historia' => new HistoriaResource($historia),
                 'homework' => $homework,
             ]);
         } elseif ($user->hasRole('admision')) {
-            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
             return Inertia::render('Historias/Show', [
                 'historia' => new HistoriaResource($historia),
             ]);
         } elseif ($user->hasRole('profesor')) {
-            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
             return Inertia::render('Historias/Show', [
                 'historia' => new HistoriaResource($historia),
                 'homework' => $homework,
             ]);
         } elseif ($user->hasRole('estudiante')) {
-
-            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
-
             return Inertia::render('Historias/Show', [
                 'historia' => new HistoriaResource($historia),
                 'homework' => $homework ? new HomeworkResource($homework) : null,
@@ -573,11 +569,6 @@ class HistoriaController extends Controller
     {
         /* @var User $user */
         $user = $request->user();
-
-        if (!$historia->isOpen()) {
-            message('La historia no se encuentra abierta a modificaciones', Type::Info);
-            return back();
-        }
 
         if ($user->cannot('update', $historia)) {
             message('No posee permisos para modificar esta historia');

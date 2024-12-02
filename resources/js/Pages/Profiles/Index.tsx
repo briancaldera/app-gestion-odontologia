@@ -29,8 +29,7 @@ const Index = ({users}: IndexProps) => {
                     <Title level={'title-lg'}>Usuarios</Title>
                 </header>
                 <section className={''}>
-                    {/*// todo make table searchable*/}
-                    <DataTable columns={columns} data={users}/>
+                    <DataTable columns={columns} data={users} searchable={true}/>
                 </section>
             </ScrollArea>
         </AuthLayout>
@@ -41,7 +40,7 @@ const columnHelper = createColumnHelper<User>()
 
 const columns: ColumnDef<User>[] = [
     columnHelper.accessor(originalRow => originalRow.profile.cedula, {
-        meta: {title: 'Cédula'},
+        meta: {title: 'Cédula', searchable: true},
         id: 'cedula',
         header: props => {
             return (
@@ -57,7 +56,7 @@ const columns: ColumnDef<User>[] = [
         ,
     }),
     columnHelper.accessor(originalRow => originalRow.profile.nombres, {
-        meta: {title: 'Nombres'},
+        meta: {title: 'Nombres', searchable: true},
         id: 'nombres',
         header: props => {
             return (
@@ -72,7 +71,7 @@ const columns: ColumnDef<User>[] = [
         }
     }),
     columnHelper.accessor(originalRow => originalRow.profile.apellidos, {
-        meta: {title: 'Apellidos'},
+        meta: {title: 'Apellidos', searchable: true},
         id: 'apellidos',
         header: props => {
             return (
@@ -87,7 +86,7 @@ const columns: ColumnDef<User>[] = [
         }
     }),
     columnHelper.accessor(originalRow => originalRow.email, {
-        meta: {title: 'Email'},
+        meta: {title: 'Email', searchable: true},
         id: 'email',
         header: props => {
             return (
@@ -102,7 +101,7 @@ const columns: ColumnDef<User>[] = [
         }
     }),
     columnHelper.accessor(originalRow => originalRow.name, {
-        meta: {title: 'Usuario'},
+        meta: {title: 'Usuario', searchable: true},
         id: 'name',
         header: props => {
             return (
