@@ -29,10 +29,9 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {router} from "@inertiajs/react";
 import Pin from "@/Components/atoms/Pin.tsx";
 import {historiaSchema} from "@/FormSchema/Historia/HistoriaSchema.ts";
-import Image from "@/Components/atoms/Image.tsx";
-import logo from ''
 import Logo from "@/Components/atoms/Logo.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import {format} from "date-fns";
 
 type PacienteSectionProps = {
     form: UseFormReturn<z.infer<typeof historiaSchema>>
@@ -110,19 +109,31 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
 
                     <div className={'flex gap-x-3'}>
                         <Text>
-                            Semestre:
+                            Fecha: {format(historia.created_at, 'P')}
                         </Text>
-                        {
-                            historia.semestre && (
-                                <div className={'flex items-center gap-x-2'}>
-                                    <Text>{historia.semestre}°</Text>
-                                    <Pin color={colorMap.get(historia.semestre)!}/>
-                                </div>
-                            )}
-
                     </div>
+
+                </div>
+
+
+            </div>
+            <div className={'flex justify-between items-baseline gap-x-3'}>
+                <Text>
+                    Bachiller: {`${historia.autor?.profile?.nombres} ${historia.autor?.profile?.apellidos}`}
+                </Text>
+                <div>
+                    <Text>
+                        Semestre:
+                    </Text>
                     {
-                        can('historias-assign-semester') && (
+                        historia.semestre && (
+                            <div className={'flex items-center gap-x-2'}>
+                                <Text>{historia.semestre}°</Text>
+                                <Pin color={colorMap.get(historia.semestre)!}/>
+                            </div>
+                        )}
+                    {
+                        can('historias-assign-semester') && !disabled && (
                             <AssignSemesterDialog/>
                         )
                     }

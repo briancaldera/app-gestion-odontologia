@@ -20,6 +20,9 @@ type Historia = Readonly<{
     historia_odontologica?: HistoriaOdontologica
     motivo_consulta: string | null
     enfermedad_actual: string | null
+
+    created_at: string
+    updated_at: string
 }>
 
 enum Status {

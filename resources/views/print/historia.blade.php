@@ -683,11 +683,7 @@
         .underline-offset-4 {
             text-underline-offset: 4px;
         }
-
-
     </style>
-    @vite('resources/css/app.css')
-    @viteReactRefresh
 </head>
 <body>
 <header class="text-center pt-6 relative">
