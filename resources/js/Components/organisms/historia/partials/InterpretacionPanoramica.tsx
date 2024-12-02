@@ -13,6 +13,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import Image from "@/Components/atoms/Image.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
+import {Maximize2} from "lucide-react";
 
 const ACCEPTED_PICTURE_MIME: readonly string[] = ['image/jpeg', 'image/jpg', 'image/png']
 
@@ -91,21 +92,26 @@ const InterpretacionPanoramica = () => {
 
                         <div className={'px-14'}>
                             <Carousel>
-                                <CarouselContent className={'h-[700px]'}>
+                                <CarouselContent className={'h-[700px] bg-black'}>
                                     {
-                                        historia_odontologica?.panoramicas.map((url: string) => (
-                                            <CarouselItem key={url} className={'bg-white'}>
+                                        historia_odontologica?.panoramicas.map((url: string, index) => (
+                                            <CarouselItem key={url} className={'bg-black relative'}><Button type='button' className={'absolute top-0 right-0'} variant='ghost' onClick={() => document.querySelector(`#pano_image_server_${index}`)?.requestFullscreen()}>
+                                                <Maximize2 className={'mr-2 text-white'}/>
+                                            </Button>
                                                 <div className={'h-full flex justify-center items-center'}>
-                                                    <Image src={url} className={'object-contain h-full w-full'}/>
+                                                    <Image src={url} className={'object-contain h-full w-full'} id={`pano_image_server_${index}`}/>
                                                 </div>
                                             </CarouselItem>
                                         ))
                                     }
                                     {
-                                        interpretacionPanoramicaForm.getValues().interpretacion_panoramica.imagenes.map((file: File) => (
-                                            <CarouselItem key={file.name} className={'bg-white'}>
+                                        interpretacionPanoramicaForm.getValues().interpretacion_panoramica.imagenes.map((file: File, index) => (
+                                            <CarouselItem key={file.name} className={'bg-black relative'}>
+                                                <Button type='button' className={'absolute top-0 right-0'} variant='ghost' onClick={() => document.querySelector(`#pano_image_local_${index}`)?.requestFullscreen()}>
+                                                    <Maximize2 className={'mr-2 text-white'}/>
+                                                </Button>
                                                 <div className={'h-full flex justify-center items-center'}>
-                                                    <Image src={file} className={'object-contain h-full w-full'}/>
+                                                    <Image src={file} className={'object-contain h-full w-full'} id={`pano_image_local_${index}`}/>
                                                 </div>
                                             </CarouselItem>
                                         ))
