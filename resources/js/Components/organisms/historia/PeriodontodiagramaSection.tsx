@@ -5,7 +5,6 @@ import Title from "@/Components/atoms/Title";
 import React from "react";
 import {useRoute} from "ziggy-js";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
-import Surface from "@/Components/atoms/Surface";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/shadcn/ui/form.tsx";
 import Image from "@/Components/atoms/Image.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
@@ -77,7 +76,7 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
                                         <div className={'flex justify-center bg-neutral-950 min-h-[900px]'}>
                                             <div className={'w-4/5'}>
                                                 <Image src={field.value ?? periodontograma}
-                                                       className={'object-contain w-full h-auto'}/>
+                                                       className={'object-contain w-full h-auto cursor-pointer'} id={'periodontodiagrama'} onClick={() => document.querySelector('#periodontodiagrama')?.requestFullscreen()}/>
                                             </div>
                                         </div>
                                     </FormControl>
