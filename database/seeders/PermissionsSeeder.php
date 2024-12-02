@@ -128,7 +128,7 @@ class PermissionsSeeder extends Seeder
                 'historias-cirugia' => ['full-control', 'index-all', 'read', 'read-private', 'update', 'update-status', 'delete', 'assign-id'],
                 'groups' => ['index-all', 'create', 'read', 'read-private', 'update', 'delete', 'index-users', 'add-users', 'remove-users'],
                 'assignments' => ['index-all', 'create', 'read', 'read-private', 'update', 'delete'],
-                'homeworks' => ['index-all', 'read', 'update', 'delete', 'create-corrections'],
+                'homeworks' => ['full-control', 'index-all', 'read', 'update', 'delete', 'create-corrections'],
             ],
             'admision' => [
                 'users' => ['index-all', 'read', 'read-private'],
