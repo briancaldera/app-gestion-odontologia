@@ -15,7 +15,13 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
 import Title from "@/Components/atoms/Title";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs.tsx";
 import {Calendar} from "@/shadcn/ui/calendar.tsx";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel} from '@/shadcn/ui/dropdown-menu.tsx'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuTrigger
+} from '@/shadcn/ui/dropdown-menu.tsx'
 
 const Index = ({historias}: IndexProps) => {
 
@@ -108,34 +114,33 @@ const columnHelper: ColumnHelper<Historia> = createColumnHelper<Historia>()
 
 const historiaIndexTableColDef: ColumnDef<Historia>[] = [
     columnHelper.accessor((historia: Historia) => historia.numero ?? 'Sin asignar', {
-        meta: {title: 'Número de historia'},
+        meta: {title: 'Número de historia', searchable: true},
         id: 'code',
         header: 'Número de historia',
     }),
     columnHelper.accessor((historia: Historia) => `${historia.paciente?.nombre ?? ''} ${historia.paciente?.apellido ?? ''}`, {
-        meta: {
-            title: 'Paciente'
+        meta: {title: 'Paciente', searchable: true
         },
         id: 'patient',
         header: 'Paciente'
     }),
     columnHelper.accessor((historia: Historia) => historia.paciente?.edad ?? '-', {
-        meta: {title: 'Edad'},
+        meta: {title: 'Edad', searchable: true},
         id: 'age',
         header: 'Edad',
     }),
     columnHelper.accessor((historia: Historia) => historia.paciente?.cedula ?? '-', {
-        meta: {title: 'Cédula del paciente'},
+        meta: {title: 'Cédula del paciente', searchable: true},
         id: 'cedula',
         header: 'Cédula del paciente',
     }),
     columnHelper.accessor((historia: Historia) => `${historia.autor?.profile?.apellidos + ',' ?? ''} ${historia.autor?.profile?.nombres ?? ''}`, {
-        meta: {title: 'Autor'},
+        meta: {title: 'Autor', searchable: true},
         id: 'author',
         header: 'Autor',
     }),
     columnHelper.accessor((historia: Historia) => historia.autor?.profile?.cedula, {
-        meta: {title: 'Cédula del autor'},
+        meta: {title: 'Cédula del autor', searchable: true},
         id: 'author_cedula',
         header: 'Cédula del autor',
     }),
