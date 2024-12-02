@@ -31,7 +31,7 @@ const Index = ({historias}: IndexProps) => {
         return (
             <AuthLayout title={'Historias'}>
                 <ScrollArea className={'bg-white h-full'}>
-                    <div className={'px-6'}>
+                    <div className={'p-6'}>
                         <DataTable columns={historiaIndexTableColDef} data={historias} searchable={true}/>
                     </div>
                 </ScrollArea>
@@ -41,7 +41,7 @@ const Index = ({historias}: IndexProps) => {
         return (
             <AuthLayout title={'Historias'}>
                 <ScrollArea className={'h-full'}>
-                    <div className={'px-6 h-[900px] grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-2 gap-6'}>
+                    <div className={'p-6 h-[900px] grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-2 gap-6'}>
                         <Card className={'col-span-3 row-span-2'}>
                             <CardHeader>
                                 <CardTitle>
