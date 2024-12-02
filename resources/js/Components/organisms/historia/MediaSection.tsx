@@ -108,7 +108,7 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
                         {
                             media.map((media,index) => (
                                 <div key={media.url} className={'aspect-square border flex flex-col justify-center items-center'}>
-                                    <Image id={`img_${index}`} src={media.url} onClick={() => document.querySelector(`#img_${index}`)?.requestFullscreen()}/>
+                                    <Image className={'cursor-pointer'} id={`img_${index}`} src={media.url} onClick={() => document.querySelector(`#img_${index}`)?.requestFullscreen()}/>
                                     <Title>{media.title}</Title>
                                     <Text>{media.description}</Text>
                                 </div>
