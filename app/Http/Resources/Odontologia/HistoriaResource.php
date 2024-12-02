@@ -28,7 +28,7 @@ class HistoriaResource extends JsonResource
         some(fn(Group\Homework $homework) => $homework->documents->
         some(fn (array $document)  => $document['id'] === $this->id))));
 
-        $canReadPrivate = $user->hasPermission('historias-read-private') || $this->autor_id === $user->id;
+        $canReadPrivate = $user->hasPermission('historias-read-private') || $user->hasPermission('historias-full-control') || $user->hasPermission('homeworks-create-corrections') || $this->autor_id === $user->id;
 
         return [
             'id' => $this->id,
