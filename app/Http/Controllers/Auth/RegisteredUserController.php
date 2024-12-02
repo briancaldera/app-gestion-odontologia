@@ -39,9 +39,17 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        if (!UserCode::where('code', $body['code'])->exists()) {
+        /** @var UserCode $userCode */
+        $userCode = UserCode::where('code', $body['code'])->first();
+
+        if (!isset($userCode)) {
             message('Número de expediente no existe en el sistema. No está autorizado para registrarse', \Type::Warning);
             message('Debe ponerse en contacto con la coordinación o administración de su facultad', \Type::Info);
+            return back();
+        }
+
+        if ($userCode->user_id !== null) {
+            message('Número de expediente ya ha sido registrado.', \Type::Warning);
             return back();
         }
 

@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\UserCode;
-use Illuminate\Auth\Access\Response;
 
 class UserCodePolicy
 {
@@ -13,7 +12,15 @@ class UserCodePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        if ($user->hasPermission(['system-add-users-codes'])) {
+            return true;
+        }
+
+        if ($user->hasPermission(['system-full-control'])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -21,7 +28,7 @@ class UserCodePolicy
      */
     public function view(User $user, UserCode $userCode): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -29,7 +36,15 @@ class UserCodePolicy
      */
     public function create(User $user): bool
     {
-        //
+        if ($user->hasPermission(['system-add-users-codes'])) {
+            return true;
+        }
+
+        if ($user->hasPermission(['system-full-control'])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -37,7 +52,15 @@ class UserCodePolicy
      */
     public function update(User $user, UserCode $userCode): bool
     {
-        //
+        if ($user->hasPermission(['system-update-users-codes'])) {
+            return true;
+        }
+
+        if ($user->hasPermission(['system-full-control'])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -45,7 +68,15 @@ class UserCodePolicy
      */
     public function delete(User $user, UserCode $userCode): bool
     {
-        //
+        if ($user->hasPermission(['system-remove-users-codes'])) {
+            return true;
+        }
+
+        if ($user->hasPermission(['system-full-control'])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -53,7 +84,15 @@ class UserCodePolicy
      */
     public function restore(User $user, UserCode $userCode): bool
     {
-        //
+        if ($user->hasPermission(['system-remove-users-codes'])) {
+            return true;
+        }
+
+        if ($user->hasPermission(['system-full-control'])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -61,6 +100,14 @@ class UserCodePolicy
      */
     public function forceDelete(User $user, UserCode $userCode): bool
     {
-        //
+        if ($user->hasPermission(['system-remove-users-codes'])) {
+            return true;
+        }
+
+        if ($user->hasPermission(['system-full-control'])) {
+            return true;
+        }
+
+        return false;
     }
 }
