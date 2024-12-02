@@ -570,11 +570,6 @@ class HistoriaController extends Controller
         /* @var User $user */
         $user = $request->user();
 
-        if (!$historia->isOpen()) {
-            message('La historia no se encuentra abierta a modificaciones', Type::Info);
-            return back();
-        }
-
         if ($user->cannot('update', $historia)) {
             message('No posee permisos para modificar esta historia');
             return back();

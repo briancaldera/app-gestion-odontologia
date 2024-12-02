@@ -30,7 +30,7 @@ import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import {toast} from "sonner";
 import {TratamientoRealizado} from "@/src/models/HistoriaOdontologica.ts";
 import {usePermission} from "@/src/Utils/Utils.ts";
-import {Link} from "@inertiajs/react";
+import {Link, usePage} from "@inertiajs/react";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import {Text} from "@/Components/atoms/Text";
 import Profile from "@/src/models/Profile.ts";
@@ -42,9 +42,21 @@ interface SecuenciaTratamientoSectionProps {
     form: UseFormReturn<z.infer<typeof secuenciaTratamientoSchema>>
 }
 
-const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) => {
+const SecuenciaTratamientoSection = () => {
 
-    const {historia, disabled} = React.useContext(HistoriaEditorContext)
+    const {user} = usePage().props.auth
+
+    const {historia} = React.useContext(HistoriaEditorContext)
+
+    const isDisabled = historia.autor_id !== user?.id
+
+    const form = useForm<z.infer<typeof secuenciaTratamientoSchema>>({
+        resolver: zodResolver(secuenciaTratamientoSchema),
+        defaultValues: {
+            secuencia_tratamiento: []
+        },
+        disabled: isDisabled,
+    })
 
     const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
     const {isProcessing, router} = useInertiaSubmit()
@@ -56,7 +68,7 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
         defaultValues: {
             diente: "", fecha: '', tratamiento: ''
         },
-        disabled: disabled
+        disabled: isDisabled
     })
 
     const onAddTratamiento = (values: z.infer<typeof tratamientoRealizadoSchema>) => {

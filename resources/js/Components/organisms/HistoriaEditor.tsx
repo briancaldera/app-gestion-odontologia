@@ -410,7 +410,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                                 <ModificacionesPlanTratamientoSection form={modificacionesTratamientoForm}/>
                             </TabsContent>
                             <TabsContent value="section10" className={TabTriggerStyle}>
-                                <SecuenciaPlanTratamientoSection form={secuenciaTratamientoForm}/>
+                                <SecuenciaPlanTratamientoSection/>
                             </TabsContent>
                             <TabsContent value="section11" className={TabTriggerStyle}>
                                 <HistoriaPeriodontalSection readonly={readMode} historia_id={historia.id}
