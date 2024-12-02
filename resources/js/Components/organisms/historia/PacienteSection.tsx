@@ -254,7 +254,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                     <div className='grid grid-cols-1 sm:grid-cols-3 gap-y-8 gap-x-6 basis-full'>
                         <FormField render={({field}) => (
                             <FormItem className={'col-span-full'}>
-                                <FormLabel>Motivo Consulta</FormLabel>
+                                <FormLabel>Diagnóstico</FormLabel>
                                 <FormControl>
                                     <Textarea {...field}/>
                                 </FormControl>
@@ -264,7 +264,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
 
                         <FormField render={({field}) => (
                             <FormItem className={'col-span-full'}>
-                                <FormLabel>Enfermedad Actual</FormLabel>
+                                <FormLabel>Tratamiento indicado</FormLabel>
                                 <FormControl>
                                     <Textarea {...field}/>
                                 </FormControl>

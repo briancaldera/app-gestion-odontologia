@@ -50,23 +50,9 @@ const Index = ({pacientes}: IndexProps) => {
                         <div className={'flex justify-end'}><Text level={'body-xs'}>Total pacientes: <span
                             className={'text-2xl font-bold'}>{pacientes.length}</span></Text></div>
 
-                        {
-                            pacientes.length !== 0 ? (
-                                <div className={'basis-full'}>
-                                    <DataTable columns={pacientesColumDef} data={pacientes} searchable={true}/>
-                                </div>
-                            ) : (
-                                <div className={'flex-1 flex flex-col justify-center items-center gap-y-4'}>
-                                    <UserRoundX className={'size-20 mb-4 text-slate-300'}/>
-                                    <Text className={'text-center'}>¡Aun no tienes ningún paciente! Registra a un
-                                        nuevo paciente</Text>
-                                    <Button role={'link'} asChild>
-                                        <Link href={route('pacientes.create')}><Plus className={'mr-2'}/>Registrar
-                                            paciente</Link>
-                                    </Button>
-                                </div>
-                            )
-                        }
+                        <div className={'basis-full'}>
+                            <DataTable columns={pacientesColumDef} data={pacientes} searchable={true}/>
+                        </div>
                     </div>
                 </ScrollArea>
             </AuthLayout>
