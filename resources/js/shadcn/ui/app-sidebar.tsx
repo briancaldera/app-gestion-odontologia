@@ -10,7 +10,7 @@ import {
     SidebarMenuItem,
     SidebarSeparator
 } from "@/shadcn/ui/sidebar"
-import {CircleHelp, ClipboardList, Info, PersonStanding} from "lucide-react";
+import {CircleHelp, ClipboardList, Cross, Info, Lock, User} from "lucide-react";
 import {Link} from "@inertiajs/react";
 import {route} from "ziggy-js";
 import Logo from "@/Components/atoms/Logo.tsx";
@@ -21,11 +21,13 @@ import {usePermission} from "@/src/Utils/Utils.ts";
 export function AppSidebar() {
     const can = usePermission()
 
-    const clinicaMenu = []
+    const clinicaMenu: MenuItem[] = []
+    const systemMenu: MenuItem[] = []
+    const escuelaMenu: MenuItem[] = []
 
     if (can('pacientes-read') || can('pacientes-full-control')) {
         clinicaMenu.push(
-            {title: 'Pacientes', icon: PersonStanding, url: route('pacientes.index')}
+            {title: 'Pacientes', icon: Cross, url: route('pacientes.index')}
         )
     }
 
@@ -34,6 +36,24 @@ export function AppSidebar() {
             {title: 'Historias', icon: ClipboardList, url: route('historias.index')}
         )
     }
+
+    if (can('users-index-all') || can('users-full-control')) {
+        systemMenu.push({
+            title: "Usuarios", icon: User, url: route('profile.index')
+        })
+    }
+
+    if (can('system-add-users-codes')) {
+        systemMenu.push({
+            title: "Acceso", icon: Lock, url: route('users.codes.index')
+        })
+    }
+
+    // if (can('homeworks-read') || can('homeworks-full-control')) {
+    //     escuelaMenu.push({
+    //         title: "Entregas", icon: BookOpenText, url: route('entregas.index')
+    //     })
+    // }
 
     return (
         <Sidebar collapsible='icon' className={'z-50'}>
@@ -57,9 +77,39 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
+
+                {
+                    systemMenu.length > 0 && (
+                        <SidebarGroup>
+                            <SidebarGroupLabel>Sistema</SidebarGroupLabel>
+                            <SidebarGroupContent>
+                                <SidebarMenu>
+                                    {
+                                        systemMenu.map((item) => toMenuItem(item))
+                                    }
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </SidebarGroup>
+                    )
+                }
+
+                {
+                    escuelaMenu.length > 0 && (
+                        <SidebarGroup>
+                            <SidebarGroupLabel>Escuela</SidebarGroupLabel>
+                            <SidebarGroupContent>
+                                <SidebarMenu>
+                                    {
+                                        escuelaMenu.map((item) => toMenuItem(item))
+                                    }
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </SidebarGroup>
+                    )
+                }
+
                 <SidebarSeparator/>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Ayuda</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {
@@ -94,7 +144,7 @@ type MenuItem = {
 
 const helpItems: MenuItem[] = [
     {
-        title: "Ayuda",
+        title: "Soporte",
         url: "#",
         icon: CircleHelp,
     },
