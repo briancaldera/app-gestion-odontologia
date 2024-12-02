@@ -1,10 +1,9 @@
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
-import {Card} from "@/shadcn/ui/card.tsx";
 import Title from "@/Components/atoms/Title";
 import {DataTable} from "@/Components/molecules/DataTable.tsx";
 import {ColumnDef, createColumnHelper} from '@tanstack/react-table'
 import User from '@/src/models/User.ts'
-import {ArrowBigLeft, ArrowUpDown, MoreHorizontal} from "lucide-react"
+import {ArrowUpDown, MoreHorizontal} from "lucide-react"
 import {Button} from "@/shadcn/ui/button.tsx";
 import {
     DropdownMenu,
@@ -15,7 +14,6 @@ import {
 } from "@/shadcn/ui/dropdown-menu.tsx"
 import {router} from "@inertiajs/react"
 import {route} from "ziggy-js";
-import SidebarMenu, {type MenuItem} from '@/Components/organisms/SidebarMenu.tsx'
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type IndexProps = {
@@ -26,16 +24,14 @@ const Index = ({users}: IndexProps) => {
 
     return (
         <AuthLayout title={'Perfiles'}>
-            <ScrollArea className={'h-full'}>
-                <div className={'p-2 sm:p-12'}>
-                    <Card className={'p-12'}>
-                        <Title level={'title-lg'}>Usuarios</Title>
-                        <section>
-                            {/*// todo make table searchable*/}
-                            <DataTable columns={columns} data={users}/>
-                        </section>
-                    </Card>
-                </div>
+            <ScrollArea className={'bg-white h-full p-2 sm:p-6'}>
+                <header className='p-2'>
+                    <Title level={'title-lg'}>Usuarios</Title>
+                </header>
+                <section className={''}>
+                    {/*// todo make table searchable*/}
+                    <DataTable columns={columns} data={users}/>
+                </section>
             </ScrollArea>
         </AuthLayout>
     )

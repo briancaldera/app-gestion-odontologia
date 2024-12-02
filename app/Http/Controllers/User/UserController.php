@@ -61,6 +61,11 @@ class UserController extends Controller
             return back();
         }
 
+        if ($userCode->user()->exists()) {
+            message('No puedes cambiar el código o rol inicial de un usuario existente', \Type::Error);
+            return back();
+        }
+
         $data = $request->validate([
             'code' => ['required', 'string', 'max:255'],
             'role' => ['required', 'exists:' . Role::class . ',name',],
@@ -85,7 +90,7 @@ class UserController extends Controller
 
         if ($userCode->user()->exists()) {
             message('No puede eliminar el expediente de un usuario existente', \Type::Error);
-            return response(null, 400);
+            return back();
         }
 
         $userCode->delete();

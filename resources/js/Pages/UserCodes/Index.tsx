@@ -168,8 +168,10 @@ const AddCodeDialog = ({userCode}: { userCode?: UserCode }) => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value={'profesor'}>Profesor</SelectItem>
                                             <SelectItem value={'estudiante'}>Estudiante</SelectItem>
+                                            <SelectItem value={'profesor'}>Profesor</SelectItem>
+                                            <SelectItem value={'admision'} className={'bg-rose-50'}>Admisión</SelectItem>
+                                            <SelectItem value={'admin'} className={'bg-rose-50'}>Administrador</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormDescription>
@@ -385,8 +387,10 @@ const UserCodeActionCell = ({cellContext} : {cellContext: CellContext<UserCode, 
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value={'profesor'}>Profesor</SelectItem>
                                                 <SelectItem value={'estudiante'}>Estudiante</SelectItem>
+                                                <SelectItem value={'profesor'}>Profesor</SelectItem>
+                                                <SelectItem value={'admision'} className={'bg-rose-200'}>Admisión</SelectItem>
+                                                <SelectItem value={'admin'} className={'bg-rose-200'}>Administrador</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormDescription>
