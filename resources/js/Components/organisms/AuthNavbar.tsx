@@ -24,7 +24,6 @@ import User from "@/src/models/User";
 import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator,} from "@/shadcn/ui/breadcrumb"
 import {Input} from "@/shadcn/ui/input.tsx";
 import {Separator} from "@/shadcn/ui/separator.tsx";
-import {Switch} from "@/shadcn/ui/switch"
 import {SidebarTrigger, useSidebar} from "@/shadcn/ui/sidebar.tsx";
 import {BaseContext} from "@/Layouts/BaseLayout.tsx";
 import {cn} from "@/lib/utils.ts";
@@ -145,11 +144,11 @@ const AuthSection = () => {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator/>
                     <DropdownMenuItem asChild><Link href={route("profile.edit")}>Perfil</Link></DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => e.stopPropagation()}
-                                      className={"flex justify-between items-center gap-4"}>
-                        Modo Oscuro
-                        <Switch checked={isDarkMode} onCheckedChange={() => toggleDarkMode()}/>
-                    </DropdownMenuItem>
+                    {/*<DropdownMenuItem onClick={(e) => e.stopPropagation()}*/}
+                    {/*                  className={"flex justify-between items-center gap-4"}>*/}
+                    {/*    Modo Oscuro*/}
+                    {/*    <Switch checked={isDarkMode} onCheckedChange={() => toggleDarkMode()}/>*/}
+                    {/*</DropdownMenuItem>*/}
                     <hr/>
                     <DropdownMenuItem onClick={handleLogout}>Cerrar Sesión</DropdownMenuItem>
                 </DropdownMenuContent>
