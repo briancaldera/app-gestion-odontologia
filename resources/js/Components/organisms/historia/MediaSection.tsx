@@ -7,7 +7,6 @@ import MediaSchema, {MediaSchemaDefault} from "@/FormSchema/Historia/MediaSchema
 import {useForm} from "react-hook-form";
 import Title from "@/Components/atoms/Title";
 import React from "react";
-import Surface from "@/Components/atoms/Surface";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -20,13 +19,13 @@ import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import {Media} from "@/src/models/HistoriaOdontologica.ts";
 
 // TODO: Remove dialog when file is submitted
-// TODO: Show media title and description
 // TODO: Limit total files in backend to 20 files
 
 type MediaSectionProps = {
-    media: readonly string[]
+    media: readonly Media[]
     readmode: boolean
     historia_id: string
 }
@@ -107,9 +106,11 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
                 <CorrectionsBlock model={correctionsModel} name={'media'} canCreateCorrections={canCreateCorrections}>
                     <div className={'grid grid-cols-1 sm:grid-cols-3 gap-3'}>
                         {
-                            media.map(url => (
-                                <div key={url} className={'aspect-square'}>
-                                    <Image src={url}/>
+                            media.map((media,index) => (
+                                <div key={media.url} className={'aspect-square border flex flex-col justify-center items-center'}>
+                                    <Image id={`img_${index}`} src={media.url} onClick={() => document.querySelector(`#img_${index}`)?.requestFullscreen()}/>
+                                    <Title>{media.title}</Title>
+                                    <Text>{media.description}</Text>
                                 </div>
                             ))
                         }

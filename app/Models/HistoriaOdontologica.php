@@ -286,7 +286,11 @@ JSON,
     protected function anymedia(): Attribute
     {
         return new Attribute(
-            get: fn() => $this->getMedia('anymedia')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/media/$media->uuid"))
+            get: fn() => $this->getMedia('anymedia')->map(fn(Media $media) => [
+                'title' => $media->getCustomProperty('title'),
+                'url' => url("historias/$this->historia_id/odontologica/media/$media->uuid"),
+                'description' => $media->getCustomProperty('description', '')
+            ])
         );
     }
 

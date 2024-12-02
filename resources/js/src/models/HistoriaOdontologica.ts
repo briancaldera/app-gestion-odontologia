@@ -21,8 +21,14 @@ type HistoriaOdontologica = Readonly<{
     panoramicas: readonly string[]
     coronales: readonly string[]
     periapicales: readonly string[]
-    anymedia: readonly string[]
+    anymedia: readonly Media[]
 }>
+
+type Media = {
+    url: string,
+    title: string,
+    description: string
+}
 
 type Portador = {
     ortodoncia: boolean
@@ -134,5 +140,5 @@ type HistoriaPeriodontal = z.infer<typeof historiaPeriodontalSchema> & {
     nota: string | null
 }
 
-export {type HistoriaPeriodontal, type Tratamiento, type ModificacionTratamiento, type TratamientoRealizado}
+export {type HistoriaPeriodontal, type Tratamiento, type ModificacionTratamiento, type TratamientoRealizado, type Media}
 export default HistoriaOdontologica
