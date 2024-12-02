@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu";
 import {Button} from "@/shadcn/ui/button";
-import {MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
+import {CircleCheckBig, MoreHorizontal, SquarePlus, Trash2} from "lucide-react";
 import Title from "@/Components/atoms/Title";
 import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover";
 import {Icon} from "@/Components/atoms/Icon.tsx";
@@ -22,15 +22,24 @@ import Input from "@/Components/atoms/Input";
 import Textarea from "@/Components/atoms/Textarea";
 import {OutlinedButton} from "@/Components/molecules/OutlinedButton";
 import {DataTable} from "@/Components/molecules/DataTable";
-import Surface from "@/Components/atoms/Surface";
-import SecuenciaTratamientoSchema, {TratamientoRealizadoSchema, TratamientoRealizadoDefaults} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
+import {secuenciaTratamientoSchema, tratamientoRealizadoSchema} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
 import {formatDate} from 'date-fns'
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit";
 import {route} from "ziggy-js";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
+import {toast} from "sonner";
+import {TratamientoRealizado} from "@/src/models/HistoriaOdontologica.ts";
+import {usePermission} from "@/src/Utils/Utils.ts";
+import {Link} from "@inertiajs/react";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import {Text} from "@/Components/atoms/Text";
+import Profile from "@/src/models/Profile.ts";
+import axios from "axios";
+import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
+import {Skeleton} from "@/shadcn/ui/skeleton.tsx";
 
 interface SecuenciaTratamientoSectionProps {
-    form: UseFormReturn<z.infer<typeof SecuenciaTratamientoSchema>>
+    form: UseFormReturn<z.infer<typeof secuenciaTratamientoSchema>>
 }
 
 const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) => {
@@ -40,12 +49,17 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
     const [openAddTratamientoPopover, setOpenAddTratamientoPopover] = React.useState<boolean>(false)
     const {isProcessing, router} = useInertiaSubmit()
 
-    const tratamientoForm = useForm<z.infer<typeof TratamientoRealizadoSchema>>({
-        resolver: zodResolver(TratamientoRealizadoSchema),
-        defaultValues: TratamientoRealizadoDefaults
+    const {secuencia_tratamiento} = historia.historia_odontologica!
+
+    const tratamientoForm = useForm<z.infer<typeof tratamientoRealizadoSchema>>({
+        resolver: zodResolver(tratamientoRealizadoSchema),
+        defaultValues: {
+            diente: "", fecha: '', tratamiento: ''
+        },
+        disabled: disabled
     })
 
-    const onAddTratamiento = (values: z.infer<typeof TratamientoRealizadoDefaults>) => {
+    const onAddTratamiento = (values: z.infer<typeof tratamientoRealizadoSchema>) => {
         const oldData = form.getValues().secuencia_tratamiento
         form.setValue('secuencia_tratamiento', [...oldData, values], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true
@@ -56,31 +70,41 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
 
     const onDeleteModificacion = (index) => {
         const newData = form.getValues().secuencia_tratamiento
-        newData.splice(index, 1)
+        newData.splice(index - historia.historia_odontologica?.secuencia_tratamiento.length, 1)
         form.setValue('secuencia_tratamiento', [...newData], {
             shouldDirty: true, shouldTouch: true, shouldValidate: true
         })
     }
 
-    const onSubmitSecuencia = (values: z.infer<typeof SecuenciaTratamientoSchema>) => {
+    const onSubmitSecuencia = (values: z.infer<typeof secuenciaTratamientoSchema>) => {
 
         const endpoint: string = route('historias.odontologica.secuenciatratamiento.update', {
-            historia: values.historia_id
+            historia: historia.id
         })
 
         router.patch(endpoint, {...values}, {
             onError: errors => {
-                // TODO Show errors
-                console.log(errors)
+                toast.error('Ocurrió un error al intentar actualizar la historia. Por favor, revise la información suministrada')
             },
             onSuccess: page => {
-                form.reset(values)
+                form.reset()
+                router.reload()
             }
         })
     }
 
+    const onDropFile = ([file]: [File]) => {
+        file.preview = URL.createObjectURL(file)
+
+        // consentimientoForm.setValue('modificaciones_consentimiento', file, {
+        //     shouldDirty: true,
+        //     shouldTouch: true,
+        //     shouldValidate: true
+        // })
+    }
+
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
             <Title level={'title-lg'}>Secuencia del Plan de Tratamiento</Title>
 
             <section className={'my-6 relative'}>
@@ -152,11 +176,15 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
                         <form onSubmit={form.handleSubmit(onSubmitSecuencia)}>
                             <FormField render={({field}) => (
                                 <FormItem>
-                                    <DataTable columns={columns} data={field.value}/>
+                                    <DataTable columns={columns} data={[...secuencia_tratamiento, ...field.value]}/>
                                 </FormItem>
                             )} name={'secuencia_tratamiento'} control={form.control}/>
 
-                            <div className={'flex justify-end'}>
+                            <div className={'flex justify-end items-center gap-x-2'}>
+                                {
+                                    form.formState.isDirty &&
+                                    <Text className={'text-rose-500'}>Posees cambios sin guardar!</Text>
+                                }
                                 <Button type={'submit'} disabled={isProcessing || !form.formState.isDirty}>Guardar</Button>
                             </div>
                         </form>
@@ -164,26 +192,129 @@ const SecuenciaTratamientoSection = ({form}: SecuenciaTratamientoSectionProps) =
                 </SecuenciaPlanTratamientoTableContext.Provider>
 
             </section>
-        </Surface>
+        </ScrollArea>
     )
 }
 
 const SecuenciaPlanTratamientoTableContext = React.createContext<{onDeleteModificacion: (index: number) => void}>({onDeleteModificacion: (_index: number) => {}})
 
-const columnHelper = createColumnHelper<z.infer<typeof TratamientoRealizadoSchema>>()
+const columnHelper = createColumnHelper<TratamientoRealizado>()
 
-const columns: ColumnDef<z.infer<typeof TratamientoRealizadoSchema>>[] = [
-    columnHelper.accessor(originalRow => formatDate(originalRow.fecha, 'eee, PP'), {
+const columns: ColumnDef<TratamientoRealizado>[] = [
+    columnHelper.accessor(originalRow => formatDate(originalRow.fecha, 'P'), {
         id: 'fecha',
-        header: 'Fecha'
+        header: 'Fecha',
+        cell: ({row, cell}) => {
+            return (
+                <div className={!row.original.id ? 'text-rose-600' : ''}>
+                    {formatDate(row.original.fecha, 'P')}
+                </div>
+            )
+        }
     }),
     columnHelper.accessor(originalRow => originalRow.diente, {
         id: 'diente',
-        header: 'Diente'
+        header: 'Diente',
+        cell: ({row}) => {
+            return (
+                <div className={!row.original.id ? 'text-rose-600' : ''}>
+                    {row.original.diente}
+                </div>
+            )
+        },
     }),
     columnHelper.accessor(originalRow => originalRow.tratamiento, {
         id: 'tratamiento',
-        header: 'Tratamientos Realizado'
+        header: 'Tratamientos Realizado',
+        cell: ({row}) => {
+            return (
+                <div className={!row.original.id ? 'text-rose-600' : ''}>
+                    {row.original.tratamiento}
+                </div>
+            )
+        }
+    }),
+    columnHelper.accessor(originalRow => originalRow.approver_id, {
+        enableResizing: false,
+        size: 200,
+        cell: ({cell, row, column}) => {
+
+            const [profile, setProfile] = React.useState<Profile | null>(null)
+            React.useEffect(() => {
+
+                if (row.original.approver_id) {
+                    axios.get(route('api.v1.profiles.show', {profile: row.original.approver_id}), ).then((res) => {
+                        const profile = res.data.data as Profile
+                        setProfile(profile)
+                    })
+                }
+            }, []) // [row]
+
+
+            if (row.original.approver_id) {
+                return (
+                    <div style={{width: `${column.getSize()}px`}} className='rounded-lg h-full p-2 flex gap-x-2 justify-center items-center border'>
+                        {
+                            profile ? (
+                                <>
+                                    <Avatar className='size-10'>
+                                        <AvatarImage src={profile?.picture_url}/>
+                                        <AvatarFallback></AvatarFallback>
+                                    </Avatar>
+                                    <Text className={'truncate'}>{`${profile?.nombres} ${profile?.apellidos}`}</Text>
+                                </>
+                            ) : (
+                                <>
+                                    <Skeleton className='size-10 rounded-full'/>
+                                    <Skeleton className='flex-1 h-[12pt]'/>
+                                </>
+                            )
+                        }
+
+
+                    </div>
+                )
+            } else {
+                return (
+                    <div style={{width: `${column.getSize()}px`}}></div>
+                )
+            }
+        },
+        id: 'approver_id',
+        header: 'Nombre del docente'
+    }),
+    columnHelper.accessor(originalRow => originalRow.approval, {
+        cell: (props) => {
+            const can = usePermission()
+            const {historia, disabled} = React.useContext(HistoriaEditorContext)
+
+            if (props.row.original.approval) {
+                return (
+                    <div className='rounded-lg h-full bg-emerald-100 p-2 flex gap-x-2 justify-center items-center'>
+                        <CircleCheckBig className={'size-4'}/><Text>Aprobado</Text>
+                    </div>
+                )
+            } else if (can('historias-approve-treatment') && !!props.row.original.id) {
+                return (
+                    <div className={'flex justify-center'}>
+                        <Button asChild>
+                            <Link method='post' as="button" type="button"
+                                  href={route('historias.odontologica.secuenciatratamiento.approve', {
+                                      historia: historia.id,
+                                      id: props.row.original.id
+                                  })}>
+                                <CircleCheckBig className='mr-2'/>
+                                Aprobar
+                            </Link>
+                        </Button>
+                    </div>
+                )
+            }
+
+            return null
+        },
+        id: 'approval',
+        header: 'Firma'
     }),
     columnHelper.display({
         id: 'actions',
@@ -191,8 +322,9 @@ const columns: ColumnDef<z.infer<typeof TratamientoRealizadoSchema>>[] = [
     }),
 ]
 
-const TratamientoRealizadoMenu = ({row}: {row: Row<z.infer<typeof TratamientoRealizadoSchema>>}) => {
+const TratamientoRealizadoMenu = ({row}: {row: Row<TratamientoRealizado>}) => {
     const context = React.useContext(SecuenciaPlanTratamientoTableContext)
+    const can = usePermission()
 
     return (
         <DropdownMenu>
@@ -204,7 +336,20 @@ const TratamientoRealizadoMenu = ({row}: {row: Row<z.infer<typeof TratamientoRea
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-                <DropdownMenuItem className={'text-rose-600'} onClick={() => context.onDeleteModificacion(row.index)}><Trash2 className={'size-4 me-1'}/>Eliminar modificación</DropdownMenuItem>
+                {
+                    !row.original.id && (
+                        <DropdownMenuItem className={'text-rose-600'}
+                                          onClick={() => context.onDeleteModificacion(row.index)}><Trash2
+                            className={'size-4 me-1'}/>Eliminar tratamiento</DropdownMenuItem>
+                    )
+                }
+                {
+                    row.original.id && can('historias-full-control') && (
+                        <DropdownMenuItem className={'text-rose-600'}
+                                          onClick={() => {/* todo setup */}}><Trash2
+                            className={'size-4 me-1'}/>Forzar eliminar tratamiento</DropdownMenuItem>
+                    )
+                }
             </DropdownMenuContent>
         </DropdownMenu>
     )

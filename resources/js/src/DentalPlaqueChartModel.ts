@@ -220,4 +220,52 @@ const useDentalPlaqueChart: (props?: UseDentalPlaqueChart) => UseDentalPlaqueCha
     return {getModel, _listeners: {setGroup1, setGroup2, setGroup3, setGroup4}} satisfies UseDentalPlaqueChartReturn
 }
 
-export {useDentalPlaqueChart, type UseDentalPlaqueChart, type UseDentalPlaqueChartReturn, type DentalPlaqueChartModel}
+const calculatePlaquePercentage = (model: DentalPlaqueChartModel): number => {
+    const countPresentDentalPieces = (model: DentalPlaqueChartModel) => {
+        return model.quadrant_1.filter(piece => piece.present).length +
+            model.quadrant_2.filter(piece => piece.present).length +
+            model.quadrant_3.filter(piece => piece.present).length +
+            model.quadrant_4.filter(piece => piece.present).length
+    }
+
+    const countMarkedSurfaces = (model: DentalPlaqueChartModel) => {
+        return model.quadrant_1.filter(piece => piece.present).reduce((previousValue, currentValue) => {
+                if (currentValue.surfaces.front) ++previousValue
+                if (currentValue.surfaces.back) ++previousValue
+                if (currentValue.surfaces.right) ++previousValue
+                if (currentValue.surfaces.left) ++previousValue
+                return previousValue
+            }, 0) +
+            model.quadrant_2.filter(piece => piece.present).reduce((previousValue, currentValue) => {
+                if (currentValue.surfaces.front) ++previousValue
+                if (currentValue.surfaces.back) ++previousValue
+                if (currentValue.surfaces.right) ++previousValue
+                if (currentValue.surfaces.left) ++previousValue
+                return previousValue
+            }, 0) +
+            model.quadrant_3.filter(piece => piece.present).reduce((previousValue, currentValue) => {
+                if (currentValue.surfaces.front) ++previousValue
+                if (currentValue.surfaces.back) ++previousValue
+                if (currentValue.surfaces.right) ++previousValue
+                if (currentValue.surfaces.left) ++previousValue
+                return previousValue
+            }, 0) +
+            model.quadrant_4.filter(piece => piece.present).reduce((previousValue, currentValue) => {
+                if (currentValue.surfaces.front) ++previousValue
+                if (currentValue.surfaces.back) ++previousValue
+                if (currentValue.surfaces.right) ++previousValue
+                if (currentValue.surfaces.left) ++previousValue
+                return previousValue
+            }, 0)
+    }
+
+    const dentalPieces: number = countPresentDentalPieces(model)
+
+    const presentSurfacesCount: number = dentalPieces * 4
+
+    const markedSurfacesCount: number = countMarkedSurfaces(model)
+
+    return markedSurfacesCount / presentSurfacesCount * 100
+}
+
+export {useDentalPlaqueChart, type UseDentalPlaqueChart, type UseDentalPlaqueChartReturn, type DentalPlaqueChartModel, calculatePlaquePercentage}

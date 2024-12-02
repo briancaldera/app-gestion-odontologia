@@ -2,28 +2,31 @@
 
 namespace App\Models;
 
-use App\Events\HistoriaCreated;
 use App\HasStatus;
-use App\Models\Group\Homework;
+use App\Observers\HistoriaObserver;
 use App\Status;
 use App\StatusHolder;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 /**
  * @property string $id the UUID
  * @property string $paciente_id the patient model related to the medical record
  * @property string $numero the id assigned by admision
  * @property string $autor_id the author for the medical record
+ * @property string $motivo_consulta
+ * @property string $enfermedad_actual
  * @property Status $status the status
  * @property Correccion $correcciones
+ * @property Collection $shared_with
  */
+#[ObservedBy([HistoriaObserver::class])]
 class Historia extends Model implements StatusHolder
 {
     use HasFactory;
@@ -39,21 +42,26 @@ class Historia extends Model implements StatusHolder
 
     protected $attributes = [
         'numero' => null,
+        'semestre' => null,
+        'motivo_consulta' => null,
+        'enfermedad_actual' => null,
+        'shared_with' => '[]'
     ];
 
     protected $fillable = [
+        'numero',
+        'semestre',
         'status',
         'autor_id',
-    ];
-
-    protected $dispatchesEvents = [
-        'created' => HistoriaCreated::class
+        'motivo_consulta',
+        'enfermedad_actual',
     ];
 
     protected function casts()
     {
         return [
-            'status' => Status::class
+            'status' => Status::class,
+            'shared_with' => 'collection',
         ];
     }
 
@@ -99,6 +107,11 @@ class Historia extends Model implements StatusHolder
 
     public static array $actions = [
         'historias' => [
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre las historias',
+                'description' => 'Full control sobre el modelo de historia clínica'
+            ],
             'index-all' => [
                 'name' => 'index-all',
                 'display_name' => 'Indexar todas las HRA',
@@ -138,7 +151,27 @@ class Historia extends Model implements StatusHolder
                 'name' => 'assign-id',
                 'display_name' => 'Asignar número de HRA',
                 'description' => 'Asignar número a una historia regular de adulto'
-            ]
+            ],
+            'assign-semester' => [
+                'name' => 'assign-semester',
+                'display_name' => 'Asignar semestre',
+                'description' => 'Asignar semestre a la HRA'
+            ],
+            'approve-treatment' => [
+                'name' => 'approve-treatment',
+                'display_name' => 'Aprobar tratamiento',
+                'description' => 'Aprobar tratamiento en la secuencia de tratamiento y modificaciones del plan de tratamiento'
+            ],
+            'approve-plaque-control' => [
+                'name' => 'approve-plaque-control',
+                'display_name' => 'Aprobar control de placa',
+                'description' => 'Aprobar el control de placa'
+            ],
+            'approve-periodontal-discharge' => [
+                'name' => 'approve-periodontal-discharge',
+                'display_name' => 'Aprobar de alta periodontal',
+                'description' => 'Aprobar de alta periodontal de un paciente'
+            ],
         ]
     ];
 }

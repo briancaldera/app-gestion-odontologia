@@ -2,20 +2,15 @@
 
 use App\Http\Controllers\CorreccionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EntregaController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HistoriaCirugiaController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\HistoriaEndodonciaController;
-use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
-use App\Models\Group;
-use App\Models\Historia;
-use App\Models\User;
-use App\Notifications\UserAddedToGroup;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -47,10 +42,6 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::patch('/usuarios/codigos/{userCode}', [UserController::class, 'updateCode'])->name('users.codes.update');
     Route::delete('/usuarios/codigos/{userCode}', [UserController::class, 'destroyCode'])->name('users.codes.destroy');
 
-    // Notifications routes
-    Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.index');
-    Route::patch('/notifications/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
-
     // Correccion routes
     Route::prefix('historias')->name('historias.')->group(function () {
         Route::post('/{historia}/correcciones', [CorreccionController::class, 'store'])->name('correcciones.store');
@@ -66,6 +57,11 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::post('/grupos/{group}/asignaciones/{assignment}/homework', [GroupController::class, 'storeHomework'])->name('groups.assignments.homeworks.store');
     Route::post('/grupos/{group}/asignaciones/{assignment}/homework/{homework}', [GroupController::class, 'addCorrectionsToDocument'])->name('groups.assignments.homeworks.corrections');
 
+    // Share routes
+    Route::patch('/historias/{historia}/share', [HistoriaController::class, 'share'])->name('historias.share');
+    Route::get('/entregas', [EntregaController::class, 'index'])->name('entregas.index');
+    Route::post('/entregas', [EntregaController::class, 'index'])->name('entregas.store');
+
 //    Routes for patient
     Route::resource('pacientes', PacienteController::class);
     Route::get('/pacientes/{paciente}/foto/{id}', [PacienteController::class, 'getFoto']);
@@ -75,6 +71,8 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::get('/historias', [HistoriaController::class, 'index'])->name('historias.index');
     Route::get('/historias/crear', [HistoriaController::class, 'create'])->name('historias.create');
     Route::post('/historias/store', [HistoriaController::class, 'store2'])->name('historias.store');
+    Route::patch('/historias/{historia}', [HistoriaController::class, 'update'])->name('historias.update');
+    Route::patch('/historias/{historia}/assignid', [HistoriaController::class, 'assignID'])->name('historias.assignid');
     Route::get('/historias/{historia}/editar', [HistoriaController::class, 'edit'])->name('historias.edit');
 //    Route::patch('/pacientes/{paciente}', [HistoriaController::class, 'updatePaciente'])->name('pacientes.update');
     Route::patch('/historias/{historia}/antfamiliares/update', [HistoriaController::class, 'updateAntFamiliares'])->name('historias.antfamiliares.update');
@@ -83,9 +81,13 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
     Route::patch('/historias/{historia}/odontologica/modelos/update', [HistoriaController::class, 'updateEstudioModelos'])->name('historias.odontologica.modelos.update');
     Route::patch('/historias/{historia}/odontologica/plan/update', [HistoriaController::class, 'updatePlanTratamiento'])->name('historias.odontologica.plantratamiento.update');
     Route::patch('/historias/{historia}/odontologica/modificaciones/update', [HistoriaController::class, 'updateModificacionesPlanTratamiento'])->name('historias.odontologica.modificacionestratamiento.update');
-    Route::patch('/historias/{historia}/odontologica/secuencia/update', [HistoriaController::class, 'updateSecuenciaTratamiento'])->name('historias.odontologica.secuenciatratamiento.update');
+    Route::patch('/historias/{historia}/odontologica/secuencia', [HistoriaController::class, 'updateSecuenciaTratamiento'])->name('historias.odontologica.secuenciatratamiento.update');
+    Route::post('/historias/{historia}/odontologica/secuencia/{id}/aprobar', [HistoriaController::class, 'approveSecuenciaTratamiento'])->name('historias.odontologica.secuenciatratamiento.approve');
+
     Route::patch('/historias/{historia}/odontologica/periodontal/update', [HistoriaController::class, 'updateHistoriaPeriodontal'])->name('historias.odontologica.periodontal.update');
     Route::post('/historias/{historia}/odontologica/periodontal/controlplaca', [HistoriaController::class, 'storeControlPlaca'])->name('historias.odontologica.periodontal.controlplaca.store');
+    Route::post('/historias/{historia}/odontologica/periodontal/controlplaca/{id}/aprobar', [HistoriaController::class, 'approveControlPlaca'])->name('historias.odontologica.periodontal.controlplaca.approve');
+    Route::post('/historias/{historia}/odontologica/periodontal/aprobar', [HistoriaController::class, 'approvePeriodontalDischarge'])->name('historias.odontologica.periodontal.approve');
 
     Route::patch('/historias/{historia}/odontologica/radiografias/update', [HistoriaController::class, 'updateExamenRadiografico'])->name('historias.odontologica.radiografias.update');
     Route::patch('/historias/{historia}/odontologica/periodontodiagrama/update', [HistoriaController::class, 'updatePeriodontodiagrama'])->name('historias.odontologica.periodontodiagramas.update');
@@ -109,6 +111,11 @@ Route::middleware(['auth', 'verified', 'profile'])->group(function () {
 
     Route::get('/historias/{historia}', [HistoriaController::class, 'show'])->name('historias.show');
 
+    Route::patch('/historias/{historia}/odontologica/modificaciones/consentimiento', [HistoriaController::class, 'updateModificacionesConsentimiento'])->name('historias.odontologica.modificacionestratamiento.consentimiento.update');
+    Route::post('/historias/{historia}/odontologica/modificaciones/{id}/aprobar', [HistoriaController::class, 'approveModificacion'])->name('historias.odontologica.modificacionestratamiento.approve');
+
+    Route::get('/historias/{historia}/odontologica/modificaciones/consentimientos/{id}', [HistoriaController::class, 'getModificacionesConsentimiento'])->name('historias.odontologica.modificacionestratamiento.consentimiento');
+    Route::get('/historias/{historia}/{action}', [HistoriaController::class, 'downloadHistoria'])->whereIn('action', ['download', 'print',])->name('historias.download');
     // Routes for HE
     Route::prefix('/endodoncia')->name('endodoncia.')->group(function() {
         Route::resource('historias', HistoriaEndodonciaController::class);

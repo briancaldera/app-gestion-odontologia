@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\HistoriaService;
 use App\Status;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 class HistoriaServiceImpl implements HistoriaService
 {
@@ -185,20 +186,76 @@ class HistoriaServiceImpl implements HistoriaService
 
     public function updateModificacionesPlanTratamiento(Historia $historia, array $data): void
     {
-        $modificaciones = $data['modificaciones_plan_tratamiento'];
-        $historia_odon = $historia->historiaOdontologica()->updateOrCreate(['historia_id' => $historia->id], [
-            'modificaciones_plan_tratamiento' => $modificaciones
+        $modificaciones = collect($data['modificaciones_plan_tratamiento'])->map(fn ($mod) => [
+            'id' => (string) Str::ulid(),
+            'fecha' => $mod['fecha'],
+            'diente' => $mod['diente'],
+            'tratamiento' => $mod['tratamiento'],
+            'approver_id' => null,
+            'approval' => null,
         ]);
+
+        /** @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+        $historia_odon->modificaciones_plan_tratamiento = $historia_odon->modificaciones_plan_tratamiento->push(...$modificaciones);
+        $historia_odon->update();
+    }
+
+    public function approveModificacionTratamiento(Historia $historia, User $user, string $id): void
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        $historiaOdontologica->modificaciones_plan_tratamiento =
+            $historiaOdontologica->modificaciones_plan_tratamiento->map(function ($modificacion) use ($id, $user) {
+
+                if ($modificacion['id'] === $id) {
+                    $modificacion['approver_id'] = $user->id;
+                    $modificacion['approval'] = $user->id;
+                }
+
+                return $modificacion;
+            });
+
+        $historiaOdontologica->update();
     }
 
     public function updateSecuenciaTratamiento(Historia $historia, array $data): void
     {
-        $secuencia = $data['secuencia_tratamiento'];
-        $historia_odon = $historia->historiaOdontologica()->updateOrCreate(['historia_id' => $historia->id], [
-            'secuencia_tratamiento' => $secuencia
+        $secuencias = collect($data['secuencia_tratamiento'])->map(fn($sec) => [
+            'id' => (string) Str::ulid(),
+            'fecha' => $sec['fecha'],
+            'diente' => $sec['diente'],
+            'tratamiento' => $sec['tratamiento'],
+            'approver_id' => null,
+            'approval' => null,
         ]);
+
+        /** @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+
+        $historia_odon->secuencia_tratamiento = $historia_odon->secuencia_tratamiento->push(...$secuencias);
+        $historia_odon->update();
     }
 
+    public function approveSecuenciaTratamiento(Historia $historia, User $user, string $id): void
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        $historiaOdontologica->secuencia_tratamiento =
+            $historiaOdontologica->secuencia_tratamiento->map(function ($tratamiento) use ($id, $user) {
+
+                if ($tratamiento['id'] === $id) {
+                    $tratamiento['approver_id'] = $user->id;
+                    $tratamiento['approval'] = $user->id;
+                }
+
+                return $tratamiento;
+            });
+
+        $historiaOdontologica->update();
+    }
 
     public function addExamenRadiografico(HistoriaOdontologica $historiaOdon, array $data): ExamenRadiografico
     {

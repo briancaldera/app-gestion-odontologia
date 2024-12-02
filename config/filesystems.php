@@ -87,6 +87,11 @@ return [
             'root' => storage_path('app/historias/odontologicas/consentimiento'),
         ],
 
+        'historia-odontologica-modificaciones-consentimientos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/historias/odontologicas/modificaciones/consentimientos'),
+        ],
+
         'panoramicas' => [
             'driver' => 'local',
             'root' => storage_path('app/historias/odontologicas/panoramicas'),

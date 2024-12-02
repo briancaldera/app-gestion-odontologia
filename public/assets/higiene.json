@@ -1,0 +1,23 @@
+{
+    "higiene": {
+        "tipo_cepillo": [
+            {"id": "duro", "label": "Duro"},
+            {"id": "medio", "label": "Medio"},
+            {"id": "suave", "label": "Suave"}
+        ],
+        "metodo_cepillado": [
+            {"id": "horizontal", "label": "Horizontal"},
+            {"id": "vertical", "label": "Vertical"},
+            {"id": "circular", "label": "Circular"},
+            {"id": "otro", "label": "Otro"}
+        ],
+        "metodo_auxiliar": [
+            {"id": "hilo", "label": "Hilo Dental"},
+            {"id": "enjuague", "label": "Enjuague Bucal"},
+            {"id": "hidroterapia", "label": "Hidroterapia"},
+            {"id": "cepillo_interdental", "label": "Cepillo Interdental"},
+            {"id": "sustancia_reveladora", "label": "Sustancia Reveladora"},
+            {"id": "otro", "label": "Otro"}
+        ]
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "alergias": [
+        {"id": "antibioticos", "label": "Antibióticos"},
+        {"id": "analgesicos", "label": "Analgésicos"},
+        {"id": "anestesicos", "label": "Anestésicos"},
+        {"id": "yodo", "label": "Yodo"},
+        {"id": "otros", "label": "Otros"}
+    ]
+}

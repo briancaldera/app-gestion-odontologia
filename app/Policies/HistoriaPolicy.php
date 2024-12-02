@@ -66,6 +66,13 @@ class HistoriaPolicy
         return false;
     }
 
+    public function assignID(User $user, Historia $historia): bool|Response
+    {
+        if ($user->hasPermission('historias-assign-id')) return true;
+
+        return false;
+    }
+
     /**
      * Determine whether the user can delete the model.
      */

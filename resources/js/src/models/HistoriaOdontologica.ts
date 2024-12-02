@@ -3,7 +3,7 @@ import {estudioModelosSchema} from "@/FormSchema/Historia/EstudioModelosSchema";
 import {historiaPeriodontalSchema} from "@/FormSchema/Historia/HistoriaPeriodontalSchema.ts";
 import {DentalPlaqueChartModel} from "@/src/DentalPlaqueChartModel.ts";
 
-type HistoriaOdontologica = {
+type HistoriaOdontologica = Readonly<{
     historia_id: string
     ant_personales: string
     habitos: Habitos
@@ -11,8 +11,9 @@ type HistoriaOdontologica = {
     consentimiento: string | null
     examen_fisico: ExamenFisico
     estudio_modelos: z.infer<typeof estudioModelosSchema>
-    plan_tratamiento: Tratamiento[]
-    modificaciones_plan_tratamiento: ModificacionTratamiento[]
+    plan_tratamiento: readonly Tratamiento[]
+    modificaciones_plan_tratamiento: readonly ModificacionTratamiento[]
+    modificaciones_consentimiento: readonly string[]
     secuencia_tratamiento: TratamientoRealizado[]
     examen_radiografico: ExamenRadiografico
     periodontodiagrama: readonly string[]
@@ -20,7 +21,13 @@ type HistoriaOdontologica = {
     panoramicas: readonly string[]
     coronales: readonly string[]
     periapicales: readonly string[]
-    anymedia: readonly string[]
+    anymedia: readonly Media[]
+}>
+
+type Media = {
+    url: string,
+    title: string,
+    description: string
 }
 
 type Portador = {
@@ -29,21 +36,28 @@ type Portador = {
 }
 
 type Tratamiento = {
+    id: string
     cavidad: string
     diente: string
     tratamiento: string
 }
 
 type ModificacionTratamiento = {
+    id: string
     diente: string
     fecha: string
     tratamiento: string
+    approver_id: string | null
+    approval: string | null
 }
 
 type TratamientoRealizado = {
+    id: string
     diente: string
     fecha: string
     tratamiento: string
+    approver_id: string | null
+    approval: string | null
 }
 
 const examen_fisico = {
@@ -112,14 +126,19 @@ type ExamenRadiografico = {
 }
 
 type ControlPlaca = {
+    id: string
     fecha: string
     modelo: DentalPlaqueChartModel
+    approver_id: string | null
+    approval: string | null
 }
 
 type HistoriaPeriodontal = z.infer<typeof historiaPeriodontalSchema> & {
-    readonly control_placa: ControlPlaca[]
+    control_placa: ControlPlaca[]
+    approver_id: string | null,
+    approval: string | null,
+    nota: string | null
 }
 
-
-export {type HistoriaPeriodontal}
+export {type HistoriaPeriodontal, type Tratamiento, type ModificacionTratamiento, type TratamientoRealizado, type Media}
 export default HistoriaOdontologica

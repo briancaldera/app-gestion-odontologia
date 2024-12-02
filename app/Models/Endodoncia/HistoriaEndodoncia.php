@@ -229,6 +229,11 @@ JSON,
 
     public static array $actions = [
         'historias-endodoncia' => [
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre las historias de endodoncia',
+                'description' => 'Full control sobre el modelo de historia de endodoncia'
+            ],
             'index-all' => [
                 'name' => 'index-all',
                 'display_name' => 'Indexar todas las HE',
@@ -268,7 +273,17 @@ JSON,
                 'name' => 'assign-id',
                 'display_name' => 'Asignar número de HE',
                 'description' => 'Asignar número a una historia de endodoncia'
-            ]
+            ],
+            'assign-semester' => [
+                'name' => 'assign-semester',
+                'display_name' => 'Asignar semestre',
+                'description' => 'Asignar semestre a la HE'
+            ],
+            'approve-treatment' => [
+                'name' => 'approve-treatment',
+                'display_name' => 'Aprobar tratamiento',
+                'description' => 'Aprobar tratamiento en la secuencia de tratamiento'
+            ],
         ]
     ];
 }

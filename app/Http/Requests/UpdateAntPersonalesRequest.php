@@ -25,7 +25,7 @@ class UpdateAntPersonalesRequest extends FormRequest
         return [
             'medicamentos' => ['sometimes', 'array:tipo,dosis'],
             'medicamentos.tipo' => ['sometimes', 'array'],
-            'medicamentos.tipo.*' => [Rule::in(['antihipertensivos', 'analgesicos', 'esteroides', 'antidepresivos', 'anticonceptivos', 'hipogicemiante', 'anticonvulsivos', 'sildenafil', 'acidoacetilicidico', 'anticoagulante', 'bifosfanato', 'otros'])],
+            'medicamentos.tipo.*' => [Rule::in(['antihipertensivos', 'analgesicos', 'esteroides', 'antidepresivos', 'anticonceptivos', 'hipoglicemiante', 'anticonvulsivos', 'sildenafil', 'acido_acetilsalicilico', 'anticoagulante', 'bifosfanato_calcio', 'otros'])],
             'medicamentos.dosis' => ['nullable', 'string', 'max:1000'],
 
             'alergias' => ['sometimes', 'array:tipo,descripcion'],

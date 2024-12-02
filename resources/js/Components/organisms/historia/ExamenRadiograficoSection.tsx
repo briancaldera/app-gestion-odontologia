@@ -13,6 +13,7 @@ import InterpretacionPeriapicales from "@/Components/organisms/historia/partials
 import InterpretacionCoronales from "@/Components/organisms/historia/partials/InterpretacionCoronales.tsx";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type ExamenRadiograficoSectionProps = {
     historiaOdontologica: HistoriaOdontologica
@@ -84,7 +85,7 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
             <Title level={'title-lg'}>Examen Radiográfico</Title>
 
@@ -105,7 +106,7 @@ const ExamenRadiograficoSection = ({historiaOdontologica, form}: ExamenRadiograf
                 <InterpretacionCoronales/>
             </CorrectionsBlock>
 
-        </Surface>
+        </ScrollArea>
     )
 }
 

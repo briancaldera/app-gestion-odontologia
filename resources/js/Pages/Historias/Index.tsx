@@ -5,7 +5,7 @@ import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import {ColumnDef, ColumnHelper, createColumnHelper} from "@tanstack/react-table";
 import {DataTable} from "@/Components/molecules/DataTable.tsx";
 import {route, useRoute} from "ziggy-js";
-import {FilePlus2, FileX2, Plus} from "lucide-react";
+import {EllipsisVertical, FilePlus2, FileX2, Plus} from "lucide-react";
 import {Text} from "@/Components/atoms/Text";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {Link} from "@inertiajs/react";
@@ -15,6 +15,13 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
 import Title from "@/Components/atoms/Title";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs.tsx";
 import {Calendar} from "@/shadcn/ui/calendar.tsx";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuTrigger
+} from '@/shadcn/ui/dropdown-menu.tsx'
 
 const Index = ({historias}: IndexProps) => {
 
@@ -23,8 +30,8 @@ const Index = ({historias}: IndexProps) => {
     if (can('historias-index-all')) {
         return (
             <AuthLayout title={'Historias'}>
-                <ScrollArea className={'h-full'}>
-                    <div>
+                <ScrollArea className={'bg-white h-full'}>
+                    <div className={'p-6'}>
                         <DataTable columns={historiaIndexTableColDef} data={historias} searchable={true}/>
                     </div>
                 </ScrollArea>
@@ -34,7 +41,7 @@ const Index = ({historias}: IndexProps) => {
         return (
             <AuthLayout title={'Historias'}>
                 <ScrollArea className={'h-full'}>
-                    <div className={'px-6 h-[900px] grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-2 gap-6'}>
+                    <div className={'p-6 h-[900px] grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-2 gap-6'}>
                         <Card className={'col-span-3 row-span-2'}>
                             <CardHeader>
                                 <CardTitle>
@@ -106,40 +113,56 @@ type IndexProps = {
 const columnHelper: ColumnHelper<Historia> = createColumnHelper<Historia>()
 
 const historiaIndexTableColDef: ColumnDef<Historia>[] = [
+    columnHelper.accessor((historia: Historia) => historia.numero ?? 'Sin asignar', {
+        meta: {title: 'Número de historia', searchable: true},
+        id: 'code',
+        header: 'Número de historia',
+    }),
     columnHelper.accessor((historia: Historia) => `${historia.paciente?.nombre ?? ''} ${historia.paciente?.apellido ?? ''}`, {
-        meta: {
-            title: 'Paciente'
+        meta: {title: 'Paciente', searchable: true
         },
         id: 'patient',
         header: 'Paciente'
     }),
     columnHelper.accessor((historia: Historia) => historia.paciente?.edad ?? '-', {
-        meta: {title: 'Edad'},
+        meta: {title: 'Edad', searchable: true},
         id: 'age',
         header: 'Edad',
     }),
     columnHelper.accessor((historia: Historia) => historia.paciente?.cedula ?? '-', {
-        meta: {title: 'Cédula del paciente'},
+        meta: {title: 'Cédula del paciente', searchable: true},
         id: 'cedula',
         header: 'Cédula del paciente',
     }),
-    columnHelper.accessor((historia: Historia) => historia.numero ?? '-', {
-        meta: {title: 'Número de historia'},
-        id: 'code',
-        header: 'Número de historia',
-    }),
     columnHelper.accessor((historia: Historia) => `${historia.autor?.profile?.apellidos + ',' ?? ''} ${historia.autor?.profile?.nombres ?? ''}`, {
-        meta: {title: 'Autor'},
+        meta: {title: 'Autor', searchable: true},
         id: 'author',
         header: 'Autor',
     }),
     columnHelper.accessor((historia: Historia) => historia.autor?.profile?.cedula, {
-        meta: {title: 'Cédula del autor'},
+        meta: {title: 'Cédula del autor', searchable: true},
         id: 'author_cedula',
         header: 'Cédula del autor',
     }),
     columnHelper.display({
         id: 'actions',
+        cell: ({row}) => {
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <EllipsisVertical/>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align='end'>
+                        <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                        <DropdownMenuItem asChild>
+                            <Link href={route('historias.show', {historia: row.original.id})}>
+                                Ver historia
+                            </Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
+        }
     })
 ]
 

@@ -21,9 +21,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ArrayObject $portador
  * @property ArrayObject $examen_fisico the information about the physical examination
  * @property ArrayObject $estudio_modelos the models examination
- * @property ArrayObject $plan_tratamiento the treatment plan
- * @property ArrayObject $modificaciones_plan_tratamiento the modifications to the treatment plan
- * @property ArrayObject $secuencia_tratamiento the sequence of treatments undergone by the patient
+ * @property Collection $plan_tratamiento the treatment plan
+ * @property Collection $modificaciones_plan_tratamiento the modifications to the treatment plan
+ * @property Collection $secuencia_tratamiento the sequence of treatments undergone by the patient
  * @property ArrayObject $examen_radiografico
  * @property ArrayObject $historia_periodontal
  * @property Collection<string> $panoramicas
@@ -33,10 +33,10 @@ class HistoriaOdontologica extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
+    protected $table = 'historia_odontologicas';
     protected $primaryKey = 'historia_id';
     protected $keyType = 'string';
     public $incrementing = false;
-    protected $table = 'historia_odontologicas';
 
     public $timestamps = false;
 
@@ -68,25 +68,25 @@ JSON,
         'examen_fisico' => <<<'JSON'
 {
         "examen_extraoral": {
-            "articulacion_temporomandibular": "",
-            "cabeza": "",
-            "cara": "",
-            "lesiones_extraorales": "",
-            "palpacion_ganglios": "",
-            "piel": "",
-            "simetria_facial": ""
+            "articulacion_temporomandibular": null,
+            "cabeza": null,
+            "cara": null,
+            "lesiones_extraorales": null,
+            "palpacion_ganglios": null,
+            "piel": null,
+            "simetria_facial": null
         },
         "examen_intraoral": {
-            "dientes": "",
-            "discromias": "",
-            "encias": "",
-            "frenillos": "",
-            "labios": "",
-            "lengua_tipo": "",
-            "maxilares": "",
-            "mejillas": "",
-            "paladar_duro_blando": "",
-            "piso_boca": ""
+            "dientes": null,
+            "discromias": null,
+            "encias": null,
+            "frenillos": null,
+            "labios": null,
+            "lengua_tipo": null,
+            "maxilares": null,
+            "mejillas": null,
+            "paladar_duro_blando": null,
+            "piso_boca": null
         },
         "signos_vitales": {
             "pulso": 0,
@@ -179,7 +179,10 @@ JSON,
       "control_halitosis": null,
       "tratamiento": null
     },
-    "control_placa": []
+    "control_placa": [],
+    "approver_id": null,
+    "approval": null,
+    "nota": null
 }
 JSON,
     ];
@@ -202,7 +205,8 @@ JSON,
         'coronales',
         'periapicales',
         'periodontodiagrama',
-        'anymedia'
+        'anymedia',
+        'modificaciones_consentimiento',
     ];
 
     protected function casts()
@@ -212,9 +216,9 @@ JSON,
             'portador' => AsArrayObject::class,
             'examen_fisico' => AsArrayObject::class,
             'estudio_modelos' => AsArrayObject::class,
-            'plan_tratamiento' => AsArrayObject::class,
-            'modificaciones_plan_tratamiento' => AsArrayObject::class,
-            'secuencia_tratamiento' => AsArrayObject::class,
+            'plan_tratamiento' => 'collection',
+            'modificaciones_plan_tratamiento' => 'collection',
+            'secuencia_tratamiento' => 'collection',
             'examen_radiografico' => AsArrayObject::class,
             'historia_periodontal' => AsArrayObject::class,
         ];
@@ -236,6 +240,7 @@ JSON,
         $this->addMediaCollection('periapicales')->useDisk('periapicales');
         $this->addMediaCollection('periodontodiagrama')->useDisk('periodontodiagramas')->singleFile();
         $this->addMediaCollection('anymedia')->useDisk('odontologica-media');
+        $this->addMediaCollection('modificaciones_consentimiento')->useDisk('historia-odontologica-modificaciones-consentimientos');
     }
 
     public function historia(): BelongsTo
@@ -281,7 +286,18 @@ JSON,
     protected function anymedia(): Attribute
     {
         return new Attribute(
-            get: fn() => $this->getMedia('anymedia')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/media/$media->uuid"))
+            get: fn() => $this->getMedia('anymedia')->map(fn(Media $media) => [
+                'title' => $media->getCustomProperty('title'),
+                'url' => url("historias/$this->historia_id/odontologica/media/$media->uuid"),
+                'description' => $media->getCustomProperty('description', '')
+            ])
+        );
+    }
+
+    protected function modificacionesConsentimiento(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->getMedia('modificaciones_consentimiento')->map(fn(Media $media) => url("historias/$this->historia_id/odontologica/modificaciones/consentimientos/$media->uuid"))
         );
     }
 }

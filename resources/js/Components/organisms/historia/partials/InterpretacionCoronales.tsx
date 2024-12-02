@@ -13,18 +13,17 @@ import Image from "@/Components/atoms/Image.tsx";
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
+import {Maximize2} from "lucide-react";
 
 const ACCEPTED_PICTURE_MIME: readonly string[] = ['image/jpeg', 'image/jpg', 'image/png']
 
 const InterpretacionCoronales = () => {
-    const {historia} = React.useContext(HistoriaEditorContext)
+    const {historia, disabled} = React.useContext(HistoriaEditorContext)
 
     const {historia_odontologica} = historia
     const {interpretacion_coronales} = historia.historia_odontologica?.examen_radiografico!
 
     const {isProcessing, router} = useInertiaSubmit()
-
-    const isDisabled: boolean = isProcessing
 
     const interpretacionCoronalesForm = useForm<z.infer<typeof interpretacionCoronalesSchema>>({
         resolver: zodResolver(interpretacionCoronalesSchema),
@@ -34,7 +33,7 @@ const InterpretacionCoronales = () => {
                 imagenes: []
             }
         },
-        disabled: isDisabled,
+        disabled: disabled,
     })
 
     const handleSubmit = (values: z.infer<typeof interpretacionCoronalesSchema>) => {
@@ -88,21 +87,27 @@ const InterpretacionCoronales = () => {
 
                         <div className={'px-14'}>
                             <Carousel>
-                                <CarouselContent className={'h-[700px]'}>
+                                <CarouselContent className={'h-[700px] bg-black'}>
                                     {
-                                        historia_odontologica?.coronales.map((url: string) => (
-                                            <CarouselItem key={url} className={'bg-white'}>
+                                        historia_odontologica?.coronales.map((url: string, index) => (
+                                            <CarouselItem key={url} className={'bg-black relative'}>
+                                                <Button type='button' className={'absolute top-0 right-0'} variant='ghost' onClick={() => document.querySelector(`#coro_image_server_${index}`)?.requestFullscreen()}>
+                                                    <Maximize2 className={'mr-2 text-white'}/>
+                                                </Button>
                                                 <div className={'h-full flex justify-center items-center'}>
-                                                    <Image src={url} className={'object-contain h-full w-full'}/>
+                                                    <Image src={url} className={'object-contain h-full w-full'} id={`coro_image_server_${index}`}/>
                                                 </div>
                                             </CarouselItem>
                                         ))
                                     }
                                     {
-                                        interpretacionCoronalesForm.getValues().interpretacion_coronales.imagenes.map((file: File) => (
-                                            <CarouselItem key={file.name} className={'bg-white'}>
+                                        interpretacionCoronalesForm.getValues().interpretacion_coronales.imagenes.map((file: File, index) => (
+                                            <CarouselItem key={file.name} className={'bg-black relative'}>
+                                                <Button type='button' className={'absolute top-0 right-0'} variant='ghost' onClick={() => document.querySelector(`#coro_image_local_${index}`)?.requestFullscreen()}>
+                                                    <Maximize2 className={'mr-2 text-white'}/>
+                                                </Button>
                                                 <div className={'h-full flex justify-center items-center'}>
-                                                    <Image src={file} className={'object-contain h-full w-full'}/>
+                                                    <Image src={file} className={'object-contain h-full w-full'} id={`coro_image_local_${index}`}/>
                                                 </div>
                                             </CarouselItem>
                                         ))
@@ -113,9 +118,13 @@ const InterpretacionCoronales = () => {
                             </Carousel>
                         </div>
 
-                        <div className={'my-2'}>
-                            <DragAndDrop maxFiles={5} handleDrop={handleDropCoronales}/>
-                        </div>
+                        {
+                            !disabled && (
+                                <div className={'my-2'}>
+                                    <DragAndDrop maxFiles={5} handleDrop={handleDropCoronales} disabled={disabled}/>
+                                </div>
+                            )
+                        }
 
                         <FormField render={({field}) => (
                             <FormItem>
@@ -128,7 +137,7 @@ const InterpretacionCoronales = () => {
                             <FormItem>
                                 <FormLabel>Interpretación</FormLabel>
                                 <FormControl>
-                                    <Textarea value={field.value} onChange={field.onChange}/>
+                                    <Textarea {...field}/>
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>

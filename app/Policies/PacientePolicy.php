@@ -15,6 +15,8 @@ class PacientePolicy
     {
         if ($user->hasPermission('pacientes-read')) return true;
 
+        if ($user->hasPermission('pacientes-full-control')) return true;
+
         return false;
     }
 
@@ -26,6 +28,8 @@ class PacientePolicy
         if ($user->hasPermission('pacientes-read') AND $paciente->assigned_to === $user->id) return true;
 
         if ($user->hasPermission('pacientes-read-private')) return true;
+
+        if ($user->hasPermission('pacientes-full-control')) return true;
 
         return false;
     }
@@ -39,6 +43,8 @@ class PacientePolicy
             return true;
         }
 
+        if ($user->hasPermission('pacientes-full-control')) return true;
+
         return false;
     }
 
@@ -48,6 +54,8 @@ class PacientePolicy
     public function update(User $user, Paciente $paciente): bool
     {
         if ($user->hasPermission('pacientes-update') AND $user->id === $paciente->assigned_to) return true;
+
+        if ($user->hasPermission('pacientes-full-control')) return true;
 
         return false;
     }
@@ -59,6 +67,8 @@ class PacientePolicy
     {
         if ($user->hasPermission('pacientes-delete')) return true;
 
+        if ($user->hasPermission('pacientes-full-control')) return true;
+
         return false;
     }
 
@@ -69,6 +79,8 @@ class PacientePolicy
     {
         if ($user->hasPermission('pacientes-delete')) return true;
 
+        if ($user->hasPermission('pacientes-full-control')) return true;
+
         return false;
     }
 
@@ -78,6 +90,8 @@ class PacientePolicy
     public function forceDelete(User $user, Paciente $paciente): bool
     {
         if ($user->hasPermission('pacientes-delete')) return true;
+
+        if ($user->hasPermission('pacientes-full-control')) return true;
 
         return false;
     }

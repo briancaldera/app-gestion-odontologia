@@ -4,14 +4,16 @@ namespace App\Models;
 
 use App\Models\Cirugia\HistoriaCirugia;
 use App\Models\Endodoncia\HistoriaEndodoncia;
+use App\Observers\PacienteObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Casts\ArrayObject;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
@@ -33,11 +35,13 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $motivo_consulta
  * @property string $enfermedad_actual
  * @property array $foto the url that points to the picture file.
+ * @property ArrayObject $informacion_emergencia emergency information
  * @property string $registered_by the user who registered the patient.
  * @property string $assigned_to the user assigned to treat this patient.
  * @property Date $created_at the datetime when this model was created.
  * @property Date $updated_at the datetime when this model was last updated.
  */
+#[ObservedBy([PacienteObserver::class])]
 class Paciente extends Model implements HasMedia
 {
     use HasFactory;
@@ -60,7 +64,24 @@ class Paciente extends Model implements HasMedia
         'ocupacion',
         'direccion',
         'telefono',
+        'informacion_emergencia',
     ];
+
+    protected $attributes = [
+        'informacion_emergencia' => <<<'JSON'
+{
+  "contacto": null,
+  "telefono": null
+}
+JSON,
+    ];
+
+    protected function casts()
+    {
+        return [
+            'informacion_emergencia' => AsArrayObject::class,
+        ];
+    }
 
     protected $appends = [
         'foto'
@@ -147,6 +168,11 @@ class Paciente extends Model implements HasMedia
                 'name' => 'delete',
                 'display_name' => 'Eliminar pacientes',
                 'description' => 'Eliminar a un paciente del sistema'
+            ],
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre pacientes',
+                'description' => 'Full control sobre el modelo de paciente'
             ],
         ]
     ];

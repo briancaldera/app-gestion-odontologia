@@ -8,6 +8,7 @@ import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import TrastornosForm from "@/Components/organisms/historia/partials/TrastornosForm.tsx";
 import AlergiasYMedicamentosForm from "@/Components/organisms/historia/partials/AlergiasYMedicamentosForm.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type AntecedentesMedicosPersonalesSectionProps = {
     form: UseFormReturn<z.infer<typeof AntPersonalesSchema>>
@@ -19,7 +20,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
 
     return (
 
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
             <Title level={'title-lg'}>Antecedentes Médicos Personales</Title>
 
@@ -30,7 +31,7 @@ const AntecedentesMedicosPersonalesSection = ({form}: AntecedentesMedicosPersona
             <CorrectionsBlock model={correctionsModel} name={'alergias'} canCreateCorrections={canCreateCorrections}>
                 <AlergiasYMedicamentosForm/>
             </CorrectionsBlock>
-        </Surface>
+        </ScrollArea>
     )
 }
 

@@ -1,0 +1,9 @@
+{
+    "interconsultas": [
+        {"id": "cirugia", "label": "Cirugía"},
+        {"id": "periodoncia", "label": "Periodoncia"},
+        {"id": "endodoncia", "label": "Endodoncia"},
+        {"id": "protesis", "label": "Prótesis"},
+        {"id": "ortodoncia", "label": "Ortodoncia"}
+    ]
+}

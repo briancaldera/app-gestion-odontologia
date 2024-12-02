@@ -1,14 +1,13 @@
-import Surface from '@/Components/atoms/Surface'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs"
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import {useForm} from "react-hook-form"
-import {undefined, z} from 'zod'
+import {z} from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
 import React from "react";
-import PacienteSchema, {PacienteDefaults} from "@/FormSchema/Historia/PacienteSchema";
+import PacienteSchema from "@/FormSchema/Historia/PacienteSchema";
 import AntPersonalesSchema, {AntPersonalesDefaults} from "@/FormSchema/Historia/AntPersonalesSchema";
 import AntFamiliaresSchema, {AntFamiliaresDefaults} from "@/FormSchema/Historia/AntFamiliaresSchema";
-import HistoriaSchema, {HistoriaDefaults} from "@/FormSchema/Historia/HistoriaSchema";
+import {historiaSchema} from "@/FormSchema/Historia/HistoriaSchema";
 import HistoriaOdontologicaSchema, {
     HistoriaOdontologicaDefaults
 } from "@/FormSchema/Historia/HistoriaOdontologicaSchema";
@@ -16,12 +15,13 @@ import ExamenRadiograficoSchema, {ExamenRadiograficoDefaults} from '@/FormSchema
 import {
     Bone,
     BriefcaseMedical,
-    Clipboard,
+    Download,
     FileBox,
     HeartPulse,
     Hospital,
     Images,
     ListChecks,
+    Printer,
     RefreshCcwDot,
     Table,
     TableRowsSplit,
@@ -33,32 +33,36 @@ import ModificacionesPlanTratamientoSection from '@/Components/organisms/histori
 import SecuenciaPlanTratamientoSection from '@/Components/organisms/historia/SecuenciaTratamientoSection'
 import Historia from '@/src/models/Historia'
 import PacienteSection from "@/Components/organisms/historia/PacienteSection";
-import HistoriaSection from "@/Components/organisms/historia/HistoriaSection";
 import AntFamiliaresSection from "@/Components/organisms/historia/AntFamiliaresSection";
 import AntPersonalesSection from "@/Components/organisms/historia/AntPersonalesSection";
 import HistoriaOdontologicaSection from "@/Components/organisms/historia/HistoriaOdontologicaSection";
 import PlanTratamientoSection from "@/Components/organisms/historia/PlanTratamientoSection";
 import PlanTratamientoSchema, {PlanTratamientoDefaults} from "@/FormSchema/Historia/PlanTratamientoSchema";
-import ModificacionesPlanTratamientoSchema, {
-    ModificacionesPlanTratamientoDefaults
-} from "@/FormSchema/Historia/ModificacionesPlanTratamientoSchema";
-import SecuenciaTratamientoSchema, {
-    SecuenciaTratamientoDefaults
-} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
+import {modificacionesPlanTratamientoSchema} from "@/FormSchema/Historia/ModificacionesPlanTratamientoSchema";
+import {secuenciaTratamientoSchema} from "@/FormSchema/Historia/SecuenciaTratamientoSchema";
 import EstudioModelosSchema, {EstudioModelosDefaults} from "@/FormSchema/Historia/EstudioModelosSchema";
 import {mergeDeep} from "@/src/Utils/Utils";
 import ExamenRadiograficoSection from "@/Components/organisms/historia/ExamenRadiograficoSection.tsx";
 import PeriodontodiagramaSchema from "@/FormSchema/Historia/PeriodontodiagramaSchema.ts";
 import PeriodontodiagramaSection from "@/Components/organisms/historia/PeriodontodiagramaSection.tsx";
-import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import MediaSection from "@/Components/organisms/historia/MediaSection.tsx";
 import HistoriaPeriodontalSection from "@/Components/organisms/historia/HistoriaPeriodontalSection.tsx";
 import ControlPlacaSection from "@/Components/organisms/historia/ControlPlacaSection.tsx";
-import {Menubar, MenubarCheckboxItem, MenubarContent, MenubarMenu, MenubarTrigger,} from "@/shadcn/ui/menubar"
+import {
+    Menubar,
+    MenubarCheckboxItem,
+    MenubarContent,
+    MenubarItem,
+    MenubarMenu,
+    MenubarSeparator,
+    MenubarTrigger,
+} from "@/shadcn/ui/menubar"
 import {Homework} from "@/src/models/Group.ts";
 import {useCorrections, UseCorrectionsReturn} from "@/src/corrections/corrections.ts";
 import {toast} from "sonner";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
+import {route} from "ziggy-js";
+import {usePage} from "@inertiajs/react";
 
 
 const TabTriggerStyle = 'p-0 m-0'
@@ -86,6 +90,8 @@ type HistoriaEditorProps = {
 
 const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrections}: HistoriaEditorProps) => {
 
+    const url = usePage().url
+
     const [showSidebar, setShowSidebar] = React.useState<boolean>(false)
 
     const corrections = homework?.documents.find((document) => document.id === historia?.id).corrections
@@ -93,6 +99,8 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
     const {isProcessing, router} = useInertiaSubmit()
 
     const isDisabled = readMode || isProcessing
+
+    const [tab, setTab] = React.useState('section1')
 
     const handleSubmitCorrections = (values: {section: string, content: string}) => {
         const endpoint = route('groups.assignments.homeworks.corrections', {
@@ -114,17 +122,19 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             },
             onSuccess: page => {
                 toast.success('Correcciones agregadas')
-                router.reload()
+                    router.visit(url)
             }
         })
     }
 
     const correctionsModel = useCorrections(handleSubmitCorrections, corrections)
 
-    const historiaForm = useForm<z.infer<typeof HistoriaSchema>>({
-        resolver: zodResolver(HistoriaSchema),
-        defaultValues: HistoriaDefaults,
-        values: historia,
+    const historiaForm = useForm<z.infer<typeof historiaSchema>>({
+        resolver: zodResolver(historiaSchema),
+        defaultValues: {
+            motivo_consulta: historia.motivo_consulta ?? "",
+            enfermedad_actual: historia.enfermedad_actual ?? "",
+        },
         disabled: isDisabled,
     })
 
@@ -181,11 +191,6 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
         disabled: isDisabled,
     })
 
-    const defaults = (historia?.historia_odontologica?.plan_tratamiento) ? {
-        plan_tratamiento: historia.historia_odontologica?.plan_tratamiento ?? [],
-        historia_id: historia.id
-    } satisfies z.infer<typeof PlanTratamientoSchema> : Object.assign(PlanTratamientoDefaults, {historia_id: historia?.id}) satisfies z.infer<typeof PlanTratamientoSchema>
-
     const planTratamientoForm = useForm<z.infer<typeof PlanTratamientoSchema>>({
         resolver: zodResolver(PlanTratamientoSchema),
         defaultValues: PlanTratamientoDefaults,
@@ -196,32 +201,18 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
         disabled: isDisabled,
     })
 
-    const modificacionesDefaults = (historia.historia_odontologica?.modificaciones_plan_tratamiento) ? {
-        modificaciones_plan_tratamiento: historia.historia_odontologica?.modificaciones_plan_tratamiento ?? [],
-        historia_id: historia.id
-    } satisfies z.infer<typeof ModificacionesPlanTratamientoSchema> : Object.assign(ModificacionesPlanTratamientoDefaults, {historia_id: historia?.id}) satisfies z.infer<typeof ModificacionesPlanTratamientoSchema>
-
-    const modificacionesTratamientoForm = useForm<z.infer<typeof ModificacionesPlanTratamientoSchema>>({
-        resolver: zodResolver(ModificacionesPlanTratamientoSchema),
-        defaultValues: ModificacionesPlanTratamientoDefaults,
-        values: {
-            historia_id: historia.historia_odontologica!.historia_id,
-            modificaciones_plan_tratamiento: historia.historia_odontologica!.modificaciones_plan_tratamiento,
+    const modificacionesTratamientoForm = useForm<z.infer<typeof modificacionesPlanTratamientoSchema>>({
+        resolver: zodResolver(modificacionesPlanTratamientoSchema),
+        defaultValues: {
+            modificaciones_plan_tratamiento: []
         },
         disabled: isDisabled,
     })
 
-    const secuenciaDefaults = (historia.historia_odontologica?.secuencia_tratamiento) ? {
-        secuencia_tratamiento: historia.historia_odontologica?.secuencia_tratamiento ?? [],
-        historia_id: historia.id
-    } satisfies z.infer<typeof SecuenciaTratamientoSchema> : Object.assign(SecuenciaTratamientoDefaults, {historia_id: historia.id}) satisfies z.infer<typeof SecuenciaTratamientoSchema>
-
-    const secuenciaTratamientoForm = useForm<z.infer<typeof SecuenciaTratamientoSchema>>({
-        resolver: zodResolver(SecuenciaTratamientoSchema),
-        defaultValues: SecuenciaTratamientoDefaults,
-        values: {
-            historia_id: historia.historia_odontologica!.historia_id,
-            secuencia_tratamiento: historia.historia_odontologica!.secuencia_tratamiento,
+    const secuenciaTratamientoForm = useForm<z.infer<typeof secuenciaTratamientoSchema>>({
+        resolver: zodResolver(secuenciaTratamientoSchema),
+        defaultValues: {
+            secuencia_tratamiento: []
         },
         disabled: isDisabled,
     })
@@ -282,6 +273,22 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             <div className={'h-full'}>
                 <Menubar className={'mb-2'}>
                     <MenubarMenu>
+                        <MenubarTrigger>Archivo</MenubarTrigger>
+                        <MenubarContent>
+                            <MenubarItem asChild>
+                                <a href={`/historias/${historia.id}/download`}>
+                                    <Download className={'size-4 mr-2'}/>Descargar
+                                </a>
+                            </MenubarItem>
+                            <MenubarSeparator/>
+                            <MenubarItem asChild>
+                                <a href={`/historias/${historia.id}/print`} target='_blank'>
+                                    <Printer className={'size-4 mr-2'}/>Imprimir
+                                </a>
+                            </MenubarItem>
+                        </MenubarContent>
+                    </MenubarMenu>
+                    <MenubarMenu>
                         <MenubarTrigger>Vista</MenubarTrigger>
                         <MenubarContent>
                             <MenubarCheckboxItem checked={showSidebar} onClick={() => setShowSidebar(value => !value)}>Barra
@@ -290,150 +297,133 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
                     </MenubarMenu>
                 </Menubar>
                 <div className={'flex gap-x-2'}>
-
-
-                    <Tabs defaultValue="historiaOdon" className={"basis-3/4 flex-auto flex h-full"}
+                    <Tabs defaultValue={tab} className={"basis-3/4 flex-auto flex h-full"} onValueChange={(value) => setTab(value)}
                           orientation={'vertical'}>
-                        <TabsList className={'flex-none flex flex-col items-end justify-start p-0 sticky top-0'}>
-                            <TabsTrigger value="paciente" className={'p-0'}>
-                                <Surface className={'rounded-l-lg rounded-r-none rounded-b-none'}>
-                                    <Icon className={'size-8'}>
-                                        <UserCircle/>
-                                    </Icon>
-                                </Surface>
+                        <TabsList className={'flex-none flex flex-col items-end justify-start p-0'}>
+                            <TabsTrigger value="section1" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 rounded-tl-lg ${tab === 'section1' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Paciente</h2>
+                                <Icon>
+                                    <UserCircle className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="antFamiliares" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Users/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section2" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section2' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Ant. Familiares</h2>
+                                <Icon>
+                                    <Users className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="antPersonales" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <HeartPulse/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section3" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section3' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Ant. Personales</h2>
+                                <Icon>
+                                    <HeartPulse className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="historiaOdon" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Hospital/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section4" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section4' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>H. Odont.</h2>
+                                <Icon>
+                                    <Hospital className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="examenRadiografico" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Bone/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section5" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section5' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Examen Rad.</h2>
+                                <Icon>
+                                    <Bone className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="periodontodiagrama" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <TableRowsSplit/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section6" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section6' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Periodont.</h2>
+                                <Icon>
+                                    <TableRowsSplit className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="estudioModelos" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <FileBox/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section7" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section7' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Est. de modelos</h2>
+                                <Icon>
+                                    <FileBox className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="planTratamiento" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <BriefcaseMedical/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section8" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section8' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Tratamiento</h2>
+                                <Icon>
+                                    <BriefcaseMedical className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="modificacionesPlanTratamiento" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <RefreshCcwDot/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section9" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section9' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Modif. Trat.</h2>
+                                <Icon>
+                                    <RefreshCcwDot className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="secuenciaPlanTratamiento" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <ListChecks/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section10" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section10' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Secuencia Trat.</h2>
+                                <Icon>
+                                    <ListChecks className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="historia-periodontal" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Table/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section11" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section11' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>H. Periodontal</h2>
+                                <Icon>
+                                    <Table className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="control-placa" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Table/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section12" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 ${tab === 'section12' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Cont. placa</h2>
+                                <Icon>
+                                    <Table className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
-                            <TabsTrigger value="media" className={'p-0'}>
-                                <Surface className={'rounded-none'}>
-                                    <Icon className={'size-8'}>
-                                        <Images/>
-                                    </Icon>
-                                </Surface>
+                            <TabsTrigger value="section13" className={`p-3 border-l-2 w-full justify-end text-xs gap-x-1 rounded-bl-lg ${tab === 'section13' ? 'bg-white border-l-indigo-500' : 'bg-slate-200'}`}>
+                                <h2 className='max-sm:hidden'>Archivos</h2>
+                                <Icon>
+                                    <Images className={'size-6'}/>
+                                </Icon>
                             </TabsTrigger>
                         </TabsList>
-                        <ScrollArea className={'flex-1 w-full h-[83vh]'}>
-
-                            <TabsContent value="paciente" className={TabTriggerStyle}>
-                                <PacienteSection form={pacienteForm}/>
+                        <div className={'flex-1'}>
+                            <TabsContent value="section1" className={TabTriggerStyle}>
+                                <PacienteSection form={historiaForm}/>
                             </TabsContent>
-                            <TabsContent value="antPersonales" className={TabTriggerStyle}>
-                                <AntPersonalesSection form={antPersonalesForm}/>
-                            </TabsContent>
-                            <TabsContent value="antFamiliares" className={TabTriggerStyle}>
+                            <TabsContent value="section2" className={TabTriggerStyle}>
                                 <AntFamiliaresSection form={antFamiliaresForm}/>
                             </TabsContent>
-                            <TabsContent value="historiaOdon" className={TabTriggerStyle}>
+                            <TabsContent value="section3" className={TabTriggerStyle}>
+                                <AntPersonalesSection form={antPersonalesForm}/>
+                            </TabsContent>
+                            <TabsContent value="section4" className={TabTriggerStyle}>
                                 <HistoriaOdontologicaSection form={historiaOdontologicaForm}/>
                             </TabsContent>
-                            <TabsContent value="examenRadiografico" className={TabTriggerStyle}>
+                            <TabsContent value="section5" className={TabTriggerStyle}>
                                 <ExamenRadiograficoSection historiaOdontologica={historia.historia_odontologica!}
                                                            form={examenRadiograficoForm}/>
                             </TabsContent>
-                            <TabsContent value="estudioModelos" className={TabTriggerStyle}>
-                                <EstudioModelosSection form={estudioModelosForm}/>
-                            </TabsContent>
-                            <TabsContent value="periodontodiagrama" className={TabTriggerStyle}>
+                            <TabsContent value="section6" className={TabTriggerStyle}>
                                 <PeriodontodiagramaSection form={periodontodiagramaForm}
                                                            periodontograma={historia.historia_odontologica?.periodontodiagrama[0] ?? null}/>
                             </TabsContent>
-                            <TabsContent value="planTratamiento" className={TabTriggerStyle}>
+                            <TabsContent value="section7" className={TabTriggerStyle}>
+                                <EstudioModelosSection form={estudioModelosForm}/>
+                            </TabsContent>
+                            <TabsContent value="section8" className={TabTriggerStyle}>
                                 <PlanTratamientoSection form={planTratamientoForm}/>
                             </TabsContent>
-                            <TabsContent value="modificacionesPlanTratamiento" className={TabTriggerStyle}>
+                            <TabsContent value="section9" className={TabTriggerStyle}>
                                 <ModificacionesPlanTratamientoSection form={modificacionesTratamientoForm}/>
                             </TabsContent>
-                            <TabsContent value="secuenciaPlanTratamiento" className={TabTriggerStyle}>
+                            <TabsContent value="section10" className={TabTriggerStyle}>
                                 <SecuenciaPlanTratamientoSection form={secuenciaTratamientoForm}/>
                             </TabsContent>
-                            <TabsContent value="historia-periodontal" className={TabTriggerStyle}>
+                            <TabsContent value="section11" className={TabTriggerStyle}>
                                 <HistoriaPeriodontalSection readonly={readMode} historia_id={historia.id}
                                                             historia_periodontal={historia.historia_odontologica!.historia_periodontal}/>
                             </TabsContent>
-                            <TabsContent value="control-placa" className={TabTriggerStyle}>
+                            <TabsContent value="section12" className={TabTriggerStyle}>
                                 <ControlPlacaSection/>
                             </TabsContent>
-                            <TabsContent value="media" className={TabTriggerStyle}>
+                            <TabsContent value="section13" className={TabTriggerStyle}>
                                 <MediaSection media={historia?.historia_odontologica?.anymedia ?? []}
                                               historia_id={historia.id} readmode={readMode}/>
                             </TabsContent>
-
-                        </ScrollArea>
+                        </div>
                     </Tabs>
 
                     {

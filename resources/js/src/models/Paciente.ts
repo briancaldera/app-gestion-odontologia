@@ -18,6 +18,7 @@ type Paciente = Readonly<{
     telefono?: string | null
     motivo_consulta?: string
     enfermedad_actual?: string | null
+    informacion_emergencia?: InformacionEmergencia
     foto?: string | null
     registered_by?: string
     assigned_to?: string
@@ -27,6 +28,11 @@ type Paciente = Readonly<{
     historia?: Historia | null
     historia_endodoncia?: HistoriaEndodoncia | null
     historia_cirugia?: HistoriaCirugia | null
+}>
+
+type InformacionEmergencia = Readonly<{
+    contacto: string | null
+    telefono: string | null
 }>
 
 type Sex = 'F' | 'M' | 'NI'

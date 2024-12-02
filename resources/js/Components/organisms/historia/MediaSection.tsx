@@ -7,7 +7,6 @@ import MediaSchema, {MediaSchemaDefault} from "@/FormSchema/Historia/MediaSchema
 import {useForm} from "react-hook-form";
 import Title from "@/Components/atoms/Title";
 import React from "react";
-import Surface from "@/Components/atoms/Surface";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -19,13 +18,14 @@ import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
+import {Media} from "@/src/models/HistoriaOdontologica.ts";
 
 // TODO: Remove dialog when file is submitted
-// TODO: Show media title and description
 // TODO: Limit total files in backend to 20 files
 
 type MediaSectionProps = {
-    media: readonly string[]
+    media: readonly Media[]
     readmode: boolean
     historia_id: string
 }
@@ -48,7 +48,7 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
         values: {
             historia_id: historia_id, description: '', file: [], title: ""
         },
-        disabled: readmode,
+        disabled: disabled,
     })
 
     const route = useRoute()
@@ -71,6 +71,7 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
         router.post(endpoint, data, {
             onError: errors => mapServerErrorsToFields(form, errors),
             onSuccess: _page => {
+                setOpenAddFileDialog(false)
                 router.reload()
             }
         })
@@ -91,7 +92,7 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
     }
 
     return (
-        <Surface className={'p-6'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
             <Title level={'title-lg'}>Archivos adicionales</Title>
 
@@ -99,15 +100,17 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
                 <header className={'mb-1.5 mt-5 space-y-1.5'}>
                     <Title level={'title-md'}>Imágenes</Title>
                     <Text level={'body-sm'}>En esta sección podrás anexar cualquier imagen adicional relevante para la
-                        historia clínica. (Máximo 10 MB)</Text>
+                        historia clínica. (Máximo 10 MB por archivo)</Text>
                 </header>
 
                 <CorrectionsBlock model={correctionsModel} name={'media'} canCreateCorrections={canCreateCorrections}>
                     <div className={'grid grid-cols-1 sm:grid-cols-3 gap-3'}>
                         {
-                            media.map(url => (
-                                <div key={url} className={'aspect-square'}>
-                                    <Image src={url}/>
+                            media.map((media,index) => (
+                                <div key={media.url} className={'aspect-square border flex flex-col justify-center items-center'}>
+                                    <Image className={'cursor-pointer'} id={`img_${index}`} src={media.url} onClick={() => document.querySelector(`#img_${index}`)?.requestFullscreen()}/>
+                                    <Title>{media.title}</Title>
+                                    <Text>{media.description}</Text>
                                 </div>
                             ))
                         }
@@ -115,7 +118,7 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
                 </CorrectionsBlock>
 
                 <Dialog open={openAddFileDialog} onOpenChange={onOpenChange}>
-                    <DialogContent className={'max-w-[75vw] p-0 border-0'}>
+                    <DialogContent className={'max-w-[75vw] pb-0 px-0 border-0'}>
                         <DialogHeader className={'p-2'}>
                             <DialogTitle>Agregar archivo</DialogTitle>
                             <DialogDescription>
@@ -161,7 +164,7 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
 
                                         <div className={'flex justify-end gap-3 mt-2'}>
                                             <Button
-                                                disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>Guardar</Button>
+                                                disabled={disabled || !form.formState.isDirty}>Guardar</Button>
                                         </div>
 
                                     </div>
@@ -179,7 +182,7 @@ const MediaSection = ({media, historia_id, readmode}: MediaSectionProps) => {
                 </div>
 
             </section>
-        </Surface>
+        </ScrollArea>
     )
 }
 

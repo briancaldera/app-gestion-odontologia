@@ -18,31 +18,32 @@ type SidebarProps = {
 
 const SidebarContext = React.createContext({expanded: true})
 
-const SidebarMenu = ({
-                         menu, expanded = true, onExpandChange = () => {
-    }
-                     }: SidebarProps) => {
-
-    const {auth: {user: {permissions}}} = usePage().props
+const SidebarMenu = ({menu, expanded = true, onExpandChange = () => {}}: SidebarProps) => {
 
     const can = usePermission()
 
     const clinicaMenu: MenuItem[] = []
     clinicaMenu.push({name: 'Inicio', icon: <LayoutDashboard/>, link: route('dashboard')})
 
-    if ((permissions as string[]).some(permission => permission.startsWith('pacientes'))) {
+    if (can('pacientes-read')) {
         clinicaMenu.push({name: 'Pacientes', icon: <PersonStanding/>, link: route('pacientes.index')})
     }
 
-    clinicaMenu.push({name: 'Historias', icon: <ClipboardDocumentIcon/>, link: route('historias.dashboard')})
+    if (can('historias-read')) {
+        clinicaMenu.push({name: 'Historias', icon: <ClipboardDocumentIcon/>, link: route('historias.dashboard')})
+    }
 
-    const escuelaMenu: MenuItem[] = [
-        {name: "Grupos", icon: <UserGroupIcon/>, link: route("groups.index")}
-    ]
+    const escuelaMenu: MenuItem[] = []
 
-    const sistemaMenu: MenuItem[] = [
-        {name: "Usuarios", icon: <User/>, link: route('profile.index')},
-    ]
+    if (can('groups-read')) {
+        escuelaMenu.push({name: "Grupos", icon: <UserGroupIcon/>, link: route("groups.index")})
+    }
+
+    const sistemaMenu: MenuItem[] = []
+
+    if (can('system-add-users-codes')) {
+        sistemaMenu.push({name: "Usuarios", icon: <User/>, link: route('profile.index')},)
+    }
 
     const footerMenu: MenuItem[] = [
         {name: "Ayuda", icon: <CircleHelp/>, link: "/ayuda"},
@@ -74,22 +75,20 @@ const SidebarMenu = ({
                         {clinicaMenu.map((menuItem, _index) => (
                             <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
                     </SidebarMenuGroup>
-                    <SidebarMenuGroup title='Escuela'>
-                        {escuelaMenu.map((menuItem, _index) => (
-                            <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
-                    </SidebarMenuGroup>
                     {
-                        (permissions as string[]).some(permission => permission.startsWith('system')) &&
-                        (
-                            <>
-                                <SidebarMenuGroup>
-                                    {
-                                        sistemaMenu.map((menuItem, _index) => (
-                                            <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))
-                                    }
-                                </SidebarMenuGroup>
-
-                            </>
+                        escuelaMenu.length > 0 && (
+                            <SidebarMenuGroup title='Escuela'>
+                                {escuelaMenu.map((menuItem, _index) => (
+                                    <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
+                            </SidebarMenuGroup>
+                        )
+                    }
+                    {
+                        escuelaMenu.length > 0 && (
+                            <SidebarMenuGroup title='Sistema'>
+                                {escuelaMenu.map((menuItem, _index) => (
+                                    <SidebarMenuItem menuItem={menuItem} key={menuItem.link}/>))}
+                            </SidebarMenuGroup>
                         )
                     }
                     <Separator className={'hidden lg:block bg-indigo-400'}/>

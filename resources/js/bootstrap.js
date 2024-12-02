@@ -7,3 +7,7 @@ setDefaultOptions({ locale: es })
 window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+axios.get('/sanctum/csrf-cookie').then(response => {
+    // Login...
+});

@@ -13,7 +13,7 @@ const Edit = ({historia, homework}: EditProps) => {
     return (
         <AuthLayout title={`Paciente: ${historia.paciente?.nombre} ${historia.paciente?.apellido}`}>
             <ScrollArea className={'h-full'}>
-                <div className={'p-6'}>
+                <div className={'max-lg:px-2 max-lg:pt-2 lg:p-6'}>
                     <HistoriaEditor historia={historia} readMode={false} homework={homework}
                                     canCreateCorrections={false}/>
                 </div>

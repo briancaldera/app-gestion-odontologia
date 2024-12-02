@@ -5,7 +5,6 @@ import Title from "@/Components/atoms/Title";
 import React from "react";
 import {useRoute} from "ziggy-js";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
-import Surface from "@/Components/atoms/Surface";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/shadcn/ui/form.tsx";
 import Image from "@/Components/atoms/Image.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
@@ -14,6 +13,7 @@ import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 import DragAndDrop from "@/Components/molecules/DragAndDrop";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type PeriodontodiagramaSection = {
     periodontograma: string | null
@@ -58,7 +58,7 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
     }
 
     return (
-        <Surface className={'p-6 h-full'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
             <Title level={'title-lg'}>Periodontodiagrama</Title>
 
             <CorrectionsBlock model={correctionsModel} name={'periodontodiagrama'}
@@ -76,7 +76,7 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
                                         <div className={'flex justify-center bg-neutral-950 min-h-[900px]'}>
                                             <div className={'w-4/5'}>
                                                 <Image src={field.value ?? periodontograma}
-                                                       className={'object-contain w-full h-auto'}/>
+                                                       className={'object-contain w-full h-auto cursor-pointer'} id={'periodontodiagrama'} onClick={() => document.querySelector('#periodontodiagrama')?.requestFullscreen()}/>
                                             </div>
                                         </div>
                                     </FormControl>
@@ -86,11 +86,15 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
 
                         </div>
 
-                        <DragAndDrop maxFiles={1} accept={ACCEPTED_PICTURE_MIME} handleDrop={handleDrop}
-                                     disabled={disabled}/>
+                        {
+                            !disabled && (
+                                <DragAndDrop maxFiles={1} accept={ACCEPTED_PICTURE_MIME} handleDrop={handleDrop}
+                                             disabled={disabled}/>
+                            )
+                        }
 
                         <div className={'flex justify-end'}>
-                            <Button disabled={isProcessing || !form.formState.isDirty || form.formState.disabled}>
+                            <Button disabled={disabled || !form.formState.isDirty}>
                                 {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}Guardar
                             </Button>
                         </div>
@@ -99,7 +103,7 @@ const PeriodontodiagramaSection = ({periodontograma, form}: PeriodontodiagramaSe
                     </form>
                 </Form>
             </CorrectionsBlock>
-        </Surface>
+        </ScrollArea>
     )
 }
 

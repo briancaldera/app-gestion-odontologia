@@ -1,10 +1,10 @@
-import {undefined, z} from 'zod'
+import {z} from 'zod'
 
 const MAX_PICTURE_SIZE = 2 * 1000 * 1000 // 2 MB
 const MIN_PICTURE_SIZE = 5 * 1000 // 5 KB
 const ACCEPTED_PICTURE_MIME = ['image/jpeg', 'image/jpg', 'image/png']
 
-const PacienteSchema = z.object({
+const pacienteSchema = z.object({
     cedula: z
         .string({
             description: 'La cédula de paciente',
@@ -39,8 +39,7 @@ const PacienteSchema = z.object({
     fecha_nacimiento: z
         .coerce
         .date()
-        .max(new Date(), {message: 'Fecha de nacimiento inválida'})
-        .nullable(),
+        .max(new Date(), {message: 'Fecha de nacimiento inválida'}),
     ocupacion: z
         .string()
         .min(1, {message: 'Mínimo 1 caracteres'})
@@ -53,12 +52,7 @@ const PacienteSchema = z.object({
         .string()
         .min(0)
         .max(15)
-        // .regex(/^[\d]{4}-[\d]{7}$/, {message: 'El formato debe ser similar a 0414-1234567'})
-        .refine(value => {
-            if (value.length === 0) return true
-            const regexp = /^[\d]{4}-[\d]{7}$/
-            return regexp.test(value)
-        }, {message: 'El formato debe ser similar a 0414-1234567'})
+        .regex(/^\d{4}-\d{7}$|^$/, {message: 'El formato debe ser similar a 0414-1234567'})
         .optional(),
     foto: z
         .any()
@@ -68,22 +62,10 @@ const PacienteSchema = z.object({
         .nullish(),
     motivo_consulta: z.string().min(1, {message: 'Debe especificar el motivo de la consulta'}),
     enfermedad_actual: z.string().optional(),
+    informacion_emergencia: z.object({
+        contacto: z.string().max(255).optional(),
+        telefono: z.string().regex(/^\d{4}-\d{7}$|^$/, {message: 'El formato debe ser similar a 0414-1234567'}).optional(),
+    })
 })
 
-const PacienteDefaults = {
-    cedula: '',
-    nombre: '',
-    apellido: '',
-    edad: 0,
-    direccion: '',
-    peso: 0,
-    sexo: '',
-    fecha_nacimiento: null,
-    ocupacion: '',
-    telefono: '',
-    enfermedad_actual: '',
-    motivo_consulta: "",
-    foto: null
-} satisfies z.infer<typeof PacienteSchema>
-
-export {PacienteSchema, PacienteDefaults}
+export {pacienteSchema}

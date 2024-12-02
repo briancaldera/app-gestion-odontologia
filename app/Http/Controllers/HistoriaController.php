@@ -35,9 +35,11 @@ use App\Services\CorreccionService;
 use App\Services\HistoriaService;
 use App\Services\RadiografiaService;
 use App\Status;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -129,9 +131,9 @@ class HistoriaController extends Controller
             return back();
         }
 
-        if ($user->hasRole('admin') or $user->hasRole('admision')) {
+        if ($user->hasPermission('historias-index-all')) {
 
-            $historias = Historia::all();
+            $historias = Historia::with(['autor.profile', 'paciente'])->get();
 
             return inertia()->render('Historias/Index', [
                 'historias' => HistoriaResource::collection($historias),
@@ -261,9 +263,18 @@ class HistoriaController extends Controller
         }
 
         if ($user->hasRole('admin')) {
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
+            return Inertia::render('Historias/Show', [
+                'historia' => new HistoriaResource($historia),
+                'homework' => $homework,
+            ]);
         } elseif ($user->hasRole('admision')) {
+            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
+            return Inertia::render('Historias/Show', [
+                'historia' => new HistoriaResource($historia),
+            ]);
         } elseif ($user->hasRole('profesor')) {
             $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
 
@@ -351,7 +362,27 @@ class HistoriaController extends Controller
 
         $data = $request->validated();
         $this->historiaService->updateHistoria($historia, $data);
-        return response()->noContent();
+
+        message('Historia actualizada', Type::Success);
+        return response(null, 200);
+    }
+
+    public function assignID(Request $request, Historia $historia)
+    {
+        if ($request->user()->cannot('assignID', $historia)) {
+            message('No posee permisos para asignar número a esta historia');
+            return back();
+        }
+
+        $data = $request->validate([
+            'numero' => ['sometimes', 'nullable', 'string', 'unique:' . Historia::class . ',numero'],
+        ]);
+
+        $historia->numero = $data['numero'];
+        $historia->update();
+
+        message('Número asignado', Type::Success);
+        return response(null, 200);
     }
 
     public function updatePaciente(Paciente $paciente, UpdatePacienteRequest $request)
@@ -559,6 +590,25 @@ class HistoriaController extends Controller
         return response(null, 200);
     }
 
+    public function approveSecuenciaTratamiento(Request $request, Historia $historia, string $id)
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        /** @var User $user */
+        $user = $request->user();
+
+        if (!$historiaOdontologica->secuencia_tratamiento->some(fn($secuencia) => $secuencia['id'] === $id)) {
+            message('Tratamiento no encontrado', Type::Error);
+            return response(null, 404);
+        }
+
+        $this->historiaService->approveSecuenciaTratamiento($historia, $user, $id);
+
+        message('Tratamiento aprobado', Type::Success);
+        return response(null, 200);
+    }
+
     public function updateExamenRadiografico(Historia $historia, UpdateExamenRadiografico $request)
     {
         /* @var User $user */
@@ -651,10 +701,32 @@ class HistoriaController extends Controller
 //        $historia_odon->historia_periodontal->control_higiene_bucal['control_halitosis'] = $data['control_higiene_bucal']['control_halitosis'];
 //        $historia_odon->historia_periodontal->control_higiene_bucal['tratamiento'] = $data['control_higiene_bucal']['tratamiento'];
 
-        $historia_odon->historia_periodontal = $data;
-        $historia_odon->save();
+        $historia_odon->historia_periodontal->higiene_bucal = $data['higiene_bucal'];
+        $historia_odon->historia_periodontal->control_higiene_bucal = $data['control_higiene_bucal'];
+        $historia_odon->update();
 
         message('Historia periodontal actualizada exitosamente 👍🏻', Type::Success);
+        return response(null, 200);
+    }
+
+    public function approvePeriodontalDischarge(Request $request, Historia $historia)
+    {
+        // todo: use gate
+
+        $data = $request->validate([
+            'nota' => ['required', 'string', 'max:30'],
+        ]);
+
+        $user = $request->user();
+        $historia_odon = $historia->historiaOdontologica;
+
+        $historia_odon->historia_periodontal->approver_id = $user->id;
+        $historia_odon->historia_periodontal->approval = $user->id;
+        $historia_odon->historia_periodontal->nota = $data['nota'];
+
+        $historia_odon->update();
+
+        message('Historia periodontal actualizada exitosamente', Type::Success);
         return response(null, 200);
     }
 
@@ -781,8 +853,11 @@ class HistoriaController extends Controller
         $data = $storeControlPlaca->validated();
 
         $new_control_placa = [
+            'id' => (string) Str::ulid(),
             'fecha' => now(),
             'modelo' => $data['control_placa'],
+            'approver_id' => null,
+            'approval' => null,
         ];
 
         /** @var HistoriaOdontologica $historia_odon */
@@ -798,6 +873,32 @@ class HistoriaController extends Controller
 
         message('Control de placa agregado');
         return response(null, '200');
+    }
+
+    public function approveControlPlaca(Request $request, Historia $historia, string $id)
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        /** @var User $user */
+        $user = $request->user();
+
+        $control_placa = collect($historiaOdontologica->historia_periodontal->control_placa);
+
+        $historiaOdontologica->historia_periodontal->control_placa = $control_placa->map(function ($control) use ($id, $user) {
+
+            if ($control['id'] === $id) {
+                $control['approver_id'] = $user->id;
+                $control['approval'] = $user->id;
+            }
+
+            return $control;
+        });
+
+        $historiaOdontologica->update();
+
+        message('Modificacion aprobada', Type::Success);
+        return response(null, 200);
     }
 
     public function getMedia(Historia $historia, string $id)
@@ -934,5 +1035,103 @@ class HistoriaController extends Controller
         $periodontodiagrama = $historia_odo->getMedia('periodontodiagrama')->firstOrFail(fn(Media $media) => $media->uuid === $id);
 
         return response()->file($periodontodiagrama->getPath());
+    }
+
+    public function approveModificacion(Request $request, Historia $historia, string $id)
+    {
+        /** @var HistoriaOdontologica $historiaOdontologica */
+        $historiaOdontologica = $historia->historiaOdontologica;
+
+        /** @var User $user */
+        $user = $request->user();
+
+        if (!$historiaOdontologica->modificaciones_plan_tratamiento->some(fn($modificacion) => $modificacion['id'] === $id)) {
+            message('Modificación no encontrada', Type::Error);
+            return response(null, 404);
+        }
+
+        $this->historiaService->approveModificacionTratamiento($historia, $user, $id);
+
+        message('Modificacion aprobada', Type::Success);
+        return response(null, 200);
+    }
+
+    public function updateModificacionesConsentimiento(Request $request, Historia $historia) {
+        $user = $request->user();
+
+        if (!$historia->isOpen()) {
+            message('La historia no se encuentra abierta a modificaciones', Type::Info);
+            return back();
+        }
+
+        if ($user->cannot('update', $historia)) {
+            message('No posee permisos para modificar esta historia');
+            return back();
+        }
+
+        /** @var HistoriaOdontologica $historia_odon */
+        $historia_odon = $historia->historiaOdontologica;
+
+        $data = $request->validate([
+            'modificaciones_consentimiento' => ['required', 'image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000']
+        ]);
+        $file = $data['modificaciones_consentimiento'];
+
+        $historia_odon->addMedia($file)->toMediaCollection('modificaciones_consentimiento');
+
+        message('Archivo anexado a la historia exitosamente');
+        return response(null, '200');
+    }
+
+    public function getModificacionesConsentimiento(Historia $historia, string $id)
+    {
+        $user = request()->user();
+
+        if ($user->cannot('view', $historia)) {
+            return response(null, 404);
+        }
+
+        /* @var HistoriaOdontologica $historia_odo */
+        $historia_odo = $historia->historiaOdontologica;
+
+        $consentimiento = $historia_odo->getMedia('modificaciones_consentimiento')->first(fn(Media $media) => $media->uuid === $id);
+
+        return response()->file($consentimiento->getPath());
+    }
+
+    public function downloadHistoria(Request $request, Historia $historia)
+    {
+        $pdf = Pdf::loadView('print.historia', [
+            'historia' => $historia,
+        ])->setPaper('letter');
+
+        if ($request->is('*/download')) {
+            return $pdf->download(($historia->numero ?? 'HCE-sin-numero') . '.pdf');
+        }
+
+        if ($request->is('*/print')) {
+            return $pdf->stream(($historia->numero ?? 'HCE-sin-numero') . '.pdf');
+        }
+
+        return response(null, 404);
+    }
+
+    public function share(Request $request, Historia $historia)
+    {
+
+        $data = $request->validate([
+            'users' => ['required', 'list',],
+            'users.*' => ['uuid',],
+        ]);
+
+        $users = collect($data['users']);
+
+        $historia->shared_with = $historia->shared_with->union($users);
+
+        $historia->status = Status::ENTREGADA;
+        $historia->update();
+
+        message('Historia compartida exitosamente', Type::Success);
+        return response(null, 200);
     }
 }

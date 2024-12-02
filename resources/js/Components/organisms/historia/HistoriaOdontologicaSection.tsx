@@ -13,6 +13,7 @@ import AntecedentesOdontologicosPersonales
 import ExamenFisico from "@/Components/organisms/historia/partials/ExamenFisico.tsx";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 type HistoriaOdontologicaSectionProps = {
     form: UseFormReturn<z.infer<typeof HistoriaOdontologicaSchema>>
@@ -40,8 +41,7 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
 
 
     return (
-
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
             <Title level={'title-lg'}>Historia Odontológica</Title>
 
@@ -61,7 +61,8 @@ const HistoriaOdontologicaSection = ({form}: HistoriaOdontologicaSectionProps) =
                 <ExamenFisico/>
             </CorrectionsBlock>
 
-        </Surface>);
+        </ScrollArea>
+    )
 }
 
 export default HistoriaOdontologicaSection

@@ -38,6 +38,8 @@ class StorePacienteRequest extends FormRequest
             'foto' => ['nullable', 'image', 'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000', 'min:50', 'max:2000'],
             'motivo_consulta' => ['required', 'string', 'max:1000'],
             'enfermedad_actual' => ['nullable', 'string', 'max:1000'],
+            'informacion_emergencia' => ['required', 'array:contacto,telefono'],
+            'informacion_emergencia.*' => ['string', 'max:255'],
         ];
     }
 }

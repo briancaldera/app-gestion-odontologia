@@ -13,9 +13,10 @@ interface ProfilePicturePickerProps {
     readonly src: string | FileWithPreview | null,
     readonly onDrop: (files: File[]) => void,
     readonly className: string,
+    readonly disabled?: boolean
 }
 
-const ProfilePicturePicker = ({src, onDrop, className}: ProfilePicturePickerProps) => {
+const ProfilePicturePicker = ({src, onDrop, className, disabled = false}: ProfilePicturePickerProps) => {
 
     let preview: string | null = ''
     if (src === null) {
@@ -35,18 +36,9 @@ const ProfilePicturePicker = ({src, onDrop, className}: ProfilePicturePickerProp
     //     }
     // }, [src])
     //
-    // React.useEffect(() => {
-    //     return () => {
-    //         if (src instanceof File) {
-    //             if (typeof preview === "string") {
-    //                 URL.revokeObjectURL(preview)
-    //             }
-    //         }
-    //     }
-    // }, [src])
 
     return (
-        <Dropzone onDrop={onDrop} accept={pictureFileFormats} maxFiles={1}>
+        <Dropzone onDrop={onDrop} accept={pictureFileFormats} maxFiles={1} disabled={disabled}>
             {({getRootProps, getInputProps}) => (
                 <>
                     <input {...getInputProps()} />

@@ -11,6 +11,7 @@ import EstudioModelosParte2 from "@/Components/organisms/historia/partials/Estud
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import React from "react";
 import CorrectionsBlock from "@/src/corrections/CorrectionsBlock.tsx";
+import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 
 
 type EstudioModelosSectionProps = {
@@ -40,7 +41,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
     }
 
     return (
-        <Surface className={'w-full px-6 min-h-screen'}>
+        <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
             <Title level={'title-lg'}>Estudio de Modelos</Title>
 
             <CorrectionsBlock model={correctionsModel} name={'maxsupinfoclu'}
@@ -51,7 +52,7 @@ const EstudioModelosSection = ({form}: EstudioModelosSectionProps) => {
             <CorrectionsBlock model={correctionsModel} name={'diagnostico'} canCreateCorrections={canCreateCorrections}>
                 <EstudioModelosParte2/>
             </CorrectionsBlock>
-        </Surface>
+        </ScrollArea>
     )
 }
 

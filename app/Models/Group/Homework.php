@@ -49,6 +49,11 @@ class Homework extends Model
 
     public static array $actions = [
         'homeworks' => [
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre las entregas',
+                'description' => 'Full control sobre las entregas'
+            ],
             'index-all' => [
                 'name' => 'index-all',
                 'display_name' => 'Indexar entregas',

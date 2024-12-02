@@ -8,17 +8,18 @@ type Historia = Readonly<{
     id: string
     paciente_id: string
     autor_id: string
-    numero: string
+    numero: string | null
+    semestre: string | null
 
     autor?: User
-    motivo_consulta?: string
-    enfermedad_actual?: string
     status?: Status
     paciente?: Paciente,
     ant_familiares?: AntFamiliares
     ant_personales?: AntPersonales
     trastornos?: Trastornos
     historia_odontologica?: HistoriaOdontologica
+    motivo_consulta: string | null
+    enfermedad_actual: string | null
 }>
 
 enum Status {
