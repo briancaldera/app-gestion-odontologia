@@ -1,3 +1,3 @@
-## Stay tuned for updates!
+## Aplicación web de la Facultad de Odontología - UGMA
 
-Next generation management software for dental schools.
+![Home page](/public/assets/images/home.png)
