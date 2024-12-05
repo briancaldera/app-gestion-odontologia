@@ -254,7 +254,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                     <div className='grid grid-cols-1 sm:grid-cols-3 gap-y-8 gap-x-6 basis-full'>
                         <FormField render={({field}) => (
                             <FormItem className={'col-span-full'}>
-                                <FormLabel>Diagnóstico</FormLabel>
+                                <FormLabel>Motivo de consulta</FormLabel>
                                 <FormControl>
                                     <Textarea {...field}/>
                                 </FormControl>
@@ -264,7 +264,7 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
 
                         <FormField render={({field}) => (
                             <FormItem className={'col-span-full'}>
-                                <FormLabel>Tratamiento indicado</FormLabel>
+                                <FormLabel>Enfermedad Actual</FormLabel>
                                 <FormControl>
                                     <Textarea {...field}/>
                                 </FormControl>
@@ -302,7 +302,6 @@ const AssignNumberDialog = () => {
     const handleSubmit = (values: z.infer<typeof assignNumberSchema>) => {
         const endpoint = route('historias.assignid', {historia: historia.id})
 
-        console.log(values)
 
         const body = {
             ...values
@@ -310,7 +309,6 @@ const AssignNumberDialog = () => {
 
         router.patch(endpoint, body, {
             onError: errors => {
-                console.log(errors)
                 mapServerErrorsToFields(form, errors)
             },
             onSuccess: page => {
@@ -386,7 +384,6 @@ const AssignSemesterDialog = () => {
     const handleSubmit = (values: z.infer<typeof assignSemesterSchema>) => {
         const endpoint = route('historias.update', {historia: historia.id})
 
-        console.log(values)
 
         const body = {
             ...values
@@ -394,7 +391,6 @@ const AssignSemesterDialog = () => {
 
         router.patch(endpoint, body, {
             onError: errors => {
-                console.log(errors)
                 mapServerErrorsToFields(form, errors)
             },
             onSuccess: page => {
