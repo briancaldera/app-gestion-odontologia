@@ -5,12 +5,9 @@ namespace App\Services\Impl;
 use App\Models\Paciente;
 use App\Models\User;
 use App\Services\PacienteService;
-use Illuminate\Http\UploadedFile;
 
 class PacienteServiceImpl implements PacienteService
 {
-    const PACIENTE_PHOTO_DIR = 'pacientes/photos/';
-
     public function storePaciente(array $data): Paciente
     {
         /** @var User $user */
@@ -69,9 +66,10 @@ class PacienteServiceImpl implements PacienteService
         return $paciente;
     }
 
-    private function savePhotoToFilesystem(UploadedFile $file): string
+    public function reassignPaciente(Paciente $paciente, string $user_id): bool
     {
-        $now = now();
-        return $file->store(self::PACIENTE_PHOTO_DIR . $now->year . '/'. $now->month);
+        $paciente->assigned_to = $user_id;
+
+        return $paciente->update();
     }
 }

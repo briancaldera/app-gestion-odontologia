@@ -8,6 +8,7 @@ use App\Http\Resources\PacienteResource;
 use App\Models\Paciente;
 use App\Models\User;
 use App\Services\PacienteService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PacienteController extends Controller
@@ -149,6 +150,28 @@ class PacienteController extends Controller
         $this->pacienteService->updatePaciente($paciente, $data);
         message('Paciente actualizado exitosamente', \Type::Success);
         return response(null, 200);
+    }
+
+    public function reassignPaciente(Request $request, Paciente $paciente)
+    {
+        if ($request->user()->cannot('assign', $paciente)) {
+            message('No estas autorizado para reasignar a este paciente', \Type::Info);
+            return back();
+        }
+
+        $data = $request->validate([
+            'user' => ['required', 'exists:' . User::class, ',id'],
+        ]);
+
+        if ($paciente->assigned_to === $data['user']) {
+            message('Este paciente ya se encuentra asignado a este usuario', \Type::Info);
+            return back();
+        }
+
+        $res = $this->pacienteService->reassignPaciente($paciente, $data['user']);
+
+        message('Paciente reasignado', \Type::Success);
+        return back();
     }
 
     public function getFoto(Paciente $paciente, string $id)
