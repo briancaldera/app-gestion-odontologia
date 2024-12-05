@@ -14,7 +14,7 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover.tsx";
 import {Calendar} from "@/shadcn/ui/calendar.tsx";
 import {cn} from "@/lib/utils.ts";
 import {format} from "date-fns";
-import {CalendarIcon, Stethoscope} from "lucide-react";
+import {CalendarIcon, Loader2, Stethoscope} from "lucide-react";
 import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.tsx";
 import {toast} from "sonner";
 import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
@@ -59,7 +59,6 @@ const Create = () => {
         router.post(endpoint, values, {
             onError: errors => {
                 mapServerErrorsToFields(pacienteForm, errors);
-                console.log(errors)
             }
         })
     }
@@ -80,19 +79,14 @@ const Create = () => {
                             <div>
                                 <Title level={'h3'}>Crear paciente</Title>
                             </div>
-                            <div className={'flex gap-3'}>
-                                <Button type={'button'} variant={'outline'} asChild><Link
-                                    href={route('pacientes.index')}>Cancelar</Link></Button>
-                                <Button type={'submit'} className={'bg-indigo-500'}
-                                        disabled={!pacienteForm.formState.isDirty || isProcessing}>Guardar</Button>
-                            </div>
                         </div>
 
                         <section className={'grid grid-cols-1 sm:grid-cols-4 flex-1 gap-12'}>
                             <div className={'col-span-1'}>
                                 <div>
                                     <FormField render={({field}) => (
-                                        <FormItem className={'bg-slate-100 rounded-lg aspect-square p-2 flex justify-center items-center'}>
+                                        <FormItem
+                                            className={'bg-slate-100 rounded-lg aspect-square p-2 flex justify-center items-center'}>
                                             <FormControl>
                                                 <ProfilePicturePicker src={field.value} onDrop={handleDropFile}
                                                                       className={'size-32'}/>
@@ -226,7 +220,7 @@ const Create = () => {
                                                     <PopoverTrigger asChild>
                                                         <FormControl>
                                                             <Button
-                                                                variant={"outline"}
+                                                                variant="outline"
                                                                 className={cn(
                                                                     "w-[240px] pl-3 text-left font-normal",
                                                                     !field.value && "text-muted-foreground"
@@ -328,10 +322,11 @@ const Create = () => {
 
                                     <FormField render={({field}) => (
                                         <FormItem className={'col-span-full'}>
-                                            <FormLabel>Motivo de consulta</FormLabel>
+                                            <FormLabel>Diagnóstico<span
+                                                className={'text-slate-400'}> (Opcional)</span></FormLabel>
                                             <FormControl>
-                                                <Textarea
-                                                    placeholder={'Detalla los motivos de la consulta'} {...field}/>
+                                            <Textarea
+                                                    placeholder={''} {...field}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -339,11 +334,11 @@ const Create = () => {
 
                                     <FormField render={({field}) => (
                                         <FormItem className={'col-span-full'}>
-                                            <FormLabel>Enfermedad actual <span
-                                                className={'text-slate-400'}>(Opcional)</span></FormLabel>
+                                            <FormLabel>Tratamiento indicado<span
+                                                className={'text-slate-400'}> (Opcional)</span></FormLabel>
                                             <FormControl>
                                                 <Textarea
-                                                    placeholder={'Indica cualquier enfermedad que padezca el paciente al momento de la consulta'} {...field}/>
+                                                    placeholder={''} {...field}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -353,6 +348,14 @@ const Create = () => {
 
                             </div>
                         </section>
+                        <div className={'flex justify-end gap-x-3 py-3'}>
+                            <Button type={'button'} variant='outline' disabled={isProcessing} asChild><Link
+                                href={route('pacientes.index')}>Cancelar</Link></Button>
+                            <Button type={'submit'} className={'bg-indigo-500'}
+                                    disabled={!pacienteForm.formState.isDirty || isProcessing}>
+                                <Loader2 className='mr-2 animate-spin' hidden={!isProcessing}/>
+                                Registrar paciente</Button>
+                        </div>
                     </form>
                 </Form>
             </ScrollArea>
