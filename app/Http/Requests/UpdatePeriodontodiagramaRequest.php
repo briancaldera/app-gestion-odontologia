@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Constants;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatePeriodontodiagramaRequest extends FormRequest
@@ -21,8 +22,15 @@ class UpdatePeriodontodiagramaRequest extends FormRequest
      */
     public function rules(): array
     {
+        $max_height = Constants::MAX_IMAGE_HEIGHT;
+        $min_height = Constants::MIN_IMAGE_HEIGHT;
+        $max_width = Constants::MAX_IMAGE_WIDTH;
+        $min_width = Constants::MIN_IMAGE_WIDTH;
+        $min_image_size = Constants::MIN_IMAGE_SIZE;
+        $max_image_size = Constants::MAX_IMAGE_SIZE_IN_KB;
+
         return [
-            'periodontodiagrama' => ['image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000'],
+            'periodontodiagrama' => ['image', "dimensions:min_width=$min_width,min_height=$min_height,max_width=$max_width,max_height=$max_height", "min:$min_image_size", "max:$max_image_size"],
         ];
     }
 }

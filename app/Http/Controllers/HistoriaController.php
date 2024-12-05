@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants;
 use App\Http\Requests\StoreAntFamiliaresRequest;
 use App\Http\Requests\StoreAntPersonalesRequest;
 use App\Http\Requests\StoreControlPlaca;
@@ -800,8 +801,15 @@ class HistoriaController extends Controller
             return back();
         }
 
+        $max_height = Constants::MAX_IMAGE_HEIGHT;
+        $min_height = Constants::MIN_IMAGE_HEIGHT;
+        $max_width = Constants::MAX_IMAGE_WIDTH;
+        $min_width = Constants::MIN_IMAGE_WIDTH;
+        $min_image_size = Constants::MIN_IMAGE_SIZE;
+        $max_image_size = Constants::MAX_IMAGE_SIZE_IN_KB;
+
         $data = $request->validate([
-            'consentimiento' => ['required', 'image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000']
+            'consentimiento' => ['required', 'image', "dimensions:min_width=$min_width,min_height=$min_height,max_width=$max_width,max_height=$max_height", "min:$min_image_size", "max:$max_image_size"]
         ]);
         $file = $data['consentimiento'];
 
