@@ -23,7 +23,7 @@ type IndexProps = {
 const Index = ({users}: IndexProps) => {
 
     return (
-        <AuthLayout title={'Perfiles'}>
+        <AuthLayout title={'Usuarios'}>
             <ScrollArea className={'bg-white h-full p-2 sm:p-6'}>
                 <header className='p-2'>
                     <Title level={'title-lg'}>Usuarios</Title>
