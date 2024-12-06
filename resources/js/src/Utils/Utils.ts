@@ -91,4 +91,17 @@ const useLoading = () => {
     return loading
 }
 
-export {usePermission, useOnlineStatus, useLoading, mergeDeep, isObject, mapServerErrorsToFields}
+const formatTelephone = (value: string): string => {
+    // Remove all non-digit characters
+    const digits = value.replace(/\D/g, '');
+
+    // Check if we have exactly 11 digits
+    if (digits.length !== 11) {
+        return digits
+    }
+
+    // Format the phone number
+    return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+}
+
+export {usePermission, useOnlineStatus, useLoading, mergeDeep, isObject, mapServerErrorsToFields, formatTelephone}

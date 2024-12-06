@@ -21,29 +21,48 @@ import {route} from "ziggy-js";
 import {Link} from "@inertiajs/react";
 import ProfilePicturePicker from "@/Components/molecules/ProfilePicturePicker.tsx";
 import {toast} from "sonner";
-import {mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
+import {formatTelephone, mapServerErrorsToFields} from "@/src/Utils/Utils.ts";
 
 const CreateProfile = () => {
 
     const {isProcessing, router} = useInertiaSubmit()
 
-    const createProfileForm = useForm<z.infer<typeof createProfileSchema>>({
+    const isDisabled: boolean = isProcessing
+
+    const section1Form = useForm<z.infer<typeof section1Schema>>({
+        resolver: zodResolver(section1Schema),
         defaultValues: {
             apellidos: "",
-            direccion: "",
-            fecha_nacimiento: "",
+            direccion: '',
+            fecha_nacimiento: null,
             nombres: "",
-            picture: null,
             sexo: "",
-            telefono: "",
-            cedula_letra: "",
-            cedula_numero: ""
+            telefono: '',
+            cedula: {
+                cedula_letra: "",
+                cedula_numero: "",
+            },
         },
-        disabled: isProcessing,
-        resolver: zodResolver(createProfileSchema)
+        disabled: isDisabled
     })
 
-    const [page, setPage] = React.useState(0)
+    const formState = React.useRef<{
+        section1: z.infer<typeof section1Schema> | null
+        section2: z.infer<typeof section2Schema> | null
+    }>({
+        section1: null,
+        section2: null
+    })
+
+    const section2Form = useForm<z.infer<typeof section2Schema>>({
+        resolver: zodResolver(section2Schema),
+        defaultValues: {
+            picture: null
+        },
+        disabled: isDisabled
+    })
+
+    const [section, setSection] = React.useState<'1' | '2'>('1')
 
     const loader = (
         <div className={"size-96 flex justify-center items-center"}>
@@ -51,35 +70,49 @@ const CreateProfile = () => {
         </div>
     )
 
+    const onSubmitSection1 = (values: z.infer<typeof section1Schema>) => {
+        formState.current.section1 = values
+        setSection('2')
+    }
+
+    const onSubmitSection2 = (values: z.infer<typeof section2Schema>) => {
+
+        formState.current.section2 = values
+        const endpoint = route('profile.store')
+
+
+        const body = {
+            ...formState.current.section1,
+            ...formState.current.section2,
+        }
+
+        router.post(endpoint, body, {
+            onError: errors => {
+                toast('Hubieron errores en la información enviada. Por favor, revisa los campos y reenvia nuevamente')
+                if (!errors.picture) {
+                    setSection('1')
+                }
+                mapServerErrorsToFields(section1Form, errors)
+                mapServerErrorsToFields(section2Form, errors)
+            }
+        })
+    }
+
     return (
         <GuestLayout title={"Crear perfil"}>
-            <Button className={'absolute top-2 right-2'} variant='ghost' asChild>
+            <Button className={'fixed top-2 right-2'} variant='ghost' asChild>
                 <Link href={route('logout')} as='button' method='post'>
                     Cerrar sesión<LogOut className={'ml-2 size-4'}/>
                 </Link>
             </Button>
-            <div className={"px-4"}>
-                <Surface className={"px-6 py-6 space-y-2 max-w-xl"}>
+            <div className={'relative flex justify-center items-center'}>
+                <Surface className={"mt-6 px-6 py-4 min-w-96 max-w-xl"}>
                     {
-                        isProcessing ? loader : (page === 0 ?
-                            <Page0 form={createProfileForm} setPage={(page: number) => {
-                                createProfileForm.trigger()
-                                if (
-                                    !createProfileForm.getFieldState('telefono').invalid &&
-                                    !createProfileForm.getFieldState('fecha_nacimiento').invalid &&
-                                    !createProfileForm.getFieldState('sexo').invalid &&
-                                    !createProfileForm.getFieldState('nombres').invalid &&
-                                    !createProfileForm.getFieldState('apellidos').invalid &&
-                                    !createProfileForm.getFieldState('direccion').invalid &&
-                                    !createProfileForm.getFieldState('cedula_letra').invalid &&
-                                    !createProfileForm.getFieldState('cedula_numero').invalid
-                                ) {
-                                    setPage(page)
-                                }
-                            }}/> :
-                            <Page1 form={createProfileForm} setPage={(page: number) => {
-                                setPage(page)
-                            }}/>)
+                        section === '1' ? (
+                            <Section1 form={section1Form} onSubmitHandler={onSubmitSection1}/>
+                        ) : (
+                            <Section2 form={section2Form} onSubmitHandler={onSubmitSection2} previous={() => {setSection('1')}}/>
+                        )
                     }
                 </Surface>
             </div>
@@ -91,39 +124,45 @@ const MAX_PICTURE_SIZE: number = 2 * 1000 * 1000 // 2 MB
 const MIN_PICTURE_SIZE: number = 5 * 1000 // 5 KB
 const ACCEPTED_PICTURE_MIME: readonly string[] = ['image/jpeg', 'image/jpg', 'image/png']
 
-const createProfileSchema = z.object({
+const section1Schema = z.object({
     nombres: z.string().min(1, {message: 'Campo requerido'}).max(100, {message: 'Máximo 100 caracteres'}),
     apellidos: z.string().min(1, {message: 'Campo requerido'}).max(100, {message: 'Máximo 100 caracteres'}),
     fecha_nacimiento: z.date().max(new Date()),
-    telefono: z.string().optional(),
+    telefono: z.string().regex(/^\d{4}-\d{7}$|^$/).optional(),
     direccion: z.string().max(255, {message: 'Máximo 255 caracteres'}).optional(),
     sexo: z.enum(['F', 'M', 'NI']),
-    cedula_letra: z.enum(['V', 'E']),
-    cedula_numero: z.coerce.number().min(1000000).max(999999999),
+    cedula: z.object({
+        cedula_letra: z.enum(['V', 'E']),
+        cedula_numero: z.string().min(3).max(9).refine(value => typeof parseInt(value) === 'number'),
+    }).transform((values) => {
+        const {cedula_letra, cedula_numero} = values
+
+        return `${cedula_letra}${cedula_numero}`
+    }),
+})
+
+const section2Schema = z.object({
     picture: z.any()
         .refine((file: File | null) => file === null || ACCEPTED_PICTURE_MIME.includes(file.type), {message: 'Archivo inválido. Formatos permitidos: .jpg .jpeg .png'})
         .refine((file: File | null) => file === null || file.size >= MIN_PICTURE_SIZE, {message: 'Archivo muy pequeño'})
         .refine((file: File | null) => file === null || file?.size <= MAX_PICTURE_SIZE, {message: 'Archivo muy grande'})
         .nullish(),
-}).refine(values => {
-    const cedula = `${values.cedula_letra}${values.cedula_numero}`
-    return /^[VE][\d]{3,9}$/.test(cedula)
 })
 
-const Page0 = ({
-                   form, setPage = () => {
-    }
-               }: { form: UseFormReturn<z.infer<typeof createProfileSchema>>, setPage: (page: number) => void }) => {
+const Section1 = ({form, onSubmitHandler = () => {}}: {
+    form: UseFormReturn<z.infer<typeof section1Schema>>,
+    onSubmitHandler?: (values: z.infer<typeof section1Schema>) => void
+}) => {
+
     return (
         <section className={''}>
             <header>
-                <Heading level={"h2"}>Crear perfil</Heading>
+                <Heading level={"h6"}>Crear perfil</Heading>
                 <Text>Procedamos a crear su perfil de usuario</Text>
             </header>
 
             <Form {...form}>
-                <form onSubmit={form.handleSubmit((values) => {
-                })} className={'grid grid-cols-1 md:grid-cols-2 gap-4'}>
+                <form onSubmit={form.handleSubmit(onSubmitHandler)} className={'grid grid-cols-1 md:grid-cols-2 gap-4'}>
 
                     <FormField render={({field}) => (
                         <FormItem>
@@ -149,7 +188,7 @@ const Page0 = ({
                         <FormItem>
                             <FormLabel>Teléfono</FormLabel>
                             <FormControl>
-                                <Input {...field} autoComplete='tel' type='tel'/>
+                                <Input name={field.name} value={field.value} disabled={field.disabled} ref={field.ref} onBlur={field.onBlur} onChange={({target: {value}}) => field.onChange(formatTelephone(value))} autoComplete='tel' type='tel'/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -241,117 +280,102 @@ const Page0 = ({
                         )}
                     />
 
-                    <div className={'flex gap-x-2'}>
+
+                    <FormField render={({field}) => (
+                        <FormItem>
+
+                            <div className={'flex gap-x-2'}>
 
 
-                        <FormField render={({field}) => (
-                            <FormItem className={'basis-2/6'}>
-                                <FormLabel>Cédula</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}
-                                        disabled={field.disabled}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder={'-'}/>
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value={'V'}>V</SelectItem>
-                                        <SelectItem value={'E'}>E</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormDescription>
+                                <FormField render={({field}) => (
+                                    <FormItem className={'basis-2/6'}>
+                                        <FormLabel>Cédula</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}
+                                                disabled={field.disabled}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder={'-'}/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value={'V'}>V</SelectItem>
+                                                <SelectItem value={'E'}>E</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormDescription>
 
-                                </FormDescription>
-                                <FormMessage/>
-                            </FormItem>
-                        )} name={'cedula_letra'} control={form.control}/>
+                                        </FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )} name={'cedula.cedula_letra'} control={form.control}/>
 
-                        <FormField render={({field}) => (
-                            <FormItem className={'basis-full'}>
-                                <FormLabel>Numero</FormLabel>
-                                <FormControl>
-                                    <Input {...field}/>
-                                </FormControl>
-                                <FormMessage/>
-                            </FormItem>
-                        )} name={'cedula_numero'} control={form.control}/>
+                                <FormField render={({field}) => (
+                                    <FormItem className={'basis-full'}>
+                                        <FormLabel>Numero</FormLabel>
+                                        <FormControl>
+                                            <Input {...field}/>
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )} name={'cedula.cedula_numero'} control={form.control}/>
+                            </div>
+                            <FormMessage/>
+
+                        </FormItem>
+                    )} name={'cedula'} control={form.control}/>
+
+
+                    <div className={'flex justify-end mt-2'}>
+                        <Button type='submit'>Siguiente</Button>
                     </div>
-
                 </form>
             </Form>
-
-            <div className={'flex justify-end mt-2'}>
-                <Button onClick={() => setPage(1)}>Siguiente</Button>
-            </div>
         </section>
     )
 }
 
-const Page1 = ({
-                   form, setPage = () => {
-    }
-               }: { form: UseFormReturn<z.infer<typeof createProfileSchema>>, setPage: (page: number) => void }) => {
-
-
-    const {isProcessing, router} = useInertiaSubmit()
-
-    const handleSubmit = (values: z.infer<typeof createProfileSchema>) => {
-
-        const endpoint = route('profile.store')
-
-        const {cedula_letra, cedula_numero, ...rest} = values
-
-        const cedula = `${cedula_letra}${cedula_numero}`
-
-        const body = {
-            cedula,
-            ...rest,
-        }
-
-        router.post(endpoint, body, {
-            onError: errors => {
-                toast('Hubieron errores en la información enviada. Por favor, revisa los campos y reenvia nuevamente')
-                mapServerErrorsToFields(form, errors)
-            }
-        })
-    }
+const Section2 = ({form, previous, onSubmitHandler}: {
+    form: UseFormReturn<z.infer<typeof section2Schema>>,
+    previous: () => void,
+    onSubmitHandler: (values: z.infer<typeof section2Schema>) => void
+}) => {
 
     const handlePictureDrop = ([file]) => {
-         file.preview = URL.createObjectURL(file)
+        file.preview = URL.createObjectURL(file)
 
-        form.setValue('picture', file, {shouldDirty: false, shouldTouch: false, shouldValidate: false})
+        form.setValue('picture', file, {shouldDirty: true, shouldTouch: true, shouldValidate: true})
     }
 
     return (
-        <section>
+        <section className={''}>
             <header>
-                <Heading level={"h2"}>Crear perfil</Heading>
-                <Text>Puedes agregar una foto de perfil (Opcional)</Text>
+                <Heading level={"h6"}>Crear perfil</Heading>
+                <Text>Elige una foto (Opcional)</Text>
             </header>
 
             <Form {...form}>
-                <form id='createProfileForm' onSubmit={form.handleSubmit(handleSubmit)}
-                      className={'flex flex-col items-center gap-y-2'}>
-
+                <form onSubmit={form.handleSubmit(onSubmitHandler)} className={'flex flex-col items-center'}>
 
                     <FormField render={({field}) => (
                         <FormItem>
                             <FormControl>
-                                <ProfilePicturePicker src={field.value} onDrop={handlePictureDrop} className={'size-48'}/>
+                                <ProfilePicturePicker src={field.value} onDrop={handlePictureDrop}
+                                                      className={'size-48'}/>
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
                     )} name={'picture'} control={form.control}/>
 
-                    <Button type='button' variant='ghost' onClick={() => {form.resetField('picture')}}>Descartar</Button>
+                    <Button type='button' variant='ghost' onClick={() => {
+                        form.resetField('picture')
+                    }}>Descartar</Button>
+
+                    <div className={'flex justify-end mt-2 gap-x-3'}>
+                        <Button type='button' variant='ghost' onClick={previous}>Volver</Button>
+                        <Button type='submit'>Crear perfil</Button>
+                    </div>
                 </form>
             </Form>
-
-
-            <div className={'flex justify-end mt-2 gap-x-2'}>
-                <Button variant='secondary' onClick={() => setPage(0)} disabled={isProcessing}>Anterior</Button>
-                <Button form='createProfileForm' type='submit' disabled={isProcessing}>Crear perfil</Button>
-            </div>
         </section>
     )
 }
