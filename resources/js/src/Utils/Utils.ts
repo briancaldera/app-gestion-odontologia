@@ -1,6 +1,8 @@
 import {UseFormReturn} from "react-hook-form";
 import {router, usePage} from "@inertiajs/react";
 import React from "react";
+import axios from "axios";
+import Profile from "@/src/models/Profile.ts";
 
 const mapServerErrorsToFields = function (form: UseFormReturn, errors: Record<string, string>) {
     Object.keys(errors).forEach(key => form.setError(key, {type: 'custom', message: errors[key]}))
@@ -104,4 +106,36 @@ const formatTelephone = (value: string): string => {
     return `${digits.slice(0, 4)}-${digits.slice(4)}`;
 }
 
-export {usePermission, useOnlineStatus, useLoading, mergeDeep, isObject, mapServerErrorsToFields, formatTelephone}
+const useProfile = (id: string, deps: any[] = []): Profile | null => {
+
+    const [profile, setProfile] = React.useState<Profile | null>(null)
+    const endpoint = route('api.v1.profiles.show', {
+        profile: id
+    })
+
+    React.useEffect(() => {
+
+        const controller =  new AbortController()
+
+        const getProfile = async () => {
+            try {
+                const res = await axios.get(endpoint, {signal: controller.signal})
+                setProfile(res.data.data)
+            } catch (e) {
+                // Request cancelled
+            }
+        }
+
+        getProfile()
+
+        return () => {
+            controller.abort()
+        }
+    }, deps)
+
+    return profile
+}
+
+export {usePermission, useOnlineStatus, useLoading, mergeDeep, isObject, useProfile, mapServerErrorsToFields, formatTelephone}
+
+
