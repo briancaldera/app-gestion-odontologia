@@ -15,7 +15,6 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->foreignUuid('owner_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->jsonb('members');
-            $table->string('name');
             $table->timestamps();
         });
     }
