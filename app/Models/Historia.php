@@ -100,6 +100,11 @@ class Historia extends Model implements StatusHolder
         return $this->hasOne(Correccion::class);
     }
 
+    public function extras(): HasOne
+    {
+        return $this->hasOne(Extras::class, 'historia_id', 'id');
+    }
+
     public function scopeHomework(Builder $query): void
     {
         $query->select('*')->from('homeworks')->whereJsonContains('documents->id', $this->id);
