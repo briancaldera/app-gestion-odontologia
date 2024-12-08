@@ -29,7 +29,6 @@ class Group extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'name',
         'owner_id',
         'members'
     ];
@@ -40,7 +39,7 @@ class Group extends Model
 
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'owner_id', 'id');
+        return $this->belongsTo(User::class);
     }
 
     protected function members(): Attribute
@@ -68,6 +67,11 @@ class Group extends Model
 
     public static array $actions = [
         'groups' => [
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre grupos',
+                'description' => 'Full control sobre el modelo de grupos'
+            ],
             'index-all' => [
                 'name' => 'index-all',
                 'display_name' => 'Indexar grupos',

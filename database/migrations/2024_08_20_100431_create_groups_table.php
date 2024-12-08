@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUuid('owner_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->jsonb('members');
             $table->timestamps();
         });
