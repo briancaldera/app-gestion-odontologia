@@ -71,6 +71,9 @@ class RegisteredUserController extends Controller
         // asigna el role indicado por el expediente al usuario
         $user->addRole($role);
 
+        // Crea el grupo personal del usuario (usado por los profesores para poder ver las historias de los alumnos)
+        $user->group()->create();
+
         event(new Registered($user));
 
         Auth::login($user);
