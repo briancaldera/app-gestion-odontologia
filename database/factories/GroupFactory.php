@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,11 +16,8 @@ class GroupFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = fake('es_VE');
+        $faker = fake();
 
-        return [
-            'name' => $faker->text(30),
-            'owner_id' => User::factory(),
-        ];
+        return [];
     }
 }
