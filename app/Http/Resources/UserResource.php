@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'role' => $this->roles[0]->name,
             'permissions' => $this->when($this->id === $user->id, $this->allPermissions()->pluck('name')),
             'profile' => new ProfileResource($this->whenLoaded('profile')),
+            'group' => $this->whenLoaded('group'),
         ];
     }
 }
