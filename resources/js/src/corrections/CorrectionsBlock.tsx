@@ -29,7 +29,7 @@ type CorrectionsBlockProps = {
 
 const CorrectionsBlock = ({model, name, canCreateCorrections, children}: CorrectionsBlockProps) => {
 
-    const sections = model?.model?.sections
+    const sections = model?.model?.secciones
     const messages =  sections ? sections[name] : null
 
     const hasCorrections: boolean = messages?.length > 0
@@ -124,7 +124,8 @@ const CorrectionsBlock = ({model, name, canCreateCorrections, children}: Correct
                                         </form>
                                     </Form>
                                 </CardContent>
-                                <CardFooter>
+                                <CardFooter className='flex justify-end gap-3'>
+                                    <Button type='button' variant='outline' onClick={() => setIsCreateCorrectionMode(false)}>Cancelar</Button>
                                     <Button type={"submit"} form={'correctionsForm'}>Guardar</Button>
                                 </CardFooter>
                             </Card>

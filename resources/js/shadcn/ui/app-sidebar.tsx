@@ -10,8 +10,8 @@ import {
     SidebarMenuItem,
     SidebarSeparator
 } from "@/shadcn/ui/sidebar"
-import {CircleHelp, ClipboardList, Cross, Info, Lock, User} from "lucide-react";
-import {Link} from "@inertiajs/react";
+import {CircleHelp, ClipboardList, Cross, Info, Lock, User, Users} from "lucide-react";
+import {Link, usePage} from "@inertiajs/react";
 import {route} from "ziggy-js";
 import Logo from "@/Components/atoms/Logo.tsx";
 import Title from "@/Components/atoms/Title";
@@ -19,6 +19,7 @@ import React from "react";
 import {usePermission} from "@/src/Utils/Utils.ts";
 
 export function AppSidebar() {
+    const {user} = usePage().props.auth
     const can = usePermission()
 
     const clinicaMenu: MenuItem[] = []
@@ -29,6 +30,18 @@ export function AppSidebar() {
         clinicaMenu.push(
             {title: 'Pacientes', icon: Cross, url: route('pacientes.index')}
         )
+    }
+
+    if (can('groups-index-all') || can('groups-full-control')) {
+        escuelaMenu.push({
+            title: "Grupos", icon: Users, url: route('groups.index')
+        })
+    }
+
+    if (can('groups-add-corrections')) {
+        escuelaMenu.push({
+            title: "Estudiantes asignados", icon: Users, url: route('users.group.show', {user: user.id})
+        })
     }
 
     if (can('historias-read') || can('historias-full-control')) {
