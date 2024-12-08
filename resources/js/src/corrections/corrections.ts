@@ -1,4 +1,5 @@
 import React from "react";
+import {Correccion} from "@/src/models/Historia.ts";
 
 type UseCorrectionsReturn = {
     model?: CorrectionsModel | null
@@ -16,7 +17,7 @@ const useCorrections: (handleSubmit: (values: {section: string, content: string}
 }
 
 type CorrectionsModel = {
-    sections: Record<string, Comment[]>
+    secciones: Record<string, Correccion[]>
 }
 
 type Comment = {
