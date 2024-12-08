@@ -263,7 +263,7 @@ class HistoriaController extends Controller
 
         }
 
-        $historia->load(['autor.profile', 'paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica']);
+        $historia->load(['autor.profile', 'paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica', 'extras']);
 
         if ($user->hasRole('admin')) {
 
@@ -330,7 +330,7 @@ class HistoriaController extends Controller
 
         } elseif ($user->hasRole('estudiante')) {
 
-            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
+            $historia->load(['autor.profile', 'paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica', 'extras']);
 
             return Inertia::render('Historias/Edit', [
                 'historia' => new HistoriaResource($historia),
@@ -1131,6 +1131,56 @@ class HistoriaController extends Controller
         $historia->update();
 
         message('Historia compartida exitosamente', Type::Success);
+        return response(null, 200);
+    }
+
+    public function addCorrection(Request $request, Historia $historia)
+    {
+        $user = $request->user();
+
+        $data = $request->validate([
+            'section' => ['required', 'string'],
+            'content' => ['required', 'string', 'max:1000']
+        ]);
+
+        if ($historia->extras()->doesntExist()) {
+            $historia->extras()->create();
+            $historia->refresh();
+        }
+
+        $extras_model =$historia->extras;
+        $extras = $extras_model->extras;
+
+        $sections = collect($extras['correcciones']['secciones']);
+
+        if (!isset($sections[$data['section']])) {
+            $sections[$data['section']] = [];
+        }
+
+        $section = collect($sections[$data['section']]);
+
+        $newComment = [
+            'id' => Str::lower((string) Str::ulid()),
+            'user_id' => $user->id,
+            'content' => $data['content'],
+            'created_at' => now(),
+        ];
+
+        $section->push($newComment);
+
+        $sections[$data['section']] = $section->toArray();
+
+        $correcciones = collect($extras['correcciones']);
+
+        $correcciones['secciones'] = $sections->toArray();
+
+        $extras['correcciones'] = $correcciones->toArray();
+
+
+        $extras_model->extras = $extras;
+        $extras_model->update();
+
+        message('Correcciones agregadas', \Type::Success);
         return response(null, 200);
     }
 }
