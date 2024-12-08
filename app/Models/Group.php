@@ -113,6 +113,11 @@ class Group extends Model
                 'display_name' => 'Remover usuarios',
                 'description' => 'Remover un usuario de un grupo'
             ],
+            'add-corrections' => [
+                'name' => 'add-corrections',
+                'display_name' => 'Agregar correcciones',
+                'description' => 'Agregar correcciones a las historias'
+            ],
         ]
     ];
 }

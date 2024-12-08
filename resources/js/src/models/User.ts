@@ -1,4 +1,5 @@
 import Profile from "@/src/models/Profile";
+import Group from "@/src/models/Group.ts";
 
 type User = {
     role: number
@@ -7,6 +8,7 @@ type User = {
     email: string
     email_verified_at: string
     profile?: Profile
+    group: Group
 }
 
 export default User

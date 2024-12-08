@@ -83,6 +83,11 @@ class User extends Authenticatable implements MustVerifyEmail, LaratrustUser, Ha
         return $this->hasMany(Historia::class, 'autor_id', 'id');
     }
 
+    public function group(): HasOne
+    {
+        return $this->hasOne(Group::class, 'owner_id', 'id');
+    }
+
     public function groups(): Collection
     {
         return Group::whereJsonContains('members', $this->id)->get();
