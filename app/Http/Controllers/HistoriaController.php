@@ -77,24 +77,12 @@ class HistoriaController extends Controller
                 'created_HCE' => Historia::count(),
             ];
 
-            if (!$request->inertia() and $request->expectsJson()) {
-                return response()->json([
-                    'statistics' => $statistics
-                ]);
-            }
-
-            return inertia()->render('Historias/Dashboard', [
+            return Inertia::render('Historias/Dashboard', [
                 'statistics' => $statistics
             ]);
         } elseif ($user->hasPermission('homeworks-index-all')) {
 
             $statistics = [];
-
-            if (!$request->inertia() and $request->expectsJson()) {
-                return response()->json([
-                    'statistics' => $statistics
-                ]);
-            }
 
             return Inertia::render('Historias/Dashboard', [
                 'statistics' => $statistics
@@ -106,12 +94,6 @@ class HistoriaController extends Controller
             $statistics = [
                 'historiasCreadas' => $historiasCreadas
             ];
-
-            if (!$request->inertia() and $request->expectsJson()) {
-                return response()->json([
-                    'statistics' => $statistics
-                ]);
-            }
 
             return Inertia::render('Historias/Dashboard', [
                 'statistics' => $statistics
@@ -136,7 +118,7 @@ class HistoriaController extends Controller
 
             $historias = Historia::with(['autor.profile', 'paciente'])->get();
 
-            return inertia()->render('Historias/Index', [
+            return Inertia::render('Historias/Index', [
                 'historias' => HistoriaResource::collection($historias),
             ]);
         } elseif ($user->hasRole('profesor')) {
@@ -224,6 +206,11 @@ class HistoriaController extends Controller
 
         if ($user->cannot('update', $paciente)) {
             message('No tienes permiso para modificar este paciente', Type::Info);
+            return back();
+        }
+
+        if ($paciente->historia()->exists()) {
+            message('Ya existe una historia para este paciente', Type::Error);
             return back();
         }
 
