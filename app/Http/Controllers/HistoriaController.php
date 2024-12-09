@@ -900,20 +900,17 @@ class HistoriaController extends Controller
     public function changeStatus(Historia $historia, Request $request)
     {
         $data = $request->validate([
-            'status' => ['required', Rule::enum(Status::class)->except([Status::ENTREGADA])]
+            'status' => ['required', Rule::enum(Status::class)->except([Status::ENTREGADA, Status::CORRECCION])]
         ]);
 
         if ($historia->status === Status::CERRADA) {
             message('La historia ya se encuentra cerrada y no se puede modificar su estado');
-            return response(null, 400);
+            return back();
         }
 
         switch ($data['status']) {
             case Status::ABIERTA->value:
                 $new_status = Status::ABIERTA;
-                break;
-            case Status::CORRECCION->value:
-                $new_status = Status::CORRECCION;
                 break;
             case Status::CERRADA->value:
                 $new_status = Status::CERRADA;
@@ -929,9 +926,6 @@ class HistoriaController extends Controller
         switch ($data['status']) {
             case Status::ABIERTA->value:
                 $message = 'El nuevo estado es "Abierta"';
-                break;
-            case Status::CORRECCION->value:
-                $message = 'El nuevo estado es "Corrección"';
                 break;
             case Status::CERRADA->value:
                 $message = 'El nuevo estado es "Cerrada"';
