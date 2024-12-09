@@ -93,7 +93,7 @@ const Show = ({user, students}: { user: User, students: User[] }) => {
                         )
                     }
                 </div>
-                <div className={'flex flex-col h-full gap-y-4'}>
+                <div className={'flex flex-col h-full gap-y-4 py-2'}>
                     {
                         user.group.members?.map((member) => (
                             <Link key={member.id} href={route('users.group.members.show', {user: user.id, member: member.id})}>

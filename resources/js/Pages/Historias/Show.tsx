@@ -217,16 +217,16 @@ const StatusCard = ({historia}: { historia: Historia }) => {
 
     switch (historia.status) {
         case Status.ABIERTA:
-            cardColor = 'emerald'
+            cardColor = 'bg-emerald-200'
             break
         case Status.ENTREGADA:
-            cardColor = 'sky'
+            cardColor = 'bg-sky-200'
             break
         case Status.CORRECCION:
-            cardColor = 'rose'
+            cardColor = 'bg-slate-200'
             break
         case Status.CERRADA:
-            cardColor = 'slate'
+            cardColor = 'bg-rose-200'
             break
     }
 
@@ -234,7 +234,7 @@ const StatusCard = ({historia}: { historia: Historia }) => {
         <HoverCard>
             <HoverCardTrigger>
                 <div
-                    className={`flex justify-center items-center aspect-square border border-${cardColor}-300 rounded-lg bg-${cardColor}-200`}>
+                    className={`flex justify-center items-center aspect-square border rounded-lg ${cardColor}`}>
                     {
                         isOpen ? (<LockOpen/>) : (<Lock/>)
                     }

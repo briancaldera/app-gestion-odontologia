@@ -116,7 +116,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             },
             onSuccess: page => {
                 toast.success('Correcciones agregadas')
-                    router.visit(url)
+                router.reload()
             }
         })
     }

@@ -6,20 +6,34 @@ import Historia from "@/src/models/Historia.ts";
 import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
 import React from "react";
 import {Link} from "@inertiajs/react";
+import {Text} from "@/Components/atoms/Text";
 
 type ShowProps = {
-    user: User
+    member: User
     pacientes: Paciente[]
     historias: Historia[]
 }
 
-const Show = ({user, pacientes, historias}: ShowProps) => {
+const Show = ({member, pacientes, historias}: ShowProps) => {
 
-    const {profile} = user
+    const {profile} = member
 
     return (
         <AuthLayout title={`Asignado: ${profile?.nombres} ${profile?.apellidos}`}>
-            <div className='bg-white h-full p-2'>
+            <div className='bg-white h-full p-4'>
+                <div>
+                    <Title>Alumno asignado</Title>
+                    <div className={'flex gap-x-2 items-center'}>
+                        <Avatar className='size-28'>
+                            <AvatarImage src={profile?.picture_url}/>
+                            <AvatarFallback>{`${profile?.nombres[0]}${profile?.apellidos[0]}`}</AvatarFallback>
+                        </Avatar>
+                        <div className='flex flex-col flex-1'>
+                            <Title level='title-sm'>{`${profile?.nombres} ${profile?.apellidos}`}</Title>
+                            <Text level='body-xs'>{`@${member.name}`}</Text>
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <Title>Pacientes</Title>
                     <div className='h-32 overflow-y-scroll'>
