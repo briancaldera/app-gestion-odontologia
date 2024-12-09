@@ -35,9 +35,11 @@ const Index = ({historias}: IndexProps) => {
                         <Title level={'title-lg'}>
                             Historias Clínicas
                         </Title>
+
                         <div className='overflow-x-scroll'>
                             <DataTable columns={historiaIndexTableColDef} data={historias} searchable={true}/>
                         </div>
+
                     </div>
                 </ScrollArea>
             </AuthLayout>
