@@ -12,6 +12,8 @@ import Dropzone from "react-dropzone";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import {Text} from "@/Components/atoms/Text";
+import {Upload} from "lucide-react";
+import Icon from "@/Components/atoms/Icon.tsx";
 
 const ConsetimientoMedico = () => {
 
@@ -77,10 +79,14 @@ const ConsetimientoMedico = () => {
                                                 <input {...getInputProps()} />
                                                 {
                                                     (consentimientoForm.getValues().consentimiento === null) ?
-                                                        (
+                                                        (<div className={'relative'}>
                                                             <img
                                                                 className={'w-full aspect-[3/4] object-contain border border-slate-200 rounded-lg'}
                                                                 src={(consentimientoForm.getValues().consentimiento && 'preview' in consentimientoForm.getValues().consentimiento) ? consentimientoForm.getValues().consentimiento.preview : null} {...getRootProps()}/>
+                                                                <Icon className={'top-1/2 left-1/2 absolute'}>
+                                                                    <Upload/>
+                                                                </Icon>
+                                                        </div>
                                                         ) : (
 
                                                             <img
