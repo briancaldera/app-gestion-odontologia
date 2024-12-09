@@ -140,7 +140,7 @@ class GroupController extends Controller
 
         $pacientes = Paciente::where('assigned_to', $member->id)->get();
 
-        $historias = Historia::where('autor_id', $member->id)->get();
+        $historias = Historia::with(['paciente'])->where('autor_id', $member->id)->get();
 
         return Inertia::render('Groups/Members/Show', [
             'member' => new UserResource($member),
