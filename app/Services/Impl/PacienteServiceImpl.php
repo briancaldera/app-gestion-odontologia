@@ -44,7 +44,6 @@ class PacienteServiceImpl implements PacienteService
     {
         $data = (object) $data;
 
-        $paciente->cedula = $data->cedula;
         $paciente->nombre = $data->nombre;
         $paciente->apellido = $data->apellido;
         $paciente->edad = $data->edad;
@@ -57,7 +56,7 @@ class PacienteServiceImpl implements PacienteService
         $paciente->motivo_consulta = $data->motivo_consulta;
         $paciente->enfermedad_actual = $data->enfermedad_actual;
 
-        $paciente->save();
+        $paciente->update();
 
         if (isset($data->foto)) {
             $paciente->addMedia($data->foto)->toMediaCollection('foto');

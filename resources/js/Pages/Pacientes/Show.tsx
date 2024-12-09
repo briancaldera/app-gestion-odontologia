@@ -82,10 +82,10 @@ const PacienteInfoSection = ({paciente}: { paciente: Paciente }) => {
                 <div className={'col-start-4 py-3'}>
                     <div className={'flex justify-end items-center gap-3'}>
                         {
-                            can('pacientes-update') && paciente.assigned_to === user?.id || can('pacientes-full-control') && (
+                            (can('pacientes-update') && paciente.assigned_to === user?.id || can('pacientes-full-control')) && (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant={'outline'}><EllipsisVertical/></Button>
+                                        <Button variant='outline'><EllipsisVertical/></Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align={"end"}>
                                         {can('pacientes-update') &&
