@@ -59,7 +59,7 @@ const ConsetimientoMedico = () => {
     return (
         <section className={'mt-6'}>
             <header className={'mb-1.5 space-y-1'}>
-                <Title level={'title-md'}>Consentimiento médico</Title>
+                <Title level={'title-md'}>Consentimiento informado</Title>
                 <Text>Antes de realizar el examen físico, debes obtener consentimiento de tu paciente. Sube un archivo con el nombre, apellido, cédula y firma de tu paciente consintiendo
                 la información suministrada. Luego podrás continuar editando la historia. <span className='text-rose-500 font-bold'>Sube el archivo correcto. Una vez guardado, no podrás cambiar ni subir otro archivo.</span></Text>
             </header>
