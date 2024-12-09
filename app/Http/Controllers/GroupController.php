@@ -136,14 +136,14 @@ class GroupController extends Controller
 
     public function showMember(Request $request, User $user, User $member)
     {
-
+        $member->load(['profile']);
 
         $pacientes = Paciente::where('assigned_to', $member->id)->get();
 
         $historias = Historia::where('autor_id', $member->id)->get();
 
         return Inertia::render('Groups/Members/Show', [
-            'user' => new UserResource($member),
+            'member' => new UserResource($member),
             'pacientes' => PacienteResource::collection($pacientes),
             'historias' => HistoriaResource::collection($historias),
         ]);
