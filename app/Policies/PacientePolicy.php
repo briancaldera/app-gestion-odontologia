@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Paciente;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class PacientePolicy
 {
@@ -91,6 +90,13 @@ class PacientePolicy
     {
         if ($user->hasPermission('pacientes-delete')) return true;
 
+        if ($user->hasPermission('pacientes-full-control')) return true;
+
+        return false;
+    }
+
+    public function assign(User $user, Paciente $paciente): bool
+    {
         if ($user->hasPermission('pacientes-full-control')) return true;
 
         return false;

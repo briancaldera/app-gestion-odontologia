@@ -27,7 +27,7 @@ const Index = ({historias}: IndexProps) => {
 
     const can = usePermission()
 
-    if (can('historias-index-all')) {
+    if (can('historias-index-all') || can('historias-full-control')) {
         return (
             <AuthLayout title={'Historias'}>
                 <ScrollArea className={'bg-white h-full'}>
@@ -35,7 +35,11 @@ const Index = ({historias}: IndexProps) => {
                         <Title level={'title-lg'}>
                             Historias Clínicas
                         </Title>
-                        <DataTable columns={historiaIndexTableColDef} data={historias} searchable={true}/>
+
+                        <div className='overflow-x-scroll'>
+                            <DataTable columns={historiaIndexTableColDef} data={historias} searchable={true}/>
+                        </div>
+
                     </div>
                 </ScrollArea>
             </AuthLayout>
@@ -60,10 +64,6 @@ const Index = ({historias}: IndexProps) => {
                                                      className={'max-sm:text-xs max-sm:truncate'}>Todas</TabsTrigger>
                                         <TabsTrigger value="open"
                                                      className={'max-sm:text-xs max-sm:truncate'}>Abiertas</TabsTrigger>
-                                        <TabsTrigger value="turnedin"
-                                                     className={'max-sm:text-xs max-sm:truncate'}>Entregadas</TabsTrigger>
-                                        <TabsTrigger value="correction"
-                                                     className={'max-sm:text-xs max-sm:truncate'}>Correcciones</TabsTrigger>
                                         <TabsTrigger value="close"
                                                      className={'max-sm:text-xs max-sm:truncate'}>Cerradas</TabsTrigger>
                                     </TabsList>
@@ -73,14 +73,6 @@ const Index = ({historias}: IndexProps) => {
                                     <TabsContent value={'open'}>
                                         <HCEListSection
                                             historias={historias.filter(historia => historia.status?.toString() === 'abierta')}/>
-                                    </TabsContent>
-                                    <TabsContent value={'turnedin'}>
-                                        <HCEListSection
-                                            historias={historias.filter(historia => historia.status?.toString() === 'entregada')}/>
-                                    </TabsContent>
-                                    <TabsContent value={'correction'}>
-                                        <HCEListSection
-                                            historias={historias.filter(historia => historia.status?.toString() === 'correccion')}/>
                                     </TabsContent>
                                     <TabsContent value={'close'}>
                                         <HCEListSection

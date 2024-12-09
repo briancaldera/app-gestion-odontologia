@@ -5,10 +5,9 @@ import React from "react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shadcn/ui/tabs.tsx";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
 import Title from "@/Components/atoms/Title";
-import {Avatar} from "@mui/joy";
 import {Separator} from "@/shadcn/ui/separator.tsx";
 import {Text} from "@/Components/atoms/Text";
-import {Link} from "@inertiajs/react";
+import {Link, router} from "@inertiajs/react";
 import {route, useRoute} from "ziggy-js";
 import Historia from "@/src/models/Historia.ts";
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from '@/shadcn/ui/dialog.tsx'
@@ -34,6 +33,9 @@ import SelectionDataTable from "@/Components/molecules/SelectionDataTable.tsx";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {Checkbox} from "@/shadcn/ui/checkbox.tsx";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/shadcn/ui/tooltip.tsx";
+import AssignUserToGroupDialog from "@/Pages/Groups/Partials/AssignUserToGroupDialog.tsx";
+import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
+import ProfileItem from "@/Components/molecules/ProfileItem.tsx";
 
 const ShowGroupContext = React.createContext()
 
@@ -43,7 +45,69 @@ type ShowProps = {
     students: User[]
 }
 
-const Show = ({group, historias, students}: ShowProps) => {
+const Show = ({user, students}: { user: User, students: User[] }) => {
+
+    const can = usePermission()
+    const handleSubmit = (users: string[]) => {
+
+        const endpoint = route('users.group.assign', {user: user.id})
+
+        const body = {
+            users: users
+        }
+
+        router.patch(endpoint, body, {
+            onError: errors => {
+                console.log(errors)
+                toast.error('Hubo un error al intentar asignar los alumnos')
+            },
+            onSuccess: page => {
+                router.reload()
+            }
+        })
+    }
+
+    console.log(user.group)
+
+    return (
+        <AuthLayout title={`Grupo: ${user.profile?.nombres} ${user.profile?.apellidos}`}>
+            <div className={'h-full bg-white p-6'}>
+                <Title level={'h2'}>Grupo</Title>
+                <div className={'py-2 flex gap-x-2 items-center'}>
+                    <Avatar className={'size-28'}>
+                        <AvatarImage src={user?.profile?.picture_url}/>
+                        <AvatarFallback>{`${user?.profile?.nombres[0]}${user?.profile?.apellidos[0]}`}</AvatarFallback>
+                    </Avatar>
+                    <div className='flex flex-col flex-1'>
+                        <Title>{`${user?.profile?.nombres} ${user?.profile?.apellidos}`}</Title>
+                        <Text level='body-xs'>{`@${user.name}`}</Text>
+                    </div>
+                </div>
+                <div className={'flex items-center justify-between'}>
+
+                    <Title>Alumnos asignados</Title>
+
+                    {
+                        can('groups-add-users') && (
+                            <AssignUserToGroupDialog users={students} onSubmit={handleSubmit}/>
+                        )
+                    }
+                </div>
+                <div className={'flex flex-col h-full gap-y-4 py-2'}>
+                    {
+                        user.group.members?.map((member) => (
+                            <Link key={member.id} href={route('users.group.members.show', {user: user.id, member: member.id})}>
+                                <ProfileItem id={member.id} />
+                            </Link>
+                        ))
+                    }
+                </div>
+            </div>
+        </AuthLayout>
+    )
+}
+
+const Show2 = ({group, historias, students}: ShowProps) => {
 
     const can = usePermission()
 
@@ -237,7 +301,6 @@ const CreateAssignmentDialog = ({open, onOpenChange}: { open: boolean, onOpenCha
 const AssignmentsTab = ({assignments}: { assignments: Assignment[] }) => {
 
     const can = usePermission()
-
 
 
     return (
@@ -455,7 +518,6 @@ const InfoSection = ({group}: { group: Group }) => {
                     )
                 }
             </div>
-
 
 
         </Surface>

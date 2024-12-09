@@ -1,5 +1,5 @@
 import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/shadcn/ui/hover-card"
-import {PencilLine, TriangleAlert, User} from "lucide-react";
+import {PencilLine, TriangleAlert} from "lucide-react";
 import React from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/shadcn/ui/card.tsx";
 import {z} from 'zod'
@@ -11,15 +11,14 @@ import {Textarea} from "@/shadcn/ui/textarea.tsx";
 import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover.tsx";
 import {createPortal} from 'react-dom';
 import {Comment} from '@/src/models/Group.ts'
-import {Avatar, AvatarFallback} from "@/shadcn/ui/avatar.tsx";
+import {Avatar, AvatarFallback, AvatarImage} from "@/shadcn/ui/avatar.tsx";
 import {Text} from "@/Components/atoms/Text";
 import Title from "@/Components/atoms/Title";
 import {formatRelative} from 'date-fns'
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
-import axios from "axios";
 import {Skeleton} from "@/shadcn/ui/skeleton.tsx";
-import Profile from "@/src/models/Profile.ts";
 import {UseCorrectionsReturn} from "@/src/corrections/corrections.ts";
+import {useProfile} from "@/src/Utils/Utils.ts";
 
 type CorrectionsBlockProps = {
     model?: UseCorrectionsReturn
@@ -29,7 +28,7 @@ type CorrectionsBlockProps = {
 
 const CorrectionsBlock = ({model, name, canCreateCorrections, children}: CorrectionsBlockProps) => {
 
-    const sections = model?.model?.sections
+    const sections = model?.model?.secciones
     const messages =  sections ? sections[name] : null
 
     const hasCorrections: boolean = messages?.length > 0
@@ -124,7 +123,8 @@ const CorrectionsBlock = ({model, name, canCreateCorrections, children}: Correct
                                         </form>
                                     </Form>
                                 </CardContent>
-                                <CardFooter>
+                                <CardFooter className='flex justify-end gap-3'>
+                                    <Button type='button' variant='outline' onClick={() => setIsCreateCorrectionMode(false)}>Cancelar</Button>
                                     <Button type={"submit"} form={'correctionsForm'}>Guardar</Button>
                                 </CardFooter>
                             </Card>
@@ -177,49 +177,17 @@ const CorrectionsBlock = ({model, name, canCreateCorrections, children}: Correct
 
 const CommentItem = ({comment}: { comment: Comment }) => {
 
-    const [profile, setProfile] = React.useState<Pick<Profile, 'nombres' | 'apellidos'> | null>(null)
-
-    // todo add cache
-    // React Query maybe a candidate
-    React.useEffect(() => {
-
-        let ignore = false
-
-        const fetchUser = async (): Promise<Pick<Profile, 'nombres' | 'apellidos'>> => {
-
-            const endpoint = route('profile.show', {profile: comment.user_id})
-
-            const res = await axios.get(endpoint, {responseType: "json"})
-
-            if (ignore) return
-
-            const {data: {profile: {nombres, apellidos}}} = res
-
-            return {
-                nombres,
-                apellidos,
-            }
-        }
-
-        fetchUser().then(data => {
-            setProfile(data)
-        })
-
-        return () => {
-            ignore = true
-        }
-    }, [])
+    const profile = useProfile(comment.user_id)
 
     return (
         <div className={'border rounded-lg flex gap-x-3 min-h-32 p-4'}>
-            <Avatar>
-                <AvatarFallback>
-                    <User/>
-                </AvatarFallback>
+            <Avatar className='size-10'>
+                <AvatarImage src={profile?.picture_url}/>
+                <AvatarFallback>{`${profile?.nombres[0]}${profile?.apellidos[0]}`}</AvatarFallback>
             </Avatar>
             <div className={'flex flex-col flex-1'}>
                 {
-                    profile ? <Title level={'body-sm'}>{profile.nombres} {profile.apellidos}</Title> :
+                    profile ? <Title level={'body-sm'}>{profile?.nombres} {profile?.apellidos}</Title> :
                         <Skeleton className={'w-full h-[14pt]'}/>
                 }
                 <Text level={'body-xs'}>{formatRelative(comment.created_at, new Date())}</Text>

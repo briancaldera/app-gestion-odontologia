@@ -5,13 +5,14 @@ const MIN_PICTURE_SIZE = 5 * 1000 // 5 KB
 const ACCEPTED_PICTURE_MIME = ['image/jpeg', 'image/jpg', 'image/png']
 
 const pacienteSchema = z.object({
-    cedula: z
-        .string({
-            description: 'La cédula de paciente',
-        })
-        .min(4, 'Mínimo 4 caracteres')
-        .max(10, 'Máximo 10 caracteres')
-        .regex(/^[VE][\d]{3,9}$/, 'La cédula no corresponde al formato correcto'),
+    cedula: z.object({
+        cedula_letra: z.enum(['V', 'E']),
+        cedula_numero: z.string().min(3).max(9).refine(value => typeof parseInt(value) === 'number'),
+    }).transform((values) => {
+        const {cedula_letra, cedula_numero} = values
+
+        return `${cedula_letra}${cedula_numero}`
+    }),
     nombre: z
         .string()
         .trim()

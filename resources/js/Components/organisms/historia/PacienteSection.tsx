@@ -32,6 +32,7 @@ import {historiaSchema} from "@/FormSchema/Historia/HistoriaSchema.ts";
 import Logo from "@/Components/atoms/Logo.tsx";
 import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import {format} from "date-fns";
+import Heading from "@/Components/atoms/Heading";
 
 type PacienteSectionProps = {
     form: UseFormReturn<z.infer<typeof historiaSchema>>
@@ -86,14 +87,14 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
     return (
         <ScrollArea className={'bg-white w-full p-6 h-[83vh]'}>
 
-            <div className={'flex flex-col items-center gap-y-1 relative'}>
+            <header className={'flex flex-col items-center gap-y-1 relative text-center'}>
                 <Logo className={'size-20 sm:absolute top-0 left-0'}/>
-                <Title level={'body-sm'}>Universidad Gran Mariscal de Ayacucho</Title>
+                <Heading level={'h6'}>Universidad Gran Mariscal de Ayacucho</Heading>
                 <Title level={'body-sm'}>Facultad de Odontología</Title>
                 <Title level={'body-sm'}>Clínica Integral de Adulto</Title>
                 <Title level={'h3'} className={'font-bold'}>Historia Clínica</Title>
 
-            </div>
+            </header>
 
             <div className={'flex justify-between items-baseline py-2'}>
                 <div className={'flex items-baseline gap-x-3'}>
@@ -254,7 +255,9 @@ const PacienteSection = ({form}: PacienteSectionProps) => {
                     <div className='grid grid-cols-1 sm:grid-cols-3 gap-y-8 gap-x-6 basis-full'>
                         <FormField render={({field}) => (
                             <FormItem className={'col-span-full'}>
-                                <FormLabel>Diagnóstico</FormLabel>
+
+                                <FormLabel>Motivo de consulta</FormLabel>
+
                                 <FormControl>
                                     <Textarea {...field}/>
                                 </FormControl>
@@ -302,7 +305,6 @@ const AssignNumberDialog = () => {
     const handleSubmit = (values: z.infer<typeof assignNumberSchema>) => {
         const endpoint = route('historias.assignid', {historia: historia.id})
 
-        console.log(values)
 
         const body = {
             ...values
@@ -310,7 +312,6 @@ const AssignNumberDialog = () => {
 
         router.patch(endpoint, body, {
             onError: errors => {
-                console.log(errors)
                 mapServerErrorsToFields(form, errors)
             },
             onSuccess: page => {
@@ -386,7 +387,6 @@ const AssignSemesterDialog = () => {
     const handleSubmit = (values: z.infer<typeof assignSemesterSchema>) => {
         const endpoint = route('historias.update', {historia: historia.id})
 
-        console.log(values)
 
         const body = {
             ...values
@@ -394,7 +394,6 @@ const AssignSemesterDialog = () => {
 
         router.patch(endpoint, body, {
             onError: errors => {
-                console.log(errors)
                 mapServerErrorsToFields(form, errors)
             },
             onSuccess: page => {

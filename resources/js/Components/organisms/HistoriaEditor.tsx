@@ -94,7 +94,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
 
     const [showSidebar, setShowSidebar] = React.useState<boolean>(false)
 
-    const corrections = homework?.documents.find((document) => document.id === historia?.id).corrections
+    const corrections = historia.extras?.extras.correcciones//homework?.documents.find((document) => document.id === historia?.id).corrections
 
     const {isProcessing, router} = useInertiaSubmit()
 
@@ -103,15 +103,9 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
     const [tab, setTab] = React.useState('section1')
 
     const handleSubmitCorrections = (values: {section: string, content: string}) => {
-        const endpoint = route('groups.assignments.homeworks.corrections', {
-            group:homework?.assignment?.group_id,
-            assignment: homework?.assignment_id,
-            homework: homework?.id,
-        })
+        const endpoint = route('historias.corrections.add', {historia: historia.id})
 
         const data = {
-            document_id: historia?.id,
-            type: 'HRA',
             section: values.section,
             content: values.content,
         }
@@ -122,7 +116,7 @@ const HistoriaEditor = ({historia, homework, readMode = true, canCreateCorrectio
             },
             onSuccess: page => {
                 toast.success('Correcciones agregadas')
-                    router.visit(url)
+                router.reload()
             }
         })
     }

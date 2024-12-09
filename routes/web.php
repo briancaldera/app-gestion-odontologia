@@ -38,6 +38,9 @@ Route::middleware(['auth', 'profile'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('/usuarios/codigos', [UserController::class, 'indexCodes'])->name('users.codes.index');
+    Route::get('/usuarios/{user}/grupo', [GroupController::class, 'show'])->name('users.group.show');
+    Route::patch('/usuarios/{user}/grupo/assign', [GroupController::class, 'assign'])->name('users.group.assign');
+    Route::get('/usuarios/{user}/grupo/members/{member}', [GroupController::class, 'showMember'])->name('users.group.members.show');
     Route::post('/usuarios/codigos', [UserController::class, 'storeCode'])->name('users.codes.store');
     Route::patch('/usuarios/codigos/{userCode}', [UserController::class, 'updateCode'])->name('users.codes.update');
     Route::delete('/usuarios/codigos/{userCode}', [UserController::class, 'destroyCode'])->name('users.codes.destroy');
@@ -116,6 +119,8 @@ Route::middleware(['auth', 'profile'])->group(function () {
 
     Route::get('/historias/{historia}/odontologica/modificaciones/consentimientos/{id}', [HistoriaController::class, 'getModificacionesConsentimiento'])->name('historias.odontologica.modificacionestratamiento.consentimiento');
     Route::get('/historias/{historia}/{action}', [HistoriaController::class, 'downloadHistoria'])->whereIn('action', ['download', 'print',])->name('historias.download');
+
+    Route::post('/historias/{historia}/addcorrection', [HistoriaController::class, 'addCorrection'])->name('historias.corrections.add');
     // Routes for HE
     Route::prefix('/endodoncia')->name('endodoncia.')->group(function() {
         Route::resource('historias', HistoriaEndodonciaController::class);

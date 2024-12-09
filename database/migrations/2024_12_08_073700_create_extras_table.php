@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groups', function (Blueprint $table) {
-            $table->ulid('id')->primary();
-            $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->jsonb('members');
+        Schema::create('extras', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('historia_id')->references('id')->on('historias')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->jsonb('extras');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groups');
+        Schema::dropIfExists('extras');
     }
 };

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('ocupacion');
             $table->text('direccion');
             $table->string('telefono')->nullable();
-            $table->text('motivo_consulta');
+            $table->text('motivo_consulta')->nullable();
             $table->text('enfermedad_actual')->nullable();
             $table->jsonb('informacion_emergencia');
             $table->foreignUuid('registered_by')->references('id')->on('users')->restrictOnUpdate()->restrictOnDelete();

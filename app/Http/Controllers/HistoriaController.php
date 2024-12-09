@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants;
 use App\Http\Requests\StoreAntFamiliaresRequest;
 use App\Http\Requests\StoreAntPersonalesRequest;
 use App\Http\Requests\StoreControlPlaca;
@@ -76,24 +77,12 @@ class HistoriaController extends Controller
                 'created_HCE' => Historia::count(),
             ];
 
-            if (!$request->inertia() and $request->expectsJson()) {
-                return response()->json([
-                    'statistics' => $statistics
-                ]);
-            }
-
-            return inertia()->render('Historias/Dashboard', [
+            return Inertia::render('Historias/Dashboard', [
                 'statistics' => $statistics
             ]);
         } elseif ($user->hasPermission('homeworks-index-all')) {
 
             $statistics = [];
-
-            if (!$request->inertia() and $request->expectsJson()) {
-                return response()->json([
-                    'statistics' => $statistics
-                ]);
-            }
 
             return Inertia::render('Historias/Dashboard', [
                 'statistics' => $statistics
@@ -105,12 +94,6 @@ class HistoriaController extends Controller
             $statistics = [
                 'historiasCreadas' => $historiasCreadas
             ];
-
-            if (!$request->inertia() and $request->expectsJson()) {
-                return response()->json([
-                    'statistics' => $statistics
-                ]);
-            }
 
             return Inertia::render('Historias/Dashboard', [
                 'statistics' => $statistics
@@ -135,7 +118,7 @@ class HistoriaController extends Controller
 
             $historias = Historia::with(['autor.profile', 'paciente'])->get();
 
-            return inertia()->render('Historias/Index', [
+            return Inertia::render('Historias/Index', [
                 'historias' => HistoriaResource::collection($historias),
             ]);
         } elseif ($user->hasRole('profesor')) {
@@ -226,6 +209,11 @@ class HistoriaController extends Controller
             return back();
         }
 
+        if ($paciente->historia()->exists()) {
+            message('Ya existe una historia para este paciente', Type::Error);
+            return back();
+        }
+
         $historia = $this->historiaService->addHistoria($paciente, $user);
         $paciente->touch();
 
@@ -262,7 +250,7 @@ class HistoriaController extends Controller
 
         }
 
-        $historia->load(['autor.profile', 'paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica']);
+        $historia->load(['autor.profile', 'paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica', 'extras']);
 
         if ($user->hasRole('admin')) {
 
@@ -329,7 +317,7 @@ class HistoriaController extends Controller
 
         } elseif ($user->hasRole('estudiante')) {
 
-            $historia->load(['paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica',]);
+            $historia->load(['autor.profile', 'paciente', 'antFamiliares', 'antPersonales', 'trastornos', 'historiaOdontologica', 'extras']);
 
             return Inertia::render('Historias/Edit', [
                 'historia' => new HistoriaResource($historia),
@@ -800,8 +788,15 @@ class HistoriaController extends Controller
             return back();
         }
 
+        $max_height = Constants::MAX_IMAGE_HEIGHT;
+        $min_height = Constants::MIN_IMAGE_HEIGHT;
+        $max_width = Constants::MAX_IMAGE_WIDTH;
+        $min_width = Constants::MIN_IMAGE_WIDTH;
+        $min_image_size = Constants::MIN_IMAGE_SIZE;
+        $max_image_size = Constants::MAX_IMAGE_SIZE_IN_KB;
+
         $data = $request->validate([
-            'consentimiento' => ['required', 'image', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000', 'min:5', 'max:2000']
+            'consentimiento' => ['required', 'image', "dimensions:min_width=$min_width,min_height=$min_height,max_width=$max_width,max_height=$max_height", "min:$min_image_size", "max:$max_image_size"]
         ]);
         $file = $data['consentimiento'];
 
@@ -905,20 +900,17 @@ class HistoriaController extends Controller
     public function changeStatus(Historia $historia, Request $request)
     {
         $data = $request->validate([
-            'status' => ['required', Rule::enum(Status::class)->except([Status::ENTREGADA])]
+            'status' => ['required', Rule::enum(Status::class)->except([Status::ENTREGADA, Status::CORRECCION])]
         ]);
 
         if ($historia->status === Status::CERRADA) {
             message('La historia ya se encuentra cerrada y no se puede modificar su estado');
-            return response(null, 400);
+            return back();
         }
 
         switch ($data['status']) {
             case Status::ABIERTA->value:
                 $new_status = Status::ABIERTA;
-                break;
-            case Status::CORRECCION->value:
-                $new_status = Status::CORRECCION;
                 break;
             case Status::CERRADA->value:
                 $new_status = Status::CERRADA;
@@ -934,9 +926,6 @@ class HistoriaController extends Controller
         switch ($data['status']) {
             case Status::ABIERTA->value:
                 $message = 'El nuevo estado es "Abierta"';
-                break;
-            case Status::CORRECCION->value:
-                $message = 'El nuevo estado es "Corrección"';
                 break;
             case Status::CERRADA->value:
                 $message = 'El nuevo estado es "Cerrada"';
@@ -1123,6 +1112,56 @@ class HistoriaController extends Controller
         $historia->update();
 
         message('Historia compartida exitosamente', Type::Success);
+        return response(null, 200);
+    }
+
+    public function addCorrection(Request $request, Historia $historia)
+    {
+        $user = $request->user();
+
+        $data = $request->validate([
+            'section' => ['required', 'string'],
+            'content' => ['required', 'string', 'max:1000']
+        ]);
+
+        if ($historia->extras()->doesntExist()) {
+            $historia->extras()->create();
+            $historia->refresh();
+        }
+
+        $extras_model =$historia->extras;
+        $extras = $extras_model->extras;
+
+        $sections = collect($extras['correcciones']['secciones']);
+
+        if (!isset($sections[$data['section']])) {
+            $sections[$data['section']] = [];
+        }
+
+        $section = collect($sections[$data['section']]);
+
+        $newComment = [
+            'id' => Str::lower((string) Str::ulid()),
+            'user_id' => $user->id,
+            'content' => $data['content'],
+            'created_at' => now(),
+        ];
+
+        $section->push($newComment);
+
+        $sections[$data['section']] = $section->toArray();
+
+        $correcciones = collect($extras['correcciones']);
+
+        $correcciones['secciones'] = $sections->toArray();
+
+        $extras['correcciones'] = $correcciones->toArray();
+
+
+        $extras_model->extras = $extras;
+        $extras_model->update();
+
+        message('Correcciones agregadas', \Type::Success);
         return response(null, 200);
     }
 }

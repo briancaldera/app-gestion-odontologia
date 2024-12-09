@@ -35,7 +35,7 @@ const BaseLayout = ({children}) => {
                 <BaseContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: toggleDarkMode}}>
                     <div className={`${isDarkMode ? 'dark' : 'light'}`}>
                         {children}
-                        <Toaster expand duration={10000}/>
+                        <Toaster expand/>
                         <div className={'z-50 fixed bottom-0 left-0 p-4'} hidden={!isLoading}>
                             <Loader/>
                         </div>
@@ -73,7 +73,7 @@ const useMessage = (messages: Message[]) => {
                     break
             }
         })
-    })
+    }, [messages])
 }
 
 const cancelToastAction = {

@@ -7,12 +7,13 @@ use App\Exceptions\MemberAlreadyExistsException;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Resources\Group\AssignmentResource;
-use App\Http\Resources\GroupResource;
 use App\Http\Resources\Odontologia\HistoriaResource;
+use App\Http\Resources\PacienteResource;
 use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\Group\Assignment;
 use App\Models\Historia;
+use App\Models\Paciente;
 use App\Models\User;
 use App\Services\GroupService;
 use App\Status;
@@ -33,26 +34,27 @@ class GroupController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $user->load(['group']);
 
         if ($user->cannot('viewAny', Group::class)) {
             message('No tienes permisos para ver grupos', \Type::Info);
             return back();
         }
 
-        if ($user->hasPermission('groups-index-all')) {
-            $groups = Group::with(['owner.profile'])->get();
-            $profesores = User::whereHasRole('profesor')->with(['profile'])->get();
+        $tutors = User::with(['profile'])->whereHasPermission(['groups-add-corrections'])->get();
 
-            return Inertia::render('Groups/Index', [
-                'groups' => GroupResource::collection($groups),
-                'profesores' => UserResource::collection($profesores),
-            ]);
+        $group_owners = Group::with(['owner'])->whereJsonContains('members', $user->id)->get()->map(fn(Group $group) => $group->owner);
+
+        if ($user->hasPermission(['groups-index-all', 'groups-full-control'])) {
+
+
+        return Inertia::render('Groups/Index', [
+            'tutors' => UserResource::collection($tutors),
+            'assigned_tutors' => UserResource::collection($group_owners),
+        ]);
         } else {
-            $groups = Group::with(['owner.profile'])->whereJsonContains('members', $user->id)->orWhere('owner_id')->get();
 
-            return Inertia::render('Groups/Index', [
-                'groups' => GroupResource::collection($groups),
-            ]);
+            return to_route('groups.show', ['group' => $user->id]);
         }
     }
 
@@ -87,34 +89,64 @@ class GroupController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Group $group, Request $request)
+    public function show(Request $request, User $user)
     {
-        $user = $request->user();
 
-        if ($user->cannot('view', $group)) {
-            message('No puede ver este grupo', \Type::Info);
-            return back();
+        $user->load(['profile', 'group']);
+
+        if ($user->group()->doesntExist()) {
+            $user->group()->create();
+            $user->refresh();
         }
 
-        if ($user->hasRole('admin')) {
-            $group->load(['owner.profile']);
-            $group->members->each(fn (User $user) => $user->load(['profile']));
+        /** @var Group $group */
+        $group = $user->group;
 
-            $students = User::whereHasRole('estudiante')->with('profile')->get()->reject(fn (User $user) => $group->members->contains('id', $user->id));
+        $students = User::with(['profile'])->whereHasRole(['estudiante'])->get();
 
-            return Inertia::render('Groups/Show', [
-                'group' => new GroupResource($group),
-                'students' => UserResource::collection($students),
-            ]);
-        } else {
+        return Inertia::render('Groups/Show', [
+            'user' => new UserResource($user),
+            'students' => UserResource::collection($students),
+        ]);
+    }
 
-            $group->load('assignments');
+    public function assign(Request $request, User $user)
+    {
+        $data = $request->validate([
+           'users' => ['required', 'list'],
+           'users.*' => ['exists:'. User::class.',id'],
+        ]);
 
-            return Inertia::render('Groups/Show', [
-                'group' => new GroupResource($group),
-                'historias' => HistoriaResource::collection([]),
-            ]);
-        }
+        $users = User::whereIn('id', collect($data['users']))->get();
+
+        /** @var Group $group */
+        $group = $user->group;
+
+        $group->members = $group->members->union($users);
+        $group->update();
+
+        message('Alumnos asignados', \Type::Success);
+        return response(null, 200);
+    }
+
+    public function clear(Request $request, User $user)
+    {
+
+    }
+
+    public function showMember(Request $request, User $user, User $member)
+    {
+        $member->load(['profile']);
+
+        $pacientes = Paciente::where('assigned_to', $member->id)->get();
+
+        $historias = Historia::with(['paciente'])->where('autor_id', $member->id)->get();
+
+        return Inertia::render('Groups/Members/Show', [
+            'member' => new UserResource($member),
+            'pacientes' => PacienteResource::collection($pacientes),
+            'historias' => HistoriaResource::collection($historias),
+        ]);
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
 use App\Models\Historia;
 use App\Models\Paciente;
 use App\Models\User;
@@ -39,20 +38,9 @@ class DashboardController extends Controller
             ]);
         } elseif ($user->hasRole('profesor')) {
 
-            $gruposQueManejaQuery = Group::where('owner_id', $user->id);
-
-            $gruposQueManejaCount = $gruposQueManejaQuery->count();
-            $estudiantesAsignados = $gruposQueManejaQuery->get()->reduce(function (?int $carry, Group $group) {
-                $estudiantesParaEsteGrupo = $group->members->reduce(function (?int $carry, User $user) {
-                    if ($user->hasRole('estudiante')) $carry++;
-                    return $carry;
-                }, 0);
-                return $estudiantesParaEsteGrupo;
-            }, 0);
-
+            $estudiantesAsignados = $user->group->members->count();
 
             $statistics = [
-                'gruposQueManeja' => $gruposQueManejaCount,
                 'estudiantesAsignados' => $estudiantesAsignados,
             ];
 

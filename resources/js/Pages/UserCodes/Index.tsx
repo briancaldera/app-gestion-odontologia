@@ -49,8 +49,8 @@ const Index = ({userCodes}: IndexProps) => {
     return (
         <AuthLayout title={'Expedientes'}>
             <ScrollArea className={'h-full bg-white'}>
-                <section className={'py-6 px-24'}>
-                    <header className={'flex gap-2 justify-between items-baseline mb-3'}>
+                <div className='py-6 px-2 sm:px-24'>
+                    <header className={'flex justify-between items-baseline mb-3'}>
                         <div className={'flex gap-x-2'}>
                             <Title level={'title-lg'}>Expedientes de usuario</Title>
                             <Tooltip>
@@ -75,7 +75,7 @@ const Index = ({userCodes}: IndexProps) => {
                         <SelectionDataTable columns={codeColumnDef} data={userCodes} onSubmitSelected={() => {
                         }}/>
                     </div>
-                </section>
+                </div>
             </ScrollArea>
         </AuthLayout>
     )
@@ -120,7 +120,8 @@ const AddCodeDialog = ({userCode}: { userCode?: UserCode }) => {
                 },
                 onSuccess: () => {
                     addCodeForm.reset()
-                    // router.reload({only: ['userCodes']})
+                    setOpen(false);
+                    router.reload({only: ['userCodes']})
                 }
             })
         }
@@ -161,7 +162,7 @@ const AddCodeDialog = ({userCode}: { userCode?: UserCode }) => {
                             <FormField render={({field}) => (
                                 <FormItem>
                                     <FormLabel></FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={field.disabled}>
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder={'Selecciona un rol'}/>
@@ -308,7 +309,8 @@ const UserCodeActionCell = ({cellContext} : {cellContext: CellContext<UserCode, 
             },
             onSuccess: () => {
                 editCodeForm.reset(values)
-                handleOpenChange(false)
+                setOpenEditDialog(false);
+                router.reload({only: ['userCodes']})
             }
         })
     }
@@ -408,12 +410,12 @@ const UserCodeActionCell = ({cellContext} : {cellContext: CellContext<UserCode, 
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button variant='outline'>Cancelar</Button>
+                            <Button variant='outline' disabled={isProcessing}>Cancelar</Button>
                         </DialogClose>
                         <Button type={"submit"} form={'editUserCodeForm' + row.original.id}
-                                disabled={isProcessing || !editCodeForm.formState.isDirty}>{
-                            isProcessing &&
-                            <LoaderCircle className={'mr-2 animate-spin'}/>}Guardar</Button>
+                                disabled={isProcessing || !editCodeForm.formState.isDirty}>
+                            <LoaderCircle className={'mr-2 animate-spin'} hidden={!isProcessing}/>
+                            Guardar</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

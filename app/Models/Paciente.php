@@ -68,6 +68,8 @@ class Paciente extends Model implements HasMedia
     ];
 
     protected $attributes = [
+        'motivo_consulta' => null,
+        'enfermedad_actual' => null,
         'informacion_emergencia' => <<<'JSON'
 {
   "contacto": null,

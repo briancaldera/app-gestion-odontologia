@@ -8,7 +8,7 @@ import {z} from "zod";
 import {pacienteSchema} from "@/FormSchema/Pacientes/CreateSchema.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {route} from "ziggy-js";
-import {mapServerErrorsToFields, usePermission} from "@/src/Utils/Utils.ts";
+import {formatTelephone, mapServerErrorsToFields, usePermission} from "@/src/Utils/Utils.ts";
 import {toast} from "sonner";
 import Title from "@/Components/atoms/Title";
 import {Button} from "@/shadcn/ui/button.tsx";
@@ -31,15 +31,15 @@ type EditProps = {
     paciente: Paciente
 }
 
-const EditPacienteSchema = pacienteSchema.omit({cedula: true})
+const editPacienteSchema = pacienteSchema.omit({cedula: true})
 
 const Edit = ({paciente}: EditProps) => {
 
     const {router, isProcessing} = useInertiaSubmit()
     const can = usePermission()
 
-    const pacienteForm = useForm<z.infer<typeof pacienteSchema>>({
-        resolver: zodResolver(pacienteSchema),
+    const pacienteForm = useForm<z.infer<typeof editPacienteSchema>>({
+        resolver: zodResolver(editPacienteSchema),
         defaultValues: {
             apellido: paciente.apellido ?? '',
             cedula: paciente.cedula ?? '',
@@ -60,7 +60,7 @@ const Edit = ({paciente}: EditProps) => {
         },
     })
 
-    const handleSubmit = (values: z.infer<typeof pacienteSchema>) => {
+    const handleSubmit = (values: z.infer<typeof editPacienteSchema>) => {
 
         const endpoint = route('pacientes.update', {paciente: paciente.id})
 
@@ -95,24 +95,10 @@ const Edit = ({paciente}: EditProps) => {
                             <div>
                                 <Title level={'h3'}>Editar paciente</Title>
                             </div>
-                            <div className={'flex gap-3'}>
-                                <Button type={'button'} variant={'outline'} onClick={() => {
-                                    if (pacienteForm.formState.isDirty) {
-                                        const res = confirm('Existen cambios sin guardar. ¿Deseas abandonar la edición?')
-                                        if (res) router.visit(route('pacientes.show', {paciente: paciente.id}))
-                                    } else {
-                                        router.visit(route('pacientes.show', {paciente: paciente.id}))
-                                    }
-                                }}>Cancelar</Button>
-                                <Button type={'submit'} className={'bg-indigo-500'}
-                                        disabled={!pacienteForm.formState.isDirty || isProcessing}>Guardar</Button>
-                            </div>
                         </div>
 
                         <section className={'grid grid-cols-1 sm:grid-cols-4 flex-1 gap-12'}>
                             <div className={'col-span-1'}>
-
-
 
 
                                 <FormField render={({field}) => (
@@ -158,7 +144,7 @@ const Edit = ({paciente}: EditProps) => {
                                         <FormItem>
                                             <FormLabel>Cédula</FormLabel>
                                             <FormControl>
-                                                <Input {...field} disabled={!can('system-full-control')}/>
+                                                <Input {...field} disabled={true}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -199,7 +185,7 @@ const Edit = ({paciente}: EditProps) => {
                                             <FormLabel>Teléfono <span
                                                 className={'text-slate-400'}>(Opcional)</span></FormLabel>
                                             <FormControl>
-                                                <Input {...field}/>
+                                                <Input name={field.name} value={field.value} disabled={field.disabled} ref={field.ref} onBlur={field.onBlur} onChange={({target: {value}}) => field.onChange(formatTelephone(value))} autoComplete='tel' type='tel'/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -318,10 +304,10 @@ const Edit = ({paciente}: EditProps) => {
 
                                     <FormField render={({field}) => (
                                         <FormItem className={'col-span-full'}>
-                                            <FormLabel>Motivo de consulta</FormLabel>
+                                            <FormLabel>Diagnóstico<span
+                                                className={'text-slate-400'}> (Opcional)</span></FormLabel>
                                             <FormControl>
-                                                <Textarea
-                                                    placeholder={'Detalla los motivos de la consulta'} {...field}/>
+                                                <Textarea {...field}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -329,11 +315,10 @@ const Edit = ({paciente}: EditProps) => {
 
                                     <FormField render={({field}) => (
                                         <FormItem className={'col-span-full'}>
-                                            <FormLabel>Enfermedad actual <span
-                                                className={'text-slate-400'}>(Opcional)</span></FormLabel>
+                                            <FormLabel>Tratamiento indicado<span
+                                                className={'text-slate-400'}> (Opcional)</span></FormLabel>
                                             <FormControl>
-                                                <Textarea
-                                                    placeholder={'Indica cualquier enfermedad que padezca el paciente al momento de la consulta'} {...field}/>
+                                                <Textarea {...field}/>
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -343,6 +328,13 @@ const Edit = ({paciente}: EditProps) => {
 
                             </div>
                         </section>
+                        <div className='flex justify-end gap-x-3 py-3'>
+                            <Button type={'button'} variant={'outline'} onClick={() => {
+                                router.visit(route('pacientes.show', {paciente: paciente.id}))
+                            }}>Cancelar</Button>
+                            <Button type={'submit'} className={'bg-indigo-500'}
+                                    disabled={!pacienteForm.formState.isDirty || isProcessing}>Guardar</Button>
+                        </div>
                     </form>
                 </Form>
             </ScrollArea>

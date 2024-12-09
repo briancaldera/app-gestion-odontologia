@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\Group;
 use App\Models\Historia;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -28,18 +27,7 @@ class HistoriaPolicy
 
         if ($user->hasPermission('historias-read-private')) return true;
 
-        if ($user->hasPermission('homeworks-create-corrections')) {
-            $groups = $user->groups()->where('owner_id', $user->id)->load('assignments.homeworks');
-            $isAHomework = true;
-//            $isAHomework = $groups
-//                ->some(fn(Group $group) => $group->assignments
-//                    ->some(fn (Group\Assignment $assignment) => $assignment->homeworks
-//                        ->some(fn( Group\Homework $homework) => $homework->documents
-//                            ->some(fn ($document) => $document->id === $historia->id))));
-            if ($isAHomework) {
-                return true;
-            }
-        }
+        if ($user->hasPermission('groups-add-corrections')) return true;
 
         return false;
     }

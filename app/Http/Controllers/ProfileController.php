@@ -40,18 +40,12 @@ class ProfileController extends Controller
 
         $profile->load(['user']);
 
-        if ($request->inertia()) {
-            return Inertia::render('Profiles/Show',
-                [
-                    'profile' => new ProfileResource($profile),
-                    'user' => $profile->user, // todo delete this
-                ]
-            );
-        }
-
-        return response()->json([
-            'profile' => new ProfileResource($profile),
-        ]);
+        return Inertia::render('Profiles/Show',
+            [
+                'profile' => new ProfileResource($profile),
+                'user' => $profile->user, // todo delete this
+            ]
+        );
     }
 
     public function create(): Response|RedirectResponse

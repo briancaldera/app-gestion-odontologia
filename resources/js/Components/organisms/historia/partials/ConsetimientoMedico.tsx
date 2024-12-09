@@ -12,6 +12,8 @@ import Dropzone from "react-dropzone";
 import {Button} from "@/shadcn/ui/button.tsx";
 import {HistoriaEditorContext} from "@/Components/organisms/HistoriaEditor.tsx";
 import {Text} from "@/Components/atoms/Text";
+import {Upload} from "lucide-react";
+import Icon from "@/Components/atoms/Icon.tsx";
 
 const ConsetimientoMedico = () => {
 
@@ -59,7 +61,7 @@ const ConsetimientoMedico = () => {
     return (
         <section className={'mt-6'}>
             <header className={'mb-1.5 space-y-1'}>
-                <Title level={'title-md'}>Consentimiento médico</Title>
+                <Title level={'title-md'}>Consentimiento informado</Title>
                 <Text>Antes de realizar el examen físico, debes obtener consentimiento de tu paciente. Sube un archivo con el nombre, apellido, cédula y firma de tu paciente consintiendo
                 la información suministrada. Luego podrás continuar editando la historia. <span className='text-rose-500 font-bold'>Sube el archivo correcto. Una vez guardado, no podrás cambiar ni subir otro archivo.</span></Text>
             </header>
@@ -77,10 +79,14 @@ const ConsetimientoMedico = () => {
                                                 <input {...getInputProps()} />
                                                 {
                                                     (consentimientoForm.getValues().consentimiento === null) ?
-                                                        (
+                                                        (<div className={'relative'}>
                                                             <img
                                                                 className={'w-full aspect-[3/4] object-contain border border-slate-200 rounded-lg'}
                                                                 src={(consentimientoForm.getValues().consentimiento && 'preview' in consentimientoForm.getValues().consentimiento) ? consentimientoForm.getValues().consentimiento.preview : null} {...getRootProps()}/>
+                                                                <Icon className={'top-1/2 left-1/2 absolute'}>
+                                                                    <Upload/>
+                                                                </Icon>
+                                                        </div>
                                                         ) : (
 
                                                             <img

@@ -4,8 +4,6 @@ type Group = {
     id: string
     owner: User
     members?: User[]
-    name: string
-    assignments: Assignment[]
     created_at: string
     updated_at?: string
 }

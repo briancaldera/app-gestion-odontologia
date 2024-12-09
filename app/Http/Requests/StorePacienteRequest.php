@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Models\Paciente;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\File;
 
 class StorePacienteRequest extends FormRequest
 {
@@ -36,7 +35,7 @@ class StorePacienteRequest extends FormRequest
             'direccion' => ['required', 'string', 'between:3, 100'],
             'telefono' => ['nullable', 'string', 'between:0, 15', 'regex:/^[\d]{4}-[\d]{7}$/'],
             'foto' => ['nullable', 'image', 'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000', 'min:50', 'max:2000'],
-            'motivo_consulta' => ['required', 'string', 'max:1000'],
+            'motivo_consulta' => ['nullable', 'string', 'max:1000'],
             'enfermedad_actual' => ['nullable', 'string', 'max:1000'],
             'informacion_emergencia' => ['required', 'array:contacto,telefono'],
             'informacion_emergencia.*' => ['string', 'max:255'],

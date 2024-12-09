@@ -67,12 +67,6 @@ class HistoriaEndodonciaController extends Controller
     {
         // todo add policy
 
-        if (!$request->inertia() and $request->expectsJson()) {
-            return response()->json([
-                'historia' => new HistoriaEndodonciaResource($historia)
-            ]);
-        }
-
         $historia->load(['paciente', 'fichasEndodonticas']);
 
         return Inertia::render('Odontologia/Endodoncia/Historias/Show', [

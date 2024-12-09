@@ -1,21 +1,21 @@
 import AuthLayout from "@/Layouts/AuthLayout.tsx";
-import {ScrollArea} from "@/shadcn/ui/scroll-area.tsx";
 import {mapServerErrorsToFields, usePermission} from "@/src/Utils/Utils.ts";
 import Group from "@/src/models/Group.ts";
 import User from "@/src/models/User.ts";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {formatDate} from "date-fns";
-import {Link, router} from "@inertiajs/react";
+import {Link, router, usePage} from "@inertiajs/react";
 import {route, useRoute} from "ziggy-js";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel, DropdownMenuSeparator,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/shadcn/ui/dropdown-menu.tsx";
 import {Button} from "@/shadcn/ui/button.tsx";
-import {Check, ChevronsUpDown, MoreHorizontal, Trash2} from "lucide-react";
+import {EllipsisVertical, MoreHorizontal, Trash2} from "lucide-react";
 import React from "react";
 import useInertiaSubmit from "@/src/inertia-wrapper/InertiaSubmit.ts";
 import {useForm} from "react-hook-form";
@@ -24,71 +24,70 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/shadcn/ui/dialog.tsx";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form.tsx";
 import {Input} from "@/shadcn/ui/input.tsx";
-import {Popover, PopoverContent, PopoverTrigger} from "@/shadcn/ui/popover.tsx";
-import {cn} from "@/lib/utils.ts";
-import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/shadcn/ui/command.tsx";
-import {Tooltip, TooltipContent, TooltipTrigger} from "@/shadcn/ui/tooltip.tsx";
 import {Text} from "@/Components/atoms/Text";
 import Surface from "@/Components/atoms/Surface";
-import Heading from "@/Components/atoms/Heading";
 import Title from "@/Components/atoms/Title";
 import {Avatar} from "@mui/joy";
 import {DataTable} from "@/Components/molecules/DataTable.tsx";
 import {Icon} from "@/Components/atoms/Icon.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/shadcn/ui/select.tsx";
+import ProfileItem from "@/Components/molecules/ProfileItem.tsx";
 
 type IndexProps = {
-    groups: Group[]
-    profesores: User[]
+    assigned_tutors: User[]
+    tutors: User[]
 }
 
-const Index = ({groups, profesores}) => {
+const Index = ({assigned_tutors, tutors}: IndexProps) => {
+
+    const {user} = usePage().props.auth
+
     const can = usePermission()
 
     const [openCreateGroupDialog, setOpenCreateGroupDialog] = React.useState<boolean>(false)
 
-    if (can('groups-index-all')) {
+    if (can('groups-index-all') || can('groups-full-control')) {
         return (
             <AuthLayout title='Grupos'>
-                <ScrollArea className='h-full'>
-                    <div className={'p-6 grid grid-cols-4 grid-rows-3 gap-6 h-full'}>
-                        <Surface className={'col-span-3 row-span-2 h-full'}>
-                            <DataTable columns={columns} data={groups} searchable={true}/>
-                        </Surface>
-                        <Surface className={'col-span-1 p-6'}>
-                            <section>
-                                <CreateGroupDialog show={openCreateGroupDialog} onOpenChange={setOpenCreateGroupDialog}
-                                                   professors={profesores}/>
-                                <Title>Crear nuevo grupo</Title>
-
-                                <div>
-                                    <Button type={'button'} onClick={() => setOpenCreateGroupDialog(true)}>Crear nuevo
-                                        grupo</Button>
-                                </div>
-                            </section>
+                <div className='h-full flex flex-col bg-white p-4'>
+                    <Title>Grupos</Title>
+                    <div className={'flex-1'}>
+                        <Surface className={'h-full overflow-x-scroll'}>
+                            <DataTable columns={tutorsCols} data={tutors} searchable={true}/>
                         </Surface>
                     </div>
-                </ScrollArea>
+
+                </div>
+            </AuthLayout>
+        )
+    } else if (can('groups-add-corrections')) {
+        return (
+            <AuthLayout title='Grupos'>
+                <div className='bg-white h-full p-6'>
+                    <Title>Alumnos asignados</Title>
+                    <Text>A countinuación, se listan sus alumnos asignados. Podrá acceder a sus pacientes e historias creadas.</Text>
+
+                    <div className={'flex flex-col py-4'}>
+                        {
+                            user.group?.members.map((user) => (<ProfileItem id={user.id} key={user.id}/>))
+                        }
+                    </div>
+                </div>
             </AuthLayout>
         )
     } else {
         return (
             <AuthLayout title='Grupos'>
-                <ScrollArea className='h-full'>
-                    <div className={'p-6 grid grid-cols-4 grid-rows-2 gap-6 basis-full'}>
-                        <Surface className={'p-6 col-span-4 lg:col-span-3 row-span-2 flex flex-col gap-4'}>
-                            <Heading level={'h3'}>Grupos</Heading>
+                <div className='bg-white h-full p-6'>
+                    <Title>Tutores asignados</Title>
+                    <Text>A countinuación, se listan los tutores a los cuales se encuentra asignado actualmente. Estos podrán tener acceso a sus pacientes e historias clínicas.</Text>
 
-                            <ScrollArea className={'basis-full'}>
-                                <div className={'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pr-3'}>
-                                    {groups.map(group => (<GroupItem key={group.id} group={group}/>))}
-                                </div>
-                            </ScrollArea>
-
-                        </Surface>
+                    <div className={'flex flex-col py-4'}>
+                    {
+                        assigned_tutors.map((user) => (<ProfileItem id={user.id} key={user.id}/>))
+                    }
                     </div>
-
-                </ScrollArea>
+                </div>
             </AuthLayout>
         )
     }
@@ -283,6 +282,75 @@ const CreateGroupDialog = ({
         </Dialog>
     )
 }
+
+const tutorsColHelper = createColumnHelper<User>()
+
+const tutorsCols: ColumnDef<User>[] = [
+    tutorsColHelper.accessor((user: User) => user.profile?.cedula, {
+        header: 'Rol',
+        id: 'role',
+        cell: ({row}) => {
+            return (
+                <div className='flex items-center justify-center capitalize'>
+                    {`${row.original.role}`}
+                </div>
+            )
+        }
+    }),
+    tutorsColHelper.accessor((user: User) => user.profile?.cedula, {
+        meta: {
+            title: 'Cédula',
+            'searchable': true,
+        },
+        header: 'Cédula',
+        id: 'nationalID'
+    }),
+    tutorsColHelper.accessor((user: User) => `${user.profile?.nombres} ${user.profile?.apellidos}`, {
+        meta: {
+            title: 'Nombre',
+            'searchable': true,
+        },
+        size: 200,
+        header: 'Nombre',
+        id: 'name',
+        cell: ({column, row: {original}}) =>  <div style={{width: column.getSize()}}>{`${original.profile?.nombres} ${original.profile?.apellidos}`}</div>
+    }),
+    tutorsColHelper.accessor((user: User) => `@${user.name}`, {
+        meta: {
+            title: 'Usuario',
+            'searchable': true,
+        },
+        header: 'Usuario',
+        id: 'username'
+    }),
+    tutorsColHelper.accessor((user: User) => user.email, {
+        meta: {
+            title: 'Correo',
+            'searchable': true,
+        },
+        header: 'Correo',
+        id: 'email'
+    }),
+    tutorsColHelper.display({
+        id: 'actions',
+        cell: (props) => {
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild><EllipsisVertical/></DropdownMenuTrigger>
+                    <DropdownMenuContent>
+
+                    <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                    <DropdownMenuItem asChild>
+                        <Link href={route('users.group.show', {user: props.row.original.id})}>
+                            Asignar estudiantes
+                        </Link>
+                    </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
+        }
+    })
+]
 
 const columnHelper = createColumnHelper<Group>()
 

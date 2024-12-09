@@ -217,16 +217,16 @@ const StatusCard = ({historia}: { historia: Historia }) => {
 
     switch (historia.status) {
         case Status.ABIERTA:
-            cardColor = 'emerald'
+            cardColor = 'bg-emerald-200'
             break
         case Status.ENTREGADA:
-            cardColor = 'sky'
+            cardColor = 'bg-sky-200'
             break
         case Status.CORRECCION:
-            cardColor = 'rose'
+            cardColor = 'bg-slate-200'
             break
         case Status.CERRADA:
-            cardColor = 'slate'
+            cardColor = 'bg-rose-200'
             break
     }
 
@@ -234,7 +234,7 @@ const StatusCard = ({historia}: { historia: Historia }) => {
         <HoverCard>
             <HoverCardTrigger>
                 <div
-                    className={`flex justify-center items-center aspect-square border border-${cardColor}-300 rounded-lg bg-${cardColor}-200`}>
+                    className={`flex justify-center items-center aspect-square border rounded-lg ${cardColor}`}>
                     {
                         isOpen ? (<LockOpen/>) : (<Lock/>)
                     }
@@ -292,15 +292,12 @@ const UpdateStatusDialog = ({historia}: { historia: Historia }) => {
             <DialogContent className={'max-w-2xl'}>
                 <DialogHeader>
                     <DialogHeader>
-                        Cambiar status de la historia
+                        <DialogTitle>Cambiar status de la historia</DialogTitle>
+                        <DialogDescription>
+                            Una vez cerrada, no podrá modificarse.
+                            Solo la secuencia de tratamiento podrá continuar modificandose.
+                        </DialogDescription>
                     </DialogHeader>
-                    <DialogDescription>
-                        A continuación, podrá seleccionar el nuevo estado de la historia. Si desea habilitar la historia
-                        para correcciones, seleccione como nuevo estado "Corrección".
-                        Por el contrario, si desea cerrar definitivamente y archivar la historia, seleccione como estado
-                        "Cerrado". Considere que una vez cierre definitivamente la historia,
-                        esta no podrá volver a editarse.
-                    </DialogDescription>
                 </DialogHeader>
                 <div>
                     <Form {...form}>
@@ -316,12 +313,6 @@ const UpdateStatusDialog = ({historia}: { historia: Historia }) => {
                                                     className="flex flex-col space-y-1">
                                             <FormItem className="flex items-center space-x-3 space-y-0">
                                                 <FormControl>
-                                                    <RadioGroupItem value="correccion"/>
-                                                </FormControl>
-                                                <FormLabel><LockOpen className={'inline mr-2'}/>Corrección</FormLabel>
-                                            </FormItem>
-                                            <FormItem className="flex items-center space-x-3 space-y-0">
-                                                <FormControl>
                                                     <RadioGroupItem value="cerrada"/>
                                                 </FormControl>
                                                 <FormLabel><Lock className={'inline mr-2'}/>Cerrada</FormLabel>
@@ -334,8 +325,10 @@ const UpdateStatusDialog = ({historia}: { historia: Historia }) => {
                         </form>
                     </Form>
                 </div>
-                <DialogFooter>
-                    <Button variant={"outline"} onClick={() => handleOpenChange(false)}>Cancelar</Button>
+                <DialogFooter className='gap-3'>
+                    <DialogClose asChild>
+                        <Button variant='outline'>Cancelar</Button>
+                    </DialogClose>
                     <Button type={"submit"} form={'updateStatusDialog'}
                             disabled={!form.formState.isDirty || isProcessing}>
                         {isProcessing && <LoaderCircle className={'mr-2 animate-spin'}/>}
