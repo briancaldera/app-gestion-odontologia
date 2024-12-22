@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([PermissionsSeeder::class]);
 
-        if (!app()->isProduction()) {
+        if (app()->isLocal() and !app()->runningUnitTests()) {
             $this->call([TestUserSeeder::class]);
         }
     }

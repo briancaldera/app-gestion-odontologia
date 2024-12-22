@@ -22,25 +22,6 @@ class PermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        function createPermissionsFromActions(array $actions): Collection
-        {
-            return collect($actions)->map(function (array $actions, string $module) {
-                $actions_col = collect($actions);
-
-                return $actions_col->map(function (array $data) use ($module) {
-                    $name = $data['name'];
-                    $display_name = $data['display_name'];
-                    $description = $data['description'];
-
-                    return Permission::create([
-                        'name' => "$module-$name",
-                        'display_name' => $display_name,
-                        'description' => $description
-                    ], ['name']);
-                });
-            })->flatten(1);
-        }
-
         $system_actions = [
             'system' => [
                 'full-control' => [
@@ -71,22 +52,15 @@ class PermissionsSeeder extends Seeder
             ]
         ];
 
-        $system_permissions = createPermissionsFromActions($system_actions);
-        $users_permissions = createPermissionsFromActions(User::$actions);
-        $historias_permissions = createPermissionsFromActions(Historia::$actions);
-        $pacientes_permissions = createPermissionsFromActions(Paciente::$actions);
-        $groups_permissions = createPermissionsFromActions(Group::$actions);
-        $assignments_permissions = createPermissionsFromActions(Assignment::$actions);
-        $homeworks_permissions = createPermissionsFromActions(Homework::$actions);
-        $historias_endodoncia_permissions = createPermissionsFromActions(HistoriaEndodoncia::$actions);
-        $historias_cirugia_permission = createPermissionsFromActions(HistoriaCirugia::$actions);
-
-        function createRolesFromArray(array $roles)
-        {
-            $roles_coll = collect($roles);
-
-            return $roles_coll->map(fn (array $item) => Role::create($item))->flatten(1);
-        }
+        $system_permissions = self::createPermissionsFromActions($system_actions);
+        $users_permissions = self::createPermissionsFromActions(User::$actions);
+        $historias_permissions = self::createPermissionsFromActions(Historia::$actions);
+        $pacientes_permissions = self::createPermissionsFromActions(Paciente::$actions);
+        $groups_permissions = self::createPermissionsFromActions(Group::$actions);
+        $assignments_permissions = self::createPermissionsFromActions(Assignment::$actions);
+        $homeworks_permissions = self::createPermissionsFromActions(Homework::$actions);
+        $historias_endodoncia_permissions = self::createPermissionsFromActions(HistoriaEndodoncia::$actions);
+        $historias_cirugia_permission = self::createPermissionsFromActions(HistoriaCirugia::$actions);
 
         $roles_array = [
 //            'root' => [
@@ -102,7 +76,7 @@ class PermissionsSeeder extends Seeder
             'admision' => [
                 'name' => 'admision',
                 'display_name' => 'Admisión',
-                'description' => 'Usuario del personal de admisión'
+                'description' => 'Usuario de admisión'
             ],
             'profesor' => [
                 'name' => 'profesor',
@@ -116,7 +90,7 @@ class PermissionsSeeder extends Seeder
             ],
         ];
 
-        $user_roles = createRolesFromArray($roles_array);
+        $user_roles = self::createRolesFromArray($roles_array);
 
         $permissions_roles = [
             'admin' => [
@@ -159,24 +133,6 @@ class PermissionsSeeder extends Seeder
             ]
         ];
 
-        function assignPermissionsToRoles(Collection $permissions_col, Collection $roles, Collection $permissions_roles) {
-            $permissions_roles->each(function (array $permissions_to_role, string $role_name) use ($permissions_col, $roles) {
-                /** @var Role $role */
-                $role = $roles->firstOrFail(fn (Role $role_model) => $role_model->name === $role_name);
-
-                $permissions = collect($permissions_to_role)->map(function (array $actions, string $module) use($permissions_col) {
-
-                    return collect($actions)->map(function (string $action) use ($module, $permissions_col) {
-                        $permission_name = "$module-$action";
-                        return $permissions_col->firstOrFail(fn (Permission $permission) => $permission->name === $permission_name);
-                    });
-
-                })->flatten(1);
-
-                $role->syncPermissions($permissions);
-            });
-        }
-
         $all_permissions = collect([
             ...$system_permissions,
             ...$users_permissions,
@@ -189,6 +145,51 @@ class PermissionsSeeder extends Seeder
             ...$historias_cirugia_permission,
         ]);
 
-        assignPermissionsToRoles($all_permissions, $user_roles, collect($permissions_roles));
+        self::assignPermissionsToRoles($all_permissions, $user_roles, collect($permissions_roles));
+    }
+
+    static function createPermissionsFromActions(array $actions): Collection
+    {
+        return collect($actions)->map(function (array $actions, string $module) {
+            $actions_col = collect($actions);
+
+            return $actions_col->map(function (array $data) use ($module) {
+                $name = $data['name'];
+                $display_name = $data['display_name'];
+                $description = $data['description'];
+
+                return Permission::create([
+                    'name' => "$module-$name",
+                    'display_name' => $display_name,
+                    'description' => $description
+                ], ['name']);
+            });
+        })->flatten(1);
+    }
+
+    static function createRolesFromArray(array $roles)
+    {
+        $roles_coll = collect($roles);
+
+        return $roles_coll->map(fn(array $item) => Role::create($item))->flatten(1);
+    }
+
+    static function assignPermissionsToRoles(Collection $permissions_col, Collection $roles, Collection $permissions_roles)
+    {
+        $permissions_roles->each(function (array $permissions_to_role, string $role_name) use ($permissions_col, $roles) {
+            /** @var Role $role */
+            $role = $roles->firstOrFail(fn(Role $role_model) => $role_model->name === $role_name);
+
+            $permissions = collect($permissions_to_role)->map(function (array $actions, string $module) use ($permissions_col) {
+
+                return collect($actions)->map(function (string $action) use ($module, $permissions_col) {
+                    $permission_name = "$module-$action";
+                    return $permissions_col->firstOrFail(fn(Permission $permission) => $permission->name === $permission_name);
+                });
+
+            })->flatten(1);
+
+            $role->syncPermissions($permissions);
+        });
     }
 }
