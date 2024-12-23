@@ -30,12 +30,12 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse | \Illuminate\Http\Response
+    public function store(Request $request): RedirectResponse|\Illuminate\Http\Response
     {
         $body = $request->validate([
             'code' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255', 'alpha_num:ascii'],
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'name' => ['required', 'string', 'max:255', 'alpha_num:ascii', 'unique:' . User::class],
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
