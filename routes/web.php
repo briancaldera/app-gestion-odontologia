@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Academics\AcademicTermController;
 use App\Http\Controllers\CorreccionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EntregaController;
@@ -137,6 +138,11 @@ Route::middleware(['auth', 'profile'])->group(function () {
 //        Route::get('historias/{historia}/periodontodiagrama/{id}', [HistoriaCirugiaController::class, 'getPeriodontodiagrama'])->name('historias.periodontodiagramas.show');
         Route::get('historias/{historia}/{file}/{id}', [HistoriaCirugiaController::class, 'getFile'])->whereIn('file', ['consentimiento', 'periodontodiagrama'])->name('historias.file.show');
     });
+
+    Route::get('/escuela/periodo', [AcademicTermController::class, 'index'])->name('academic-terms.index');
+    Route::post('/escuela/periodo', [AcademicTermController::class, 'store'])->name('academic-terms.store');
+    Route::patch('/escuela/periodo/{academicTerm}', [AcademicTermController::class, 'update'])->name('academic-terms.update');
+    Route::delete('/escuela/periodo/{academicTerm}', [AcademicTermController::class, 'destroy'])->name('academic-terms.destroy');
 });
 
 require __DIR__.'/auth.php';
