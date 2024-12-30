@@ -1,6 +1,7 @@
 <?php
 
 return [
+    App\Providers\AcademicServiceProvider::class,
     App\Providers\AppServiceProvider::class,
     App\Providers\CorreccionServiceProvider::class,
     App\Providers\GroupServiceProvider::class,
