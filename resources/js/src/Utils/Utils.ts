@@ -136,6 +136,32 @@ const useProfile = (id: string, deps: any[] = []): Profile | null => {
     return profile
 }
 
-export {usePermission, useOnlineStatus, useLoading, mergeDeep, isObject, useProfile, mapServerErrorsToFields, formatTelephone}
+const useMetrics = (deps: any[] = []): object => {
+
+    const [metrics, setMetrics] = React.useState<object | null>(null)
+    const endpoint = React. useMemo(() => route('api.v1.metrics.index'), [])
+
+    React.useEffect(() => {
+
+        const controller =  new AbortController();
+
+        (async () => {
+            try {
+                const res = await axios.get(endpoint, {signal: controller.signal})
+                setMetrics(res.data)
+            } catch (e) {
+                // Request cancelled
+            }
+        }) ()
+
+        return () => {
+            controller.abort()
+        }
+    }, deps)
+
+    return metrics
+}
+
+export {usePermission, useOnlineStatus, useLoading, mergeDeep, isObject, useProfile, mapServerErrorsToFields, formatTelephone, useMetrics}
 
 
