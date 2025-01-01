@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AcademicTerm;
 use App\Models\Cirugia\HistoriaCirugia;
 use App\Models\Endodoncia\HistoriaEndodoncia;
 use App\Models\Group;
@@ -60,7 +61,8 @@ class PermissionsSeeder extends Seeder
         $assignments_permissions = self::createPermissionsFromActions(Assignment::$actions);
         $homeworks_permissions = self::createPermissionsFromActions(Homework::$actions);
         $historias_endodoncia_permissions = self::createPermissionsFromActions(HistoriaEndodoncia::$actions);
-        $historias_cirugia_permission = self::createPermissionsFromActions(HistoriaCirugia::$actions);
+        $historias_cirugia_permissions = self::createPermissionsFromActions(HistoriaCirugia::$actions);
+        $periodosAcademicos_permissions = self::createPermissionsFromActions(AcademicTerm::$actions);
 
         $roles_array = [
 //            'root' => [
@@ -103,6 +105,7 @@ class PermissionsSeeder extends Seeder
                 'groups' => ['full-control', 'index-all', 'create', 'read', 'read-private', 'update', 'delete', 'index-users', 'add-users', 'remove-users'],
                 'assignments' => ['index-all', 'create', 'read', 'read-private', 'update', 'delete'],
                 'homeworks' => ['full-control', 'index-all', 'read', 'update', 'delete', 'create-corrections'],
+                'academic-terms' => ['full-control', 'index-all', 'read', 'create', 'update', 'delete'],
             ],
             'admision' => [
                 'users' => ['index-all', 'read', 'read-private'],
@@ -110,6 +113,7 @@ class PermissionsSeeder extends Seeder
                 'historias' => ['index-all', 'read', 'read-private', 'assign-id', 'assign-semester'],
                 'historias-endodoncia' => ['index-all', 'read', 'read-private', 'assign-id', 'assign-semester'],
                 'historias-cirugia' => ['index-all', 'read', 'read-private', 'assign-id', 'assign-semester'],
+                'academic-terms' => ['read'],
             ],
             'profesor' => [
                 'users' => ['read', 'read-private'],
@@ -120,6 +124,7 @@ class PermissionsSeeder extends Seeder
                 'groups' => ['read', 'update', 'index-users', 'add-corrections'],
                 'assignments' => ['create', 'read', 'update', 'delete'],
                 'homeworks' => ['read', 'delete', 'create-corrections'],
+                'academic-terms' => ['read'],
             ],
             'estudiante' => [
                 'users' => ['read'],
@@ -130,6 +135,7 @@ class PermissionsSeeder extends Seeder
                 'groups' => ['read'],
                 'assignments' => ['read'],
                 'homeworks' => ['create', 'read', 'update', 'delete'],
+                'academic-terms' => ['read'],
             ]
         ];
 
@@ -142,7 +148,8 @@ class PermissionsSeeder extends Seeder
             ...$groups_permissions,
             ...$assignments_permissions,
             ...$homeworks_permissions,
-            ...$historias_cirugia_permission,
+            ...$historias_cirugia_permissions,
+            ...$periodosAcademicos_permissions,
         ]);
 
         self::assignPermissionsToRoles($all_permissions, $user_roles, collect($permissions_roles));

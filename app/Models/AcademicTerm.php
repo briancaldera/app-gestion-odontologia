@@ -32,4 +32,39 @@ class AcademicTerm extends Model
         'start_date',
         'end_date',
     ];
+
+    public static array $actions = [
+        'academic-terms' => [
+            'full-control' => [
+                'name' => 'full-control',
+                'display_name' => 'Full control sobre los periodos académicos',
+                'description' => 'Full control sobre el modelo de periodos académicos',
+            ],
+            'create' => [
+                'name' => 'create',
+                'display_name' => 'Crear periodos académicos',
+                'description' => 'Crear periodos académicos',
+            ],
+            'read' => [
+                'name' => 'read',
+                'display_name' => 'Ver periodos académicos',
+                'description' => 'Ver periodos académicos',
+            ],
+            'update' => [
+                'name' => 'update',
+                'display_name' => 'Actualizar periodos académicos',
+                'description' => 'Actualizar periodos académicos',
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'display_name' => 'Eliminar periodos académicos',
+                'description' => 'Eliminar periodos académicos',
+            ],
+            'index-all' => [
+                'name' => 'index-all',
+                'display_name' => 'Listar todos los periodos académicos',
+                'description' => 'Listar todos los periodos académicos',
+            ],
+        ]
+    ];
 }

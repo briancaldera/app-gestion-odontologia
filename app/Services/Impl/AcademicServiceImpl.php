@@ -4,9 +4,15 @@ namespace App\Services\Impl;
 
 use App\Models\AcademicTerm;
 use App\Services\AcademicService;
+use Illuminate\Support\Collection;
 
 class AcademicServiceImpl implements AcademicService
 {
+    public function getAllAcademicTerms(): Collection
+    {
+        return AcademicTerm::all();
+    }
+
     public function createAcademicTerm(array $data): AcademicTerm
     {
         return AcademicTerm::create($data);

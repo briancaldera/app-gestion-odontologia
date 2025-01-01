@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\Academics\AcademicTermController;
 use App\Http\Controllers\CorreccionController;
 use App\Http\Controllers\DashboardController;
@@ -138,6 +139,9 @@ Route::middleware(['auth', 'profile'])->group(function () {
 //        Route::get('historias/{historia}/periodontodiagrama/{id}', [HistoriaCirugiaController::class, 'getPeriodontodiagrama'])->name('historias.periodontodiagramas.show');
         Route::get('historias/{historia}/{file}/{id}', [HistoriaCirugiaController::class, 'getFile'])->whereIn('file', ['consentimiento', 'periodontodiagrama'])->name('historias.file.show');
     });
+
+    // Routes for academic
+    Route::get('/escuela', [AcademicController::class, 'dashboard'])->name('academic.dashboard');
 
     Route::get('/escuela/periodo', [AcademicTermController::class, 'index'])->name('academic-terms.index');
     Route::post('/escuela/periodo', [AcademicTermController::class, 'store'])->name('academic-terms.store');

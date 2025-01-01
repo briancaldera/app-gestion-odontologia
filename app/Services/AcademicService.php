@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AcademicTerm;
+use Illuminate\Support\Collection;
 
 interface AcademicService
 {
@@ -13,4 +14,6 @@ interface AcademicService
     public function updateAcademicTerm(string $id, array $data): bool;
 
     public function deleteAcademicTerm(string $id): bool;
+
+    public function getAllAcademicTerms(): Collection;
 }
