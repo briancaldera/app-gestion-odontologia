@@ -23,9 +23,7 @@ const Dashboard = ({academicTerms}: DasboardProps) => {
                         <TutorsChart/>
                     </div>
                     <div className="rounded-xl bg-gray-200">
-                        <div className=''>
-                            <PatientsAgeDistributionChart/>
-                        </div>
+                        <PatientsAgeDistributionChart/>
                     </div>
                 </div>
                 <div className="min-h-[100vh] flex-1 md:min-h-min grid auto-rows-min gap-4 lg:grid-cols-3">
