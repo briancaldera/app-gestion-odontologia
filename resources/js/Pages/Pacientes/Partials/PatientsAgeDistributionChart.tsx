@@ -13,7 +13,7 @@ const chartData = [
     { ageBucket: "+60", count: 73 },
 ]
 const chartConfig = {
-    count: {
+    patients: {
         label: "Pacientes",
         color: "hsl(var(--chart-2))",
     },
@@ -36,11 +36,11 @@ const PatientsAgeDistributionChart = () => {
     } = metrics
 
     const chartData = [
-        { ageBucket: "0-17", count: total_patients_0_17, label: "0-17" },
-        { ageBucket: "18-35", count: total_patients_18_35 },
-        { ageBucket: "36-45", count: total_patients_36_45 },
-        { ageBucket: "46-60", count: total_patients_46_60 },
-        { ageBucket: "+60", count: total_patients_60 },
+        { ageBucket: "0-17", patients: total_patients_0_17 },
+        { ageBucket: "18-35", patients: total_patients_18_35 },
+        { ageBucket: "36-45", patients: total_patients_36_45 },
+        { ageBucket: "46-60", patients: total_patients_46_60 },
+        { ageBucket: "+60", patients: total_patients_60 },
     ]
 
     return (
@@ -64,7 +64,7 @@ const PatientsAgeDistributionChart = () => {
                             cursor={false}
                             content={<ChartTooltipContent hideLabel />}
                         />
-                        <Bar dataKey="count" fill="var(--color-count)" radius={8} />
+                        <Bar dataKey="patients" fill="var(--color-patients)" radius={8} />
                     </BarChart>
                 </ChartContainer>
             </CardContent>
