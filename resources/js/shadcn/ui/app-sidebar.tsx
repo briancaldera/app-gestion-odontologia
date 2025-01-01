@@ -10,7 +10,7 @@ import {
     SidebarMenuItem,
     SidebarSeparator
 } from "@/shadcn/ui/sidebar"
-import {CircleHelp, ClipboardList, Cross, Info, Lock, User, Users} from "lucide-react";
+import {BookOpen, CircleHelp, ClipboardList, Cross, Info, Lock, User, Users} from "lucide-react";
 import {Link, usePage} from "@inertiajs/react";
 import {route} from "ziggy-js";
 import Logo from "@/Components/atoms/Logo.tsx";
@@ -59,6 +59,12 @@ export function AppSidebar() {
     if (can('system-add-users-codes')) {
         systemMenu.push({
             title: "Acceso", icon: Lock, url: route('users.codes.index')
+        })
+    }
+
+    if (can('academic-terms-full-control')) {
+        escuelaMenu.push({
+            title: "Periodos", icon: BookOpen, url: route('academic.dashboard')
         })
     }
 
