@@ -18,4 +18,5 @@ Route::middleware(['auth:sanctum', 'auth'])->prefix('/v1')->name('api.v1.')->gro
     Route::patch('/notifications/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
 
     Route::get('/metrics', [MetricsController::class, 'getMetrics'])->name('metrics.index');
+    Route::get('/metrics/users/{user}', [MetricsController::class, 'getMetricsForUser'])->name('metrics.getMetricsForUser');
 });
