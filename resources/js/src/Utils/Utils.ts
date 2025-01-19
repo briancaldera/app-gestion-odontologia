@@ -3,6 +3,7 @@ import {router, usePage} from "@inertiajs/react";
 import React from "react";
 import axios from "axios";
 import Profile from "@/src/models/Profile.ts";
+import {useQuery} from "@tanstack/react-query";
 
 const mapServerErrorsToFields = function (form: UseFormReturn, errors: Record<string, string>) {
     Object.keys(errors).forEach(key => form.setError(key, {type: 'custom', message: errors[key]}))
@@ -29,10 +30,10 @@ function mergeDeep(target, ...sources) {
     if (isObject(target) && isObject(source)) {
         for (const key in source) {
             if (isObject(source[key])) {
-                if (!target[key]) Object.assign(target, { [key]: {} });
+                if (!target[key]) Object.assign(target, {[key]: {}});
                 mergeDeep(target[key], source[key]);
             } else {
-                Object.assign(target, { [key]: source[key] });
+                Object.assign(target, {[key]: source[key]});
             }
         }
     }
@@ -48,18 +49,20 @@ const usePermission = (): ((permission: string) => boolean) => {
 }
 
 /**
-* Stolen from https://react.dev/learn/reusing-logic-with-custom-hooks
+ * Stolen from https://react.dev/learn/reusing-logic-with-custom-hooks
  * 😎
-*/
+ */
 const useOnlineStatus = () => {
     const [isOnline, setIsOnline] = React.useState(true);
     React.useEffect(() => {
         function handleOnline() {
             setIsOnline(true);
         }
+
         function handleOffline() {
             setIsOnline(false);
         }
+
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
         return () => {
@@ -115,7 +118,7 @@ const useProfile = (id: string, deps: any[] = []): Profile | null => {
 
     React.useEffect(() => {
 
-        const controller =  new AbortController()
+        const controller = new AbortController()
 
         const getProfile = async () => {
             try {
@@ -136,32 +139,46 @@ const useProfile = (id: string, deps: any[] = []): Profile | null => {
     return profile
 }
 
-const useMetrics = (deps: any[] = []): object => {
+const useMetrics = (user?: string, deps: any[] = []): object => {
 
-    const [metrics, setMetrics] = React.useState<object | null>(null)
-    const endpoint = React. useMemo(() => route('api.v1.metrics.index'), [])
-
-    React.useEffect(() => {
-
-        const controller =  new AbortController();
-
-        (async () => {
-            try {
-                const res = await axios.get(endpoint, {signal: controller.signal})
-                setMetrics(res.data)
-            } catch (e) {
-                // Request cancelled
-            }
-        }) ()
-
-        return () => {
-            controller.abort()
+    const endpoint = React.useMemo(() => {
+        if (user) {
+            return route('api.v1.metrics.getMetricsForUser', {user})
+        } else {
+            return route('api.v1.metrics.index')
         }
-    }, deps)
+    }, [user])
 
-    return metrics
+    const queryKey = React.useMemo(() => {
+        if (user) {
+            return `metrics_user_${user}`
+        } else {
+            return 'metrics'
+        }
+    }, [user])
+
+    const {data} = useQuery({
+        // enabled: false,
+        queryKey: [queryKey],
+        queryFn: async ({signal}) => {
+            const res = await axios.get(endpoint, {signal})
+            return res.data
+        }
+    })
+
+    return data
 }
 
-export {usePermission, useOnlineStatus, useLoading, mergeDeep, isObject, useProfile, mapServerErrorsToFields, formatTelephone, useMetrics}
+export {
+    usePermission,
+    useOnlineStatus,
+    useLoading,
+    mergeDeep,
+    isObject,
+    useProfile,
+    mapServerErrorsToFields,
+    formatTelephone,
+    useMetrics
+}
 
 
