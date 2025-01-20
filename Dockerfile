@@ -69,6 +69,7 @@ RUN composer install
 RUN npm install
 
 RUN php artisan storage:link
+RUN php artisan ziggy:generate --types
 
 RUN npm run build
 
