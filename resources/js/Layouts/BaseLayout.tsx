@@ -9,6 +9,8 @@ import {useLoading} from "@/src/Utils/Utils.ts";
 import Loader from "@/Components/atoms/Loader.tsx";
 
 const BaseContext = React.createContext({
+    expandSidebar: true,
+    setExpandSidebar: (prev: boolean) => {},
     isDarkMode: false, toggleDarkMode: () => {
     }
 })
@@ -28,11 +30,13 @@ const BaseLayout = ({children}) => {
 
     useMessage(messages)
 
+    const [expandSidebar, setExpandSidebar] = React.useState<boolean>(true)
+
     return (
         <StyledEngineProvider injectFirst>
             <CssVarsProvider>
                 {/*<CssBaseline/>*/}
-                <BaseContext.Provider value={{isDarkMode: isDarkMode, toggleDarkMode: toggleDarkMode}}>
+                <BaseContext.Provider value={{isDarkMode, toggleDarkMode, expandSidebar, setExpandSidebar}}>
                     <div className={`${isDarkMode ? 'dark' : 'light'}`}>
                         {children}
                         <Toaster expand/>
