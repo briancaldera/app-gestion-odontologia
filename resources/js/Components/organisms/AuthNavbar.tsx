@@ -354,7 +354,7 @@ const SearchBar = ({className}: { className?: string }) => {
 
     return (
         <div
-            className={cn('hidden sm:flex w-80 items-center gap-2 border rounded-full pr-2 bg-indigo-50 px-2', className)}>
+            className={cn('hidden sm:flex w-80 items-center gap-2 border border-2 rounded-full pr-2 px-2', className)}>
             <Icon className={'flex-none'}>
                 <Search/>
             </Icon>
