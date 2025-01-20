@@ -141,7 +141,7 @@ Route::middleware(['auth', 'profile'])->group(function () {
     });
 
     // Routes for academic
-    Route::get('/escuela', [AcademicController::class, 'dashboard'])->name('academic.dashboard');
+    Route::get('/escuela', [AcademicController::class, 'dashboard'])->name('academics.dashboard');
 
     Route::get('/escuela/periodo', [AcademicTermController::class, 'index'])->name('academic-terms.index');
     Route::post('/escuela/periodo', [AcademicTermController::class, 'store'])->name('academic-terms.store');
