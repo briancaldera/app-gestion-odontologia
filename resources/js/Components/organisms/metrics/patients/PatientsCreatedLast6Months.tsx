@@ -1,7 +1,7 @@
 "use client"
 import {Bar, BarChart, CartesianGrid, LabelList, XAxis} from "recharts"
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/shadcn/ui/card"
-import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/shadcn/ui/chart"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/shadcn/ui/card.tsx"
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/shadcn/ui/chart.tsx"
 import {useMetrics} from "@/src/Utils/Utils.ts";
 import SkeletonChart from "@/Pages/Escuela/Partials/SkeletonChart.tsx";
 import {format} from 'date-fns'
@@ -22,8 +22,7 @@ const PatientsCreatedLast6Months = () => {
     }
 
     const {
-        patients: {created_last_6_months},
-        total_patients,
+        patients: {created_last_6_months, total_patients},
     } = metrics;
 
     const ordered = created_last_6_months.toReversed() as {date: string, count: number}[]

@@ -1,38 +1,44 @@
 "use client"
+
 import {Label, PolarRadiusAxis, RadialBar, RadialBarChart} from "recharts"
+
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/shadcn/ui/card"
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/shadcn/ui/chart"
 import {useMetrics} from "@/src/Utils/Utils.ts";
-import SkeletonChart from "@/Pages/Escuela/Partials/SkeletonChart.tsx";
 
 const chartConfig = {
-    with: {
-        label: "Con alumnos",
-        color: "hsl(var(--chart-1))",
+    male: {
+        label: "Masculino",
+        color: "#3b82f6",
     },
-    without: {
-        label: "Sin alumnos",
-        color: "hsl(var(--chart-2))",
+    female: {
+        label: "Femenino",
+        color: "#ec4899",
     },
 } satisfies ChartConfig
 
+export function PatientsSexDistributionChart({user}:{user?: string}) {
 
-const TutorsChart = () => {
+    const metrics = useMetrics(user)
 
-    const metrics = useMetrics()
+    if (!metrics) return null
 
-    if (!metrics) {
-        return <SkeletonChart/>
-    }
+    const {patients: {
+        total_patients,
+        sex: {
+            total_female_patients,
+            total_male_patients,
+            total_ns_patients,
+        }
+    }} = metrics
 
-    const {total_tutors, tutors_with_assignees, tutors_without_assignees} = metrics
-    const chartData = [{with: tutors_with_assignees, without: tutors_without_assignees }]
+    const chartData = [{ month: "january", male: total_male_patients, female: total_female_patients }]
 
     return (
         <Card className="flex flex-col h-full">
             <CardHeader className="items-center pb-0">
-                <CardTitle>Profesores</CardTitle>
-                <CardDescription>Profesores con y sin alumnos asignados</CardDescription>
+                <CardTitle>Pacientes </CardTitle>
+                <CardDescription>Distribución de género</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-1 items-center pb-0">
                 <ChartContainer
@@ -41,7 +47,7 @@ const TutorsChart = () => {
                 >
                     <RadialBarChart
                         data={chartData}
-                        endAngle={180}
+                        endAngle={360}
                         innerRadius={80}
                         outerRadius={130}
                     >
@@ -60,14 +66,14 @@ const TutorsChart = () => {
                                                     y={(viewBox.cy || 0) - 16}
                                                     className="fill-foreground text-2xl font-bold"
                                                 >
-                                                    {total_tutors.toLocaleString()}
+                                                    {total_patients.toLocaleString()}
                                                 </tspan>
                                                 <tspan
                                                     x={viewBox.cx}
                                                     y={(viewBox.cy || 0) + 4}
                                                     className="fill-muted-foreground"
                                                 >
-                                                    Profesores
+                                                    Pacientes
                                                 </tspan>
                                             </text>
                                         )
@@ -76,15 +82,15 @@ const TutorsChart = () => {
                             />
                         </PolarRadiusAxis>
                         <RadialBar
-                            dataKey="with"
+                            dataKey="male"
                             stackId="a"
                             cornerRadius={5}
-                            fill="var(--color-with)"
+                            fill="var(--color-male)"
                             className="stroke-transparent stroke-2"
                         />
                         <RadialBar
-                            dataKey="without"
-                            fill="var(--color-without)"
+                            dataKey="female"
+                            fill="var(--color-female)"
                             stackId="a"
                             cornerRadius={5}
                             className="stroke-transparent stroke-2"
@@ -97,11 +103,10 @@ const TutorsChart = () => {
 
                 </div>
                 <div className="leading-none text-muted-foreground">
-                    Basado en el total de usuarios con rol de profesor
+                    Mostrando para un total de {total_patients} pacientes asignados al usuario
                 </div>
             </CardFooter>
         </Card>
     )
 }
 
-export default TutorsChart

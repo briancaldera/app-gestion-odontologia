@@ -1,17 +1,10 @@
 "use client"
 import {Bar, BarChart, CartesianGrid, XAxis} from "recharts"
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/shadcn/ui/card"
-import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/shadcn/ui/chart"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/shadcn/ui/card.tsx"
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/shadcn/ui/chart.tsx"
 import {useMetrics} from "@/src/Utils/Utils.ts";
 import SkeletonChart from "@/Pages/Escuela/Partials/SkeletonChart.tsx";
 
-const chartData = [
-    { ageBucket: "0-17", count: 186 },
-    { ageBucket: "18-35", count: 305 },
-    { ageBucket: "36-45", count: 237 },
-    { ageBucket: "46-60", count: 73 },
-    { ageBucket: "+60", count: 73 },
-]
 const chartConfig = {
     patients: {
         label: "Pacientes",
@@ -19,40 +12,44 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-const PatientsAgeDistributionChart = () => {
-    const metrics = useMetrics()
+const PatientsAgeDistributionChart = ({user}: {user?: string}) => {
+    const metrics = useMetrics(user)
 
     if (!metrics) {
         return <SkeletonChart/>
     }
 
     const {
-        total_patients,
-        total_patients_0_17,
-        total_patients_18_35,
-        total_patients_36_45,
-        total_patients_46_60,
-        total_patients_60,
+        patients: {
+            age: {
+                total_patients_0_17,
+                total_patients_18_35,
+                total_patients_36_45,
+                total_patients_46_60,
+                total_patients_60,
+            },
+            total_patients,
+        },
     } = metrics
 
     const chartData = [
-        { ageBucket: "0-17", patients: total_patients_0_17 },
-        { ageBucket: "18-35", patients: total_patients_18_35 },
-        { ageBucket: "36-45", patients: total_patients_36_45 },
-        { ageBucket: "46-60", patients: total_patients_46_60 },
-        { ageBucket: "+60", patients: total_patients_60 },
+        {ageBucket: "0-17", patients: total_patients_0_17},
+        {ageBucket: "18-35", patients: total_patients_18_35},
+        {ageBucket: "36-45", patients: total_patients_36_45},
+        {ageBucket: "46-60", patients: total_patients_46_60},
+        {ageBucket: "+60", patients: total_patients_60},
     ]
 
     return (
         <Card className='h-full'>
             <CardHeader>
-                <CardTitle>Pacientes - Distribución de edad</CardTitle>
-                <CardDescription></CardDescription>
+                <CardTitle>Pacientes</CardTitle>
+                <CardDescription>Distribución de edad</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
                     <BarChart accessibilityLayer data={chartData}>
-                        <CartesianGrid vertical={false} />
+                        <CartesianGrid vertical={false}/>
                         <XAxis
                             dataKey="ageBucket"
                             tickLine={false}
@@ -62,9 +59,9 @@ const PatientsAgeDistributionChart = () => {
                         />
                         <ChartTooltip
                             cursor={false}
-                            content={<ChartTooltipContent hideLabel />}
+                            content={<ChartTooltipContent hideLabel/>}
                         />
-                        <Bar dataKey="patients" fill="var(--color-patients)" radius={8} />
+                        <Bar dataKey="patients" fill="var(--color-patients)" radius={8}/>
                     </BarChart>
                 </ChartContainer>
             </CardContent>
@@ -73,7 +70,7 @@ const PatientsAgeDistributionChart = () => {
 
                 </div>
                 <div className="leading-none text-muted-foreground">
-                    Motrandos {total_patients} pacientes
+                    Motrandos para un total de {total_patients} pacientes asignados al usuario
                 </div>
             </CardFooter>
         </Card>

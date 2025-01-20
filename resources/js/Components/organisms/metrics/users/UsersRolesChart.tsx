@@ -1,8 +1,8 @@
 "use client"
 import * as React from "react"
 import {Label, Pie, PieChart} from "recharts"
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/shadcn/ui/card"
-import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/shadcn/ui/chart"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/shadcn/ui/card.tsx"
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/shadcn/ui/chart.tsx"
 import {useMetrics} from "@/src/Utils/Utils.ts";
 import SkeletonChart from "@/Pages/Escuela/Partials/SkeletonChart.tsx";
 
@@ -28,7 +28,7 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-const RolesChart = ({}) => {
+const UsersRolesChart = ({}) => {
 
     const metrics = useMetrics()
     console.log(metrics)
@@ -36,11 +36,20 @@ const RolesChart = ({}) => {
     if (!metrics) {
         return <SkeletonChart/>
     } else {
+
+        const {users: {
+            total_users,
+            total_students,
+            total_tutors,
+            total_admision,
+            total_admins,
+        }} = metrics
+
         const chartData = [
-            {role: "estudiante", count: metrics.total_students, fill: "var(--color-estudiante)"},
-            {role: "profesor", count: metrics.total_tutors, fill: "var(--color-profesor)"},
-            {role: "admision", count: metrics.total_admision, fill: "var(--color-admision)"},
-            {role: "admin", count: metrics.total_admins, fill: "var(--color-admin)"},
+            {role: "estudiante", count: total_students, fill: "var(--color-estudiante)"},
+            {role: "profesor", count: total_tutors, fill: "var(--color-profesor)"},
+            {role: "admision", count: total_admision, fill: "var(--color-admision)"},
+            {role: "admin", count: total_admins, fill: "var(--color-admin)"},
         ]
 
         return (
@@ -81,7 +90,7 @@ const RolesChart = ({}) => {
                                                         y={viewBox.cy}
                                                         className="fill-foreground text-3xl font-bold"
                                                     >
-                                                        {metrics?.total_users.toLocaleString() ?? 0}
+                                                        {total_users.toLocaleString() ?? 0}
                                                     </tspan>
                                                     <tspan
                                                         x={viewBox.cx}
@@ -104,7 +113,7 @@ const RolesChart = ({}) => {
                         Usuarios con más de un rol cuentan en cada rol asignado
                     </div>
                     <div className="leading-none text-muted-foreground">
-                        Basado en el total de usuarios registrados
+                        Basado en el total de {total_users} usuarios registrados
                     </div>
                 </CardFooter>
             </Card>
@@ -113,4 +122,4 @@ const RolesChart = ({}) => {
 }
 
 
-export default RolesChart
+export default UsersRolesChart
