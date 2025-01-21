@@ -16,9 +16,8 @@ import {Button} from "@/Components/molecules/Button.jsx";
 import ErrorText from "@/Components/atoms/ErrorText.jsx";
 import Select from "@/Components/molecules/Select.jsx"
 import Label from "@/Components/atoms/Label.jsx";
-import SidebarMenu, {type MenuItem} from "@/Components/organisms/SidebarMenu";
+import {type MenuItem} from "@/Components/organisms/SidebarMenu";
 import {ArrowBigLeft} from 'lucide-react'
-import {undefined} from "zod";
 
 const ProfileUpdateContext = React.createContext()
 
@@ -178,6 +177,7 @@ const PerfilSection = () => {
                                 setOpenPictureModal(true)
                             }}/>
                         </div>
+                        <UpdatePasswordForm className='mt-10'/>
                     </div>
 
                 </div>
