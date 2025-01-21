@@ -3,13 +3,31 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserCollection;
 use App\Models\Role;
+use App\Models\User;
 use App\Models\UserCode;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
+    public function index(Request $request)
+    {
+        $data = $request->validate([
+            'size' => ['sometimes', 'integer', Rule::in(['10', '25', '50', '100'])],
+            ]);
+
+        $page_size = $data['size'] ?? 10;
+
+        $users_paginator = User::with(['profile'])->paginate($page_size)->withQueryString();;
+
+        return Inertia::render('Users/Index', [
+            'users' => new UserCollection($users_paginator),
+        ]);
+    }
+
     public function indexCodes(Request $request)
     {
         if ($request->user()->cannot('viewAny', UserCode::class)) {

@@ -67,6 +67,9 @@ Route::middleware(['auth', 'profile'])->group(function () {
     Route::get('/entregas', [EntregaController::class, 'index'])->name('entregas.index');
     Route::post('/entregas', [EntregaController::class, 'index'])->name('entregas.store');
 
+//    Routes for users
+    Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+
 //    Routes for patient
     Route::resource('pacientes', PacienteController::class);
     Route::get('/pacientes/{paciente}/foto/{id}', [PacienteController::class, 'getFoto']);
