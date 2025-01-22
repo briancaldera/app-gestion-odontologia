@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AcademicController;
+use App\Http\Controllers\Academics\AcademicTermController;
 use App\Http\Controllers\CorreccionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EntregaController;
@@ -64,6 +66,9 @@ Route::middleware(['auth', 'profile'])->group(function () {
     Route::patch('/historias/{historia}/share', [HistoriaController::class, 'share'])->name('historias.share');
     Route::get('/entregas', [EntregaController::class, 'index'])->name('entregas.index');
     Route::post('/entregas', [EntregaController::class, 'index'])->name('entregas.store');
+
+//    Routes for users
+    Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
 
 //    Routes for patient
     Route::resource('pacientes', PacienteController::class);
@@ -137,6 +142,14 @@ Route::middleware(['auth', 'profile'])->group(function () {
 //        Route::get('historias/{historia}/periodontodiagrama/{id}', [HistoriaCirugiaController::class, 'getPeriodontodiagrama'])->name('historias.periodontodiagramas.show');
         Route::get('historias/{historia}/{file}/{id}', [HistoriaCirugiaController::class, 'getFile'])->whereIn('file', ['consentimiento', 'periodontodiagrama'])->name('historias.file.show');
     });
+
+    // Routes for academic
+    Route::get('/escuela', [AcademicController::class, 'dashboard'])->name('academics.dashboard');
+
+    Route::get('/escuela/periodo', [AcademicTermController::class, 'index'])->name('academic-terms.index');
+    Route::post('/escuela/periodo', [AcademicTermController::class, 'store'])->name('academic-terms.store');
+    Route::patch('/escuela/periodo/{academicTerm}', [AcademicTermController::class, 'update'])->name('academic-terms.update');
+    Route::delete('/escuela/periodo/{academicTerm}', [AcademicTermController::class, 'destroy'])->name('academic-terms.destroy');
 });
 
 require __DIR__.'/auth.php';

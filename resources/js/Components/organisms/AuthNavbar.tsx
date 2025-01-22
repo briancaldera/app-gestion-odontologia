@@ -36,20 +36,24 @@ const AuthNavbar = () => {
 
     return (
         <nav
-            className={`fixed z-40 inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 ${open ? 'lg:pl-[18rem]' : 'lg:pl-[3rem]'} flex justify-end`}>
-            <div className={'flex-1 flex h-full'}>
-                {/*breadcrumbs*/}
-                <div className={'px-8 flex-1 flex items-center gap-x-6'}>
-                    <Icon>
-                        <SidebarTrigger/>
-                    </Icon>
-                    <Breadcrumbs/>
-                    <SearchBar className='ml-auto'/>
-                </div>
-                {/*auth section*/}
+            className={`fixed z-40 inset-x-0 top-0 bg-white dark:bg-slate-950 h-14 sm:h-20 ${open ? 'md:pl-[18rem]' : 'md:pl-[3rem]'} flex justify-end px-8`}>
+            <div className='flex-1 flex h-full gap-x-4'>
+                <WidgetsBar/>
                 <AuthSection/>
             </div>
         </nav>
+    )
+}
+
+const WidgetsBar = () => {
+    return (
+        <div className={'pl-8 flex-1 flex items-center gap-x-6'}>
+            <Icon>
+                <SidebarTrigger/>
+            </Icon>
+            <Breadcrumbs/>
+            <SearchBar className='ml-auto'/>
+        </div>
     )
 }
 
@@ -89,7 +93,7 @@ const AuthSection = () => {
     }, [])
 
     return (
-        <div className={'h-full flex justify-center items-center px-8 gap-4 relative py-4'}>
+        <div className={'h-full flex justify-center items-center gap-4 relative py-4'}>
 
             <Separator orientation={'vertical'}/>
 
@@ -354,7 +358,7 @@ const SearchBar = ({className}: { className?: string }) => {
 
     return (
         <div
-            className={cn('hidden sm:flex w-80 items-center gap-2 border rounded-full pr-2 bg-indigo-50 px-2', className)}>
+            className={cn('hidden lg:flex max-w-80 items-center gap-2 border border-2 rounded-full pr-2 px-2', className)}>
             <Icon className={'flex-none'}>
                 <Search/>
             </Icon>

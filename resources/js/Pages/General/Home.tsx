@@ -28,8 +28,10 @@ const Home = ({auth}) => {
                                 <Link href={route('dashboard')}
                                       className="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium">
                                     <Avatar>
-                                        <AvatarImage src={user.profile.picture_url}/>
-                                        <AvatarFallback>{`${user.profile.nombres[0]}${user.profile.apellidos[0]}`}</AvatarFallback>
+                                        <AvatarImage src={user.profile?.picture_url}/>
+                                        <AvatarFallback>{
+                                            user.profile ? `${user.profile.nombres[0]}${user.profile.apellidos[0]}` : `${user.name[0]}`
+                                        }</AvatarFallback>
                                     </Avatar>
                                 </Link>
                                 ): (

@@ -1,5 +1,5 @@
 import * as React from "react"
-import {format, Locale} from "date-fns"
+import {format} from "date-fns"
 import {Calendar as CalendarIcon} from "lucide-react"
 import {cn} from "@/lib/utils"
 import {Button} from "@/shadcn/ui/button"
@@ -7,14 +7,14 @@ import {Calendar} from "@/shadcn/ui/calendar"
 import {Popover, PopoverContent, PopoverTrigger,} from "@/shadcn/ui/popover"
 import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/shadcn/ui/form";
 
-const DatePicker = ({label, name, control, description = '', disabled = false}) => {
+const DatePicker = ({label, name, control, description = '', disabled = false, modal = false}) => {
 
     return (
         <FormField name={name} control={control} disabled={disabled} render={({field, fieldState, formState,}) => {
             return (
                 <FormItem className="flex flex-col gap-y-1 mt-1.5">
                     <FormLabel>{label}</FormLabel>
-                        <Popover>
+                        <Popover modal={modal}>
                             <PopoverTrigger asChild>
                                 <FormControl>
                                 <Button
