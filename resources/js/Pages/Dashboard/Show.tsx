@@ -130,7 +130,7 @@ const UserMetrics = () => {
     return (
         <div className="flex flex-1 flex-col gap-4 p-4">
             <Heading>Resumen de usuario</Heading>
-            <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div className="grid auto-rows-min gap-4 lg:grid-cols-3">
                 <div className="rounded-xl bg-gray-200">
                     <PatientsAgeDistributionChart user={user.id} />
                 </div>
