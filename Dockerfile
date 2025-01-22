@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 LABEL maintainer="Taylor Otwell"
 
 ARG WWWGROUP=1000
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 ARG MYSQL_CLIENT="mysql-client"
 ARG POSTGRES_VERSION=15
 
@@ -55,7 +55,7 @@ RUN apt-get update \
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
 
 RUN groupadd --force -g $WWWGROUP sail
-RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1000 sail
 
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -73,7 +73,7 @@ RUN php artisan ziggy:generate --types
 
 RUN npm run build
 
-RUN chown -R sail: .
+RUN chown -R sail:sail .
 
 EXPOSE 80/tcp
 
