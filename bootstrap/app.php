@@ -26,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->trustProxies(at: '*');
-        $middleware->trustHosts(at: ['ugma-app-gestion-odontologia-96559078110.us-east1.run.app']);
+        $middleware->trustHosts(at: ['us-east1.run.app']);
         $middleware->statefulApi();
         //
     })
